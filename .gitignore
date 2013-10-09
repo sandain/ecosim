@@ -1,0 +1,7 @@
+# Ignore Fortran module files.
+*.mod
+
+# Ignore build directories.
+bin/*
+build/*
+
