@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EcoSim" default="dist" basedir=".">
+    <description>
+        Build file for the Java portion of Ecotype Simulation.
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" value="src"/>
+  <property name="build" value="build"/>
+  <property name="bin" value="bin"/>
+  <property name="jarfile" value="EcoSim.jar"/>
+
+  <!-- load the version information -->
+  <loadfile property="version" srcFile="VERSION"/>
+
+  <target name="dist" description="Build the Java source files, and generate the jar file." >
+    <!-- Create the necessary directory structure -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build}/java"/>
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Compile the java code -->
+    <javac srcdir="${src}/java" destdir="${build}/java" includeantruntime="false">
+      <compilerarg value="-Xlint:unchecked,deprecation"/>
+    </javac>
+    <!-- Create the jar file -->
+    <jar jarfile="${build}/${jarfile}" basedir="${build}/java">
+      <manifest>
+        <attribute name="Main-Class" value="ecosim.EcotypeSimulation"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean" description="Clean up." >
+    <!-- Delete the ${build} directory tree -->
+    <delete dir="${build}/java"/>
+    <delete file="${build}/${jarfile}"/>
+  </target>
+
+  <target name="install" depends="dist" description="Copy the jar file to the installation folder.">
+    <!-- Copy the jar file to the installation directory -->
+    <mkdir dir="${bin}"/>
+    <copy file="${build}/${jarfile}" todir="${bin}"/>
+  </target>
+
+  <target name="uninstall" description="Remove the jar file from the installation folder.">
+    <delete file="${bin}/${jarfile}"/>
+  </target>
+
+</project>
