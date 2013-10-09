@@ -1,4 +1,0 @@
-ecosim
-======
-
-Ecotype Simulation
