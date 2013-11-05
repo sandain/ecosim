@@ -36,6 +36,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 program correctpcr
   use methods
+  use darray
   use tmatrix
   implicit none
   character(len = 20)             :: sequence_format
@@ -61,7 +62,8 @@ program correctpcr
   integer                         :: jchange
   integer                         :: numstrain
   integer                         :: length
-  integer, allocatable            :: singleton(:,:)
+  type(darrayInteger)             :: singletonStrain
+  type(darrayInteger)             :: singletonNuc
   integer, allocatable            :: tochange(:,:)
   integer, parameter              :: populationUnit = 1
   integer, parameter              :: outputUnit = 2
@@ -124,16 +126,12 @@ program correctpcr
   ! numstrain is the number of strains in the sample
   ! length is the number of nucleotide sites
   ! Allocate variables.
+  call darrayInitialize(singletonStrain, 4 * numstrain)
+  call darrayInitialize(singletonNuc, 4 * numstrain)
   call tmatrixInitialize(divergematrix, numstrain)
   allocate (sequence(numstrain, length), stat = allocateStatus)
   if (allocateStatus .gt. 0) then
     write (unit = *, fmt = *) "Failed to allocate memory for: sequence!"
-    ! Error, exit the program.
-    stop
-  end if
-  allocate (singleton(4 * numstrain, 2), stat = allocateStatus)
-  if (allocateStatus .gt. 0) then
-    write (unit = *, fmt = *) "Failed to allocate memory for: singleton!"
     ! Error, exit the program.
     stop
   end if
@@ -176,8 +174,8 @@ program correctpcr
         do jstrain = 1, numstrain
           if (sequence(jstrain, knuc) .eq. code(nucnuc)) then
             numsingletons = numsingletons + 1
-            singleton(numsingletons, 1) = jstrain
-            singleton(numsingletons, 2) = knuc
+            call darraySet (singletonStrain, numsingletons, jstrain)
+            call darraySet (singletonNuc, numsingletons, knuc)
             exit
           endif
         end do
@@ -194,10 +192,10 @@ program correctpcr
     do jchange = 1, numtochange
       call randomNumber (x)
       num = int (x * numsingletons) + 1
-      tochange(jchange, 1) = singleton(num, 1)
-      tochange(jchange, 2) = singleton(num, 2)
-      singleton(num, 1) = singleton(numsingletons, 1)
-      singleton(num, 2) = singleton(numsingletons, 2)
+      tochange(jchange, 1) = darrayGet(singletonStrain, num)
+      tochange(jchange, 2) = darrayGet(singletonNuc, num)
+      call darraySet(singletonStrain, num, darrayGet(singletonStrain, numsingletons))
+      call darraySet(singletonNuc, num, darrayGet(singletonNuc, numsingletons))
       numsingletons = numsingletons - 1
     end do
     ! now, change each of the chosen singletons to the value of the most
@@ -225,16 +223,12 @@ program correctpcr
       (sequence(jstrain, knuc), knuc = 1, length)
   end do
   ! Deallocate memory.
+  call darrayClose(singletonStrain)
+  call darrayClose(singletonNuc)
   call tmatrixClose(divergematrix)
   deallocate (sequence, stat = allocateStatus)
   if (allocateStatus .gt. 0) then
     write (unit = *, fmt = *) "Failed to deallocate memory for: sequence!"
-    ! Error, exit the program.
-    stop
-  end if
-  deallocate (singleton, stat = allocateStatus)
-  if (allocateStatus .gt. 0) then
-    write (unit = *, fmt = *) "Failed to deallocate memory for: singleton!"
     ! Error, exit the program.
     stop
   end if
