@@ -81,6 +81,7 @@ import java.io.File;
  * @li @b ::darray - Stores dynamic arrays.
  * @li @b ::methods - Common methods of the simulation.
  * @li @b ::simplexmethod - The Nelder-Mead Simplex Method.
+ * @li @b ::tmatrix - Stores a triangular matix.
  * @li @b ::ziggurat - The Ziggurat Random Number Generator.
  *
  * @section java Java
