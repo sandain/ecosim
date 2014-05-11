@@ -362,7 +362,7 @@ module tmatrix
   !>
   !> @param[in]     capacity      The capacity of the triangular matrix.
   !> @param[in]     i             The i index of the matrix element needed.
-  !> @parma[in]     j             The j index of the matrix element needed.
+  !> @param[in]     j             The j index of the matrix element needed.
   !> @return                      The index of the vector.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function tmatrixGetIndex (capacity, i, j) result (returnValue)
@@ -392,7 +392,7 @@ module tmatrix
   !>
   !> @param[in]     tmatrix       The triangular matrix.
   !> @param[in]     i             The i index of the element needed.
-  !> @parma[in]     j             The j index of the element needed.
+  !> @param[in]     j             The j index of the element needed.
   !> @return                      The element at the provided index.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function tmatrixGetInteger (tmatrix, i, j) result (returnValue)
@@ -410,7 +410,7 @@ module tmatrix
   !>
   !> @param[in]     tmatrix       The triangular matrix.
   !> @param[in]     i             The i index of the element needed.
-  !> @parma[in]     j             The j index of the element needed.
+  !> @param[in]     j             The j index of the element needed.
   !> @return                      The element at the provided index.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function tmatrixGetLong (tmatrix, i, j) result (returnValue)
@@ -428,7 +428,7 @@ module tmatrix
   !>
   !> @param[in]     tmatrix       The triangular matrix.
   !> @param[in]     i             The i index of the element needed.
-  !> @parma[in]     j             The j index of the element needed.
+  !> @param[in]     j             The j index of the element needed.
   !> @return                      The element at the provided index.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function tmatrixGetReal (tmatrix, i, j) result (returnValue)
@@ -446,7 +446,7 @@ module tmatrix
   !>
   !> @param[in]     tmatrix       The triangular matrix.
   !> @param[in]     i             The i index of the element needed.
-  !> @parma[in]     j             The j index of the element needed.
+  !> @param[in]     j             The j index of the element needed.
   !> @return                      The element at the provided index.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function tmatrixGetDouble (tmatrix, i, j) result (returnValue)
