@@ -42,8 +42,8 @@ import java.io.File;
  * @tableofcontents
  *
  * @section usage Usage
- * @code
- * java -jar EcoSim.jar [OPTIONS] /path/to/sequence_fasta /path/to/sequence_tree output_xml
+ *
+ *     java -jar EcoSim.jar [OPTIONS] /path/to/sequence_fasta /path/to/sequence_tree output_xml
  *
  * Sequences should be aligned and in a fasta formated file, with the outgroup
  * listed first.
@@ -54,14 +54,14 @@ import java.io.File;
  * Output is saved in XML format.
  *
  * Options:
- *   -d, --debug        : Display debugging output.
- *   -h, --help         : Display helpful information.
- *   -n, --nogui        : Hide the default GUI.  Implies --runall.
- *   -r, --runall       : Run everything, including demarcation.
- *   -t=n, --threads=n  : Set the number of threads (n) to start, default
- *                        to system maximum.
- *   -v, --version      : Display the version number.
- * @endcode
+ *
+ *     -d, --debug        : Display debugging output.
+ *     -h, --help         : Display helpful information.
+ *     -n, --nogui        : Hide the default GUI.  Implies --runall.
+ *     -r, --runall       : Run everything, including demarcation.
+ *     -t=n, --threads=n  : Set the number of threads (n) to start, default
+ *                          to system maximum.
+ *     -v, --version      : Display the version number.
  *
  * @section fortran Fortran
  * @subsection fortran-programs Programs
