@@ -40,9 +40,8 @@ public class Heapsorter<T extends Comparable<T>> {
      *  Note that we construct a min heap originally so that, once each element
      *  is popped off a list of the elements in descending order remains.
      *
-     *  pre: list is an unsorted array of objects that implement comparable.
-     *  post: list is sorted using heapsort and returned in descending order.
-     *
+     *  @pre list is an unsorted array of objects that implement comparable.
+     *  @post list is sorted using heapsort and returned in descending order.
      *  @param list The list of values to be sorted.
      */
     public void heapSort(ArrayList<T> list) {
@@ -63,9 +62,8 @@ public class Heapsorter<T extends Comparable<T>> {
     }
 
     /**
-     *  pre: list is a min-heap except for the root.
-     *  post: list is a min-heap.
-     *
+     *  @pre list is a min-heap except for the root.
+     *  @post list is a min-heap.
      *  @param list The list of values.
      *  @param root The root of the subtree.
      *  @param end The index of the end of the tree, ie the index of the first
@@ -99,10 +97,9 @@ public class Heapsorter<T extends Comparable<T>> {
     }
 
     /**
-     *  pre: list is a list of comparable with one and two being indexes within
+     *  @pre list is a list of comparable with one and two being indexes within
      *  that list.
-     *  post: the values at index one and two are swapped.
-     *
+     *  @post the values at index one and two are swapped.
      *  @param list The list of values.
      *  @param one The first index.
      *  @param two The second index.
@@ -114,10 +111,9 @@ public class Heapsorter<T extends Comparable<T>> {
     }
 
     /**
-     *  pre: list is a max heap except for the value at index, which is the
+     *  @pre list is a max heap except for the value at index, which is the
      *  rightmost child.
-     *  post: list is a max heap.
-     *
+     *  @post list is a max heap.
      *  @param list The list of values.
      *  @param index The root of the subtree that needs to be restored to a
      *  heap.
