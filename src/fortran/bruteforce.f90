@@ -39,7 +39,7 @@ program bruteforce
   character(len = 256)          :: inputFile
   character(len = 256)          :: outputFile
   character(len = *), parameter :: outputFormat = &
-    "(f15.7,',',f15.7,',',i10,',',6(',',1e18.10))"
+    "(f15.7,',',f15.7,',',i10,6(',',1e18.10))"
   logical                       :: fileExists
   integer                       :: npop
   integer                       :: npopbot
