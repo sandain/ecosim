@@ -214,6 +214,8 @@ public class NewickTree {
                 line = input.readLine ();
             }
             node = loadTree (treeBuffer.toString ());
+            // Sort the children of the node.
+            node.sortChildren ();
         }
         catch (java.io.FileNotFoundException e) {
             throw new InvalidNewickException ("File not found.");
