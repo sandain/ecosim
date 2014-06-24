@@ -33,18 +33,18 @@ import java.util.ArrayList;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class NewickTreeNode {
+public class NewickTreeNode implements Comparable<NewickTreeNode> {
 
     /**
      *  Constructor for objects of class NewickTreeNode.
      *
-     *  @param name The name of this treenode.
+     *  @param name The name of this NewickTreeNode.
      *  @param distance The distance from the parent node.
      *  @param parent The parent NewickTreeNode of this node.
-     *  @param children A list of NewickTreeNodes which are the children of this
+     *  @param children A list of TreeNodes which are the children of this
      *  node.
      */
-    public NewickTreeNode(String name, double distance, NewickTreeNode parent,
+    public NewickTreeNode (String name, double distance, NewickTreeNode parent,
         ArrayList<NewickTreeNode> children) {
         this.name = name;
         this.distance = distance;
@@ -56,8 +56,17 @@ public class NewickTreeNode {
      *  Default constructor for object of class NewickTreeNode.  This node
      *  will have no name, distance, parent, or children unless defined later.
      */
-    public NewickTreeNode() {
-        this ("", 0.0, null, new ArrayList<NewickTreeNode>());
+    public NewickTreeNode () {
+        this ("", 0.0d, null, new ArrayList<NewickTreeNode> ());
+    }
+
+    /**
+     *  Compare the maximum distances from leaf nodes.
+     */
+    public int compareTo (NewickTreeNode other) {
+        Double a = maximumDistanceFromLeafNode ();
+        Double b = other.maximumDistanceFromLeafNode ();
+        return a.compareTo (b);
     }
 
     /**
@@ -65,7 +74,7 @@ public class NewickTreeNode {
      *
      *  @param name The name of this node.
      */
-     public void setName(String name) {
+     public void setName (String name) {
          this.name = name;
      }
 
@@ -74,7 +83,7 @@ public class NewickTreeNode {
      *
      *  @param distance The distance to the parent.
      */
-    public void setDistance(double distance) {
+    public void setDistance (double distance) {
         this.distance = distance;
     }
 
@@ -83,7 +92,7 @@ public class NewickTreeNode {
      *
      *  @param parent The parent of this node.
      */
-    public void setParent(NewickTreeNode parent) {
+    public void setParent (NewickTreeNode parent) {
         this.parent = parent;
     }
 
@@ -92,9 +101,18 @@ public class NewickTreeNode {
      *
      *  @param child The child to add.
      */
-    public void addChild(NewickTreeNode child) {
-        child.setParent(this);
-        children.add(child);
+    public void addChild (NewickTreeNode child) {
+        child.setParent (this);
+        children.add (child);
+    }
+
+
+    public void sortChildren () {
+        for (NewickTreeNode child: children) {
+            child.sortChildren ();
+        }
+        Heapsorter<NewickTreeNode> sorter = new Heapsorter<NewickTreeNode> ();
+        sorter.heapSort (children);
     }
 
     /**
@@ -102,7 +120,7 @@ public class NewickTreeNode {
      *
      *  @return String containing the name of this node.
      */
-    public String getName() {
+    public String getName () {
         return name;
     }
 
@@ -111,7 +129,7 @@ public class NewickTreeNode {
      *
      *  @return double containing the distance to the parent.
      */
-    public double getDistance() {
+    public double getDistance () {
         return distance;
     }
 
@@ -120,7 +138,7 @@ public class NewickTreeNode {
      *
      *  @return NewickTreeNode containing the parent of this node.
      */
-    public NewickTreeNode getParent() {
+    public NewickTreeNode getParent () {
         return parent;
     }
 
@@ -129,17 +147,18 @@ public class NewickTreeNode {
      *
      *  @return ArrayList<NewickTreeNode> containing the children of this node.
      */
-    public ArrayList<NewickTreeNode> getChildren() {
+    public ArrayList<NewickTreeNode> getChildren () {
         return children;
     }
 
     /**
      *  Removes a child of this node.
      *
-     *  @param child The child to remove.
+     *  @param child The child NewickTreeNode to remove.
      */
-    public void removeChild(NewickTreeNode child) {
-        children.remove(child);
+    public void removeChild (NewickTreeNode child) {
+        children.remove (child);
+        child.setParent (null);
     }
 
     /**
@@ -147,8 +166,8 @@ public class NewickTreeNode {
      *
      *  @return A boolean stating whether this node is a leaf or not.
      */
-    public boolean isLeafNode() {
-        return children.isEmpty();
+    public boolean isLeafNode () {
+        return children.isEmpty ();
     }
 
     /**
@@ -156,12 +175,47 @@ public class NewickTreeNode {
      *
      *  @return The distance of this node from the root node.
      */
-    public double distanceFromRootNode() {
-        double distanceFromRoot = 0.0;
+    public double distanceFromRootNode () {
+        double distanceFromRoot = 0.0d;
         if (parent != null) {
-            distanceFromRoot = distance + parent.distanceFromRootNode();
+            distanceFromRoot = distance + parent.distanceFromRootNode ();
         }
         return distanceFromRoot;
+    }
+
+
+    /**
+     *  Returns the maximum distance of this node from a leaf node.
+     *
+     *  @return The maximum distance of this node from a leaf node.
+     */
+    public double maximumDistanceFromLeafNode () {
+        double maximumDistance = 0.0d;
+        for (NewickTreeNode child: children) {
+            double childDistance = 
+                child.maximumDistanceFromLeafNode () + child.getDistance ();
+            if (childDistance > maximumDistance) {
+                maximumDistance = childDistance;
+            }
+        }
+        return maximumDistance;
+    }
+
+    /**
+     *  Returns the minimum distance of this node from a leaf node.
+     *
+     *  @return The minimum distance of this node from a leaf node.
+     */
+    public double minimumDistanceFromLeafNode () {
+        double minimumDistance = Double.MAX_VALUE;
+        for (NewickTreeNode child: children) {
+            double childDistance =
+                child.minimumDistanceFromLeafNode () + child.getDistance ();
+            if (childDistance < minimumDistance) {
+                minimumDistance = childDistance;
+            }
+        }
+        return minimumDistance;
     }
 
     /**
@@ -169,7 +223,7 @@ public class NewickTreeNode {
      *
      *  @return True if this node is the root node.
      */
-    public boolean isRootNode() {
+    public boolean isRootNode () {
           return parent == null;
     }
 
@@ -180,15 +234,15 @@ public class NewickTreeNode {
      *  @return The descendants of this node.
      */
     public ArrayList<NewickTreeNode> getDescendants() {
-        ArrayList<NewickTreeNode> descendants = new ArrayList<NewickTreeNode>();
-        if (children.size() > 0) {
-            for (int i = 0; i < children.size(); i ++) {
-                NewickTreeNode child = children.get(i);
-                if (child.isLeafNode()) {
-                    descendants.add(child);
+        ArrayList<NewickTreeNode> descendants = new ArrayList<NewickTreeNode> ();
+        if (children.size () > 0) {
+            for (int i = 0; i < children.size (); i ++) {
+                NewickTreeNode child = children.get (i);
+                if (child.isLeafNode ()) {
+                    descendants.add (child);
                 }
                 else {
-                    descendants.addAll(child.getDescendants());
+                    descendants.addAll (child.getDescendants ());
                 }
             }
         }
@@ -200,17 +254,17 @@ public class NewickTreeNode {
      *
      *  @return The number of living descendants of this node.
      */
-    public int numberOfDescendants() {
+    public int numberOfDescendants () {
         int descendants = 0;
         // If this node has children then the children are the descendants,
         // otherwise this node is a desendant.
-        if (children.size() > 0) {
-            for (int i = 0; i < children.size(); i ++) {
-                if (children.get(i).isLeafNode()) {
+        if (children.size () > 0) {
+            for (int i = 0; i < children.size (); i ++) {
+                if (children.get (i).isLeafNode ()) {
                     descendants ++;
                 }
                 else {
-                    descendants += children.get(i).numberOfDescendants();
+                    descendants += children.get (i).numberOfDescendants ();
                 }
             }
         }
@@ -225,15 +279,15 @@ public class NewickTreeNode {
      *
      *  @return String containing the name and distance of this node.
      */
-    public String toString() {
+    public String toString () {
         String newick = "";
-        for (int i = 0; i < children.size(); i ++) {
+        for (int i = 0; i < children.size (); i ++) {
             if (i != 0) {
                 newick += ",";
             }
-            newick += children.get(i);
+            newick += children.get (i);
         }
-        if (newick.length() > 0) {
+        if (newick.length () > 0) {
             newick = "(" + newick + ")";
         }
         newick += name + ":" + distance;
