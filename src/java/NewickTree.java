@@ -51,7 +51,7 @@ public class NewickTree {
      */
     public NewickTree(String tree) throws InvalidNewickException {
         // Parse through the provided newick formated tree string.
-        root = getRootNode(tree);
+        root = loadTree (tree);
     }
 
     /**
@@ -123,7 +123,7 @@ public class NewickTree {
      */
     public void setTree(String tree) throws InvalidNewickException {
         // Parse through the provided newick formated tree string.
-        root = getRootNode(tree);
+        root = loadTree (tree);
     }
 
     /**
@@ -215,7 +215,7 @@ public class NewickTree {
                 treeBuffer.append(line);
                 line = input.readLine();
             }
-            node = getRootNode(treeBuffer.toString());
+            node = loadTree (treeBuffer.toString());
         }
         catch (java.io.FileNotFoundException e) {
             throw new InvalidNewickException("File not found.");
@@ -246,7 +246,7 @@ public class NewickTree {
      *         and its descendants.
      *  @return The root node.
      */
-    private NewickTreeNode getRootNode(String inputTree)
+    private NewickTreeNode loadTree (String inputTree)
         throws InvalidNewickException {
         NewickTreeNode node = null;
         String tree = inputTree;
