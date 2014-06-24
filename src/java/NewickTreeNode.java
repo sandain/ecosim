@@ -106,7 +106,9 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         children.add (child);
     }
 
-
+    /**
+     *  Sort the children of this node.
+     */
     public void sortChildren () {
         for (NewickTreeNode child: children) {
             child.sortChildren ();
@@ -226,7 +228,6 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     public boolean isRootNode () {
           return parent == null;
     }
-
 
     /**
      *  Returns an array of nodes that are descendants of this node.
