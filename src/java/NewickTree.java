@@ -117,16 +117,6 @@ public class NewickTree {
     }
 
     /**
-     *  Store the Newick formated tree in this object.
-     *
-     *  @param tree Newick formated tree to read.
-     */
-    public void setTree(String tree) throws InvalidNewickException {
-        // Parse through the provided newick formated tree string.
-        root = loadTree (tree);
-    }
-
-    /**
      *  Returns this Newick tree formatted as a String.
      *
      *  @return String containing the Newick tree.
