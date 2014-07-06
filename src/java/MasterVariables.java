@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
@@ -41,34 +41,34 @@ public class MasterVariables {
     /**
      *  The MasterVariables constructor.
      */
-    public MasterVariables() {
+    public MasterVariables () {
         debug = false;
         // Create a temporary directory to serve as the working directory.
         try {
-            Path tempDirectory = Files.createTempDirectory("es2-");
-            workingDirectory = tempDirectory.toString() +
-                System.getProperty("file.separator");
+            Path tempDirectory = Files.createTempDirectory ("es2-");
+            workingDirectory = tempDirectory.toString () +
+                System.getProperty ("file.separator");
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         // Assume the the bin, help, and scripts directories are in the
         // current working directory.
-        binaryDirectory = System.getProperty("user.dir") +
-            System.getProperty("file.separator") + "bin" +
-            System.getProperty("file.separator");
+        binaryDirectory = System.getProperty ("user.dir") +
+            System.getProperty ("file.separator") + "bin" +
+            System.getProperty ("file.separator");
 
-        helpDirectory = System.getProperty("user.dir") +
-            System.getProperty("file.separator") +"help" +
-            System.getProperty("file.separator");
+        helpDirectory = System.getProperty ("user.dir") +
+            System.getProperty ("file.separator") +"help" +
+            System.getProperty ("file.separator");
 
-        scriptDirectory = System.getProperty("user.dir") +
-            System.getProperty("file.separator") + "scripts" +
-            System.getProperty("file.separator");
+        scriptDirectory = System.getProperty ("user.dir") +
+            System.getProperty ("file.separator") + "scripts" +
+            System.getProperty ("file.separator");
 
         // Initialize various objects.
-        execs = new Execs(this);
-        log = new Logger();
+        execs = new Execs (this);
+        log = new Logger ();
     }
 
     /**
@@ -76,7 +76,7 @@ public class MasterVariables {
      *
      *  @return The version number.
      */
-    public String getVersion() {
+    public String getVersion () {
         return version;
     }
 
@@ -85,7 +85,7 @@ public class MasterVariables {
      *
      *  @return The current criterion value.
      */
-    public int getCriterion() {
+    public int getCriterion () {
         return criterion;
     }
 
@@ -94,7 +94,7 @@ public class MasterVariables {
      *
      *  @param criterion The new criterion value.
      */
-    public void setCriterion(int criterion) {
+    public void setCriterion (int criterion) {
         this.criterion = criterion;
     }
 
@@ -103,8 +103,8 @@ public class MasterVariables {
      *
      *  @return The label for the current criterion value.
      */
-    public String getCriterionLabel() {
-       return getCriterionLabel(criterion);
+    public String getCriterionLabel () {
+       return getCriterionLabel (criterion);
     }
 
     /**
@@ -113,7 +113,7 @@ public class MasterVariables {
      *  @param crit The criterion value of interest.
      *  @return The level for the criterion value of interest.
      */
-    public String getCriterionLabel(int crit) {
+    public String getCriterionLabel (int crit) {
        return criterionLabels[crit - 1];
     }
 
@@ -122,7 +122,7 @@ public class MasterVariables {
      *
      *  @return The array of criterion labels.
      */
-    public String[] getCriterionLabels() {
+    public String[] getCriterionLabels () {
         return criterionLabels;
     }
 
@@ -131,7 +131,7 @@ public class MasterVariables {
      *
      *  @return The current PCR error value.
      */
-    public double getPCRError() {
+    public double getPCRError () {
         return pcrerror;
     }
 
@@ -140,7 +140,7 @@ public class MasterVariables {
      *
      *  @param pcrerror The new PCR error value.
      */
-    public void setPCRError(double pcrerror) {
+    public void setPCRError (double pcrerror) {
         this.pcrerror = pcrerror;
     }
 
@@ -149,7 +149,7 @@ public class MasterVariables {
      *
      *  @return double array containing the default range of omega.
      */
-    public double[] getOmegaRange() {
+    public double[] getOmegaRange () {
         return omegaRange;
     }
 
@@ -158,7 +158,7 @@ public class MasterVariables {
      *
      *  @return double array containing the default range of sigma.
      */
-    public double[] getSigmaRange() {
+    public double[] getSigmaRange () {
         return sigmaRange;
     }
 
@@ -167,7 +167,7 @@ public class MasterVariables {
      *
      *  @return int array containing the Default values of xnumincs.
      */
-    public int[] getNumIncs() {
+    public int[] getNumIncs () {
         return xnumincs;
     }
 
@@ -176,7 +176,7 @@ public class MasterVariables {
      *
      *  @return The default number of reps.
      */
-    public int getNrep() {
+    public int getNrep () {
         return nrep;
     }
 
@@ -185,7 +185,7 @@ public class MasterVariables {
      *
      *  @return The default number of reps.
      */
-    public int getStep() {
+    public int getStep () {
         return step;
     }
 
@@ -194,7 +194,7 @@ public class MasterVariables {
      *
      *  @return The default log.
      */
-    public Logger getLog() {
+    public Logger getLog () {
         return log;
     }
 
@@ -203,7 +203,7 @@ public class MasterVariables {
      *
      *  @return The default Execs.
      */
-    public Execs getExecs() {
+    public Execs getExecs () {
         return execs;
     }
 
@@ -212,7 +212,7 @@ public class MasterVariables {
      *
      *  @return String containing the binary directory.
      */
-    public String getBinaryDirectory() {
+    public String getBinaryDirectory () {
         return binaryDirectory;
     }
 
@@ -221,7 +221,7 @@ public class MasterVariables {
      *
      *  @return String containing the script directory.
      */
-    public String getScriptDirectory() {
+    public String getScriptDirectory () {
         return scriptDirectory;
     }
 
@@ -230,7 +230,7 @@ public class MasterVariables {
      *
      *  @return String containing the binary directory.
      */
-    public String getHelpDirectory() {
+    public String getHelpDirectory () {
         return helpDirectory;
     }
 
@@ -239,7 +239,7 @@ public class MasterVariables {
      *
      *  @return String containing the working directory.
      */
-    public String getWorkingDirectory() {
+    public String getWorkingDirectory () {
         return workingDirectory;
     }
 
@@ -248,7 +248,7 @@ public class MasterVariables {
      *
      *  @return String containing the location of the program.
      */
-    public String getProgramNJPlot() {
+    public String getProgramNJPlot () {
         return programNJPlot;
     }
 
@@ -257,7 +257,7 @@ public class MasterVariables {
      *
      *  @return String containing the location of the program.
      */
-    public String getProgramDNAPars() {
+    public String getProgramDNAPars () {
         return programDNAPars;
     }
 
@@ -266,7 +266,7 @@ public class MasterVariables {
      *
      *  @return String containing the location of the program.
      */
-    public String getProgramDNADist() {
+    public String getProgramDNADist () {
         return programDNADist;
     }
 
@@ -275,7 +275,7 @@ public class MasterVariables {
      *
      *  @return String containing the location of the program.
      */
-    public String getProgramNeighbor() {
+    public String getProgramNeighbor () {
         return programNeighbor;
     }
 
@@ -284,7 +284,7 @@ public class MasterVariables {
      *
      *  @return String containing the location of the program.
      */
-    public String getProgramRetree() {
+    public String getProgramRetree () {
         return programRetree;
     }
 
@@ -293,7 +293,7 @@ public class MasterVariables {
      *
      *  @return The number of threads to use.
      */
-    public int getNumberThreads() {
+    public int getNumberThreads () {
         return numThreads;
     }
 
@@ -302,7 +302,7 @@ public class MasterVariables {
      *
      *  @return The current debug status.
      */
-    public boolean getDebug() {
+    public boolean getDebug () {
         return debug;
     }
 
@@ -311,7 +311,7 @@ public class MasterVariables {
      *
      *  @param numThreads The new number of threads to use.
      */
-    public void setNumberThreads(int numThreads) {
+    public void setNumberThreads (int numThreads) {
         this.numThreads = numThreads;
     }
 
@@ -320,7 +320,7 @@ public class MasterVariables {
      *
      *  @param debug The new debug status.
      */
-    public void setDebug(boolean debug) {
+    public void setDebug (boolean debug) {
         this.debug = debug;
     }
 
@@ -385,13 +385,13 @@ public class MasterVariables {
     /**
      *  The default number of threads is equal to the system maximum.
      */
-    private int numThreads = Runtime.getRuntime().availableProcessors();
+    private int numThreads = Runtime.getRuntime ().availableProcessors ();
 
     /**
      *  The Ecotype Simulation version number.
      */
     private String version = 
-        Package.getPackage("ecosim").getImplementationVersion();
+        Package.getPackage ("ecosim").getImplementationVersion ();
 
     /**
      *  The command name of the NJPlot program.
