@@ -43,26 +43,29 @@ public class Bruteforce implements Runnable {
      *  Run the bruteforce program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      */
-    public Bruteforce(MasterVariables masterVariables, Phylogeny phylogeny, 
-        Binning binning) {
-        this(masterVariables, phylogeny, binning, "");
+    public Bruteforce (MasterVariables masterVariables,
+        int nu, int length, Binning binning) {
+        this (masterVariables, nu, length, binning, "");
     }
 
     /**
      *  Run the bruteforce program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Bruteforce(MasterVariables masterVariables, Phylogeny phylogeny, 
-        Binning binning, String suffix) {
+    public Bruteforce (MasterVariables masterVariables,
+        int nu, int length, Binning binning, String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.nu = nu;
+        this.length = length;
         this.binning = binning;
         omegaRange = new double [2];
         sigmaRange = new double [2];
@@ -73,7 +76,7 @@ public class Bruteforce implements Runnable {
         sigmaRange[0] = 0.0001;
         sigmaRange[1] = 100.0;
         npopRange[0] = 1;
-        npopRange[1] = phylogeny.getNu();
+        npopRange[1] = nu;
         results = new ArrayList<ParameterSet<Likelihood>>();
         String workingDirectory = masterVariables.getWorkingDirectory();
         inputFileName = workingDirectory + "bruteforceIn" + suffix + ".dat";
@@ -328,7 +331,7 @@ public class Bruteforce implements Runnable {
                 String.format("%d,%d,%d", numincs[0], numincs[1], numincs[2])
             ));
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", phylogeny.getNu()));
+            writer.write(String.format("%-20d nu\n", nu));
             // Write the nrep value.
             writer.write(
                 String.format("%-20d nrep\n", masterVariables.getNrep())
@@ -347,7 +350,7 @@ public class Bruteforce implements Runnable {
             writer.write(
                 String.format(
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    phylogeny.length()
+                    length
                 )
             );
 
@@ -373,7 +376,8 @@ public class Bruteforce implements Runnable {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private int nu;
+    private int length;
     private Binning binning;
 
     private double [] omegaRange;

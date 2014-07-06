@@ -162,7 +162,9 @@ public class Simulation {
      */
     protected void runBruteforce() {
         log.append("Starting bruteforce search...\n");
-        bruteforce = new Bruteforce(masterVariables, phylogeny, binning);
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
+        bruteforce = new Bruteforce(masterVariables, nu, length, binning);
         while (bruteforce.getNumResults() < masterVariables.NUM_SUCCESSES) {
             bruteforce.run();
             // Verify that bruteforce ran correctly.

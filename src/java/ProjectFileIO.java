@@ -51,11 +51,13 @@ public class ProjectFileIO {
         this.masterVariables = masterVariables;
         // Create new objects for each item in the project file.
         phylogeny = new Phylogeny(masterVariables);
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
         binning = new Binning(
             masterVariables, phylogeny
         );
         bruteforce = new Bruteforce(
-            masterVariables, phylogeny, binning
+            masterVariables, nu, length, binning
         );
         hillclimb = new Hillclimb(
             masterVariables, phylogeny, binning, bruteforce.getBestResult()
