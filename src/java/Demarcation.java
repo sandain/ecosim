@@ -130,12 +130,12 @@ public class Demarcation implements Runnable {
      */
     private void findEcotypes(NewickTreeNode node,
         ParameterSet parentHillclimbResult, int iteration) {
-        ArrayList<String> sequences = new ArrayList<String>();
+        ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode()) {
             String name = node.getName();
             if (! name.equals(phylogeny.getOutgroupIdentifier())) {
-                sequences.add(name);
-                ecotypes.add(sequences);
+                sample.add (name);
+                ecotypes.add (sample);
             }
         }
         else {
@@ -143,10 +143,10 @@ public class Demarcation implements Runnable {
             for (int i = 0; i < leaves.size(); i ++) {
                 String name = leaves.get(i).getName();
                 if (! name.equals(phylogeny.getOutgroupIdentifier())) {
-                    sequences.add(name);
+                    sample.add (name);
                 }
             }
-            if (sequences.size() == 0) {
+            if (sample.size () == 0) {
                 return;
             }
             // Append a suffix to all file names used by Demarcation.
@@ -155,8 +155,8 @@ public class Demarcation implements Runnable {
             // be tested.
             Phylogeny samplePhylogeny = new Phylogeny(masterVariables, suffix);
             // Add the sequences from the subtree to the new Phylogeny object.
-            for (int i = 0; i < sequences.size(); i ++) {
-                String id = sequences.get(i);
+            for (int i = 0; i < sample.size (); i ++) {
+                String id = sample.get (i);
                 samplePhylogeny.put(
                     id,
                     phylogeny.getSequence(id)
@@ -190,7 +190,7 @@ public class Demarcation implements Runnable {
             // If 1 is the lower bound of the confidence interval, add the
             // list of sequences to the list of ecotypes
             if (demarcConf.getResult() == 1) {
-                ecotypes.add(sequences);
+                ecotypes.add (sample);
             }
             else {
                 ArrayList<NewickTreeNode> children = node.getChildren();
