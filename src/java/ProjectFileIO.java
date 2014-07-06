@@ -62,8 +62,8 @@ public class ProjectFileIO {
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
-        omegaCI = new OmegaConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+        omegaCI = new OmegaConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb
         );
         sigmaCI = new SigmaConfidenceInterval(
             masterVariables, phylogeny, binning, hillclimb

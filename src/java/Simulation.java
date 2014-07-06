@@ -224,8 +224,10 @@ public class Simulation {
      */
     protected void runOmegaConfidenceInterval() {
         log.append("Starting omega confidence interval...\n");
-        omegaCI = new OmegaConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
+        omegaCI = new OmegaConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb
         );
         omegaCI.run();
         // Verify that omegaCI ran correctly.
