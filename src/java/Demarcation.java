@@ -169,6 +169,8 @@ public class Demarcation implements Runnable {
                 workingDirectory + "sequence" + suffix + ".dat"
             );
             samplePhylogeny.setHasRun(true);
+            int sampleNu = sample.size ();
+            int length = samplePhylogeny.length ();
             // Run the binning program.
             Binning sampleBinning = new Binning(
                 masterVariables, samplePhylogeny, suffix
@@ -176,7 +178,7 @@ public class Demarcation implements Runnable {
             sampleBinning.run();
             // Run the hillclimb program.
             Hillclimb sampleHillclimb = new Hillclimb(
-                masterVariables, samplePhylogeny, sampleBinning,
+                masterVariables, sampleNu, length, sampleBinning,
                 parentHillclimbResult, suffix
             );
             sampleHillclimb.run();

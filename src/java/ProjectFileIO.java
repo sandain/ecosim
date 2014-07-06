@@ -59,8 +59,8 @@ public class ProjectFileIO {
         bruteforce = new Bruteforce(
             masterVariables, nu, length, binning
         );
-        hillclimb = new Hillclimb(
-            masterVariables, phylogeny, binning, bruteforce.getBestResult()
+        hillclimb = new Hillclimb (
+            masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
         omegaCI = new OmegaConfidenceInterval(
             masterVariables, phylogeny, binning, hillclimb

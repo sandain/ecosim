@@ -44,28 +44,31 @@ public class Hillclimb implements Runnable {
      *  Run the hillclimb program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param parameterSet The set of parameters to optimize.
      */
-    public Hillclimb(MasterVariables masterVariables, Phylogeny phylogeny,
+    public Hillclimb(MasterVariables masterVariables, int nu, int length,
         Binning binning, ParameterSet parameterSet) {
-        this(masterVariables, phylogeny, binning, parameterSet, "");
+        this (masterVariables, nu, length, binning, parameterSet, "");
     }
 
     /**
      *  Run the hillclimb program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param parameterSet The set of parameters to optimize.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Hillclimb(MasterVariables masterVariables, Phylogeny phylogeny,
+    public Hillclimb(MasterVariables masterVariables, int nu, int length,
         Binning binning, ParameterSet parameterSet, String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.nu = nu;
+        this.length = length;
         this.binning = binning;
         this.parameterSet = parameterSet;
         String workingDirectory = masterVariables.getWorkingDirectory();
@@ -174,7 +177,7 @@ public class Hillclimb implements Runnable {
                 String.format("%-20d npop\n", parameterSet.getNpop())
             );
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", phylogeny.getNu()));
+            writer.write(String.format("%-20d nu\n", nu));
             // Write the nrep value.
             writer.write(
                 String.format("%-20d nrep\n", masterVariables.getNrep())
@@ -193,7 +196,7 @@ public class Hillclimb implements Runnable {
             writer.write(
                 String.format(
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    phylogeny.length()
+                    length
                 )
             );
             // Write the whichavg value.
@@ -269,7 +272,8 @@ public class Hillclimb implements Runnable {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private int nu;
+    private int length;
     private Binning binning;
     private ParameterSet parameterSet;
     private ParameterSet<Double> result;

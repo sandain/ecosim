@@ -202,8 +202,10 @@ public class Simulation {
      */
     protected void runHillclimbing() {
         log.append("Starting hillclimbing...\n");
-        hillclimb = new Hillclimb(
-            masterVariables, phylogeny, binning, bruteforce.getBestResult()
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
+        hillclimb = new Hillclimb (
+            masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
         hillclimb.run();
         // Verify that hillclimbing ran correctly.
