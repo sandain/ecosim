@@ -65,8 +65,8 @@ public class ProjectFileIO {
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        sigmaCI = new SigmaConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+        sigmaCI = new SigmaConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb
         );
         npopCI = new NpopConfidenceInterval(
             masterVariables, nu, length, binning, hillclimb

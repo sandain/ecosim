@@ -247,8 +247,10 @@ public class Simulation {
      */
     protected void runSigmaConfidenceInterval() {
         log.append("Starting sigma confidence interval...\n");
-        sigmaCI = new SigmaConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
+        sigmaCI = new SigmaConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb
         );
         sigmaCI.run();
         // Verify that sigmaCI ran correctly.

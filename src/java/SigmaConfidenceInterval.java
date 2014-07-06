@@ -48,8 +48,8 @@ public class SigmaConfidenceInterval {
      *  @param hillclimb The Hillclimb object.
      */
     public SigmaConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Hillclimb hillclimb) {
-        this(masterVariables, phylogeny, binning, hillclimb, "");
+        int nu, int length, Binning binning, Hillclimb hillclimb) {
+        this (masterVariables, nu, length, binning, hillclimb, "");
     }
 
    /**
@@ -62,10 +62,11 @@ public class SigmaConfidenceInterval {
      *  @param suffix The suffix to attach to the end of file names.
      */
     public SigmaConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Hillclimb hillclimb,
+        int nu, int length, Binning binning, Hillclimb hillclimb,
         String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.nu = nu;
+        this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
         String workingDirectory = masterVariables.getWorkingDirectory();
@@ -215,7 +216,7 @@ public class SigmaConfidenceInterval {
                 String.format("%-20d step\n", masterVariables.getStep())
             );
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", phylogeny.getNu()));
+            writer.write(String.format("%-20d nu\n", nu));
             // Write the nrep value.
             writer.write(
                 String.format("%-20d nrep\n", masterVariables.getNrep())
@@ -234,7 +235,7 @@ public class SigmaConfidenceInterval {
             writer.write(
                 String.format(
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    phylogeny.length()
+                    length
                 )
             );
             // Write the whichavg value.
@@ -323,7 +324,8 @@ public class SigmaConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private int nu;
+    private int length;
     private Binning binning;
     private Hillclimb hillclimb;
 
