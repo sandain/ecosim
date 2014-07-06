@@ -169,6 +169,7 @@ public class Demarcation implements Runnable {
                 workingDirectory + "sequence" + suffix + ".dat"
             );
             samplePhylogeny.setHasRun(true);
+            int nu = phylogeny.getNu ();
             int sampleNu = sample.size ();
             int length = samplePhylogeny.length ();
             // Run the binning program.
@@ -185,7 +186,7 @@ public class Demarcation implements Runnable {
             // Run the demarcation confidence interval program.
             DemarcationConfidenceInterval demarcConf =
                 new DemarcationConfidenceInterval(
-                masterVariables, phylogeny, samplePhylogeny,
+                masterVariables, nu, sampleNu, length,
                 sampleBinning, sampleHillclimb, suffix
             );
             demarcConf.run();

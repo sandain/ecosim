@@ -45,35 +45,36 @@ public class DemarcationConfidenceInterval {
      *  Run the demarcation confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object for the entire dataset.
-     *  @param samplePhylogeny The Phylogeny object of the sample. 
+     *  @param nu The number of environmental sequences.
+     *  @param sampleNu The number of sequences in the subsample.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      */
     public DemarcationConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Phylogeny samplePhylogeny, Binning binning,
+        int nu, int sampleNu, int length, Binning binning,
         Hillclimb hillclimb) {
-        this(
-            masterVariables, phylogeny, samplePhylogeny, binning, hillclimb, ""
-        );
+        this (masterVariables, nu, sampleNu, length, binning, hillclimb, "");
     }
 
     /**
      *  Run the demarcation confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object for the entire dataset.
-     *  @param samplePhylogeny The Phylogeny object of the sample. 
+     *  @param nu The number of environmental sequences.
+     *  @param sampleNu The number of sequences in the subsample.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      *  @param suffix The suffix to attach to the end of file names.
      */
     public DemarcationConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Phylogeny samplePhylogeny, Binning binning,
+        int nu, int sampleNu, int length, Binning binning,
         Hillclimb hillclimb, String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
-        this.samplePhylogeny = samplePhylogeny;
+        this.nu = nu;
+        this.sampleNu = sampleNu;
+        this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
         String workingDirectory = masterVariables.getWorkingDirectory();
@@ -186,8 +187,7 @@ public class DemarcationConfidenceInterval {
             // Estimate the value of npop by multiplying the npop value found
             // in hillclimbing by the ratio of the sample size to the total
             // number of environmental sequences.
-            int npop = hillclimbResult.getNpop() * 
-                samplePhylogeny.getNu() / phylogeny.getNu();
+            int npop = hillclimbResult.getNpop () * sampleNu / nu;
             if (npop < 1) {
                 npop = 1;
             }
@@ -201,7 +201,7 @@ public class DemarcationConfidenceInterval {
             );
             // Write the nu value.
             writer.write(
-                String.format("%-20d nu\n", samplePhylogeny.getNu())
+                String.format("%-20d nu\n", sampleNu)
             );
             // Write the nrep value.
             writer.write(
@@ -221,7 +221,7 @@ public class DemarcationConfidenceInterval {
             writer.write(
                 String.format(
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    samplePhylogeny.length()
+                    length
                 )
             );
             // Write the whichavg value.
@@ -298,8 +298,9 @@ public class DemarcationConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
-    private Phylogeny samplePhylogeny;
+    private int nu;
+    private int sampleNu;
+    private int length;
     private Binning binning;
     private Hillclimb hillclimb;
 
