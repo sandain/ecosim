@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -43,11 +43,12 @@ public class SigmaConfidenceInterval {
      *  Run the sigma confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      */
-    public SigmaConfidenceInterval(MasterVariables masterVariables,
+    public SigmaConfidenceInterval (MasterVariables masterVariables,
         int nu, int length, Binning binning, Hillclimb hillclimb) {
         this (masterVariables, nu, length, binning, hillclimb, "");
     }
@@ -56,12 +57,13 @@ public class SigmaConfidenceInterval {
      *  Run the sigma confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public SigmaConfidenceInterval(MasterVariables masterVariables,
+    public SigmaConfidenceInterval (MasterVariables masterVariables,
         int nu, int length, Binning binning, Hillclimb hillclimb,
         String suffix) {
         this.masterVariables = masterVariables;
@@ -69,7 +71,7 @@ public class SigmaConfidenceInterval {
         this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
-        String workingDirectory = masterVariables.getWorkingDirectory();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "sigmaIn" + suffix + ".dat";
         outputFileName = workingDirectory + "sigmaOut" + suffix + ".dat";
         hasRun = false;
@@ -78,16 +80,16 @@ public class SigmaConfidenceInterval {
     /**
      *  Run the sigma confidence interval program.
      */
-    public void run() {
-        Execs execs = masterVariables.getExecs();
-        File inputFile = new File(inputFileName);
-        File outputFile = new File(outputFileName);
+    public void run () {
+        Execs execs = masterVariables.getExecs ();
+        File inputFile = new File (inputFileName);
+        File outputFile = new File (outputFileName);
         // Write the input values for the program to the sigmaIn.dat file.
-        writeInputFile(inputFile);
+        writeInputFile (inputFile);
         // Run the sigmaCI program.
-        execs.runSigmaCI(inputFile, outputFile);
+        execs.runSigmaCI (inputFile, outputFile);
         // Get the output provided by the sigmaCI program.
-        readOutputFile(outputFile);
+        readOutputFile (outputFile);
         // Set the flag stating that the confidence interval program has run.
         if (result[0] > 0.0 && result[1] > 0.0) {
             hasRun = true;
@@ -101,7 +103,7 @@ public class SigmaConfidenceInterval {
      *  @return True if the sigma confidence interval has been run, false
      *  otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -110,7 +112,7 @@ public class SigmaConfidenceInterval {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
@@ -119,7 +121,7 @@ public class SigmaConfidenceInterval {
      *
      *  @return The result.
      */
-    public double [] getResult() {
+    public double [] getResult () {
         return result;
     }
 
@@ -129,7 +131,7 @@ public class SigmaConfidenceInterval {
      *
      *  @return The likelihood.
      */
-    public double [] getLikelihood() {
+    public double [] getLikelihood () {
         return likelihood;
     }
 
@@ -138,15 +140,15 @@ public class SigmaConfidenceInterval {
      *
      *  @return the sigma confidence interval.
      */
-    public String toString() {
+    public String toString () {
         String high;
         if (result[1] >= 100.0 - masterVariables.EPSILON) {
             high = ">100";
         }
         else {
-            high = String.format("%.5g", result[1]);
+            high = String.format ("%.5g", result[1]);
         }
-        return String.format(
+        return String.format (
             "%.5g to %s (%.5g, %.5g)",
             result[0], high, likelihood[0], likelihood[1]
         );
@@ -158,7 +160,7 @@ public class SigmaConfidenceInterval {
      *  @param result The new result to store.
      *  @param likelihood The likelihood of the result.
      */
-    public void setLowerResult(double result, double likelihood) {
+    public void setLowerResult (double result, double likelihood) {
         this.result[0] = result;
         this.likelihood[0] = likelihood;
     }
@@ -169,7 +171,7 @@ public class SigmaConfidenceInterval {
      *  @param result The new result to store.
      *  @param likelihood The likelihood of the result.
      */
-    public void setUpperResult(double result, double likelihood) {
+    public void setUpperResult (double result, double likelihood) {
         this.result[1] = result;
         this.likelihood[1] = likelihood;
     }
@@ -180,78 +182,79 @@ public class SigmaConfidenceInterval {
      *
      *  @param inputFile The file to write to.
      */
-    private void writeInputFile(File inputFile) {
-        ArrayList<BinLevel> bins = binning.getBinLevels();
-        ParameterSet<Double> hillclimbResult = hillclimb.getResult();
+    private void writeInputFile (File inputFile) {
+        ArrayList<BinLevel> bins = binning.getBinLevels ();
+        ParameterSet<Double> hillclimbResult = hillclimb.getResult ();
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(inputFile));
-            writer.write(String.format("%-20d numcrit\n", bins.size()));
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format ("%-20d numcrit\n", bins.size ()));
             // Output just the number of bins at each crit level.
             for (int i = 0; i < bins.size(); i ++) {
-                writer.write(String.format("%-20d\n", bins.get(i).getLevel()));
+                writer.write (String.format (
+                    "%-20d\n", bins.get (i).getLevel ()
+                ));
             }
             // Output the crit levels and the number of bins.
-            for (int j = 0; j < bins.size(); j ++) {
-                writer.write(String.format(
+            for (int j = 0; j < bins.size (); j ++) {
+                writer.write (String.format (
                     "%-20.6f %-20d\n",
-                    bins.get(j).getCrit(),
-                    bins.get(j).getLevel()
+                    bins.get (j).getCrit (),
+                    bins.get (j).getLevel ()
                 ));
             }
             // Write the omega value.
-            writer.write(
-                String.format("%-20.5f omega\n", hillclimbResult.getOmega())
-            );
+            writer.write (String.format (
+                "%-20.5f omega\n", hillclimbResult.getOmega ()
+            ));
             // Write the sigma value.
-            writer.write(
-                String.format("%-20.5f sigma\n", hillclimbResult.getSigma())
-            );
+            writer.write (String.format (
+                "%-20.5f sigma\n", hillclimbResult.getSigma ()
+            ));
             // Write the npop value.
-            writer.write(
-                String.format("%-20d npop\n", hillclimbResult.getNpop())
+            writer.write (
+                String.format ("%-20d npop\n", hillclimbResult.getNpop ())
             );
             // Write the step value.
-            writer.write(
-                String.format("%-20d step\n", masterVariables.getStep())
+            writer.write (
+                String.format ("%-20d step\n", masterVariables.getStep ())
             );
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", nu));
+            writer.write (String.format ("%-20d nu\n", nu));
             // Write the nrep value.
-            writer.write(
-                String.format("%-20d nrep\n", masterVariables.getNrep())
+            writer.write (
+                String.format ("%-20d nrep\n", masterVariables.getNrep ())
             );
             // Create the random number seed; an odd integer less than nine
             // digits long.
-            long iii = (long)(100000000 * Math.random());
+            long iii = (long)(100000000 * Math.random ());
             if (iii % 2 == 0) {
                 iii ++;
             }
             // Write the random number seed.
-            writer.write(
-                String.format("%-20d iii (random number seed)\n", iii)
+            writer.write (
+                String.format ("%-20d iii (random number seed)\n", iii)
             );
             // Write the length of the sequences.
-            writer.write(
-                String.format(
+            writer.write (
+                String.format (
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
                     length
                 )
             );
             // Write the whichavg value.
-            int whichavg = masterVariables.getCriterion();
-            writer.write(String.format("%-20d whichavg\n", whichavg));
+            int whichavg = masterVariables.getCriterion ();
+            writer.write (String.format ("%-20d whichavg\n", whichavg));
             // Write the likelihoodsolution value.
-            writer.write(
-                String.format(
+            writer.write (
+                String.format (
                     "%-20.5f likelihoodsolution\n",
-                    hillclimbResult.getValue()
+                    hillclimbResult.getValue ()
                 )
             );
         }
         catch (IOException e) {
-            System.out.println("Error writing the input file for the " +
-                               "confidence interval program.");
+            System.out.println ("Error writing the input file.");
         }
         finally {
             if (writer != null) {
@@ -259,8 +262,7 @@ public class SigmaConfidenceInterval {
                     writer.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input file for the " +
-                                       "confidence interval program.");
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -272,49 +274,49 @@ public class SigmaConfidenceInterval {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile(File outputFile) {
+    private void readOutputFile (File outputFile) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(outputFile));
-            String nextLine = reader.readLine();
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine ();
             while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer(nextLine);
+                StringTokenizer st = new StringTokenizer (nextLine);
                 // The first line contains the upper value of the confidence
-                // interval for sigma, and the likelihood for that values.  The
-                // second line contains the lower value.
-                String upperLower = st.nextToken(); // "upper" or "lower".
-                st.nextToken(); // "bound".
-                st.nextToken(); // "sigma".
+                // interval for sigma, and the likelihood for that values.
+                // The second line contains the lower value.
+                String upperLower = st.nextToken (); // "upper" or "lower".
+                st.nextToken (); // "bound".
+                st.nextToken (); // "sigma".
                 int index;
                 switch (upperLower) {
                     case "lower": index = 0;
                                   break;
                     case "upper": index = 1;
                                   break;
-                    default:      System.out.println(
+                    default:      System.out.println (
                                       "Unexpected error in input file: " +
-                                      outputFile.getName()
+                                      outputFile.getName ()
                                   );
                                   return;
                 }
-                result[index] = new Double(st.nextToken()).doubleValue();
-                st.nextToken(); // "likelihood".
-                likelihood[index] = new Double(st.nextToken()).doubleValue();
-                nextLine = reader.readLine();
+                result[index] = new Double (st.nextToken ()).doubleValue ();
+                st.nextToken (); // "likelihood".
+                likelihood[index] = new Double (
+                    st.nextToken ()
+                ).doubleValue ();
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading the output file from the " +
-                               "confidence interval program.");
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the output file from " +
-                                       "the confidence interval program.");
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
