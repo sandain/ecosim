@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -49,7 +49,7 @@ public class Hillclimb implements Runnable {
      *  @param binning The Binning object.
      *  @param parameterSet The set of parameters to optimize.
      */
-    public Hillclimb(MasterVariables masterVariables, int nu, int length,
+    public Hillclimb (MasterVariables masterVariables, int nu, int length,
         Binning binning, ParameterSet parameterSet) {
         this (masterVariables, nu, length, binning, parameterSet, "");
     }
@@ -64,14 +64,14 @@ public class Hillclimb implements Runnable {
      *  @param parameterSet The set of parameters to optimize.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Hillclimb(MasterVariables masterVariables, int nu, int length,
+    public Hillclimb (MasterVariables masterVariables, int nu, int length,
         Binning binning, ParameterSet parameterSet, String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         this.parameterSet = parameterSet;
-        String workingDirectory = masterVariables.getWorkingDirectory();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "hillclimbIn" + suffix + ".dat";
         outputFileName = workingDirectory + "hillclimbOut" + suffix + ".dat";
         hasRun = false;
@@ -81,17 +81,17 @@ public class Hillclimb implements Runnable {
      *  Run the hillclimb program.
      */
     public void run() {
-        Execs execs = masterVariables.getExecs();
-        File inputFile = new File(inputFileName);
-        File outputFile = new File(outputFileName);
+        Execs execs = masterVariables.getExecs ();
+        File inputFile = new File (inputFileName);
+        File outputFile = new File (outputFileName);
         // Write the input values for the program to the hclimbIn.dat file.
-        writeInputFile(inputFile);
+        writeInputFile (inputFile);
         // Run the hillclimb program.
-        execs.runHillclimb(inputFile, outputFile);
+        execs.runHillclimb (inputFile, outputFile);
         // Get the output provided by the hillclimb program.
-        readOutputFile(outputFile);
+        readOutputFile (outputFile);
         // Set the flag stating that the hillclimb program has been run.
-        if (result.getNpop() > 0) {
+        if (result.getNpop () > 0) {
             hasRun = true;
         }
     }
@@ -101,7 +101,7 @@ public class Hillclimb implements Runnable {
      *
      *  @return True if hillclimb has been run, false otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -110,7 +110,7 @@ public class Hillclimb implements Runnable {
      *
      *  @return The result.
      */
-    public ParameterSet<Double> getResult() {
+    public ParameterSet<Double> getResult () {
         return result;
     }
 
@@ -119,7 +119,7 @@ public class Hillclimb implements Runnable {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
@@ -128,7 +128,7 @@ public class Hillclimb implements Runnable {
      *
      *  @param result The new result to store.
      */
-    public void setResult(ParameterSet<Double> result) {
+    public void setResult (ParameterSet<Double> result) {
         this.result = result;
     }
 
@@ -137,8 +137,8 @@ public class Hillclimb implements Runnable {
      *
      *  @return the hillclimbing result.
      */
-    public String toString() {
-        return result.toString();
+    public String toString () {
+        return result.toString ();
     }
 
     /**
@@ -146,79 +146,76 @@ public class Hillclimb implements Runnable {
      *
      *  @param inputFile The file to write to.
      */
-    private void writeInputFile(File inputFile) {
-        ArrayList<BinLevel> bins = binning.getBinLevels();
+    private void writeInputFile (File inputFile) {
+        ArrayList<BinLevel> bins = binning.getBinLevels ();
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(inputFile));
-            writer.write(String.format("%-20d numcrit\n", bins.size()));
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format ("%-20d numcrit\n", bins.size ()));
             // Output just the number of bins at each crit level.
-            for (int i = 0; i < bins.size(); i ++) {
-                writer.write(String.format("%-20d\n", bins.get(i).getLevel()));
+            for (int i = 0; i < bins.size (); i ++) {
+                writer.write (String.format (
+                    "%-20d\n", bins.get (i).getLevel ()
+                ));
             }
             // Output the crit levels and the number of bins.
-            for (int j = 0; j < bins.size(); j ++) {
-                writer.write(String.format(
+            for (int j = 0; j < bins.size (); j ++) {
+                writer.write (String.format (
                     "%-20.6f %-20d\n",
-                    bins.get(j).getCrit(),
-                    bins.get(j).getLevel()
+                    bins.get (j).getCrit (),
+                    bins.get (j).getLevel ()
                 ));
             }
             // Write the omega value.
             writer.write(
-                String.format("%-20.5f omega\n", parameterSet.getOmega())
+                String.format ("%-20.5f omega\n", parameterSet.getOmega ())
             );
             // Write the sigma value.
-            writer.write(
-                String.format("%-20.5f sigma\n", parameterSet.getSigma())
+            writer.write (
+                String.format ("%-20.5f sigma\n", parameterSet.getSigma ())
             );
             // Write the npop value.
-            writer.write(
-                String.format("%-20d npop\n", parameterSet.getNpop())
+            writer.write (
+                String.format ("%-20d npop\n", parameterSet.getNpop ())
             );
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", nu));
+            writer.write (String.format ("%-20d nu\n", nu));
             // Write the nrep value.
-            writer.write(
-                String.format("%-20d nrep\n", masterVariables.getNrep())
+            writer.write (
+                String.format ("%-20d nrep\n", masterVariables.getNrep ())
             );
             // Create the random number seed; an odd integer less than nine
             // digits long.
-            long iii = (long)(100000000 * Math.random());
+            long iii = (long)(100000000 * Math.random ());
             if (iii % 2 == 0) {
                 iii ++;
             }
             // Write the random number seed.
-            writer.write(
-                String.format("%-20d iii (random number seed)\n", iii)
+            writer.write (
+                String.format ("%-20d iii (random number seed)\n", iii)
             );
             // Write the length of the sequences.
-            writer.write(
-                String.format(
+            writer.write (
+                String.format (
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
                     length
                 )
             );
             // Write the whichavg value.
-            int whichavg = masterVariables.getCriterion();
-            writer.write(String.format("%-20d whichavg\n", whichavg));
+            int whichavg = masterVariables.getCriterion ();
+            writer.write (String.format ("%-20d whichavg\n", whichavg));
 
         }
         catch (IOException e) {
-            System.out.println(
-                "Error writing the input file for the hillclimb program."
-            );
+            System.out.println ("Error writing the input file.");
         }
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println(
-                        "Error closing the input file for the hillclimb " +
-                        "program."
-                    );
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -229,40 +226,35 @@ public class Hillclimb implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile(File outputFile) {
+    private void readOutputFile (File outputFile) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(outputFile));
-            String nextLine = reader.readLine();
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine ();
             while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer(nextLine);
-                // There should only be one line containing omega, sigma, npop,
-                // and the likelihood of that result.
-                Double omega = new Double(st.nextToken());
-                Double sigma = new Double(st.nextToken());
-                Integer npop = new Integer(st.nextToken());
-                Double likelihood = new Double(st.nextToken());
-                result = new ParameterSet<Double>(
+                StringTokenizer st = new StringTokenizer (nextLine);
+                // There should only be one line containing omega, sigma,
+                // npop, and the likelihood of that result.
+                Double omega = new Double (st.nextToken ());
+                Double sigma = new Double (st.nextToken ());
+                Integer npop = new Integer (st.nextToken ());
+                Double likelihood = new Double (st.nextToken ());
+                result = new ParameterSet<Double> (
                     omega, sigma, npop, likelihood
                 );
-                nextLine = reader.readLine();
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println(
-                "Error reading the output file from the hillclimb program."
-            );
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println(
-                        "Error closing the output file from the hillclimb " +
-                        "program."
-                    );
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
