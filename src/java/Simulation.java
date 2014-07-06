@@ -266,8 +266,10 @@ public class Simulation {
      */
     protected void runNpopConfidenceInterval() {
         log.append("Starting npop confidence interval...\n");
+        int nu = phylogeny.getNu ();
+        int length = phylogeny.length ();
         npopCI = new NpopConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb
         );
         npopCI.run();
         // Verify that npopCI ran correctly.

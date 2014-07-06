@@ -69,7 +69,7 @@ public class ProjectFileIO {
             masterVariables, phylogeny, binning, hillclimb
         );
         npopCI = new NpopConfidenceInterval(
-            masterVariables, phylogeny, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb
         );
         demarcation = new Demarcation(
             masterVariables, phylogeny, binning, hillclimb

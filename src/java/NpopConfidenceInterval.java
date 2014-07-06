@@ -44,29 +44,32 @@ public class NpopConfidenceInterval {
      *  Run the npop confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      */
     public NpopConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Hillclimb hillclimb) {
-        this(masterVariables, phylogeny, binning, hillclimb, "");
+        int nu, int length, Binning binning, Hillclimb hillclimb) {
+        this (masterVariables, nu, length, binning, hillclimb, "");
     }
 
     /**
      *  Run the npop confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimb The Hillclimb object.
      *  @param suffix The suffix to attach to the end of file names.
      */
     public NpopConfidenceInterval(MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Hillclimb hillclimb,
+        int nu, int length, Binning binning, Hillclimb hillclimb,
         String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.nu = nu;
+        this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
         String workingDirectory = masterVariables.getWorkingDirectory();
@@ -210,7 +213,7 @@ public class NpopConfidenceInterval {
             );
             // Write the nu value.
             writer.write(
-                String.format("%-20d nu\n", phylogeny.getNu())
+                String.format("%-20d nu\n", nu)
             );
             // Write the nrep value.
             writer.write(
@@ -230,7 +233,7 @@ public class NpopConfidenceInterval {
             writer.write(
                 String.format(
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    phylogeny.length()
+                    length
                 )
             );
             // Write the whichavg value.
@@ -319,7 +322,8 @@ public class NpopConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private int nu;
+    private int length;
     private Binning binning;
     private Hillclimb hillclimb;
 
