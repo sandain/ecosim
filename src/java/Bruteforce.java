@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -77,10 +77,11 @@ public class Bruteforce implements Runnable {
         sigmaRange[1] = 100.0;
         npopRange[0] = 1;
         npopRange[1] = nu;
-        results = new ArrayList<ParameterSet<Likelihood>>();
-        String workingDirectory = masterVariables.getWorkingDirectory();
+        results = new ArrayList<ParameterSet<Likelihood>> ();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "bruteforceIn" + suffix + ".dat";
-        outputFileName = workingDirectory + "bruteforceOut" + suffix + ".dat";
+        outputFileName = workingDirectory + "bruteforceOut" + suffix +
+            ".dat";
         hasRun = false;
     }
 
@@ -88,17 +89,17 @@ public class Bruteforce implements Runnable {
      *  Run the bruteforce program.
      */
     public void run() {
-        Execs execs = masterVariables.getExecs();
-        File inputFile = new File(inputFileName);
-        File outputFile = new File(outputFileName);
+        Execs execs = masterVariables.getExecs ();
+        File inputFile = new File (inputFileName);
+        File outputFile = new File (outputFileName);
         // Write the input values for the program to the input file.
-        writeInputFile(inputFile);
+        writeInputFile (inputFile);
         // Run the bruteforce program.
-        execs.runBruteforce(inputFile, outputFile);
+        execs.runBruteforce (inputFile, outputFile);
         // Get the results from the output of the bruteforce program.
-        readOutputFile(outputFile);
+        readOutputFile (outputFile);
         // Set the flag stating the the bruteforce program has been run.
-        if (results.size() > 0) {
+        if (results.size () > 0) {
             hasRun = true;
         }
     }
@@ -108,7 +109,7 @@ public class Bruteforce implements Runnable {
      *
      *  @return True if bruteforce has been run, false otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -117,7 +118,7 @@ public class Bruteforce implements Runnable {
      *
      *  @return The results.
      */
-    public ArrayList<ParameterSet<Likelihood>> getResults() {
+    public ArrayList<ParameterSet<Likelihood>> getResults () {
         return results;
     }
 
@@ -126,21 +127,21 @@ public class Bruteforce implements Runnable {
      *
      *  @return The best result.
      */
-    public ParameterSet<Likelihood> getBestResult() {
+    public ParameterSet<Likelihood> getBestResult () {
         ParameterSet<Likelihood> result;
-        if (results.size() > 1) {
+        if (results.size () > 1) {
             // Sort the results.
             Heapsorter<ParameterSet<Likelihood>> h =
-                new Heapsorter<ParameterSet<Likelihood>>();
-            h.heapSort(results);
+                new Heapsorter<ParameterSet<Likelihood>> ();
+            h.heapSort (results);
         }
-        if (results.size() > 0) {
-            result = results.get(0);
+        if (results.size () > 0) {
+            result = results.get (0);
         }
         else {
             Double likelihood[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-            result = new ParameterSet<Likelihood>(
-                0.0, 0.0, 0, new Likelihood(masterVariables, likelihood)
+            result = new ParameterSet<Likelihood> (
+                0.0, 0.0, 0, new Likelihood (masterVariables, likelihood)
             );
         }
         return result;
@@ -151,8 +152,8 @@ public class Bruteforce implements Runnable {
      *
      *  @return The number of results.
      */
-    public int getNumResults() {
-        return results.size();
+    public int getNumResults () {
+        return results.size ();
     }
 
     /**
@@ -160,7 +161,7 @@ public class Bruteforce implements Runnable {
      *
      *  @return The omega range.
      */
-    public double [] getOmegaRange() {
+    public double [] getOmegaRange () {
         return omegaRange;
     }
 
@@ -169,7 +170,7 @@ public class Bruteforce implements Runnable {
      *
      *  @return The sigma range.
      */
-    public double [] getSigmaRange() {
+    public double [] getSigmaRange () {
         return sigmaRange;
     }
 
@@ -178,7 +179,7 @@ public class Bruteforce implements Runnable {
      *
      *  @return The npop range.
      */
-    public int [] getNpopRange() {
+    public int [] getNpopRange () {
         return npopRange;
     }
 
@@ -188,7 +189,7 @@ public class Bruteforce implements Runnable {
      *  @param result The result to add to the list.
      */
     public void addResult(ParameterSet<Likelihood> result) {
-      results.add(result);
+      results.add (result);
     }
 
     /**
@@ -196,7 +197,7 @@ public class Bruteforce implements Runnable {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
@@ -205,7 +206,7 @@ public class Bruteforce implements Runnable {
      *
      *  @param omegaRange The new value of omegaRange.
      */
-    public void setOmegaRange(double [] omegaRange) {
+    public void setOmegaRange (double [] omegaRange) {
         this.omegaRange = omegaRange;
         hasRun = false;
     }
@@ -215,7 +216,7 @@ public class Bruteforce implements Runnable {
      *
      *  @param sigmaRange The new value of sigmaRange.
      */
-    public void setSigmaRange(double [] sigmaRange) {
+    public void setSigmaRange (double [] sigmaRange) {
         this.sigmaRange = sigmaRange;
         hasRun = false;
     }
@@ -225,7 +226,7 @@ public class Bruteforce implements Runnable {
      *
      *  @param npopRange The new value of npopRange.
      */
-    public void setNpopRange(int [] npopRange) {
+    public void setNpopRange (int [] npopRange) {
         this.npopRange = npopRange;
         hasRun = false;
     }
@@ -235,8 +236,8 @@ public class Bruteforce implements Runnable {
      *
      *  @return the best bruteforce search result.
      */
-    public String toString() {
-        return getBestResult().toString();
+    public String toString () {
+        return getBestResult ().toString ();
     }
 
     /**
@@ -245,37 +246,37 @@ public class Bruteforce implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile(File outputFile) {
+    private void readOutputFile (File outputFile) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(outputFile));
+            reader = new BufferedReader (new FileReader (outputFile));
             // Read the first line of the file.
-            String nextLine = reader.readLine();
+            String nextLine = reader.readLine ();
             while (nextLine != null) {
                 // Remove the commas from the line.
-                nextLine = nextLine.replace(',', ' ');
+                nextLine = nextLine.replace (',', ' ');
                 // Break each value in the string into individual tokens.
-                StringTokenizer st = new StringTokenizer(nextLine);
-                Double omega = new Double(st.nextToken());
-                Double sigma = new Double(st.nextToken());
-                Integer npop = new Integer(st.nextToken());
+                StringTokenizer st = new StringTokenizer (nextLine);
+                Double omega = new Double (st.nextToken ());
+                Double sigma = new Double (st.nextToken ());
+                Integer npop = new Integer (st.nextToken ());
                 Double [] p = new Double[6];
                 for (int i = 0; i < 6; i ++) {
-                    p[i] = new Double(st.nextToken());
+                    p[i] = new Double (st.nextToken ());
                 }
                 // Add the result to the list of results.
                 ParameterSet<Likelihood> result =
-                    new ParameterSet<Likelihood>(
-                        omega, sigma, npop, new Likelihood(masterVariables, p)
+                    new ParameterSet<Likelihood> (
+                        omega, sigma, npop,
+                        new Likelihood (masterVariables, p)
                     );
                 results.add(result);
                 // Read the next line of the file.
-                nextLine = reader.readLine();
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading the output file from the " +
-                               "bruteforce program.");
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
@@ -283,8 +284,7 @@ public class Bruteforce implements Runnable {
                     reader.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the output file from " +
-                                       "the bruteforce program.");
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
@@ -295,60 +295,65 @@ public class Bruteforce implements Runnable {
      *
      *  @param inputFile The file to write to.
      */
-    private void writeInputFile(File inputFile) {
-        ArrayList<BinLevel> bins = binning.getBinLevels();
-        int numincs[] = masterVariables.getNumIncs();
+    private void writeInputFile (File inputFile) {
+        ArrayList<BinLevel> bins = binning.getBinLevels ();
+        int numincs[] = masterVariables.getNumIncs ();
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(inputFile));
-            writer.write(String.format("%-20d numcrit\n", bins.size()));
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format ("%-20d numcrit\n", bins.size ()));
             // Output just the number of clusters at each crit level.
-            for (int i = 0; i < bins.size(); i ++) {
-                writer.write(String.format("%-20d\n", bins.get(i).getLevel()));
+            for (int i = 0; i < bins.size (); i ++) {
+                writer.write (String.format (
+                    "%-20d\n", bins.get (i).getLevel ()
+                ));
             }
             // Output the crit levels and the number of clusters.
-            for (int j = 0; j < bins.size(); j ++) {
-                writer.write(String.format(
+            for (int j = 0; j < bins.size (); j ++) {
+                writer.write (String.format (
                     "%-20.6f %-20d\n",
-                    bins.get(j).getCrit(),
-                    bins.get(j).getLevel()
+                    bins.get (j).getCrit (),
+                    bins.get (j).getLevel ()
                 ));
             }
             // Write the range of omega.
-            writer.write(String.format("%-20s omega range\n",
-                String.format("%.4f,%.4f", omegaRange[0], omegaRange[1])
+            writer.write (String.format ("%-20s omega range\n",
+                String.format ("%.4f,%.4f", omegaRange[0], omegaRange[1])
             ));
             // Write the range of sigma.
-            writer.write(String.format("%-20s sigma range\n",
-                String.format("%.4f,%.4f", sigmaRange[0], sigmaRange[1])
+            writer.write (String.format ("%-20s sigma range\n",
+                String.format ("%.4f,%.4f", sigmaRange[0], sigmaRange[1])
             ));
             // Write the range of pop.
-            writer.write(String.format("%-20s npop range\n",
-                String.format("%d,%d", npopRange[0], npopRange[1])
+            writer.write (String.format ("%-20s npop range\n",
+                String.format ("%d,%d", npopRange[0], npopRange[1])
             ));
             // Write the numics values.
-            writer.write(String.format("%-20s numincs (omega, sigma, npop)\n",
-                String.format("%d,%d,%d", numincs[0], numincs[1], numincs[2])
+            writer.write (String.format (
+                "%-20s numincs (omega, sigma, npop)\n",
+                String.format (
+                    "%d,%d,%d", numincs[0], numincs[1], numincs[2]
+                )
             ));
             // Write the nu value.
-            writer.write(String.format("%-20d nu\n", nu));
+            writer.write (String.format ("%-20d nu\n", nu));
             // Write the nrep value.
-            writer.write(
-                String.format("%-20d nrep\n", masterVariables.getNrep())
-            );
+            writer.write (String.format (
+                "%-20d nrep\n", masterVariables.getNrep ()
+            ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
-            long iii = (long)(100000000 * Math.random());
+            long iii = (long)(100000000 * Math.random ());
             if (iii % 2 == 0) {
                 iii ++;
             }
             // Write the random number seed.
-            writer.write(
-                String.format("%-20d iii (random number seed)\n", iii)
+            writer.write (
+                String.format ("%-20d iii (random number seed)\n", iii)
             );
             // Write the length of the sequences.
-            writer.write(
-                String.format(
+            writer.write (
+                String.format (
                     "%-20d lengthseq (after deleting gaps, etc.)\n",
                     length
                 )
@@ -356,8 +361,9 @@ public class Bruteforce implements Runnable {
 
         }
         catch (IOException e) {
-            System.out.println("Error writing the input file for the " +
-                               "bruteforce program.");
+            System.out.println (
+                "Error writing the input file."
+            );
         }
         finally {
             if (writer != null) {
@@ -365,8 +371,9 @@ public class Bruteforce implements Runnable {
                     writer.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input file for " +
-                                       "the bruteforce program.");
+                    System.out.println (
+                        "Error closing the input file."
+                    );
                 }
             }
         }
