@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
@@ -47,7 +47,7 @@ class StreamGobbler extends Thread {
      *  @param is The input stream to use.
      *  @param type The type of stream.
      */
-    public StreamGobbler(InputStream is, String type) {
+    public StreamGobbler (InputStream is, String type) {
         this.is = is;
         this.type = type;
     }
@@ -55,17 +55,17 @@ class StreamGobbler extends Thread {
     /**
      *  Start this StreamGobbler thread.
      */
-    public void run() {
+    public void run () {
         try {
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
+            InputStreamReader isr = new InputStreamReader (is);
+            BufferedReader br = new BufferedReader (isr);
             String line = null;
-            while ((line = br.readLine()) != null) {
-                System.out.println(type + ">" + line);
+            while ((line = br.readLine ()) != null) {
+                System.out.println (type + ">" + line);
             }
          }
          catch (IOException ioe) {
-            ioe.printStackTrace();
+            ioe.printStackTrace ();
          }
     }
 
