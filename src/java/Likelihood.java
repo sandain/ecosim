@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -36,7 +36,8 @@ public class Likelihood implements Comparable<Likelihood> {
      *  @param masterVariables The MasterVariables object.
      *  @param likelihood An array of likelihood values.
      */
-    public Likelihood(MasterVariables masterVariables, Double [] likelihood) {
+    public Likelihood (MasterVariables masterVariables,
+        Double [] likelihood) {
         this.masterVariables = masterVariables;
         this.likelihood = likelihood;
     }
@@ -47,12 +48,12 @@ public class Likelihood implements Comparable<Likelihood> {
      *  @param masterVariables The MasterVariables object.
      *  @param str A comma separated String of likelihood values.
      */
-    public Likelihood(MasterVariables masterVariables, String str) {
+    public Likelihood (MasterVariables masterVariables, String str) {
         this.masterVariables = masterVariables;
         likelihood = new Double[6];
-        String[] strings = str.split(",\\s*");
+        String[] strings = str.split (",\\s*");
         for (int i = 0; i < 6; i ++) {
-            likelihood[i] = new Double(strings[i]).doubleValue();
+            likelihood[i] = new Double (strings[i]).doubleValue ();
         }
     }
 
@@ -62,7 +63,7 @@ public class Likelihood implements Comparable<Likelihood> {
      *  @param index The index of the value wanted.
      *  @return The value at the given index.
      */
-    public Double get(int index) {
+    public Double get (int index) {
         return likelihood[index];
     }
 
@@ -73,14 +74,14 @@ public class Likelihood implements Comparable<Likelihood> {
      *  @param other The other set of likelihood values to compare to.
      *  @return -1 if less than, 0 if equal, and 1 if more than.
      */
-    public int compareTo(Likelihood other) {
-        for (int i = masterVariables.getCriterion() - 1; i > -1; i --) {
+    public int compareTo (Likelihood other) {
+        for (int i = masterVariables.getCriterion () - 1; i > -1; i --) {
             // If the percentage is less for this output value, return -1.
-            if (likelihood[i] < other.get(i)) {
+            if (likelihood[i] < other.get (i)) {
                 return -1;
             }
             // If it is greater, return 1.
-            if (likelihood[i] > other.get(i)) {
+            if (likelihood[i] > other.get (i)) {
                 return 1;
             }
         }
@@ -92,12 +93,12 @@ public class Likelihood implements Comparable<Likelihood> {
     /**
      *  Returns the likelihood values as a comma separated list.
      *
-     *  @return The likelihood values as a comma separated list in String from.
+     *  @return The likelihood values as a comma separated list.
      */
-    public String toString() {
+    public String toString () {
         String str = "";
         for (int i = 0; i < 6; i ++) {
-            str += String.format("%.5g", likelihood[i]);
+            str += String.format ("%.5g", likelihood[i]);
             if (i < 5) {
                 str += ", ";
             }
