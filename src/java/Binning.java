@@ -45,8 +45,8 @@ public class Binning implements Runnable {
      *  @param masterVariables The MasterVariables object.
      *  @param phylogeny The Phylogeny object.
      */
-    public Binning(MasterVariables masterVariables, Phylogeny phylogeny) {
-        this(masterVariables, phylogeny, "");
+    public Binning (MasterVariables masterVariables, Phylogeny phylogeny) {
+        this (masterVariables, phylogeny, "");
     }
 
     /**
@@ -56,13 +56,13 @@ public class Binning implements Runnable {
      *  @param phylogeny The Phylogeny object.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Binning(MasterVariables masterVariables, Phylogeny phylogeny,
+    public Binning (MasterVariables masterVariables, Phylogeny phylogeny,
         String suffix) {
         this.masterVariables = masterVariables;
         this.phylogeny = phylogeny;
-        divergenceMatrix = new DivergenceMatrix(masterVariables, phylogeny);
-        bins = new ArrayList<BinLevel>();
-        String workingDirectory = masterVariables.getWorkingDirectory();
+        divergenceMatrix = new DivergenceMatrix (masterVariables, phylogeny);
+        bins = new ArrayList<BinLevel> ();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "binningIn" + suffix + ".dat";
         binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
         outputFileName = workingDirectory + "binningOut" + suffix + ".dat";
@@ -72,28 +72,28 @@ public class Binning implements Runnable {
     /**
      *  Run the binning programs.
      */
-    public void run() {
-        Execs execs = masterVariables.getExecs();
-        File inputFile = new File(inputFileName);
-        File binLevelsFile = new File(binLevelsFileName);
+    public void run () {
+        Execs execs = masterVariables.getExecs ();
+        File inputFile = new File (inputFileName);
+        File binLevelsFile = new File (binLevelsFileName);
         File outputFile = new File (outputFileName);
         // Run the divergence matrix program.
-        divergenceMatrix.run();
-        if (! divergenceMatrix.hasRun()) {
+        divergenceMatrix.run ();
+        if (! divergenceMatrix.hasRun ()) {
             return;
         }
         // Output the divergence matrix to be used by the binning program.
-        writeInputFile(inputFile);
+        writeInputFile (inputFile);
         // Output the binLevels file to be used by the binning program.
-        writeBinLevelsFile(binLevelsFile);
+        writeBinLevelsFile (binLevelsFile);
         // Run the binning program.
-        execs.runBinningdanny(
+        execs.runBinningdanny (
             inputFile, binLevelsFile, outputFile
         );
         // Read in the bin levels produced by the binning program.
-        readOutputFile(outputFile);
+        readOutputFile (outputFile);
         // Set the flag stating that the binning programs have been run.
-        if (bins.size() == binLevels.length) {
+        if (bins.size () == binLevels.length) {
             hasRun = true;
         }
     }
@@ -103,7 +103,7 @@ public class Binning implements Runnable {
      *
      *  @return True if binning has been run, false otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -112,7 +112,7 @@ public class Binning implements Runnable {
      *
      *  @return The bin levels.
      */
-    public ArrayList<BinLevel> getBinLevels() {
+    public ArrayList<BinLevel> getBinLevels () {
         return bins;
     }
 
@@ -121,7 +121,7 @@ public class Binning implements Runnable {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
@@ -130,7 +130,7 @@ public class Binning implements Runnable {
      *
      *  @param bins The new bin levels.
      */
-    public void setBinLevels(ArrayList<BinLevel> bins) {
+    public void setBinLevels (ArrayList<BinLevel> bins) {
         this.bins = bins;
     }
 
@@ -139,8 +139,8 @@ public class Binning implements Runnable {
      *
      *  @param binLevel The new BinLevel to add.
      */
-    public void addBinLevel(BinLevel binLevel) {
-        bins.add(binLevel);
+    public void addBinLevel (BinLevel binLevel) {
+        bins.add (binLevel);
     }
 
     /**
@@ -148,11 +148,11 @@ public class Binning implements Runnable {
      *
      *  @return the binning result.
      */
-    public String toString() {
+    public String toString () {
         String str = "";
-        for (int i = 0; i < bins.size(); i ++) {
-            str += bins.get(i).toString();
-            if (i < bins.size() - 1) {
+        for (int i = 0; i < bins.size (); i ++) {
+            str += bins.get (i).toString ();
+            if (i < bins.size () - 1) {
                 str += ", ";
             }
         }
@@ -164,39 +164,37 @@ public class Binning implements Runnable {
      *
      *  @param inputFile The file to write to.
      */
-    private void writeInputFile(File inputFile) {
+    private void writeInputFile (File inputFile) {
         BufferedWriter writer = null;
-        float[][] matrix = divergenceMatrix.getMatrix();
-        int nu = phylogeny.getNu();
+        float[][] matrix = divergenceMatrix.getMatrix ();
+        int nu = phylogeny.getNu ();
         try {
-            writer = new BufferedWriter(new FileWriter(inputFile));
-            writer.write(String.format(
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format (
                 " %12d %12d\n",
                 nu,
-                phylogeny.length()
+                phylogeny.length ()
             ));
             for (int i = 0; i < nu; i ++) {
                 for (int j = 0; j < nu; j ++) {
-                    writer.write(String.format(
+                    writer.write (String.format (
                         " %7.4f",
                         matrix[i][j]
                     ));
                 }
-                writer.write("\n");
+                writer.write ("\n");
             }
         }
         catch (IOException e) {
-            System.out.println("Error writing the input file for the " +
-                               "binning program.");
+            System.out.println ("Error writing the input file.");
         }
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input file for the " +
-                                       "binning program.");
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -207,24 +205,24 @@ public class Binning implements Runnable {
      *  
      *  @param binLevelsFile The binlevels.dat file.
      */
-    private void writeBinLevelsFile(File binLevelsFile) {
+    private void writeBinLevelsFile (File binLevelsFile) {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(binLevelsFile));
-            writer.write(String.format(
+            writer = new BufferedWriter (new FileWriter (binLevelsFile));
+            writer.write (String.format (
                 "%d\n",
                 binLevels.length
             ));
             for (int i = 0; i < binLevels.length; i++) {
-                writer.write(String.format(
+                writer.write (String.format (
                     "%5.3f\n",
                     binLevels[i]
                 ));
             }
-            writer.close();
+            writer.close ();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -233,34 +231,32 @@ public class Binning implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile(File outputFile) {
+    private void readOutputFile (File outputFile) {
         BufferedReader reader = null;
         bins = new ArrayList<BinLevel>();
         try {
-            reader = new BufferedReader(new FileReader(outputFile));
-            String nextLine = reader.readLine();
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine ();
             while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer(nextLine);
+                StringTokenizer st = new StringTokenizer (nextLine);
                 if (st.countTokens() == 2) {
-                    Float crit = new Float(st.nextToken());
-                    Integer value = new Integer(st.nextToken());
-                    bins.add(new BinLevel(crit, value));
+                    Float crit = new Float (st.nextToken ());
+                    Integer value = new Integer (st.nextToken ());
+                    bins.add (new BinLevel (crit, value));
                 }
-                nextLine = reader.readLine();
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading the output file from the " +
-                               "binning programs.");
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the output file from " +
-                                       "the binning programs.");
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
