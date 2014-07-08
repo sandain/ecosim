@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009  Andrew Warner, Wesleyan University
@@ -32,31 +32,32 @@ import java.util.ArrayList;
  */
 public class Heapsorter<T extends Comparable<T>> {
 
-    public Heapsorter() {
+    public Heapsorter () {
     }
 
     /**
      *  A static sorting method.
-     *  Note that we construct a min heap originally so that, once each element
-     *  is popped off a list of the elements in descending order remains.
+     *  Note that we construct a min heap originally so that, once each
+     *  element is popped off a list of the elements in descending order
+     *  remains.
      *
      *  @pre list is an unsorted array of objects that implement comparable.
      *  @post list is sorted using heapsort and returned in descending order.
      *  @param list The list of values to be sorted.
      */
-    public void heapSort(ArrayList<T> list) {
-        for (int index = 0; index < list.size(); index ++) {
-            // Restore the heap property as each element is "added" to the list.
-            restoreHeap(list, index);
+    public void heapSort (ArrayList<T> list) {
+        for (int index = 0; index < list.size (); index ++) {
+            // Restore the heap property as each element is added.
+            restoreHeap (list, index);
         }
         // Pop the max value each time and place it in the given list, then
         // switch the last value for the first and pushdown.
-        int end = list.size() - 1;
-        for (int i = 0; i < list.size() - 1; i ++) {
+        int end = list.size () - 1;
+        for (int i = 0; i < list.size () - 1; i ++) {
             // Swap the first and last values.
-            swap(list, 0, end);
+            swap (list, 0, end);
             // Push down until the heap property is restored.
-            pushdown(list, 0, end);
+            pushdown (list, 0, end);
             end --;
         }
     }
@@ -66,48 +67,48 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @post list is a min-heap.
      *  @param list The list of values.
      *  @param root The root of the subtree.
-     *  @param end The index of the end of the tree, ie the index of the first
-     *  value no longer in the tree (but still in the array).
+     *  @param end The index of the end of the tree, ie the index of the
+     *  first value no longer in the tree (but still in the array).
      */
-    private void pushdown(ArrayList<T> list, int root, int end) {
+    private void pushdown (ArrayList<T> list, int root, int end) {
         // If root has no left node, it is a leaf, and therefore we are done.
         if (2 * root + 1 > (end - 1)) {
             return;
         }
         int left = 2 * root + 1;
         if (2 * root + 2 > (end - 1)) {
-            // If root has no right node, check if it is greater than its left
-            // node. If it is, swap it, and then break.
-            if (list.get(root).compareTo(list.get(left)) > 0) {
-                swap(list, root, left);
+            // If root has no right node, check if it is greater than its
+            // left node. If it is, swap it, and then break.
+            if (list.get (root).compareTo (list.get (left)) > 0) {
+                swap (list, root, left);
             }
             return;
         }
         int right = 2 * root + 2;
-        if (list.get(left).compareTo(list.get(right)) < 0) {
-            if (list.get(root).compareTo(list.get(left)) > 0) {
-                swap(list, root, left);
-                pushdown(list, left, end);
+        if (list.get (left).compareTo (list.get (right)) < 0) {
+            if (list.get (root).compareTo (list.get (left)) > 0) {
+                swap (list, root, left);
+                pushdown (list, left, end);
             }
         }
-        else if (list.get(root).compareTo(list.get(right)) > 0) {
-            swap(list, root, right);
-            pushdown(list, right, end);
+        else if (list.get (root).compareTo (list.get (right)) > 0) {
+            swap (list, root, right);
+            pushdown (list, right, end);
         }
     }
 
     /**
-     *  @pre list is a list of comparable with one and two being indexes within
-     *  that list.
+     *  @pre list is a list of comparable with one and two being indexes
+     *  within that list.
      *  @post the values at index one and two are swapped.
      *  @param list The list of values.
      *  @param one The first index.
      *  @param two The second index.
      */
-    private void swap(ArrayList<T> list, int one, int two) {
-        T storage = list.get(one);
-        list.set(one, list.get(two));
-        list.set(two, storage);
+    private void swap (ArrayList<T> list, int one, int two) {
+        T storage = list.get (one);
+        list.set (one, list.get (two));
+        list.set (two, storage);
     }
 
     /**
@@ -120,10 +121,10 @@ public class Heapsorter<T extends Comparable<T>> {
      */
     private void restoreHeap(ArrayList<T> list, int index) {
         // If index is the root, we are done.
-        // Note that the left child of a node at index n is at index 2n + 1 and
-        // the right child of a node is at index 2n + 2, therefore if a node's
-        // index n % 2 = 1 then it is a left child, otherwise it is a right
-        // child.
+        // Note that the left child of a node at index n is at index 2n + 1
+        // and the right child of a node is at index 2n + 2, therefore if a
+        // node's index n % 2 = 1 then it is a left child, otherwise it is a
+        // right child.
         int parent;
         if (index == 0) {
             return;
@@ -134,14 +135,14 @@ public class Heapsorter<T extends Comparable<T>> {
         else {
             parent = (index - 2) / 2;
         }
-        // If we already have a min heap property - IE the parent is less than
-        // the child, then we are done.
-        if (list.get(parent).compareTo(list.get(index)) <= 0) {
+        // If we already have a min heap property - IE the parent is less
+        // than the child, then we are done.
+        if (list.get (parent).compareTo (list.get (index)) <= 0) {
             return;
         }
         // Otherwise switch the parent and the child and then recursively
         // restore the heap.
-        swap(list, parent, index);
-        restoreHeap(list, parent);
+        swap (list, parent, index);
+        restoreHeap (list, parent);
     }
 }
