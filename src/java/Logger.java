@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -36,7 +36,7 @@ public class Logger extends Observable {
     /**
      *  Logger constructor.
      */
-    public Logger() {
+    public Logger () {
         log = "";
     }
 
@@ -45,13 +45,13 @@ public class Logger extends Observable {
      *
      *  @param str The text to append to the log.
      */
-   public void append(String str) {
+   public void append (String str) {
         // Append the text to the log.
         log += str;
         // Mark this log as changed.
-        setChanged();
+        setChanged ();
         // Notify observers of the change.
-        notifyObservers(str);
+        notifyObservers (str);
     }
 
     /**
@@ -59,14 +59,14 @@ public class Logger extends Observable {
      *
      *  @return the length of the log.
      */
-    public int length() {
-        return log.length();
+    public int length () {
+        return log.length ();
     }
 
     /**
      *  Return the text currently in the log.
      */
-    public String toString() {
+    public String toString () {
         return log;
     }
 
