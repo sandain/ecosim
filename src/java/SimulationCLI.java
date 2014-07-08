@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -42,18 +42,18 @@ public class SimulationCLI extends Simulation {
      *  @param fastaFile The fasta formated sequence file.
      *  @param newickFile The newick formated tree file.
      */
-    public SimulationCLI(MasterVariables masterVariables,
+    public SimulationCLI (MasterVariables masterVariables,
         File fastaFile, File newickFile) {
-        super(masterVariables, fastaFile, newickFile);
-        log = masterVariables.getLog();
+        super (masterVariables, fastaFile, newickFile);
+        log = masterVariables.getLog ();
         // Display the program name and version.
-        System.out.print(String.format(
-            "Ecotype Simulation %s\n\n", masterVariables.getVersion()
+        System.out.print (String.format (
+            "Ecotype Simulation %s\n\n", masterVariables.getVersion ()
         ));
         // When the log changes, print the text to the terminal.
-        log.addObserver(new Observer() {
-            public void update(Observable o, Object str) {
-                System.out.print((String)str);
+        log.addObserver (new Observer () {
+            public void update (Observable o, Object str) {
+                System.out.print ((String) str);
             }
         });
     }
