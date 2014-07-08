@@ -31,11 +31,11 @@ package ecosim;
  */
 public class InvalidFastaException extends Exception {
 
-    public InvalidFastaException(String message) {
+    public InvalidFastaException (String message) {
         this.message = message;
     }
 
-    public String toString() {
+    public String toString () {
         return "Fasta error: " + message;
     }
 
