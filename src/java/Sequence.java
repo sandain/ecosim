@@ -49,7 +49,8 @@ public class Sequence {
      *  @param description The description of this Sequence.
      *  @param sequence The sequence of this Sequence.
      */
-    public Sequence (String identifier, String description, String sequence) {
+    public Sequence (String identifier, String description,
+        String sequence) {
         this.identifier = identifier;
         this.description = description;
         this.sequence = sequence;
