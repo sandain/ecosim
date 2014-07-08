@@ -60,12 +60,13 @@ public class Binning implements Runnable {
         String suffix) {
         this.masterVariables = masterVariables;
         this.phylogeny = phylogeny;
-        divergenceMatrix = new DivergenceMatrix (masterVariables, phylogeny);
         bins = new ArrayList<BinLevel> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
         binningInputFileName = workingDirectory + "binningIn" + suffix + ".dat";
         binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
-        outputFileName = workingDirectory + "binningOut" + suffix + ".dat";
+        binningOutputFileName = workingDirectory + "binningOut" + suffix + ".dat";
+        divergenceMatrixInputFileName = workingDirectory + "divergencematrixIn" + suffix + ".dat";
+        divergenceMatrixOutputFileName = workingDirectory + "divergencematrixOut" + suffix + ".dat";
         hasRun = false;
     }
 
@@ -76,22 +77,27 @@ public class Binning implements Runnable {
         Execs execs = masterVariables.getExecs ();
         File binningInputFile = new File (binningInputFileName);
         File binLevelsFile = new File (binLevelsFileName);
-        File outputFile = new File (outputFileName);
-        // Run the divergence matrix program.
-        divergenceMatrix.run ();
-        if (! divergenceMatrix.hasRun ()) {
-            return;
-        }
+        File binningOutputFile = new File (binningOutputFileName);
+        File divergenceMatrixInputFile = new File (divergenceMatrixInputFileName);
+        File divergenceMatrixOutputFile = new File (divergenceMatrixOutputFileName);
+
+        // Write the input values for the program to the
+        // divergencematrixIn.dat file.
+        writeDivergenceMatrixInputFile (divergenceMatrixInputFile);
+        // Run the divergencematrix program.
+        execs.runDivergencematrix (divergenceMatrixInputFile, divergenceMatrixOutputFile);
+        // Get the output provided by the divergencematrix program.
+        readDivergenceMatrixOutputFile (divergenceMatrixOutputFile);
         // Output the divergence matrix to be used by the binning program.
         writeBinningInputFile (binningInputFile);
         // Output the binLevels file to be used by the binning program.
         writeBinLevelsFile (binLevelsFile);
         // Run the binning program.
         execs.runBinningdanny (
-            binningInputFile, binLevelsFile, outputFile
+            binningInputFile, binLevelsFile, binningOutputFile
         );
         // Read in the bin levels produced by the binning program.
-        readBinningOutputFile (outputFile);
+        readBinningOutputFile (binningOutputFile);
         // Set the flag stating that the binning programs have been run.
         if (bins.size () == binLevels.length) {
             hasRun = true;
@@ -166,7 +172,6 @@ public class Binning implements Runnable {
      */
     private void writeBinningInputFile (File inputFile) {
         BufferedWriter writer = null;
-        float[][] matrix = divergenceMatrix.getMatrix ();
         int nu = phylogeny.getNu ();
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
@@ -227,6 +232,41 @@ public class Binning implements Runnable {
     }
 
     /**
+     *  Private method to write the input file for the divergencematrix
+     *  program.
+     *
+     *  @param inputFile The file to write to.
+     */
+    private void writeDivergenceMatrixInputFile (File inputFile) {
+        BufferedWriter writer = null;
+        ArrayList<String> seqs = phylogeny.getSequences ();
+        try {
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format (
+                " %12d %12d\n",
+                phylogeny.getNu (),
+                phylogeny.length ()
+            ));
+            for (int i = 0; i < seqs.size (); i ++) {
+                writer.write (seqs.get (i) + "\n");
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error writing the input file.");
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the input file.");
+                }
+            }
+        }
+    }
+
+    /**
      *  Private method to read the bin levels from the output file.
      *
      *  @param outputFile The file to read from.
@@ -262,15 +302,58 @@ public class Binning implements Runnable {
         }
     }
 
+    /**
+     *  Private method to read the output file from the divergencematrix
+     *  program.
+     *
+     *  @param outputFile The file to read from.
+     */
+    private void readDivergenceMatrixOutputFile (File outputFile) {
+        BufferedReader reader = null;
+        int nu = phylogeny.getNu ();
+        matrix = new float[nu][nu];
+        try {
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine ();
+            nextLine = reader.readLine (); // nu, lengthsequence
+            int i = 0;
+            while (nextLine != null) {
+                StringTokenizer st = new StringTokenizer (nextLine);
+                for (int j = 0; j < nu; j ++) {
+                    String buffer = st.nextToken ();
+                    matrix[i][j] = new Float (buffer).floatValue ();
+                }
+                i ++;
+                nextLine = reader.readLine ();
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error reading the output file.");
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the output file.");
+                }
+            }
+        }
+    }
+
     private String binningInputFileName;
     private String binLevelsFileName;
-    private String outputFileName;
+    private String binningOutputFileName;
+    private String divergenceMatrixInputFileName;
+    private String divergenceMatrixOutputFileName;
+
 
     private MasterVariables masterVariables;
     private Phylogeny phylogeny;
-    private DivergenceMatrix divergenceMatrix;
 
     private ArrayList<BinLevel> bins;
+    private float[][] matrix;
 
     private boolean hasRun;
 
