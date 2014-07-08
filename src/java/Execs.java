@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
@@ -45,50 +45,51 @@ public class Execs {
      *
      *  @param masterVariables The MasterVariables.
      */
-    public Execs(MasterVariables masterVariables) {
+    public Execs (MasterVariables masterVariables) {
         this.masterVariables = masterVariables;
         // Grab the running environment.
-        String osName = System.getProperty("os.name").toLowerCase();
-        String osArch = System.getProperty("os.arch").toLowerCase();
-        String osVersion = System.getProperty("os.version");
+        String osName = System.getProperty ("os.name").toLowerCase ();
+        String osArch = System.getProperty ("os.arch").toLowerCase ();
+        String osVersion = System.getProperty ("os.version");
         // Setup the rest of the variables.
-        binaryDirectory = masterVariables.getBinaryDirectory();
-        scriptDirectory = masterVariables.getScriptDirectory();
-        workingDirectory = masterVariables.getWorkingDirectory();
-        log = masterVariables.getLog();
+        binaryDirectory = masterVariables.getBinaryDirectory ();
+        scriptDirectory = masterVariables.getScriptDirectory ();
+        workingDirectory = masterVariables.getWorkingDirectory ();
+        log = masterVariables.getLog ();
         // Check which OS we are running on.
-        if (osName.contains("windows")) {
+        if (osName.contains ("windows")) {
             binaryExtension = ".exe";
             // Use the Phylip batch script.
             phylipScript = workingDirectory + "phylip.bat";
-            writePhylipScript(phylipBatchScript);
+            writePhylipScript (phylipBatchScript);
         }
-        else if (osName.contains("linux")) {
-            if (osArch.contains("i386")) {
+        else if (osName.contains ("linux")) {
+            if (osArch.contains ("i386")) {
                 binaryExtension = ".i386";
             }
-            else if (osArch.contains("amd64")) {
+            else if (osArch.contains ("amd64")) {
                 binaryExtension = ".amd64";
             }
             else {
-                log.append("Unsupported Linux architecture, contact the " +
-                           "developers.\n");
-                log.append("Architecture detected: " + osArch + "\n");
+                log.append (
+                    "Unsupported architecture, contact the developers.\n" +
+                    "Architecture detected: " + osArch + "\n"
+                );
             }
             // Use the Phylip shell script.
             phylipScript = workingDirectory + "phylip.sh";
-            writePhylipScript(phylipShellScript);
+            writePhylipScript (phylipShellScript);
         }
-        else if (osName.contains("mac")) {
+        else if (osName.contains ("mac")) {
             binaryExtension = ".app";
             // Use the Phylip shell script.
             phylipScript = workingDirectory + "phylip.sh";
-            writePhylipScript(phylipShellScript);
+            writePhylipScript (phylipShellScript);
         }
         else {
-            log.append("Unsupported OS, contact the developers.\n");
-            log.append("OS detected: " + osName + "\n");
-            log.append("Architecture detected: " + osArch + "\n");
+            log.append ("Unsupported OS, contact the developers.\n");
+            log.append ("OS detected: " + osName + "\n");
+            log.append ("Architecture detected: " + osArch + "\n");
         }
     }
 
@@ -100,15 +101,15 @@ public class Execs {
      *  @param output The bruteforce output file.
      *  @return The exit value, -1 if there was an error.
      */
-    public int runBruteforce(File input, File output) {
+    public int runBruteforce (File input, File output) {
         String[] command = {
             binaryDirectory + "bruteforce" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Brute Force Search", command, true);
+        return runApplication ("Brute Force Search", command, true);
     }
 
     /**
@@ -118,15 +119,15 @@ public class Execs {
      *  @param output The hillclimb output file.
      *  @return The exit value.
      */
-    public int runHillclimb(File input, File output) {
+    public int runHillclimb (File input, File output) {
         String[] command = {
             binaryDirectory + "hillclimb" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Hill Climb", command, true);
+        return runApplication ("Hill Climb", command, true);
     }
 
     /**
@@ -136,12 +137,12 @@ public class Execs {
      *  @param treeFile The tree file to open in NJPlot.
      *  @return The exit value.
      */
-    public int openTree(File treeFile) {
+    public int openTree (File treeFile) {
         String[] command = {
-            masterVariables.getProgramNJPlot(),
-            treeFile.getPath()
+            masterVariables.getProgramNJPlot (),
+            treeFile.getPath ()
         };
-        return runApplication("NJPlot", command, false);
+        return runApplication ("NJPlot", command, false);
     }
 
     /**
@@ -149,8 +150,8 @@ public class Execs {
      *
      *  @return The exit value.
      */
-    public int runDNAPars() {
-        return runPhylip(masterVariables.getProgramDNAPars(), "V\n1\nY\n");
+    public int runDNAPars () {
+        return runPhylip (masterVariables.getProgramDNAPars (), "V\n1\nY\n");
     }
 
     /**
@@ -158,8 +159,8 @@ public class Execs {
      *
      *  @return The exit value.
      */
-    public int runDNADist() {
-        return runPhylip(masterVariables.getProgramDNADist(), "Y\n");
+    public int runDNADist () {
+        return runPhylip (masterVariables.getProgramDNADist (), "Y\n");
     }
 
     /**
@@ -167,22 +168,23 @@ public class Execs {
      *
      *  @return The exit value.
      */
-    public int runNJ() {
-        return runPhylip(masterVariables.getProgramNeighbor(), "Y\n");
+    public int runNJ () {
+        return runPhylip (masterVariables.getProgramNeighbor (), "Y\n");
     }
 
     /**
      *  Runs the Retree application.
      *
-     *  @param nu The number of environmental sequences including the outgroup.
+     *  @param nu The number of environmental sequences including the
+     *      outgroup.
      *  @return The exit value.
      */
-    public int runRetree(int nu) {
-        String arguments = String.format(
+    public int runRetree (int nu) {
+        String arguments = String.format (
             "Y\nO\n%d\nW\nR\nQ\n",
             nu
         );
-        return runPhylip(masterVariables.getProgramRetree(), arguments);
+        return runPhylip (masterVariables.getProgramRetree (), arguments);
     }
 
     /**
@@ -192,15 +194,15 @@ public class Execs {
      *  @param output The npopCI output file.
      *  @return The exit value.
      */
-    public int runNpopCI(File input, File output) {
+    public int runNpopCI (File input, File output) {
         String[] command = {
             binaryDirectory + "npopCI" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Npop CI", command, true);
+        return runApplication ("Npop CI", command, true);
     }
 
     /**
@@ -210,15 +212,15 @@ public class Execs {
      *  @param output The demarcationCI output file.
      *  @return The exit value.
      */
-    public int runDemarcationCI(File input, File output) {
+    public int runDemarcationCI (File input, File output) {
         String[] command = {
             binaryDirectory + "demarcationCI" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Demarcation CI", command, true);
+        return runApplication ("Demarcation CI", command, true);
     }
 
     /**
@@ -228,15 +230,15 @@ public class Execs {
      *  @param output The omegaCI output file.
      *  @return The exit value.
      */
-    public int runOmegaCI(File input, File output) {
+    public int runOmegaCI (File input, File output) {
         String[] command = {
             binaryDirectory + "omegaCI" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Omega CI", command, true);
+        return runApplication ("Omega CI", command, true);
     }
 
     /**
@@ -246,34 +248,34 @@ public class Execs {
      *  @param output The sigmaCI output file.
      *  @return The exit value.
      */
-    public int runSigmaCI(File input, File output) {
+    public int runSigmaCI (File input, File output) {
         String[] command = {
             binaryDirectory + "sigmaCI" + binaryExtension,
-            input.getAbsolutePath(),
-            output.getAbsolutePath(),
-            Integer.toString(masterVariables.getNumberThreads()),
-            Boolean.toString(masterVariables.getDebug())
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Sigma CI", command, true);
+        return runApplication ("Sigma CI", command, true);
     }
 
     /**
      *  Run the Removegaps program.
      *
-     *  @param inFasta The fasta formated input file.
+     *  @param fasta The fasta formated input file.
      *  @param numbers The numbers file
      *  @param removegapsOut The removegaps output file.
      *  @return The exit value.
      */
-    public int runRemovegaps(File inFasta, File numbers, File removegapsOut) {
+    public int runRemovegaps (File fasta, File numbers, File removegapsOut) {
         String[] command = {
             binaryDirectory + "removegaps" + binaryExtension,
-            inFasta.getAbsolutePath(),
-            numbers.getAbsolutePath(),
-            removegapsOut.getAbsolutePath(),
-            Boolean.toString(masterVariables.getDebug())
+            fasta.getAbsolutePath (),
+            numbers.getAbsolutePath (),
+            removegapsOut.getAbsolutePath (),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Remove Gaps", command, true);
+        return runApplication ("Remove Gaps", command, true);
     }
 
     /**
@@ -284,16 +286,16 @@ public class Execs {
      *  @param nameofstrains The nameofstrains file.
      *  @return The exit value.
      */
-    public int runReadsynec(File removegapsOut, File population,
+    public int runReadsynec (File removegapsOut, File population,
         File nameofstrains) {
         String[] command = {
             binaryDirectory + "readsynec" + binaryExtension,
-            removegapsOut.getAbsolutePath(),
-            population.getAbsolutePath(),
-            nameofstrains.getAbsolutePath(),
-            Boolean.toString(masterVariables.getDebug())
+            removegapsOut.getAbsolutePath (),
+            population.getAbsolutePath (),
+            nameofstrains.getAbsolutePath (),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Read Synec", command, true);
+        return runApplication ("Read Synec", command, true);
     }
 
     /**
@@ -304,15 +306,16 @@ public class Execs {
      *  @param correctpcr The correctpcr output file.
      *  @return The exit value.
      */
-    public int runCorrectpcr(File population, File pcrerror, File correctpcr) {
+    public int runCorrectpcr (File population, File pcrerror,
+        File correctpcr) {
         String[] command = {
             binaryDirectory + "correctpcr" + binaryExtension,
-            population.getAbsolutePath(),
-            pcrerror.getAbsolutePath(),
-            correctpcr.getAbsolutePath(),
-            Boolean.toString(masterVariables.getDebug())
+            population.getAbsolutePath (),
+            pcrerror.getAbsolutePath (),
+            correctpcr.getAbsolutePath (),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Correct PCR", command, true);
+        return runApplication ("Correct PCR", command, true);
     }
 
     /**
@@ -322,14 +325,14 @@ public class Execs {
      *  @param divergencematrix The divergence matrix output file.
      *  @return The exit value.
      */
-    public int runDivergencematrix(File correctpcr, File divergencematrix) {
+    public int runDivergencematrix (File correctpcr, File divergencematrix) {
         String[] command = {
             binaryDirectory + "divergencematrix" + binaryExtension,
-            correctpcr.getAbsolutePath(),
-            divergencematrix.getAbsolutePath(),
-            Boolean.toString(masterVariables.getDebug())
+            correctpcr.getAbsolutePath (),
+            divergencematrix.getAbsolutePath (),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Divergence Matrix", command, true);
+        return runApplication ("Divergence Matrix", command, true);
     }
 
     /**
@@ -340,16 +343,16 @@ public class Execs {
      *  @param binningdanny The binningdanny file.
      *  @return The exit value.
      */
-    public int runBinningdanny(File divergencematrix, File binlevels,
+    public int runBinningdanny (File divergencematrix, File binlevels,
         File binningdanny) {
         String[] command = {
             binaryDirectory + "binningdanny" + binaryExtension,
-            divergencematrix.getAbsolutePath(),
-            binlevels.getAbsolutePath(),
-            binningdanny.getAbsolutePath(),
-            Boolean.toString(masterVariables.getDebug())
+            divergencematrix.getAbsolutePath (),
+            binlevels.getAbsolutePath (),
+            binningdanny.getAbsolutePath (),
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication("Binning", command, true);
+        return runApplication ("Binning", command, true);
     }
 
     /**
@@ -359,24 +362,23 @@ public class Execs {
      *  @param arguments The arguments to the Phylip program.
      *  @return The exit value.
      */
-    private int runPhylip(String program, String arguments) {
+    private int runPhylip (String program, String arguments) {
         File inputFile = new File (workingDirectory + "input");
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(inputFile));
-            writer.write(arguments);
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (arguments);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input file for " +
-                                       "Phylip.");
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -384,9 +386,9 @@ public class Execs {
             phylipScript,
             program,
             workingDirectory,
-            Boolean.toString(masterVariables.getDebug())
+            Boolean.toString (masterVariables.getDebug ())
         };
-        return runApplication(program, command, true);
+        return runApplication (program, command, true);
     }
 
     /**
@@ -399,36 +401,38 @@ public class Execs {
      *  @param wait Set to TRUE to wait for application to exit.
      *  @return The exit value.
      */
-    private int runApplication(String name, String[] command, boolean wait) {
+    private int runApplication (String name, String[] command, boolean wait) {
         int exitVal = -1;
         try {
-            Process p = new ProcessBuilder(command).start();
+            Process p = new ProcessBuilder (command).start ();
             StreamGobbler errorGobbler = null;
             StreamGobbler outputGobbler = null;
             // Display debugging output if needed.
-            if (masterVariables.getDebug()) {
-                System.out.print("Execute:");
+            if (masterVariables.getDebug ()) {
+                System.out.print ("Execute:");
                 for (int i = 0; i < command.length; i ++) {
-                    System.out.print(" " + command[i]);
+                    System.out.print (" " + command[i]);
                 }
-                System.out.print("\n");
+                System.out.print ("\n");
                 // Grab error messages.
-                errorGobbler = new StreamGobbler(
-                    p.getErrorStream(),
+                errorGobbler = new StreamGobbler (
+                    p.getErrorStream (),
                     "ERROR (" + name + ")"
                 );
-                errorGobbler.start();
+                errorGobbler.start ();
                 // Grab output messages.
-                outputGobbler = new StreamGobbler(p.getInputStream(), name);
-                outputGobbler.start();
+                outputGobbler = new StreamGobbler (
+                    p.getInputStream (), name
+                );
+                outputGobbler.start ();
             }
             // Wait for application to finish if needed.
             if (wait) {
-                exitVal = p.waitFor();
+                exitVal = p.waitFor ();
                 // Also wait for the StreamGobbler threads to finish.
-                if (masterVariables.getDebug()) {
-                    errorGobbler.join();
-                    outputGobbler.join();
+                if (masterVariables.getDebug ()) {
+                    errorGobbler.join ();
+                    outputGobbler.join ();
                 }
             }
             else {
@@ -436,10 +440,10 @@ public class Execs {
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         return exitVal;
     }
@@ -449,15 +453,15 @@ public class Execs {
      *
      *  @param script The Phylip script to write.
      */
-    private void writePhylipScript(String script) {
-        File scriptFile = new File(phylipScript);
+    private void writePhylipScript (String script) {
+        File scriptFile = new File (phylipScript);
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(scriptFile));
-            writer.write(script);
+            writer = new BufferedWriter (new FileWriter (scriptFile));
+            writer.write (script);
         }
         catch (IOException e) {
-            System.out.println("Error writing the script for Phylip.");
+            System.out.println ("Error writing the script for Phylip.");
         }
         finally {
             if (writer != null) {
@@ -465,7 +469,9 @@ public class Execs {
                     writer.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the script for Phylip");
+                    System.out.println (
+                        "Error closing the script for Phylip"
+                    );
                 }
             }
         }
