@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2011-2013  Jason M. Wood, Montana State University
@@ -31,11 +31,11 @@ package ecosim;
  */
 public class InvalidNewickException extends Exception {
 
-    public InvalidNewickException(String message) {
+    public InvalidNewickException (String message) {
         this.message = message;
     }
 
-    public String toString() {
+    public String toString () {
         return "Newick error: " + message;
     }
 
