@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
@@ -44,7 +44,8 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  @param children A list of TreeNodes which are the children of this
      *  node.
      */
-    public NewickTreeNode (String name, double distance, NewickTreeNode parent,
+    public NewickTreeNode (String name, double distance,
+        NewickTreeNode parent,
         ArrayList<NewickTreeNode> children) {
         this.name = name;
         this.distance = distance;
@@ -54,7 +55,8 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
 
     /**
      *  Default constructor for object of class NewickTreeNode.  This node
-     *  will have no name, distance, parent, or children unless defined later.
+     *  will have no name, distance, parent, or children unless defined
+     *  later.
      */
     public NewickTreeNode () {
         this ("", 0.0d, null, new ArrayList<NewickTreeNode> ());
@@ -113,7 +115,8 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         for (NewickTreeNode child: children) {
             child.sortChildren ();
         }
-        Heapsorter<NewickTreeNode> sorter = new Heapsorter<NewickTreeNode> ();
+        Heapsorter<NewickTreeNode> sorter = 
+            new Heapsorter<NewickTreeNode> ();
         sorter.heapSort (children);
     }
 
@@ -147,7 +150,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     /**
      *  Returns the children of this node.
      *
-     *  @return ArrayList<NewickTreeNode> containing the children of this node.
+     *  @return ArrayList<NewickTreeNode> with the children of this node.
      */
     public ArrayList<NewickTreeNode> getChildren () {
         return children;
@@ -235,7 +238,8 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  @return The descendants of this node.
      */
     public ArrayList<NewickTreeNode> getDescendants() {
-        ArrayList<NewickTreeNode> descendants = new ArrayList<NewickTreeNode> ();
+        ArrayList<NewickTreeNode> descendants =
+            new ArrayList<NewickTreeNode> ();
         if (children.size () > 0) {
             for (int i = 0; i < children.size (); i ++) {
                 NewickTreeNode child = children.get (i);
