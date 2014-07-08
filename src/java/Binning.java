@@ -63,7 +63,7 @@ public class Binning implements Runnable {
         divergenceMatrix = new DivergenceMatrix (masterVariables, phylogeny);
         bins = new ArrayList<BinLevel> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        inputFileName = workingDirectory + "binningIn" + suffix + ".dat";
+        binningInputFileName = workingDirectory + "binningIn" + suffix + ".dat";
         binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
         outputFileName = workingDirectory + "binningOut" + suffix + ".dat";
         hasRun = false;
@@ -74,7 +74,7 @@ public class Binning implements Runnable {
      */
     public void run () {
         Execs execs = masterVariables.getExecs ();
-        File inputFile = new File (inputFileName);
+        File binningInputFile = new File (binningInputFileName);
         File binLevelsFile = new File (binLevelsFileName);
         File outputFile = new File (outputFileName);
         // Run the divergence matrix program.
@@ -83,15 +83,15 @@ public class Binning implements Runnable {
             return;
         }
         // Output the divergence matrix to be used by the binning program.
-        writeInputFile (inputFile);
+        writeBinningInputFile (binningInputFile);
         // Output the binLevels file to be used by the binning program.
         writeBinLevelsFile (binLevelsFile);
         // Run the binning program.
         execs.runBinningdanny (
-            inputFile, binLevelsFile, outputFile
+            binningInputFile, binLevelsFile, outputFile
         );
         // Read in the bin levels produced by the binning program.
-        readOutputFile (outputFile);
+        readBinningOutputFile (outputFile);
         // Set the flag stating that the binning programs have been run.
         if (bins.size () == binLevels.length) {
             hasRun = true;
@@ -164,7 +164,7 @@ public class Binning implements Runnable {
      *
      *  @param inputFile The file to write to.
      */
-    private void writeInputFile (File inputFile) {
+    private void writeBinningInputFile (File inputFile) {
         BufferedWriter writer = null;
         float[][] matrix = divergenceMatrix.getMatrix ();
         int nu = phylogeny.getNu ();
@@ -231,7 +231,7 @@ public class Binning implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile (File outputFile) {
+    private void readBinningOutputFile (File outputFile) {
         BufferedReader reader = null;
         bins = new ArrayList<BinLevel>();
         try {
@@ -262,7 +262,7 @@ public class Binning implements Runnable {
         }
     }
 
-    private String inputFileName;
+    private String binningInputFileName;
     private String binLevelsFileName;
     private String outputFileName;
 
