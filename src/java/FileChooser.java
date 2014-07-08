@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009-2013  Jason M. Wood, Montana State University
@@ -36,61 +36,61 @@ import java.util.ArrayList;
 public class FileChooser extends javax.swing.JFileChooser {
 
     public FileChooser () {
-        initialize("default");
+        initialize ("default");
     }
 
     public FileChooser (String type) {
-        initialize(type);
+        initialize (type);
     }
 
     public FileChooser (File directory) {
-        super(directory);
-        initialize("default");
+        super (directory);
+        initialize ("default");
     }
 
     public FileChooser (String type, File directory) {
-        super(directory);
-        initialize(type);
+        super (directory);
+        initialize (type);
     }
 
     private void initialize (String type) {
         int mode;
         FileFilter ff;
-        if (type.equals("xml")) {
-            valid = new ArrayList<String>(Arrays.asList(xmlExtensions));
+        if (type.equals ("xml")) {
+            valid = new ArrayList<String> (Arrays.asList (xmlExtensions));
             ff = new FileFilter(xmlDescription);
             mode = FILES_ONLY;
         }
-        else if (type.equals("csv")) {
-            valid = new ArrayList<String>(Arrays.asList(csvExtensions));
+        else if (type.equals ("csv")) {
+            valid = new ArrayList<String> (Arrays.asList (csvExtensions));
             ff = new FileFilter(csvDescription);
             mode = FILES_ONLY;
         }
-        else if (type.equals("fasta")) {
-            valid = new ArrayList<String>(Arrays.asList(fastaExtensions));
+        else if (type.equals ("fasta")) {
+            valid = new ArrayList<String> (Arrays.asList (fastaExtensions));
             ff = new FileFilter(fastaDescription);
             mode = FILES_ONLY;
         }
-        else if (type.equals("newick")) {
-            valid = new ArrayList<String>(Arrays.asList(newickExtensions));
-            ff = new FileFilter(newickDescription);
+        else if (type.equals ("newick")) {
+            valid = new ArrayList<String> (Arrays.asList (newickExtensions));
+            ff = new FileFilter (newickDescription);
             mode = FILES_ONLY;
         }
-        else if (type.equals("directory")) {
-            valid = new ArrayList<String>();
-            ff = new FileFilter("Directories");
+        else if (type.equals ("directory")) {
+            valid = new ArrayList<String> ();
+            ff = new FileFilter ("Directories");
             mode = DIRECTORIES_ONLY;
         }
         else {
-            valid = new ArrayList<String>();
-            ff = new FileFilter("Default");
+            valid = new ArrayList<String> ();
+            ff = new FileFilter ("Default");
             mode = FILES_ONLY;
         }
-        if (valid.size() > 0) {
-          addChoosableFileFilter(ff);
-          setFileFilter(ff);
+        if (valid.size () > 0) {
+          addChoosableFileFilter (ff);
+          setFileFilter (ff);
         }
-        setFileSelectionMode(mode);
+        setFileSelectionMode (mode);
     }
 
     /**
@@ -103,29 +103,29 @@ public class FileChooser extends javax.swing.JFileChooser {
         }
 
         /**
-         *  Accept a File based on the type of FileChooser and the extension of
-         *  the file.  Also accepts directories.
+         *  Accept a File based on the type of FileChooser and the extension
+         *  of the file.  Also accepts directories.
          *
          *  @param f File to check.
          *  @return True if accepted, false otherwise.
          */
-        public boolean accept(File f) {
+        public boolean accept (File f) {
             String extension = null;
             boolean accepted = false;
-            int i = f.getName().lastIndexOf('.');
-            if (i > 0 && i < f.getName().length() - 1) {
-                extension = f.getName().substring(i + 1).toLowerCase();
+            int i = f.getName ().lastIndexOf ('.');
+            if (i > 0 && i < f.getName ().length () - 1) {
+                extension = f.getName ().substring (i + 1).toLowerCase ();
             }
-            if (f.isDirectory()) {
+            if (f.isDirectory ()) {
                 accepted = true;
             }
             else if (extension != null) {
-                accepted = valid.contains(extension);
+                accepted = valid.contains (extension);
             }
             return accepted;
         }
 
-        public String getDescription() {
+        public String getDescription () {
             return description;
         }
         private String description;
@@ -133,13 +133,32 @@ public class FileChooser extends javax.swing.JFileChooser {
 
     private ArrayList<String> valid;
 
-    private String[] xmlExtensions = { "xml" };
-    private String[] csvExtensions = { "csv" };
-    private String[] fastaExtensions = {
-        "fa", "faa", "fas", "fasta", "fna", "fsa", "fst", "fta", "mpfa", "txt"
+    private String[] xmlExtensions = {
+        "xml"
     };
+
+    private String[] csvExtensions = {
+        "csv"
+    };
+
+    private String[] fastaExtensions = {
+        "fa",
+        "faa",
+        "fas",
+        "fasta",
+        "fna",
+        "fsa",
+        "fst",
+        "fta",
+        "mpfa",
+        "txt"
+    };
+
     private String[] newickExtensions = {
-        "nwk", "newick", "phy", "txt"
+        "nwk",
+        "newick",
+        "phy",
+        "txt"
     };
 
     private String xmlDescription = "XML Project Files";
