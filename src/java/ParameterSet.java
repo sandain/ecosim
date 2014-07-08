@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -37,9 +37,9 @@ public class ParameterSet<V extends Comparable<V>>
      *  @param omega The value of omega.
      *  @param sigma The value of sigma.
      *  @param npop The value of npop.
-     *  @param value The Likelihood of the (npop, omega, sigma) parameter set.
+     *  @param value Likelihood of the (npop, omega, sigma) parameter set.
      */
-    public ParameterSet(Double omega, Double sigma, Integer npop, V value) {
+    public ParameterSet (Double omega, Double sigma, Integer npop, V value) {
         this.omega = omega;
         this.sigma = sigma;
         this.npop = npop;
@@ -54,8 +54,8 @@ public class ParameterSet<V extends Comparable<V>>
      *  being equal to the other parameter set's value. -1 if the
      *  the value is less.  1 if the value is more.
      */
-    public int compareTo(ParameterSet<V> other) {
-        return value.compareTo(other.getValue());
+    public int compareTo (ParameterSet<V> other) {
+        return value.compareTo (other.getValue ());
     }
 
     /**
@@ -63,7 +63,7 @@ public class ParameterSet<V extends Comparable<V>>
      *
      *  @return A Double containing the value of omega.
      */
-    public Double getOmega() {
+    public Double getOmega () {
         return omega;
     }
 
@@ -72,7 +72,7 @@ public class ParameterSet<V extends Comparable<V>>
      *
      *  @return A Double containing the value of sigma.
      */
-    public Double getSigma() {
+    public Double getSigma () {
         return sigma;
     }
 
@@ -81,7 +81,7 @@ public class ParameterSet<V extends Comparable<V>>
      *
      *  @return An Integer containing the value of npop.
      */
-    public Integer getNpop() {
+    public Integer getNpop () {
         return npop;
     }
 
@@ -90,7 +90,7 @@ public class ParameterSet<V extends Comparable<V>>
      *
      *  @return The value.
      */
-    public V getValue() {
+    public V getValue () {
         return value;
     }
 
@@ -101,12 +101,12 @@ public class ParameterSet<V extends Comparable<V>>
      *  @return String containing the values of omega, sigma, and npop, and
      *  the likelihood of those values.
      */
-    public String toString() {
+    public String toString () {
         return String.format (
             "  omega:       %.5g\n" +
             "  sigma:       %.5g\n" +
             "  npop:        %d\n" +
-            "  likelihood:  %s", omega, sigma, npop, value.toString()
+            "  likelihood:  %s", omega, sigma, npop, value.toString ()
         );
     }
 
