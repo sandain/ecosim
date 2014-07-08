@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009-2013  Jason M. Wood, Montana State University
@@ -49,35 +49,35 @@ import javax.swing.text.html.HTMLDocument;
  */
 public class HelpAboutWindow extends JFrame implements Runnable {
 
-    public HelpAboutWindow(MasterVariables masterVariables) {
+    public HelpAboutWindow (MasterVariables masterVariables) {
         this.masterVariables = masterVariables;
     }
 
-    public void run() {
+    public void run () {
         // Preprocess the help files.
-        preprocess("stylesheet.css");
-        preprocess("menu.html");
-        preprocess("about.html");
-        preprocess("userguide.html");
-        preprocess("license.html");
+        preprocess ("stylesheet.css");
+        preprocess ("menu.html");
+        preprocess ("about.html");
+        preprocess ("userguide.html");
+        preprocess ("license.html");
         // Make an index pane for each possible entry point.
-        aboutPane = makeIndexPane(about);
-        userGuidePane = makeIndexPane(userGuide);
-        licensePane = makeIndexPane(license);
+        aboutPane = makeIndexPane (about);
+        userGuidePane = makeIndexPane (userGuide);
+        licensePane = makeIndexPane (license);
         // Make the Help / About window.
-        scrollPane = new JScrollPane();
-        setTitle("Help / About");
-        setMinimumSize(new Dimension(640, 480));
-        setPreferredSize(new Dimension(1420, 800));
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane = new JScrollPane ();
+        setTitle ("Help / About");
+        setMinimumSize (new Dimension (640, 480));
+        setPreferredSize (new Dimension (1420, 800));
+        setLayout (new BorderLayout ());
+        add (scrollPane, BorderLayout.CENTER);
         // Listen for the window to close.
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-                exitActionPerformed();
+        addWindowListener (new WindowAdapter () {
+            public void windowClosing (WindowEvent evt) {
+                exitActionPerformed ();
             }
         });
-        pack();
+        pack ();
     }
 
     /**
@@ -85,60 +85,69 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *
      *  @param type The type of pane to display.
      */
-    public void setVisible(String type) {
+    public void setVisible (String type) {
         switch (type) {
             case about:
-                scrollPane.setViewportView(aboutPane);
+                scrollPane.setViewportView (aboutPane);
                 break;
             case userGuide:
-                scrollPane.setViewportView(userGuidePane);
+                scrollPane.setViewportView (userGuidePane);
                 break;
             case license:
-                scrollPane.setViewportView(licensePane);
+                scrollPane.setViewportView (licensePane);
                 break;
             default:
                 break;
         }
-        setVisible(true);
+        setVisible (true);
     }
 
     /**
-     *  Preproccess the help files to place them in the appropriate directory,
-     *  and replace variables with their proper values.
+     *  Preproccess the help files to place them in the appropriate
+     *  directory, and replace variables with their proper values.
      *
      *  @param page The page to preprocess.
      */
-    private void preprocess(String page) {
-        File inputFile = new File(masterVariables.getHelpDirectory() + page);
-        File outputFile = new File(masterVariables.getWorkingDirectory() + page);
+    private void preprocess (String page) {
+        File inputFile = new File (
+            masterVariables.getHelpDirectory () + page
+        );
+        File outputFile = new File (
+            masterVariables.getWorkingDirectory () + page
+        );
         BufferedReader reader = null;
         BufferedWriter writer = null;
         try {
-            reader = new BufferedReader(new FileReader(inputFile));
-            writer = new BufferedWriter(new FileWriter(outputFile));
-            String nextLine = reader.readLine();
+            reader = new BufferedReader (new FileReader (inputFile));
+            writer = new BufferedWriter (new FileWriter (outputFile));
+            String nextLine = reader.readLine ();
             while (nextLine != null) {
                 // Point the images to the right directory.
-                nextLine = nextLine.replaceAll("<img src=\"images", 
-                    String.format ("<img src=\"%simages", masterVariables.getHelpDirectory())
+                nextLine = nextLine.replaceAll ("<img src=\"images",
+                    String.format (
+                        "<img src=\"%simages",
+                        masterVariables.getHelpDirectory ()
+                    )
                 );
                 // Replace variables with their values.
-                nextLine = nextLine.replaceAll("%ECOSIM_VERSION%", masterVariables.getVersion());
+                nextLine = nextLine.replaceAll (
+                    "%ECOSIM_VERSION%", masterVariables.getVersion ()
+                );
                 // Write the contents to the new file.
-                writer.write(nextLine + "\n");
-                nextLine = reader.readLine();
+                writer.write (nextLine + "\n");
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading the html file.");
+            System.out.println ("Error reading the html file.");
         }
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input html file.");
+                    System.out.println ("Error closing the input file.");
                 }
             }
             if (writer != null) {
@@ -146,7 +155,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     writer.close();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the output html file.");
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
@@ -157,39 +166,48 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *
      *  @param type The type of index to display.
      */
-    private JEditorPane makeIndexPane(String type) {
-        JEditorPane editorPane = new JEditorPane();
+    private JEditorPane makeIndexPane (String type) {
+        JEditorPane editorPane = new JEditorPane ();
         File indexFile = null;
-        String index = new String();
-        index += "<!DOCTYPE html>\n";
-        index += "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n";
-        index += "  <head>\n";
-        index += "    <title>\n";
-        index += "      Help / About\n";
-        index += "    </title>\n";
-        index += "  </head>\n";
-        index += "  <frameset cols=\"20%,80%\">\n";
-        index += "    <frame src=\"file:///";
-        index += masterVariables.getWorkingDirectory() + "menu.html";
-        index += "\" name=\"menu\" />\n";
+        String index =
+            "<!DOCTYPE html>\n" +
+            "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+            "  <head>\n" +
+            "    <title>\n" +
+            "      Help / About\n" +
+            "    </title>\n" +
+            "  </head>\n" +
+            "  <frameset cols=\"20%,80%\">\n" +
+            "    <frame src=\"file:///" +
+            masterVariables.getWorkingDirectory () + "menu.html" +
+            "\" name=\"menu\" />\n";
         switch (type) {
             case about:
-                indexFile = new File(masterVariables.getWorkingDirectory() + "aboutIndex.html");
-                index += "    <frame src=\"file:///";
-                index += masterVariables.getWorkingDirectory() + "about.html";
-                index += "\" name=\"body\" />\n";
+                indexFile = new File (
+                    masterVariables.getWorkingDirectory () +
+                    "aboutIndex.html"
+                );
+                index += "    <frame src=\"file:///" +
+                    masterVariables.getWorkingDirectory () +
+                    "about.html\" name=\"body\" />\n";
                 break;
             case userGuide:
-                indexFile = new File(masterVariables.getWorkingDirectory() + "userGuideIndex.html");
-                index += "    <frame src=\"file:///";
-                index += masterVariables.getWorkingDirectory();
-                index += "userguide.html" + "\" name=\"body\" />\n";
+                indexFile = new File(
+                    masterVariables.getWorkingDirectory () +
+                    "userGuideIndex.html"
+                );
+                index += "    <frame src=\"file:///" +
+                    masterVariables.getWorkingDirectory () +
+                    "userguide.html" + "\" name=\"body\" />\n";
                 break;
             case license:
-                indexFile = new File(masterVariables.getWorkingDirectory() + "licenseIndex.html");
-                index += "    <frame src=\"file:///";
-                index += masterVariables.getWorkingDirectory();
-                index += "license.html" + "\" name=\"body\" />\n";
+                indexFile = new File(
+                    masterVariables.getWorkingDirectory () +
+                    "licenseIndex.html"
+                );
+                index += "    <frame src=\"file:///" +
+                    masterVariables.getWorkingDirectory () +
+                    "license.html" + "\" name=\"body\" />\n";
                 break;
             default:
                 break;
@@ -197,24 +215,26 @@ public class HelpAboutWindow extends JFrame implements Runnable {
         index += "  </frameset>\n";
         index += "</html>\n";
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(indexFile));
-            out.write(index);
-            out.close();
-            editorPane.setPage(indexFile.toURI().toURL());
+            BufferedWriter out = new BufferedWriter (
+                new FileWriter (indexFile)
+            );
+            out.write (index);
+            out.close ();
+            editorPane.setPage (indexFile.toURI ().toURL ());
         }
         catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        editorPane.setContentType("text/html;charset=UTF-8");
-        editorPane.setEditable(false);
-        editorPane.addHyperlinkListener(new Hyperactive());
+        editorPane.setContentType ("text/html;charset=UTF-8");
+        editorPane.setEditable (false);
+        editorPane.addHyperlinkListener (new Hyperactive ());
         return editorPane;
     }
 
     /**
      *  Perform the exit action.
      */
-    private void exitActionPerformed() {
+    private void exitActionPerformed () {
         dispose();
     }
 
@@ -239,31 +259,32 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *  Defines a custom HyperlinkLister to listen for clicked hyperlinks.
      */
     private class Hyperactive implements HyperlinkListener {
-        public void hyperlinkUpdate(HyperlinkEvent evt) {
-            if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                JEditorPane pane = (JEditorPane) evt.getSource();
+        public void hyperlinkUpdate (HyperlinkEvent evt) {
+            if (evt.getEventType () == HyperlinkEvent.EventType.ACTIVATED) {
+                JEditorPane pane = (JEditorPane) evt.getSource ();
                 try {
+                    String url = evt.getURL ().toString ();
                     // Open external links in the default browser.
-                    if (evt.getURL().toString().startsWith("http")) {
-                        Desktop d = Desktop.getDesktop();
-                        d.browse(evt.getURL().toURI());
+                    if (url.startsWith ("http")) {
+                        Desktop d = Desktop.getDesktop ();
+                        d.browse(evt.getURL ().toURI ());
                     }
                     // Open mailto links in the default mailer.
-                    else if (evt.getURL().toString().startsWith("mailto")) {
-                        Desktop d = Desktop.getDesktop();
-                        d.mail(evt.getURL().toURI());
+                    else if (url.startsWith ("mailto")) {
+                        Desktop d = Desktop.getDesktop ();
+                        d.mail (evt.getURL ().toURI ());
                     }
                     // Open internal links within the proper frame.
                     else if (evt instanceof HTMLFrameHyperlinkEvent) {
                         HTMLFrameHyperlinkEvent frameEvt;
                         HTMLDocument doc;
                         frameEvt = (HTMLFrameHyperlinkEvent) evt;
-                        doc = (HTMLDocument) pane.getDocument();
-                        doc.processHTMLFrameHyperlinkEvent(frameEvt);
+                        doc = (HTMLDocument) pane.getDocument ();
+                        doc.processHTMLFrameHyperlinkEvent (frameEvt);
                     }
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    e.printStackTrace ();
                 }
             }
         }
