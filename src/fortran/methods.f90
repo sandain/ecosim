@@ -564,11 +564,14 @@ module methods
     logical :: success(6, nrep)
     ! Initialize the avgsuccess array with values of 0.
     avgsuccess = (/ (0.0d0, i = 1, 6) /)
-    ! Make sure that omega and sigma have valid values.
-    if (omega .ne. omega .or. omega .le. epsilon (0.0d0) .or. &
-      omega .ge. huge (0.0d0) - 1.0d0) return
-    if (sigma .ne. sigma .or. sigma .le. epsilon (0.0d0) .or. &
-      sigma .ge. huge (0.0d0) - 1.0d0) return
+    ! Make sure that omega has valid values.
+    if (isnan (omega)) return ! XXX Should use ieee_is_nan when supported.
+    if (omega .lt. epsilon (0.0d0)) return
+    if (omega .gt. huge (0.0d0) - 1.0d0) return
+    ! Make sure that sigma has valid values.
+    if (isnan (sigma)) return ! XXX Should use ieee_is_nan when supported.
+    if (sigma .lt. epsilon (0.0d0)) return
+    if (sigma .gt. huge (0.0d0) - 1.0d0) return
     ! Make sure that npop does not exceed the number of homologous gene
     ! sequences in the environmental sample, and is greater than zero.
     if (npop .gt. nu .or. npop .le. 0) return
