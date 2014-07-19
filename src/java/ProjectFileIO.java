@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -47,16 +47,16 @@ public class ProjectFileIO {
      *
      *  @param masterVariables The master variables.
      */
-    public ProjectFileIO(MasterVariables masterVariables) {
+    public ProjectFileIO (MasterVariables masterVariables) {
         this.masterVariables = masterVariables;
         // Create new objects for each item in the project file.
-        phylogeny = new Phylogeny(masterVariables);
+        phylogeny = new Phylogeny (masterVariables);
         int nu = phylogeny.getNu ();
         int length = phylogeny.length ();
-        binning = new Binning(
+        binning = new Binning (
             masterVariables, phylogeny
         );
-        bruteforce = new Bruteforce(
+        bruteforce = new Bruteforce (
             masterVariables, nu, length, binning
         );
         hillclimb = new Hillclimb (
@@ -68,10 +68,10 @@ public class ProjectFileIO {
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        npopCI = new NpopConfidenceInterval(
+        npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        demarcation = new Demarcation(
+        demarcation = new Demarcation (
             masterVariables, phylogeny, binning, hillclimb
         );
     }
@@ -89,7 +89,7 @@ public class ProjectFileIO {
      *  @param npopCI The NpopConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO(MasterVariables masterVariables, Phylogeny phylogeny,
+    public ProjectFileIO (MasterVariables masterVariables, Phylogeny phylogeny,
         Binning binning, Bruteforce bruteforce, Hillclimb hillclimb,
         OmegaConfidenceInterval omegaCI, SigmaConfidenceInterval sigmaCI,
         NpopConfidenceInterval npopCI, Demarcation demarcation) {
@@ -109,200 +109,200 @@ public class ProjectFileIO {
      *
      *  @param projectFile The project file to save.
      */
-    public void save(File projectFile) {
+    public void save (File projectFile) {
         try {
-            BufferedWriter out = new BufferedWriter(
-                new FileWriter(projectFile)
+            BufferedWriter out = new BufferedWriter (
+                new FileWriter (projectFile)
             );
             // Output the XML header.
-            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            out.write(String.format(
+            out.write ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            out.write (String.format (
                 "<ecosim type=\"savefile\" version=\"%s\">\n",
-                masterVariables.getVersion()
+                masterVariables.getVersion ()
             ));
             // Output the current criterion.
-            out.write(
+            out.write (
                 "  <criterion value=\"" + 
-                masterVariables.getCriterion() + "\"/>\n"
+                masterVariables.getCriterion () + "\"/>\n"
             );
             // Output the current PCR error.
-            out.write(
+            out.write (
                 "  <pcrerror value=\"" + 
-                masterVariables.getPCRError() + "\"/>\n"
+                masterVariables.getPCRError () + "\"/>\n"
             );
             // Output the phylogeny data.
-            if (phylogeny != null && phylogeny.hasRun()) {
-                out.write(String.format(
+            if (phylogeny != null && phylogeny.hasRun ()) {
+                out.write (String.format (
                     "  <phylogeny size=\"%d\" length=\"%d\">\n",
-                    phylogeny.getNu(), phylogeny.length()
+                    phylogeny.getNu (), phylogeny.length ()
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <tree value=\"%s\"/>\n",
-                    phylogeny.getNewickTree().toString()
+                    phylogeny.getNewickTree ().toString ()
                 ));
                 ArrayList<String> identifiers = phylogeny.getIdentifiers();
-                for (int i = 0; i < identifiers.size(); i ++) {
-                    out.write(String.format(
+                for (int i = 0; i < identifiers.size (); i ++) {
+                    out.write (String.format (
                         "    <sequence identifier=\"%s\" sequence=\"%s\"/>\n",
-                        phylogeny.getIdentifier(i),
-                        phylogeny.getSequence(i)
+                        phylogeny.getIdentifier (i),
+                        phylogeny.getSequence (i)
                     ));
                 }
-                out.write(
+                out.write (
                     "  </phylogeny>\n"
                 );
             }
             // Output the binning data.
-            if (binning != null && binning.hasRun()) {
-                ArrayList<BinLevel> bins = binning.getBinLevels();
-                out.write("  <binning>\n");
-                out.write("    <bins size=\"" + bins.size() + "\">\n");
+            if (binning != null && binning.hasRun ()) {
+                ArrayList<BinLevel> bins = binning.getBinLevels ();
+                out.write ("  <binning>\n");
+                out.write ("    <bins size=\"" + bins.size () + "\">\n");
                 // Output the crit levels and the number of bins.
-                for (int i = 0; i < bins.size(); i ++) {
-                    out.write(
+                for (int i = 0; i < bins.size (); i ++) {
+                    out.write (
                         "      <bin crit=\"" +
-                        String.format("%.6f", bins.get(i).getCrit()) +
-                        "\" value=\"" + bins.get(i).getLevel() + "\"/>\n"
+                        String.format ("%.6f", bins.get (i).getCrit ()) +
+                        "\" value=\"" + bins.get (i).getLevel () + "\"/>\n"
                     );
                 }
-                out.write("    </bins>\n");
-                out.write("  </binning>\n");
+                out.write ("    </bins>\n");
+                out.write ("  </binning>\n");
             }
             // Output the bruteforce data.
-            if (bruteforce != null && bruteforce.hasRun()) {
+            if (bruteforce != null && bruteforce.hasRun ()) {
                 ArrayList<ParameterSet<Likelihood>> results =
-                    bruteforce.getResults();
-                double [] omegaRange = bruteforce.getOmegaRange();
-                double [] sigmaRange = bruteforce.getSigmaRange();
-                int [] npopRange = bruteforce.getNpopRange();
-                out.write("  <bruteforce>\n");
-                out.write(String.format(
+                    bruteforce.getResults ();
+                double [] omegaRange = bruteforce.getOmegaRange ();
+                double [] sigmaRange = bruteforce.getSigmaRange ();
+                int [] npopRange = bruteforce.getNpopRange ();
+                out.write ("  <bruteforce>\n");
+                out.write (String.format (
                     "    <omegaRange low=\"%.5f\" high=\"%.5f\"/>\n",
                     omegaRange[0],
                     omegaRange[1]
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <sigmaRange low=\"%.5f\" high=\"%.5f\"/>\n",
                     sigmaRange[0],
                     sigmaRange[1]
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <npopRange low=\"%d\" high=\"%d\"/>\n",
                     npopRange[0],
                     npopRange[1]
                 ));
-                out.write(String.format(
-                    "    <results size=\"%d\">\n", results.size()
+                out.write (String.format (
+                    "    <results size=\"%d\">\n", results.size ()
                 ));
-                for (int i = 0; i < results.size(); i ++) {
-                    out.write(String.format(
+                for (int i = 0; i < results.size (); i ++) {
+                    out.write (String.format (
                         "      <result omega=\"%.5f\" sigma=\"%.5f\" " +
                         "npop=\"%d\" likelihood=\"%s\"/>\n",
-                        results.get(i).getOmega(),
-                        results.get(i).getSigma(),
-                        results.get(i).getNpop(),
-                        results.get(i).getValue().toString()
+                        results.get (i).getOmega (),
+                        results.get (i).getSigma (),
+                        results.get (i).getNpop (),
+                        results.get (i).getValue ().toString ()
                     ));
                 }
-                out.write("    </results>\n");
-                out.write("  </bruteforce>\n");
+                out.write ("    </results>\n");
+                out.write ("  </bruteforce>\n");
             }
             // Output the hillclimb data.
-            if (hillclimb != null && hillclimb.hasRun()) {
-                ParameterSet result = hillclimb.getResult();
-                out.write("  <hillclimb>\n");
-                out.write(String.format(
+            if (hillclimb != null && hillclimb.hasRun ()) {
+                ParameterSet result = hillclimb.getResult ();
+                out.write ("  <hillclimb>\n");
+                out.write (String.format (
                     "    <result omega=\"%.5f\" sigma=\"%.5f\" " +
                     "npop=\"%d\" likelihood=\"%.5g\"/>\n",
-                    result.getOmega(),
-                    result.getSigma(),
-                    result.getNpop(),
-                    result.getValue()
+                    result.getOmega (),
+                    result.getSigma (),
+                    result.getNpop (),
+                    result.getValue ()
                 ));
-                out.write("  </hillclimb>\n");
+                out.write ("  </hillclimb>\n");
             }
             // Output the OmegaCI data.
-            if (omegaCI != null && omegaCI.hasRun()) {
-                double[] result = omegaCI.getResult();
-                double[] likelihood = omegaCI.getLikelihood();
-                out.write("  <omegaCI>\n");
-                out.write(String.format(
+            if (omegaCI != null && omegaCI.hasRun ()) {
+                double[] result = omegaCI.getResult ();
+                double[] likelihood = omegaCI.getLikelihood ();
+                out.write ("  <omegaCI>\n");
+                out.write (String.format (
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <upper value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
                 ));
-                out.write("  </omegaCI>\n");
+                out.write ("  </omegaCI>\n");
             }
             // Output the SigmaCI data.
-            if (sigmaCI != null && sigmaCI.hasRun()) {
-                double[] result = sigmaCI.getResult();
-                double[] likelihood = sigmaCI.getLikelihood();
-                out.write("  <sigmaCI>\n");
-                out.write(String.format(
+            if (sigmaCI != null && sigmaCI.hasRun ()) {
+                double[] result = sigmaCI.getResult ();
+                double[] likelihood = sigmaCI.getLikelihood ();
+                out.write ("  <sigmaCI>\n");
+                out.write (String.format (
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <upper value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
                 ));
-                out.write("  </sigmaCI>\n");
+                out.write ("  </sigmaCI>\n");
             }
             // Output the NpopCI data.
-            if (npopCI != null && npopCI.hasRun()) {
-                int[] result = npopCI.getResult();
-                double[] likelihood = npopCI.getLikelihood();
-                out.write("  <npopCI>\n");
-                out.write(String.format(
+            if (npopCI != null && npopCI.hasRun ()) {
+                int[] result = npopCI.getResult ();
+                double[] likelihood = npopCI.getLikelihood ();
+                out.write ("  <npopCI>\n");
+                out.write (String.format (
                     "    <lower value=\"%d\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
-                out.write(String.format(
+                out.write (String.format (
                     "    <upper value=\"%d\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
                 ));
-                out.write("  </npopCI>\n");
+                out.write ("  </npopCI>\n");
             }
             // Output the Demarcation data.
-            if (demarcation != null && demarcation.hasRun()) {
+            if (demarcation != null && demarcation.hasRun ()) {
                 ArrayList<ArrayList<String>> ecotypes =
-                    demarcation.getEcotypes();
-                out.write("  <demarcation>\n");
-                out.write(String.format(
+                    demarcation.getEcotypes ();
+                out.write ("  <demarcation>\n");
+                out.write (String.format (
                     "    <ecotypes size=\"%d\">\n",
-                    ecotypes.size()
+                    ecotypes.size ()
                 ));
-                for (int i = 0; i < ecotypes.size(); i ++) {
-                    ArrayList<String> ecotype = ecotypes.get(i);
-                    out.write(String.format(
+                for (int i = 0; i < ecotypes.size (); i ++) {
+                    ArrayList<String> ecotype = ecotypes.get (i);
+                    out.write (String.format (
                         "      <ecotype number=\"%d\" size=\"%d\">\n",
-                        (i + 1), ecotype.size()
+                        (i + 1), ecotype.size ()
                     ));
-                    for (int j = 0; j < ecotype.size(); j ++) {
-                        out.write(String.format(
+                    for (int j = 0; j < ecotype.size (); j ++) {
+                        out.write (String.format (
                             "        <member name=\"%s\"/>\n",
-                            ecotype.get(j)
+                            ecotype.get (j)
                         ));
                     }
-                    out.write("      </ecotype>\n");
+                    out.write ("      </ecotype>\n");
                 }
-                out.write("    </ecotypes>\n");
-                out.write("  </demarcation>\n");
+                out.write ("    </ecotypes>\n");
+                out.write ("  </demarcation>\n");
             }
-            out.write("</ecosim>\n");
-            out.close();
+            out.write ("</ecosim>\n");
+            out.close ();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -311,16 +311,16 @@ public class ProjectFileIO {
      *
      *  @param projectFile The project file to load.
      */
-    public void load(File projectFile) {
-        XMLHandler handler = new XMLHandler();
+    public void load (File projectFile) {
+        XMLHandler handler = new XMLHandler ();
         try {
-            XMLReader xr = XMLReaderFactory.createXMLReader();
-            xr.setContentHandler(handler);
-            xr.setErrorHandler(handler);
-            xr.parse(new InputSource(new FileReader(projectFile)));
+            XMLReader xr = XMLReaderFactory.createXMLReader ();
+            xr.setContentHandler (handler);
+            xr.setErrorHandler (handler);
+            xr.parse (new InputSource (new FileReader (projectFile)));
         }
         catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -329,7 +329,7 @@ public class ProjectFileIO {
      *
      *  @return The Phylogeny object.
      */
-    public Phylogeny getPhylogeny() {
+    public Phylogeny getPhylogeny () {
         return phylogeny;
     }
 
@@ -338,7 +338,7 @@ public class ProjectFileIO {
      *
      *  @return The Binning object.
      */
-    public Binning getBinning() {
+    public Binning getBinning () {
         return binning;
     }
 
@@ -347,7 +347,7 @@ public class ProjectFileIO {
      *
      *  @return The Bruteforce object.
      */
-    public Bruteforce getBruteforce() {
+    public Bruteforce getBruteforce () {
         return bruteforce;
     }
 
@@ -356,7 +356,7 @@ public class ProjectFileIO {
      *
      *  @return The Hillclimb object.
      */
-    public Hillclimb getHillclimb() {
+    public Hillclimb getHillclimb () {
         return hillclimb;
     }
 
@@ -365,7 +365,7 @@ public class ProjectFileIO {
      *
      *  @return The OmegaConfidenceInterval object.
      */
-    public OmegaConfidenceInterval getOmegaCI() {
+    public OmegaConfidenceInterval getOmegaCI () {
         return omegaCI;
     }
 
@@ -374,7 +374,7 @@ public class ProjectFileIO {
      *
      *  @return The SigmaConfidenceInterval object.
      */
-    public SigmaConfidenceInterval getSigmaCI() {
+    public SigmaConfidenceInterval getSigmaCI () {
         return sigmaCI;
     }
 
@@ -383,7 +383,7 @@ public class ProjectFileIO {
      *
      *  @return The NpopConfidenceInterval object.
      */
-    public NpopConfidenceInterval getNpopCI() {
+    public NpopConfidenceInterval getNpopCI () {
         return npopCI;
     }
 
@@ -392,7 +392,7 @@ public class ProjectFileIO {
      *
      *  @return The Demarcation object.
      */
-    public Demarcation getDemarcation() {
+    public Demarcation getDemarcation () {
         return demarcation;
     }
 
@@ -414,16 +414,16 @@ public class ProjectFileIO {
         /**
          *  The XMLHandler constructor.
          */
-        public XMLHandler() {
-            elements = new ArrayList<String>();
-            elements.add("phylogeny");
-            elements.add("binning");
-            elements.add("bruteforce");
-            elements.add("hillclimb");
-            elements.add("omegaCI");
-            elements.add("sigmaCI");
-            elements.add("npopCI");
-            elements.add("demarcation");
+        public XMLHandler () {
+            elements = new ArrayList<String> ();
+            elements.add ("phylogeny");
+            elements.add ("binning");
+            elements.add ("bruteforce");
+            elements.add ("hillclimb");
+            elements.add ("omegaCI");
+            elements.add ("sigmaCI");
+            elements.add ("npopCI");
+            elements.add ("demarcation");
             activeElement = "none";
             isProjectFile = false;
         }
@@ -435,195 +435,195 @@ public class ProjectFileIO {
         public void startElement (String uri, String localName, String qName,
             Attributes attrs) {
             // Make sure that this is a save file.
-            if (localName.equals("ecosim") &&
-                attrs.getValue(uri, "type").equals("savefile")) {
+            if (localName.equals ("ecosim") &&
+                attrs.getValue (uri, "type").equals ("savefile")) {
                 isProjectFile = true;
             }
             if (isProjectFile) {
                 // Update the active element.
-                if (elements.contains(localName)) {
+                if (elements.contains (localName)) {
                     activeElement = localName;
                 }
                 // Look for the criterion element.
-                if (localName.equals("criterion")) {
-                    masterVariables.setCriterion(
-                        new Integer(attrs.getValue(uri, "value")).intValue()
+                if (localName.equals ("criterion")) {
+                    masterVariables.setCriterion (
+                        new Integer (attrs.getValue (uri, "value")).intValue ()
                     );
                 }
                 // Look for the pcrerror element.
-                if (localName.equals("pcrerror")) {
-                    masterVariables.setPCRError(
-                        new Double(attrs.getValue(uri, "value")).doubleValue()
+                if (localName.equals ("pcrerror")) {
+                    masterVariables.setPCRError (
+                        new Double (attrs.getValue (uri, "value")).doubleValue ()
                     );
                 }
                 // Look for the elements within phylogeny.
-                if (activeElement.equals("phylogeny")) {
+                if (activeElement.equals ("phylogeny")) {
                     // Look for the tree element.
-                    if (localName.equals("tree")) {
-                         phylogeny.loadTree(
-                            attrs.getValue(uri, "value")
+                    if (localName.equals ("tree")) {
+                         phylogeny.loadTree (
+                            attrs.getValue (uri, "value")
                         );
                     }
                     // Look for the sequence elements.
-                    if (localName.equals("sequence")) {
-                        phylogeny.put(
-                            attrs.getValue(uri, "identifier"),
-                            attrs.getValue(uri, "sequence")
+                    if (localName.equals ("sequence")) {
+                        phylogeny.put (
+                            attrs.getValue (uri, "identifier"),
+                            attrs.getValue (uri, "sequence")
                         );
                     }
                 }
                 // Look for elements within binning.
-                if (activeElement.equals("binning")) {
-                    if (localName.equals("bin")) {
-                        binning.addBinLevel(new BinLevel(
-                            new Float(attrs.getValue(uri, "crit")),
-                            new Integer(attrs.getValue(uri, "value"))
+                if (activeElement.equals ("binning")) {
+                    if (localName.equals ("bin")) {
+                        binning.addBinLevel (new BinLevel (
+                            new Float (attrs.getValue (uri, "crit")),
+                            new Integer (attrs.getValue (uri, "value"))
                         ));
                     }
                 }
                 // Look for elements within bruteforce.
-                if (activeElement.equals("bruteforce")) {
+                if (activeElement.equals ("bruteforce")) {
                     // Grab the omega range.
-                    if (localName.equals("omegaRange")) {
+                    if (localName.equals ("omegaRange")) {
                         double [] omegaRange = new double [2];
-                        omegaRange[0] = new Double(
-                            attrs.getValue(uri, "low")
-                        ).doubleValue();
-                        omegaRange[1] = new Double(
-                            attrs.getValue(uri, "high")
-                        ).doubleValue();
-                        bruteforce.setOmegaRange(omegaRange);
+                        omegaRange[0] = new Double (
+                            attrs.getValue (uri, "low")
+                        ).doubleValue ();
+                        omegaRange[1] = new Double (
+                            attrs.getValue (uri, "high")
+                        ).doubleValue ();
+                        bruteforce.setOmegaRange (omegaRange);
                     }
                     // Grab the sigma range.
-                    if (localName.equals("sigmaRange")) {
+                    if (localName.equals ("sigmaRange")) {
                         double [] sigmaRange = new double [2];
-                        sigmaRange[0] = new Double(
-                            attrs.getValue(uri, "low")
-                        ).doubleValue();
-                        sigmaRange[1] = new Double(
-                            attrs.getValue(uri, "high")
-                        ).doubleValue();
-                        bruteforce.setSigmaRange(sigmaRange);
+                        sigmaRange[0] = new Double (
+                            attrs.getValue (uri, "low")
+                        ).doubleValue ();
+                        sigmaRange[1] = new Double (
+                            attrs.getValue (uri, "high")
+                        ).doubleValue ();
+                        bruteforce.setSigmaRange (sigmaRange);
                     }
                     // Grab the sigma range.
-                    if (localName.equals("npopRange")) {
+                    if (localName.equals ("npopRange")) {
                         int [] npopRange = new int [2];
-                        npopRange[0] = new Integer(
-                            attrs.getValue(uri, "low")
-                        ).intValue();
-                        npopRange[1] = new Integer(
-                            attrs.getValue(uri, "high")
-                        ).intValue();
-                        bruteforce.setNpopRange(npopRange);
+                        npopRange[0] = new Integer (
+                            attrs.getValue (uri, "low")
+                        ).intValue ();
+                        npopRange[1] = new Integer (
+                            attrs.getValue (uri, "high")
+                        ).intValue ();
+                        bruteforce.setNpopRange (npopRange);
                     }
-                    if (localName.equals("result")) {
-                        bruteforce.addResult(new ParameterSet<Likelihood>(
-                            new Double(attrs.getValue(uri, "omega")),
-                            new Double(attrs.getValue(uri, "sigma")),
-                            new Integer(attrs.getValue(uri, "npop")),
-                            new Likelihood(
+                    if (localName.equals ("result")) {
+                        bruteforce.addResult (new ParameterSet<Likelihood> (
+                            new Double (attrs.getValue (uri, "omega")),
+                            new Double (attrs.getValue (uri, "sigma")),
+                            new Integer (attrs.getValue (uri, "npop")),
+                            new Likelihood (
                                 masterVariables,
-                                attrs.getValue(uri, "likelihood")
+                                attrs.getValue (uri, "likelihood")
                             )
                         ));
                     }
                 }
                 // Look for elements within hillclimb.
-                if (activeElement.equals("hillclimb")) {
-                    if (localName.equals("result")) {
-                        hillclimb.setResult(
-                            new ParameterSet<Double>(
-                                new Double(attrs.getValue(uri, "omega")),
-                                new Double(attrs.getValue(uri, "sigma")),
-                                new Integer(attrs.getValue(uri, "npop")),
-                                new Double(attrs.getValue(uri, "likelihood"))
+                if (activeElement.equals ("hillclimb")) {
+                    if (localName.equals ("result")) {
+                        hillclimb.setResult (
+                            new ParameterSet<Double> (
+                                new Double (attrs.getValue (uri, "omega")),
+                                new Double (attrs.getValue (uri, "sigma")),
+                                new Integer (attrs.getValue (uri, "npop")),
+                                new Double (attrs.getValue (uri, "likelihood"))
                             )
                         );
                     }
                 }
                 // Look for elements within omegaCI.
-                if (activeElement.equals("omegaCI")) {
-                    if (localName.equals("lower")) {
-                        double value = new Double(
-                            attrs.getValue(uri, "value")
-                        ).doubleValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        omegaCI.setLowerResult(value, likelihood);
+                if (activeElement.equals ("omegaCI")) {
+                    if (localName.equals ("lower")) {
+                        double value = new Double (
+                            attrs.getValue (uri, "value")
+                        ).doubleValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        omegaCI.setLowerResult (value, likelihood);
                     }
-                    if (localName.equals("upper")) {
-                        double value = new Double(
-                            attrs.getValue(uri, "value")
-                        ).doubleValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        omegaCI.setUpperResult(value, likelihood);
+                    if (localName.equals ("upper")) {
+                        double value = new Double (
+                            attrs.getValue (uri, "value")
+                        ).doubleValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        omegaCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within sigmaCI.
-                if (activeElement.equals("sigmaCI")) {
-                    if (localName.equals("lower")) {
-                        double value = new Double(
-                            attrs.getValue(uri, "value")
-                        ).doubleValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        sigmaCI.setLowerResult(value, likelihood);
+                if (activeElement.equals ("sigmaCI")) {
+                    if (localName.equals ("lower")) {
+                        double value = new Double (
+                            attrs.getValue (uri, "value")
+                        ).doubleValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        sigmaCI.setLowerResult (value, likelihood);
                     }
-                    if (localName.equals("upper")) {
-                        double value = new Double(
-                            attrs.getValue(uri, "value")
-                        ).doubleValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        sigmaCI.setUpperResult(value, likelihood);
+                    if (localName.equals ("upper")) {
+                        double value = new Double (
+                            attrs.getValue (uri, "value")
+                        ).doubleValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        sigmaCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within npopCI.
-                if (activeElement.equals("npopCI")) {
-                    if (localName.equals("lower")) {
-                        int value = new Integer(
-                            attrs.getValue(uri, "value")
-                        ).intValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        npopCI.setLowerResult(value, likelihood);
+                if (activeElement.equals ("npopCI")) {
+                    if (localName.equals ("lower")) {
+                        int value = new Integer (
+                            attrs.getValue (uri, "value")
+                        ).intValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        npopCI.setLowerResult (value, likelihood);
                     }
-                    if (localName.equals("upper")) {
-                        int value = new Integer(
-                            attrs.getValue(uri, "value")
-                        ).intValue();
-                        double likelihood = new Double(
-                            attrs.getValue(uri, "likelihood")
-                        ).doubleValue();
-                        npopCI.setUpperResult(value, likelihood);
+                    if (localName.equals ("upper")) {
+                        int value = new Integer (
+                            attrs.getValue (uri, "value")
+                        ).intValue ();
+                        double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        ).doubleValue ();
+                        npopCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within demarcation.
-                if (activeElement.equals("demarcation")) {
-                    if (localName.equals("ecotypes")) {
-                        int size = new Integer(
-                            attrs.getValue(uri, "size")
-                        ).intValue();
-                        ecotypes = new ArrayList<ArrayList<String>>(size);
+                if (activeElement.equals ("demarcation")) {
+                    if (localName.equals ("ecotypes")) {
+                        int size = new Integer (
+                            attrs.getValue (uri, "size")
+                        ).intValue ();
+                        ecotypes = new ArrayList<ArrayList<String>> (size);
                     }
-                    if (localName.equals("ecotype")) {
-                        int size = new Integer(
-                            attrs.getValue(uri, "size")
-                        ).intValue();
-                        ecotypes.add(new ArrayList<String>(size));
-                        ecotypeNumber = new Integer(
-                            attrs.getValue(uri, "number")
-                        ).intValue();
+                    if (localName.equals ("ecotype")) {
+                        int size = new Integer (
+                            attrs.getValue (uri, "size")
+                        ).intValue ();
+                        ecotypes.add (new ArrayList<String> (size));
+                        ecotypeNumber = new Integer (
+                            attrs.getValue (uri, "number")
+                        ).intValue ();
                     }
-                    if (localName.equals("member") && ecotypes != null) {
-                        ecotypes.get(ecotypeNumber - 1).add(
-                            attrs.getValue(uri, "name")
+                    if (localName.equals ("member") && ecotypes != null) {
+                        ecotypes.get (ecotypeNumber - 1).add (
+                            attrs.getValue (uri, "name")
                         );
                     }
                 }
@@ -637,44 +637,44 @@ public class ProjectFileIO {
         public void endElement (String uri, String localName, String qName) {
             if (isProjectFile) {
                 // Look for the end of the ecosim save file.
-                if (localName.equals("ecosim")) {
+                if (localName.equals ("ecosim")) {
                     isProjectFile = false;
                 }
                 // Look for the end of the phylogeny element.
-                if (localName.equals("phylogeny")) {
-                    phylogeny.setHasRun(true);
+                if (localName.equals ("phylogeny")) {
+                    phylogeny.setHasRun (true);
                 }
                 // Look for the end of the binning element.
-                if (localName.equals("binning")) {
-                    binning.setHasRun(true);
+                if (localName.equals ("binning")) {
+                    binning.setHasRun (true);
                 }
                 // Look for the end of the bruteforce element.
-                if (localName.equals("bruteforce")) {
-                    bruteforce.setHasRun(true);
+                if (localName.equals ("bruteforce")) {
+                    bruteforce.setHasRun (true);
                 }
                 // Look for the end of the hillclimb element.
-                if (localName.equals("hillclimb")) {
-                    hillclimb.setHasRun(true);
+                if (localName.equals ("hillclimb")) {
+                    hillclimb.setHasRun (true);
                 }
                 // Look for the end of the omegaCI element.
-                if (localName.equals("omegaCI")) {
-                    omegaCI.setHasRun(true);
+                if (localName.equals ("omegaCI")) {
+                    omegaCI.setHasRun (true);
                 }
                 // Look for the end of the sigmaCI element.
-                if (localName.equals("sigmaCI")) {
-                    sigmaCI.setHasRun(true);
+                if (localName.equals ("sigmaCI")) {
+                    sigmaCI.setHasRun (true);
                 }
                 // Look for the end of the npopCI element.
-                if (localName.equals("npopCI")) {
-                    npopCI.setHasRun(true);
+                if (localName.equals ("npopCI")) {
+                    npopCI.setHasRun (true);
                 }
                 // Look for the end of the demarcation element.
-                if (localName.equals("demarcation")) {
-                    demarcation.setEcotypes(ecotypes);
-                    demarcation.setHasRun(true);
+                if (localName.equals ("demarcation")) {
+                    demarcation.setEcotypes (ecotypes);
+                    demarcation.setHasRun (true);
                 }
                 // Update the active element.
-                if (elements.contains(localName)) {
+                if (elements.contains (localName)) {
                     activeElement = "none";
                 }
             }
