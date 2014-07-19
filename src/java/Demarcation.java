@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Carlo Francisco, Wesleyan University
@@ -43,16 +43,16 @@ public class Demarcation implements Runnable {
      *  @param binning The binning results.
      *  @param hillclimb The hillclimbing results.
      */
-    public Demarcation(MasterVariables masterVariables,
+    public Demarcation (MasterVariables masterVariables,
         Phylogeny phylogeny, Binning binning, Hillclimb hillclimb) {
         this.masterVariables = masterVariables;
         this.phylogeny = phylogeny;
         this.binning = binning;
         this.hillclimb = hillclimb;
         hasRun = false;
-        ecotypes = new ArrayList<ArrayList<String>>();
-        workingDirectory = masterVariables.getWorkingDirectory();
-        log = masterVariables.getLog();
+        ecotypes = new ArrayList<ArrayList<String>> ();
+        workingDirectory = masterVariables.getWorkingDirectory ();
+        log = masterVariables.getLog ();
     }
 
     /**
@@ -60,8 +60,8 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         // Find the ecotypes.
-        NewickTree tree = phylogeny.getNewickTree();
-        findEcotypes(tree.getRoot(), hillclimb.getResult(), 0);
+        NewickTree tree = phylogeny.getNewickTree ();
+        findEcotypes (tree.getRoot (), hillclimb.getResult (), 0);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -71,12 +71,12 @@ public class Demarcation implements Runnable {
      *
      *  @return the demarcation result.
      */
-    public String toString() {
+    public String toString () {
         String string = "";
         // Append the ecotypes to the string.
-        for (int i = 0; i < ecotypes.size(); i++) {
+        for (int i = 0; i < ecotypes.size (); i++) {
             string += String.format(
-                "  Ecotype %4d: %s\n", (i + 1), ecotypes.get(i)
+                "  Ecotype %4d: %s\n", (i + 1), ecotypes.get (i)
             );
         }
         return string;
@@ -87,7 +87,7 @@ public class Demarcation implements Runnable {
      *
      *  @return The ecotypes.
      */
-    public ArrayList<ArrayList<String>> getEcotypes() {
+    public ArrayList<ArrayList<String>> getEcotypes () {
         return ecotypes;
     }
 
@@ -96,7 +96,7 @@ public class Demarcation implements Runnable {
      *
      *  @param ecotypes The ecotypes.
      */
-    public void setEcotypes(ArrayList<ArrayList<String>> ecotypes) {
+    public void setEcotypes (ArrayList<ArrayList<String>> ecotypes) {
         this.ecotypes = ecotypes;
     }
 
@@ -105,7 +105,7 @@ public class Demarcation implements Runnable {
      *
      *  @return True if demarcation has been run, false otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -114,35 +114,35 @@ public class Demarcation implements Runnable {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
     /**
-     *  Find the ecotypes using a recursive algorithm.  If the subclade of the
-     *  tree represented by node has a demarcation confidence interval with a
-     *  lower bound of 1, demarcate the subclade as an ecotype.  Otherwise,
-     *  recurse on the children of node.
+     *  Find the ecotypes using a recursive algorithm.  If the subclade of
+     *  the tree represented by node has a demarcation confidence interval
+     *  with a lower bound of 1, demarcate the subclade as an ecotype.
+     *  Otherwise, recurse on the children of node.
      *
      *  @param node The current node representing the subclade.
      *  @param parentHillclimbResult The Hillclimb result of the parent node.
      *  @param iteration The number of nodes already visited.
      */
-    private void findEcotypes(NewickTreeNode node,
+    private void findEcotypes (NewickTreeNode node,
         ParameterSet parentHillclimbResult, int iteration) {
         ArrayList<String> sample = new ArrayList<String> ();
-        if (node.isLeafNode()) {
-            String name = node.getName();
-            if (! name.equals(phylogeny.getOutgroupIdentifier())) {
+        if (node.isLeafNode ()) {
+            String name = node.getName ();
+            if (! name.equals (phylogeny.getOutgroupIdentifier ())) {
                 sample.add (name);
                 ecotypes.add (sample);
             }
         }
         else {
-            ArrayList<NewickTreeNode> leaves = node.getDescendants();
-            for (int i = 0; i < leaves.size(); i ++) {
-                String name = leaves.get(i).getName();
-                if (! name.equals(phylogeny.getOutgroupIdentifier())) {
+            ArrayList<NewickTreeNode> leaves = node.getDescendants ();
+            for (int i = 0; i < leaves.size (); i ++) {
+                String name = leaves.get (i).getName ();
+                if (! name.equals (phylogeny.getOutgroupIdentifier ())) {
                     sample.add (name);
                 }
             }
@@ -153,54 +153,58 @@ public class Demarcation implements Runnable {
             String suffix = "-demarcation-" + iteration;
             // Create a new Phylogeny object containing just the sequences to
             // be tested.
-            Phylogeny samplePhylogeny = new Phylogeny(masterVariables, suffix);
-            // Add the sequences from the subtree to the new Phylogeny object.
+            Phylogeny samplePhylogeny = new Phylogeny (
+                masterVariables, suffix
+            );
+            // Add the sequences from the subtree to the sample Phylogeny.
             for (int i = 0; i < sample.size (); i ++) {
                 String id = sample.get (i);
-                samplePhylogeny.put(
+                samplePhylogeny.put (
                     id,
-                    phylogeny.getSequence(id)
+                    phylogeny.getSequence (id)
                 );
             }
             // Add the subtree to the new Phylogeny object.
-            samplePhylogeny.loadTree(node.toString());
+            samplePhylogeny.loadTree (node.toString ());
             // Save a copy of the sequence data.
-            samplePhylogeny.saveFasta(
+            samplePhylogeny.saveFasta (
                 workingDirectory + "sequence" + suffix + ".dat"
             );
-            samplePhylogeny.setHasRun(true);
+            samplePhylogeny.setHasRun (true);
             int nu = phylogeny.getNu ();
             int sampleNu = sample.size ();
             int length = samplePhylogeny.length ();
             // Run the binning program.
-            Binning sampleBinning = new Binning(
+            Binning sampleBinning = new Binning (
                 masterVariables, samplePhylogeny, suffix
             );
-            sampleBinning.run();
+            sampleBinning.run ();
             // Run the hillclimb program.
-            Hillclimb sampleHillclimb = new Hillclimb(
+            Hillclimb sampleHillclimb = new Hillclimb (
                 masterVariables, sampleNu, length, sampleBinning,
                 parentHillclimbResult, suffix
             );
-            sampleHillclimb.run();
+            sampleHillclimb.run ();
             // Run the demarcation confidence interval program.
             DemarcationConfidenceInterval demarcConf =
-                new DemarcationConfidenceInterval(
+                new DemarcationConfidenceInterval (
                 masterVariables, nu, sampleNu, length,
                 sampleBinning, sampleHillclimb, suffix
             );
-            demarcConf.run();
+            demarcConf.run ();
             // If 1 is the lower bound of the confidence interval, add the
             // list of sequences to the list of ecotypes
-            if (demarcConf.getResult() == 1) {
+            if (demarcConf.getResult () == 1) {
                 ecotypes.add (sample);
             }
             else {
-                ArrayList<NewickTreeNode> children = node.getChildren();
-                for (int i = 0; i < children.size(); i ++) {
+                ArrayList<NewickTreeNode> children = node.getChildren ();
+                for (int i = 0; i < children.size (); i ++) {
                     iteration ++;
-                    findEcotypes(
-                        children.get(i), sampleHillclimb.getResult(), iteration
+                    findEcotypes (
+                        children.get(i),
+                        sampleHillclimb.getResult (),
+                        iteration
                     );
                 }
             }
