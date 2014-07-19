@@ -52,17 +52,6 @@ public class Fasta {
     }
 
     /**
-     *  Constructor for a Fasta object using a user supplied file name.
-     *
-     *  @param fileName The path and file name of the file containing the Fasta
-     *  data.
-     */
-    public Fasta (String fileName) {
-        file = new File(fileName);
-        parseFasta(file);
-    }
-
-    /**
      *  Constructor for a Fasta object using a user supplied File.
      *
      *  @param file A File containing the Fasta data.
@@ -70,20 +59,6 @@ public class Fasta {
     public Fasta (File file) {
         this.file = file;
         parseFasta(file);
-    }
-
-    /**
-     *  Constructor for a Fasta object, used for making a copy of a Fasta
-     *  object.
-     *
-     *  @param fasta The Fasta object that contains the data for this new Fasta
-     *  object.
-     */
-    public Fasta (Fasta fasta) {
-        file = fasta.getFile();
-        ids = fasta.getIdentifiers();
-        descriptionHash = fasta.getDescriptionHash();
-        sequenceHash = fasta.getSequenceHash();
     }
 
     /**
@@ -202,38 +177,6 @@ public class Fasta {
     }
 
     /**
-     *  Gets a description from this Fasta object that has the provided ID.
-     *
-     *  @param id The ID of the description to return.
-     *  @return The description linked to the provided ID.
-     */
-    public String getDescription (String id) {
-        String value = null;
-        if (id != null) {
-            value = descriptionHash.get(id);
-        }
-        return value;
-    }
-
-    /**
-     *  Gets a description from this Fasta object that has the provided index.
-     *
-     *  @param index The index of the description to return.
-     *  @return The description linked to the provided index.
-     */
-    public String getDescription (int index) {
-        String value = null;
-        try {
-            String id = ids.get(index);
-            value = getDescription(id);
-        }
-        catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-        return value;
-    }
-
-    /**
      *  Get the Identifiers stored in this Fasta.
      *
      *  @return ArrayList of Strings containing the identifiers.
@@ -314,24 +257,6 @@ public class Fasta {
     }
 
     /**
-     *  Removes a sequence from this Fasta object.
-     *
-     *  @param index The index of the sequence to remove.
-     *  @return True if the sequences was successfully removed, False if not.
-     */
-    public boolean remove (int index) {
-        boolean success = false;
-        try {
-            String id = ids.get(index);
-            success = remove(id);
-        }
-        catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-        return success;
-    }
-
-    /**
      *  Returns the length of the longest sequence stored in this Fasta object.
      */
     public int length () {
@@ -350,16 +275,6 @@ public class Fasta {
      */
     public int size () {
         return ids.size();
-    }
-
-    /**
-     *  Loads the given Fasta formatted file into this object.
-     *
-     *  @param file The file to load.
-     */
-    public void load (File file) {
-        this.file = file;
-        parseFasta(file);
     }
 
     /**
