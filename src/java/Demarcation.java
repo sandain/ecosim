@@ -75,7 +75,7 @@ public class Demarcation implements Runnable {
         String string = "";
         // Append the ecotypes to the string.
         for (int i = 0; i < ecotypes.size (); i++) {
-            string += String.format(
+            string += String.format (
                 "  Ecotype %4d: %s\n", (i + 1), ecotypes.get (i)
             );
         }
@@ -202,7 +202,7 @@ public class Demarcation implements Runnable {
                 for (int i = 0; i < children.size (); i ++) {
                     iteration ++;
                     findEcotypes (
-                        children.get(i),
+                        children.get (i),
                         sampleHillclimb.getResult (),
                         iteration
                     );
