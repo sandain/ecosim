@@ -58,17 +58,17 @@ public class FileChooser extends javax.swing.JFileChooser {
         FileFilter ff;
         if (type.equals ("xml")) {
             valid = new ArrayList<String> (Arrays.asList (xmlExtensions));
-            ff = new FileFilter(xmlDescription);
+            ff = new FileFilter (xmlDescription);
             mode = FILES_ONLY;
         }
         else if (type.equals ("csv")) {
             valid = new ArrayList<String> (Arrays.asList (csvExtensions));
-            ff = new FileFilter(csvDescription);
+            ff = new FileFilter (csvDescription);
             mode = FILES_ONLY;
         }
         else if (type.equals ("fasta")) {
             valid = new ArrayList<String> (Arrays.asList (fastaExtensions));
-            ff = new FileFilter(fastaDescription);
+            ff = new FileFilter (fastaDescription);
             mode = FILES_ONLY;
         }
         else if (type.equals ("newick")) {
