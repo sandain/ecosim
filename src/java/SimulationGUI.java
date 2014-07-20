@@ -184,10 +184,18 @@ public class SimulationGUI extends Simulation {
         JPanel buttons = new JPanel ();
         // Create a border around the button area.
         pane.setLayout (new BorderLayout ());
-        pane.add (Box.createRigidArea (new Dimension (0, 15)), BorderLayout.NORTH);
-        pane.add (Box.createRigidArea (new Dimension (0, 15)), BorderLayout.SOUTH);
-        pane.add (Box.createRigidArea (new Dimension (15, 0)), BorderLayout.EAST);
-        pane.add (Box.createRigidArea (new Dimension (15, 0)), BorderLayout.WEST);
+        pane.add (Box.createRigidArea (
+            new Dimension (0, 15)), BorderLayout.NORTH
+        );
+        pane.add (Box.createRigidArea (
+            new Dimension (0, 15)), BorderLayout.SOUTH)
+        ;
+        pane.add (Box.createRigidArea (
+            new Dimension (15, 0)), BorderLayout.EAST
+        );
+        pane.add (Box.createRigidArea (
+            new Dimension (15, 0)), BorderLayout.WEST
+        );
         // Add the buttons.
         buttons.setLayout (new GridLayout (1, 2, 15, 15));
         buttons.add (makeSimulationButtonPane ());
@@ -287,7 +295,9 @@ public class SimulationGUI extends Simulation {
                 );
             }
         });
-        JLabel critJLabel = new JLabel ("Select Criterion: ", JLabel.TRAILING);
+        JLabel critJLabel = new JLabel (
+            "Select Criterion: ", JLabel.TRAILING
+        );
         JPanel crit = new JPanel ();
         crit.add (critJLabel);
         crit.add (critSelector);
@@ -349,7 +359,8 @@ public class SimulationGUI extends Simulation {
             );
             if (bruteforce != null && bruteforce.hasRun ()) {
                 log.append (
-                    "The best bruteforce result using the new criterion value:\n"
+                    "The best bruteforce result using the new criterion " +
+                    "value:\n"
                 );
                 log.append (bruteforce.getBestResult () + "\n");
             }
@@ -386,7 +397,7 @@ public class SimulationGUI extends Simulation {
             );
             return;
         }
-        ProjectFileIO projectFileIO = new ProjectFileIO(
+        ProjectFileIO projectFileIO = new ProjectFileIO (
             masterVariables, phylogeny, binning, bruteforce,
             hillclimb, omegaCI, sigmaCI, npopCI, demarcation
         );
@@ -423,9 +434,11 @@ public class SimulationGUI extends Simulation {
             // Load the project file.
             projectFileIO.load (userFile);
             // Update the crit selector.
-            critSelector.setSelectedIndex (masterVariables.getCriterion() - 1);
+            critSelector.setSelectedIndex (
+                masterVariables.getCriterion () - 1
+            );
             // Grab the loaded variables.
-            phylogeny = projectFileIO.getPhylogeny();
+            phylogeny = projectFileIO.getPhylogeny ();
             binning = projectFileIO.getBinning ();
             bruteforce = projectFileIO.getBruteforce ();
             hillclimb = projectFileIO.getHillclimb ();
@@ -695,13 +708,13 @@ public class SimulationGUI extends Simulation {
     /**
      *  The user has asked to run just the npop confidence interval program.
      */
-    private void npopConfActionPerformed() {
+    private void npopConfActionPerformed () {
         if (binning == null || ! binning.hasRun () ||
             hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
-        Thread thread = new Thread() {
+        Thread thread = new Thread () {
             public void run () {
                 if (running) {
                     log.append ("Already running...\n");
@@ -731,11 +744,11 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runDemarcation();
+                runDemarcation ();
                 running = false;
             }
         };
-        thread.start();
+        thread.start ();
     }
 
     private JFrame gui;
