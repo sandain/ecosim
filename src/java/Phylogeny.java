@@ -154,6 +154,10 @@ public class Phylogeny implements Runnable {
         return fasta.length ();
     }
 
+    public Fasta getFasta () {
+        return fasta;
+    }
+
     /**
      *  Returns the number of environmental sequences.
      *
