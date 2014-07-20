@@ -89,10 +89,11 @@ public class ProjectFileIO {
      *  @param npopCI The NpopConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO (MasterVariables masterVariables, Phylogeny phylogeny,
-        Binning binning, Bruteforce bruteforce, Hillclimb hillclimb,
-        OmegaConfidenceInterval omegaCI, SigmaConfidenceInterval sigmaCI,
-        NpopConfidenceInterval npopCI, Demarcation demarcation) {
+    public ProjectFileIO (MasterVariables masterVariables,
+        Phylogeny phylogeny, Binning binning, Bruteforce bruteforce,
+        Hillclimb hillclimb, OmegaConfidenceInterval omegaCI,
+        SigmaConfidenceInterval sigmaCI, NpopConfidenceInterval npopCI,
+        Demarcation demarcation) {
         this.masterVariables = masterVariables;
         this.phylogeny = phylogeny;
         this.binning = binning;
@@ -122,12 +123,12 @@ public class ProjectFileIO {
             ));
             // Output the current criterion.
             out.write (
-                "  <criterion value=\"" + 
+                "  <criterion value=\"" +
                 masterVariables.getCriterion () + "\"/>\n"
             );
             // Output the current PCR error.
             out.write (
-                "  <pcrerror value=\"" + 
+                "  <pcrerror value=\"" +
                 masterVariables.getPCRError () + "\"/>\n"
             );
             // Output the phylogeny data.
@@ -140,7 +141,7 @@ public class ProjectFileIO {
                     "    <tree value=\"%s\"/>\n",
                     phylogeny.getNewickTree ().toString ()
                 ));
-                ArrayList<String> identifiers = phylogeny.getIdentifiers();
+                ArrayList<String> identifiers = phylogeny.getIdentifiers ();
                 for (int i = 0; i < identifiers.size (); i ++) {
                     out.write (String.format (
                         "    <sequence identifier=\"%s\" sequence=\"%s\"/>\n",
@@ -446,15 +447,15 @@ public class ProjectFileIO {
                 }
                 // Look for the criterion element.
                 if (localName.equals ("criterion")) {
-                    masterVariables.setCriterion (
-                        new Integer (attrs.getValue (uri, "value")).intValue ()
-                    );
+                    masterVariables.setCriterion (new Integer (
+                        attrs.getValue (uri, "value")
+                    ).intValue ());
                 }
                 // Look for the pcrerror element.
                 if (localName.equals ("pcrerror")) {
-                    masterVariables.setPCRError (
-                        new Double (attrs.getValue (uri, "value")).doubleValue ()
-                    );
+                    masterVariables.setPCRError (new Double (
+                        attrs.getValue (uri, "value")
+                    ).doubleValue ());
                 }
                 // Look for the elements within phylogeny.
                 if (activeElement.equals ("phylogeny")) {
@@ -531,14 +532,12 @@ public class ProjectFileIO {
                 // Look for elements within hillclimb.
                 if (activeElement.equals ("hillclimb")) {
                     if (localName.equals ("result")) {
-                        hillclimb.setResult (
-                            new ParameterSet<Double> (
-                                new Double (attrs.getValue (uri, "omega")),
-                                new Double (attrs.getValue (uri, "sigma")),
-                                new Integer (attrs.getValue (uri, "npop")),
-                                new Double (attrs.getValue (uri, "likelihood"))
-                            )
-                        );
+                        hillclimb.setResult (new ParameterSet<Double> (
+                            new Double (attrs.getValue (uri, "omega")),
+                            new Double (attrs.getValue (uri, "sigma")),
+                            new Integer (attrs.getValue (uri, "npop")),
+                            new Double (attrs.getValue (uri, "likelihood"))
+                        ));
                     }
                 }
                 // Look for elements within omegaCI.
@@ -631,8 +630,8 @@ public class ProjectFileIO {
         }
 
         /**
-         *  Override the endElement method in DefaultHandler to help keep track
-         *  of our location in the XML document.
+         *  Override the endElement method in DefaultHandler to help keep
+         *  track of our location in the XML document.
          */
         public void endElement (String uri, String localName, String qName) {
             if (isProjectFile) {
