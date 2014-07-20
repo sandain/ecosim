@@ -354,7 +354,7 @@ public class SimulationGUI extends Simulation {
             // Update the criterion value.
             masterVariables.setCriterion (criterion);
             log.append (
-                "Criterion set to: " + 
+                "Criterion set to: " +
                 masterVariables.getCriterionLabel (criterion) + "\n"
             );
             if (bruteforce != null && bruteforce.hasRun ()) {
