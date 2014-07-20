@@ -255,7 +255,7 @@ public class NpopConfidenceInterval {
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the input file.");
@@ -309,7 +309,7 @@ public class NpopConfidenceInterval {
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the output file.");
