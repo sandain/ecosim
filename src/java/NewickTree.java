@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
@@ -102,7 +102,8 @@ public class NewickTree {
     }
 
     /**
-     *  Returns an ArrayList<NewickTreeNode> that makes up the leaves of this tree.
+     *  Returns an ArrayList<NewickTreeNode> that makes up the leaves of this
+     *  tree.
      *
      *  @return ArrayList containing the leaves.
      */
@@ -292,10 +293,10 @@ public class NewickTree {
                     buffer.append (subTree.substring (i, j));
                     i = j;
                 }
-                // Keep appending the child node's meta data to the buffer until
-                // we find a new child node.  If we do find a new child node,
-                // add it to the current node by recursion with the buffer as
-                // the subTree, then clear the buffer.
+                // Keep appending the child node's meta data to the buffer
+                // until we find a new child node.  If we do find a new child
+                // node, add it to the current node by recursion with the
+                // buffer as the subTree, then clear the buffer.
                 if (subTree.charAt (i) != ',') {
                     buffer.append (subTree.charAt (i));
                 }
@@ -305,8 +306,8 @@ public class NewickTree {
                 }
                 i ++;
             }
-            // Add a new child to the current node by recursion with the buffer
-            // as the subTree.
+            // Add a new child to the current node by recursion with the
+            // buffer as the subTree.
             node.addChild (parseTree (buffer.toString ()));
         }
         else {
