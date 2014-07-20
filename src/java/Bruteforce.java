@@ -88,7 +88,7 @@ public class Bruteforce implements Runnable {
     /**
      *  Run the bruteforce program.
      */
-    public void run() {
+    public void run () {
         Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
@@ -188,7 +188,7 @@ public class Bruteforce implements Runnable {
      *
      *  @param result The result to add to the list.
      */
-    public void addResult(ParameterSet<Likelihood> result) {
+    public void addResult (ParameterSet<Likelihood> result) {
       results.add (result);
     }
 
@@ -270,7 +270,7 @@ public class Bruteforce implements Runnable {
                         omega, sigma, npop,
                         new Likelihood (masterVariables, p)
                     );
-                results.add(result);
+                results.add (result);
                 // Read the next line of the file.
                 nextLine = reader.readLine ();
             }
@@ -281,7 +281,7 @@ public class Bruteforce implements Runnable {
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the output file.");
@@ -368,7 +368,7 @@ public class Bruteforce implements Runnable {
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println (
