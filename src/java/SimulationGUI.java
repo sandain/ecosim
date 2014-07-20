@@ -231,28 +231,11 @@ public class SimulationGUI extends Simulation {
                 runAllDemarcationActionPerformed();
             }
         });
-        // Create the PCR error text field.
-        pcrErrorTextField = new JTextField(20);
-        pcrErrorTextField.setText(String.format(
-            "%e", masterVariables.getPCRError()
-        ));
-        pcrErrorTextField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                changePCRErrorActionPerformed(
-                    pcrErrorTextField.getText()
-                );
-            }
-        });
-        JLabel pcrErrorJLabel = new JLabel("PCR Error: ", JLabel.TRAILING);
-        JPanel pcrErrorPanel = new JPanel();
-        pcrErrorPanel.add(pcrErrorJLabel);
-        pcrErrorPanel.add(pcrErrorTextField);
         // Add everything to the pane.
         pane.add(runBinningThroughBruteforce);
         pane.add(runHillclimbing);
         pane.add(runAll);
         pane.add(runAllDemarcation);
-        pane.add(pcrErrorPanel);
         return pane;
     }
 
@@ -352,54 +335,6 @@ public class SimulationGUI extends Simulation {
     }
 
     /**
-     *  The user has asked to change the PCR error.
-     */
-    private void changePCRErrorActionPerformed(String pcrerror) {
-        Double value = null;
-        try {
-            value = new Double(pcrerror);
-        }
-        catch (NumberFormatException e) {
-            log.append(
-                "Unable to change PCR error, invalid double value supplied.\n"
-            );
-            return;
-        }
-        finally {
-            if (value != null) {
-                // Update the PCR Error value.
-                masterVariables.setPCRError(value.doubleValue());
-                log.append(String.format(
-                    "PCR error set to: %e\n",
-                    value.doubleValue()
-                ));
-                // Update the hasRun variables if needed.
-                if (bruteforce != null && bruteforce.hasRun()) {
-                    log.append(
-                        "You will need to rerun through Bruteforce for the " +
-                        "new PCR Error value.\n");
-                    bruteforce.setHasRun(false);
-                    if (hillclimb != null) {
-                        hillclimb.setHasRun(false);
-                    }
-                    if (omegaCI != null) {
-                        omegaCI.setHasRun(false);
-                    }
-                    if (sigmaCI != null) {
-                        sigmaCI.setHasRun(false);
-                    }
-                    if (npopCI != null) {
-                        npopCI.setHasRun(false);
-                    }
-                    if (demarcation != null) {
-                        demarcation.setHasRun(false);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      *  The user has asked to change the criterion value.
      *
      *  @param criterion The new criterion value.
@@ -486,11 +421,6 @@ public class SimulationGUI extends Simulation {
             projectFileIO.load(userFile);
             // Update the crit selector.
             critSelector.setSelectedIndex(masterVariables.getCriterion() - 1);
-            // Update the PCR error text field.
-            String pcrErrorString = String.format(
-                "%e", masterVariables.getPCRError()
-            );
-            pcrErrorTextField.setText(pcrErrorString);
             // Grab the loaded variables.
             phylogeny = projectFileIO.getPhylogeny();
             binning = projectFileIO.getBinning();
@@ -806,7 +736,6 @@ public class SimulationGUI extends Simulation {
     }
 
     private JFrame gui;
-    private JTextField pcrErrorTextField;
     private JComboBox<String> critSelector;
 
     private Execs execs;
