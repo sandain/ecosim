@@ -466,7 +466,7 @@ public class Execs {
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println (
@@ -475,7 +475,7 @@ public class Execs {
                 }
             }
         }
-        scriptFile.setExecutable(true);
+        scriptFile.setExecutable (true);
     }
 
     private MasterVariables masterVariables;
