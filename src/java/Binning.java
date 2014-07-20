@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -62,11 +62,15 @@ public class Binning implements Runnable {
         this.phylogeny = phylogeny;
         bins = new ArrayList<BinLevel> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        binningInputFileName = workingDirectory + "binningIn" + suffix + ".dat";
+        binningInputFileName = workingDirectory +
+            "binningIn" + suffix + ".dat";
         binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
-        binningOutputFileName = workingDirectory + "binningOut" + suffix + ".dat";
-        divergenceMatrixInputFileName = workingDirectory + "divergencematrixIn" + suffix + ".dat";
-        divergenceMatrixOutputFileName = workingDirectory + "divergencematrixOut" + suffix + ".dat";
+        binningOutputFileName = workingDirectory +
+            "binningOut" + suffix + ".dat";
+        divergenceMatrixInputFileName = workingDirectory +
+            "divergencematrixIn" + suffix + ".dat";
+        divergenceMatrixOutputFileName = workingDirectory +
+            "divergencematrixOut" + suffix + ".dat";
         hasRun = false;
     }
 
@@ -78,14 +82,19 @@ public class Binning implements Runnable {
         File binningInputFile = new File (binningInputFileName);
         File binLevelsFile = new File (binLevelsFileName);
         File binningOutputFile = new File (binningOutputFileName);
-        File divergenceMatrixInputFile = new File (divergenceMatrixInputFileName);
-        File divergenceMatrixOutputFile = new File (divergenceMatrixOutputFileName);
-
+        File divergenceMatrixInputFile = new File (
+            divergenceMatrixInputFileName
+        );
+        File divergenceMatrixOutputFile = new File (
+            divergenceMatrixOutputFileName
+        );
         // Write the input values for the program to the
         // divergencematrixIn.dat file.
         writeDivergenceMatrixInputFile (divergenceMatrixInputFile);
         // Run the divergencematrix program.
-        execs.runDivergencematrix (divergenceMatrixInputFile, divergenceMatrixOutputFile);
+        execs.runDivergencematrix (
+            divergenceMatrixInputFile, divergenceMatrixOutputFile
+        );
         // Get the output provided by the divergencematrix program.
         readDivergenceMatrixOutputFile (divergenceMatrixOutputFile);
         // Output the divergence matrix to be used by the binning program.
@@ -207,7 +216,7 @@ public class Binning implements Runnable {
 
     /**
      *  Private method to write the binlevels file for the binning program.
-     *  
+     *
      *  @param binLevelsFile The binlevels.dat file.
      */
     private void writeBinLevelsFile (File binLevelsFile) {
@@ -279,7 +288,7 @@ public class Binning implements Runnable {
             String nextLine = reader.readLine ();
             while (nextLine != null) {
                 StringTokenizer st = new StringTokenizer (nextLine);
-                if (st.countTokens() == 2) {
+                if (st.countTokens () == 2) {
                     Float crit = new Float (st.nextToken ());
                     Integer value = new Integer (st.nextToken ());
                     bins.add (new BinLevel (crit, value));
