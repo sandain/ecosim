@@ -93,8 +93,6 @@ import java.io.File;
  *        and the phylogeny of the sequences.
  * @li @b DemarcationConfidenceInterval - Run the demarcation confidence
  *        interval program.
- * @li @b DivergenceMatrix - Object to interact with the divergencematrix
- *        program.
  * @li @b Execs - Holds the executable methods for the cohan program.
  * @li @b Fasta - Handles the input and output of fasta formatted text files.
  * @li @b FileChooser - Defines a custom file chooser.
