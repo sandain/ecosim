@@ -236,7 +236,7 @@ public class OmegaConfidenceInterval {
                 )
             );
             // Write the whichavg value.
-            int whichavg = masterVariables.getCriterion();
+            int whichavg = masterVariables.getCriterion ();
             writer.write (String.format ("%-20d whichavg\n", whichavg));
             // Write the likelihoodsolution value.
             writer.write (String.format (
@@ -251,7 +251,7 @@ public class OmegaConfidenceInterval {
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println (
@@ -294,7 +294,7 @@ public class OmegaConfidenceInterval {
                                   return;
                 }
                 result[index] = new Double (st.nextToken ()).doubleValue ();
-                st.nextToken(); // "likelihood".
+                st.nextToken (); // "likelihood".
                 likelihood[index] = new Double (
                     st.nextToken ()
                 ).doubleValue ();
