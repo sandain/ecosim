@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009-2013  Jason M. Wood, Montana State University
@@ -58,7 +58,7 @@ public class Fasta {
      */
     public Fasta (File file) {
         this.file = file;
-        parseFasta(file);
+        parseFasta (file);
     }
 
     /**
@@ -68,7 +68,7 @@ public class Fasta {
      */
     public boolean isValid () {
         boolean valid = false;
-        if (ids.size() > 0) {
+        if (ids.size () > 0) {
             valid = true;
         }
         return valid;
@@ -81,7 +81,7 @@ public class Fasta {
      *  @param sequence The sequence to add.
      */
     public void put (String id, String sequence) {
-        put(id, "", sequence);
+        put (id, "", sequence);
     }
 
     /**
@@ -92,9 +92,9 @@ public class Fasta {
      *  @param sequence The sequence to add.
      */
     public void put (String id, String description, String sequence) {
-        ids.add(id);
-        descriptionHash.put(id, description);
-        sequenceHash.put(id, sequence.toLowerCase());
+        ids.add (id);
+        descriptionHash.put (id, description);
+        sequenceHash.put (id, sequence.toLowerCase ());
     }
 
     /**
@@ -113,7 +113,7 @@ public class Fasta {
      *  @return The identifier linked to the provided index.
      */
     public String getIdentifier (int index) {
-        return ids.get(index);
+        return ids.get (index);
     }
 
     /**
@@ -125,7 +125,7 @@ public class Fasta {
     public String getSequence (String id) {
         String value = null;
         if (id != null) {
-            value = sequenceHash.get(id);
+            value = sequenceHash.get (id);
         }
         return value;
     }
@@ -139,11 +139,11 @@ public class Fasta {
     public String getSequence (int index) {
         String value = null;
         try {
-            String id = ids.get(index);
-            value = getSequence(id);
+            String id = ids.get (index);
+            value = getSequence (id);
         }
         catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         return value;
     }
@@ -156,7 +156,7 @@ public class Fasta {
      */
     public void setSequence (String id, String sequence) {
         if (id != null) {
-            sequenceHash.put(id, sequence.toLowerCase());
+            sequenceHash.put (id, sequence.toLowerCase ());
         }
     }
 
@@ -168,11 +168,11 @@ public class Fasta {
      */
     public void setSequence (int index, String sequence) {
         try {
-            String id = ids.get(index);
-            setSequence(id, sequence);
+            String id = ids.get (index);
+            setSequence (id, sequence);
         }
         catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -181,10 +181,10 @@ public class Fasta {
      *
      *  @return ArrayList of Strings containing the identifiers.
      */
-    public ArrayList<String> getIdentifiers() {
-        ArrayList<String> idsCopy = new ArrayList<String>();
-        for (int i = 0; i < ids.size(); i ++) {
-            idsCopy.add(ids.get(i));
+    public ArrayList<String> getIdentifiers () {
+        ArrayList<String> idsCopy = new ArrayList<String> ();
+        for (int i = 0; i < ids.size (); i ++) {
+            idsCopy.add (ids.get (i));
         }
         return idsCopy;
     }
@@ -196,14 +196,14 @@ public class Fasta {
      *  @return The HashMap containing the IDs and Descriptions stored in this
      *  Fasta.
      */
-    public HashMap<String, String> getDescriptionHash() {
-        HashMap<String, String> hashCopy = new HashMap<String, String>();
+    public HashMap<String, String> getDescriptionHash () {
+        HashMap<String, String> hashCopy = new HashMap<String, String> ();
         String [] keys;
-        keys = descriptionHash.keySet().toArray(
-            new String [descriptionHash.size()]
+        keys = descriptionHash.keySet ().toArray (
+            new String [descriptionHash.size ()]
         );
         for (int i = 0; i < keys.length; i ++) {
-            hashCopy.put(keys[i], descriptionHash.get(keys[i]));
+            hashCopy.put (keys[i], descriptionHash.get (keys[i]));
         }
         return hashCopy;
     }
@@ -214,13 +214,13 @@ public class Fasta {
      *  @return The HashMap containing the IDs and Sequences stored in this
      *  Fasta.
      */
-    public HashMap<String, String> getSequenceHash() {
-        HashMap<String, String> hashCopy = new HashMap<String, String>();
-        String [] keys = sequenceHash.keySet().toArray(
-            new String [sequenceHash.size()]
+    public HashMap<String, String> getSequenceHash () {
+        HashMap<String, String> hashCopy = new HashMap<String, String> ();
+        String [] keys = sequenceHash.keySet ().toArray (
+            new String [sequenceHash.size ()]
         );
         for (int i = 0; i < keys.length; i ++) {
-            hashCopy.put(keys[i], sequenceHash.get(keys[i]));
+            hashCopy.put (keys[i], sequenceHash.get (keys[i]));
         }
         return hashCopy;
     }
@@ -230,10 +230,10 @@ public class Fasta {
      *
      *  @return ArrayList of Strings containing the sequences.
      */
-    public ArrayList<String> getSequences() {
-        ArrayList<String> sequences = new ArrayList<String>();
-        for (int i = 0; i < ids.size(); i ++) {
-            sequences.add(sequenceHash.get(ids.get(i)));
+    public ArrayList<String> getSequences () {
+        ArrayList<String> sequences = new ArrayList<String> ();
+        for (int i = 0; i < ids.size (); i ++) {
+            sequences.add (sequenceHash.get (ids.get (i)));
         }
         return sequences;
     }
@@ -247,8 +247,8 @@ public class Fasta {
     public boolean remove (String id) {
         boolean success = false;
         if (id != null) {
-            String value = sequenceHash.remove(id);
-            ids.remove(id);
+            String value = sequenceHash.remove (id);
+            ids.remove (id);
             if (value != null) {
                 success = true;
             }
@@ -257,14 +257,14 @@ public class Fasta {
     }
 
     /**
-     *  Returns the length of the longest sequence stored in this Fasta object.
+     *  Returns the length of the longest sequence.
      */
     public int length () {
         int length = 0;
-        for (int i = 0; i < ids.size(); i ++) {
-            String id = ids.get(i);
-            if (sequenceHash.get(id).length() > length) {
-                length = sequenceHash.get(id).length();
+        for (int i = 0; i < ids.size (); i ++) {
+            String id = ids.get (i);
+            if (sequenceHash.get (id).length () > length) {
+                length = sequenceHash.get (id).length ();
             }
         }
         return length;
@@ -274,7 +274,7 @@ public class Fasta {
      *  Returns the number of sequences stored in this Fasta object.
      */
     public int size () {
-        return ids.size();
+        return ids.size ();
     }
 
     /**
@@ -285,7 +285,7 @@ public class Fasta {
      *  @return True if the save was a success, False otherwise.
      */
     public boolean save (String fileName) {
-        return save(new File(fileName));
+        return save (new File (fileName));
     }
 
     /**
@@ -299,26 +299,26 @@ public class Fasta {
         boolean success = false;
         BufferedWriter out = null;
         try {
-            out = new BufferedWriter(new FileWriter(file));
-            for (int i = 0; i < ids.size(); i ++) {
-                String key = ids.get(i);
-                out.write(">" + key + " ");
-                out.write(descriptionHash.get(key) + "\n");
-                out.write(sequenceHash.get(key) + "\n");
+            out = new BufferedWriter (new FileWriter (file));
+            for (int i = 0; i < ids.size (); i ++) {
+                String key = ids.get (i);
+                out.write (">" + key + " ");
+                out.write (descriptionHash.get (key) + "\n");
+                out.write (sequenceHash.get (key) + "\n");
             }
         }
         catch (IOException e) {
-            System.out.println("Error writing to output file.");
+            System.out.println ("Error writing to output file.");
         }
         finally {
             if (out != null) {
                 try {
-                    out.close();
+                    out.close ();
                     this.file = file;
                     success = true;
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing output file.");
+                    System.out.println ("Error closing output file.");
                 }
             }
         }
@@ -329,25 +329,25 @@ public class Fasta {
      *  Create a new Fasta object containing a random subset of the sequences
      *  contained in this Fasta object.
      *
-     *  @param number The number of sequences to place in the new Fasta object.
-     *  @return A new Fasta object containing a random subset of the sequences
-     *  contained in this Fasta object.
+     *  @param number The number of sequences to place in the new Fasta.
+     *  @return A new Fasta object containing a random subset of the
+     *  sequences contained in this Fasta object.
      */
     public Fasta randomSubset (int number) {
-        Fasta randomFasta = new Fasta();
-        ArrayList<String> oldIds = getIdentifiers();
-        Random random = new Random();
+        Fasta randomFasta = new Fasta ();
+        ArrayList<String> oldIds = getIdentifiers ();
+        Random random = new Random ();
         for (int i = 0; i < number; i ++) {
             // Choose a random sequence to add to the random fasta.
-            int rand = random.nextInt(oldIds.size());
-            String id = oldIds.get(rand);
-            randomFasta.put(
+            int rand = random.nextInt (oldIds.size ());
+            String id = oldIds.get (rand);
+            randomFasta.put (
                 id,
-                descriptionHash.get(id),
-                sequenceHash.get(id)
+                descriptionHash.get (id),
+                sequenceHash.get (id)
             );
             // Remove that sequence from being picked again.
-            oldIds.remove(id);
+            oldIds.remove (id);
         }
         return randomFasta;
     }
@@ -357,29 +357,29 @@ public class Fasta {
      */
     private void parseFasta (File fastaFile) {
         BufferedReader input = null;
-        sequenceHash = new HashMap<String, String>();
-        descriptionHash = new HashMap<String, String>();
-        ids = new ArrayList<String>();
+        sequenceHash = new HashMap<String, String> ();
+        descriptionHash = new HashMap<String, String> ();
+        ids = new ArrayList<String> ();
         try {
-            input = new BufferedReader(new FileReader(fastaFile));
+            input = new BufferedReader (new FileReader (fastaFile));
             String id = "null";
             String description = "";
             String sequence = "";
             String line = null;
-            while ((line = input.readLine()) != null) {
-                if (! line.isEmpty() && line.charAt(0) == '>') {
+            while ((line = input.readLine ()) != null) {
+                if (! line.isEmpty () && line.charAt (0) == '>') {
                     // This line contains a header.
-                    if (! id.equals("null")) {
+                    if (! id.equals ("null")) {
                         // Save the previous id/sequence before parsing the
                         // line.
-                        sequenceHash.put(id, sequence.toLowerCase());
-                        descriptionHash.put(id, description);
-                        ids.add(id);
+                        sequenceHash.put (id, sequence.toLowerCase ());
+                        descriptionHash.put (id, description);
+                        ids.add (id);
                         sequence = "";
                     }
                     // Grab the id out of the header.
-                    String[] header = line.split("\\s+", 2);
-                    id = header[0].substring(1);
+                    String[] header = line.split ("\\s+", 2);
+                    id = header[0].substring (1);
                     if (header.length == 2) {
                         description = header[1];
                     }
@@ -391,22 +391,22 @@ public class Fasta {
                 }
             }
             // Save the last sequence.
-            if (! id.equals("null")) {
-                sequenceHash.put(id, sequence.toLowerCase());
-                descriptionHash.put(id, description);
-                ids.add(id);
+            if (! id.equals ("null")) {
+                sequenceHash.put (id, sequence.toLowerCase ());
+                descriptionHash.put (id, description);
+                ids.add (id);
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading from input file.");
+            System.out.println ("Error reading from input file.");
         }
         finally {
             if (input != null) {
                 try {
-                    input.close();
+                    input.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing input file.");
+                    System.out.println ("Error closing input file.");
                 }
             }
         }
