@@ -152,7 +152,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             }
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the output file.");
@@ -192,7 +192,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     "about.html\" name=\"body\" />\n";
                 break;
             case userGuide:
-                indexFile = new File(
+                indexFile = new File (
                     masterVariables.getWorkingDirectory () +
                     "userGuideIndex.html"
                 );
@@ -201,7 +201,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     "userguide.html" + "\" name=\"body\" />\n";
                 break;
             case license:
-                indexFile = new File(
+                indexFile = new File (
                     masterVariables.getWorkingDirectory () +
                     "licenseIndex.html"
                 );
@@ -235,7 +235,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *  Perform the exit action.
      */
     private void exitActionPerformed () {
-        dispose();
+        dispose ();
     }
 
     /**
@@ -267,7 +267,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     // Open external links in the default browser.
                     if (url.startsWith ("http")) {
                         Desktop d = Desktop.getDesktop ();
-                        d.browse(evt.getURL ().toURI ());
+                        d.browse (evt.getURL ().toURI ());
                     }
                     // Open mailto links in the default mailer.
                     else if (url.startsWith ("mailto")) {
