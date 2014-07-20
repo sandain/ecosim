@@ -141,7 +141,7 @@ public class Simulation {
      */
     protected void runBinning () {
         log.append ("Starting binning...\n");
-        binning = new Binning (masterVariables, phylogeny);
+        binning = new Binning (masterVariables, phylogeny.getFasta ());
         binning.run ();
         // Verify that binning program ran correctly.
         if (! binning.hasRun ()) {

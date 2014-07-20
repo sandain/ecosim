@@ -58,17 +58,6 @@ public class Phylogeny implements Runnable {
     public Phylogeny (MasterVariables masterVariables, String suffix) {
         this.masterVariables = masterVariables;
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        sequencesFileName = workingDirectory + "sequences" + suffix + ".dat";
-        numbersFileName = workingDirectory + "numbers" + suffix + ".dat";
-        rgFileName = workingDirectory + "removegaps" + suffix + ".dat";
-        populationFileName = workingDirectory +
-            "population" + suffix + ".dat";
-        nameofstrainsFileName = workingDirectory +
-            "namesofstrains" + suffix + ".dat";
-        pcrerrorFileName = workingDirectory +
-            "pcrerror" + suffix + ".dat";
-        correctpcrFileName = workingDirectory +
-            "correctpcr" + suffix + ".out";
 
         fasta = new Fasta ();
         newickTree = null;
@@ -82,13 +71,6 @@ public class Phylogeny implements Runnable {
     public void run () {
         Execs execs = masterVariables.getExecs ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        File sequencesFile = new File (sequencesFileName);
-        File numbersFile = new File (numbersFileName);
-        File rgFile = new File (rgFileName);
-        File populationFile = new File (populationFileName);
-        File nameofstrainsFile = new File (nameofstrainsFileName);
-        File pcrerrorFile = new File (pcrerrorFileName);
-        File correctpcrFile = new File (correctpcrFileName);
         // Verify the sequence file exists.
         if (fasta == null || ! fasta.isValid ()) {
             return;
@@ -97,27 +79,6 @@ public class Phylogeny implements Runnable {
         if (newickTree == null || ! newickTree.isValid ()) {
             return;
         }
-        // Output the sequences.dat and numbers.dat files to be used by the
-        // removegaps program.
-        fasta.save (sequencesFile);
-        writeNumbersFile (numbersFile, fasta.size (), fasta.length ());
-        // Run the fasta file through the removegaps program.
-        execs.runRemovegaps (sequencesFile, numbersFile, rgFile);
-
-
-        // Run the readsynec program.
-        // XXX readsynec seems to just make sequences lowercase, done in
-        // Fasta.
-        execs.runReadsynec (rgFile, populationFile, nameofstrainsFile);
-
-
-        // Output the pcrerror.dat file to be used by the correctpcr program.
-        writePCRErrorFile (pcrerrorFile, masterVariables.getPCRError ());
-        // Run the correctpcr program.
-        execs.runCorrectpcr (populationFile, pcrerrorFile, correctpcrFile);
-        // Get the output provided by the correctpcr program.
-        readCorrectPCROutputFile (correctpcrFile);
-
 
         // Set the flag stating that the phylogeny programs have been run.
         hasRun = verifyPhylogeny ();
@@ -435,97 +396,6 @@ public class Phylogeny implements Runnable {
     }
 
     /**
-     *  Write the numbers file.
-     *
-     *  @param numbers The numbers.dat file.
-     *  @param size The number of environmental sequences.
-     *  @param length The length of the environmental sequences.
-     */
-    private void writeNumbersFile (File numbers, int size, int length) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter (new FileWriter (numbers));
-            writer.write (String.format ("%d, %d\n", size, length));
-        }
-        catch (IOException e) {
-            System.out.println ("Error writing the numbers.dat file.");
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
-                }
-            }
-        }
-    }
-
-    /**
-     *  Write the pcrerror file.
-     *
-     *  @param PCRErrorFile The pcrerror.dat file.
-     *  @param PCRError The PCR error.
-     */
-    private void writePCRErrorFile (File PCRErrorFile, double PCRError) {
-        // Create the random number seed; an odd less than 9 digits long
-        long randValue = (long) (100000000 * Math.random ());
-        if (randValue % 2 == 0) {
-            randValue ++;
-        }
-        try {
-            BufferedWriter writer = new BufferedWriter (
-                new FileWriter (PCRErrorFile)
-            );
-            writer.write ("" + PCRError);
-            writer.newLine ();
-            writer.write ("" + randValue);
-            writer.newLine ();
-            writer.close ();
-        }
-        catch (IOException e) {
-            e.printStackTrace ();
-        }
-    }
-
-    /**
-     *  Private method to read the output file from the correctpcr
-     *  program.
-     *
-     *  @param outputFile The file to read from.
-     */
-    private void readCorrectPCROutputFile (File outputFile) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader (new FileReader (outputFile));
-            String nextLine = reader.readLine (); // nu, lengthsequence
-            int i = 0;
-            nextLine = reader.readLine ();
-            while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer (nextLine);
-                // Modify the sequence stored in the fasta file.
-                fasta.setSequence (i, st.nextToken ());
-                i ++;
-                nextLine = reader.readLine ();
-            }
-        }
-        catch (IOException e) {
-            System.out.println ("Error reading the output file.");
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close ();
-                }
-                catch (IOException e) {
-                    System.out.println ("Error closing the output file.");
-                }
-            }
-        }
-    }
-
-    /**
      *  Read the tree output file.
      *
      *  @param outputFile The File containing the tree to read.
@@ -578,14 +448,6 @@ public class Phylogeny implements Runnable {
     private MasterVariables masterVariables;
     private Fasta fasta;
     private NewickTree newickTree;
-
-    private String sequencesFileName;
-    private String numbersFileName;
-    private String rgFileName;
-    private String populationFileName;
-    private String nameofstrainsFileName;
-    private String pcrerrorFileName;
-    private String correctpcrFileName;
 
     private boolean hasRun;
 

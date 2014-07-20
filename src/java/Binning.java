@@ -43,25 +43,36 @@ public class Binning implements Runnable {
      *  Object to interact with the binning programs.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param fasta The Fasta object.
      */
-    public Binning (MasterVariables masterVariables, Phylogeny phylogeny) {
-        this (masterVariables, phylogeny, "");
+    public Binning (MasterVariables masterVariables, Fasta fasta) {
+        this (masterVariables, fasta, "");
     }
 
     /**
      *  Object to interact with the binning programs.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param phylogeny The Phylogeny object.
+     *  @param fasta The Fasta object.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Binning (MasterVariables masterVariables, Phylogeny phylogeny,
+    public Binning (MasterVariables masterVariables, Fasta fasta,
         String suffix) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.fasta = fasta;
         bins = new ArrayList<BinLevel> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
+        sequencesFileName = workingDirectory + "sequences" + suffix + ".dat";
+        numbersFileName = workingDirectory + "numbers" + suffix + ".dat";
+        rgFileName = workingDirectory + "removegaps" + suffix + ".dat";
+        populationFileName = workingDirectory +
+            "population" + suffix + ".dat";
+        nameofstrainsFileName = workingDirectory +
+            "namesofstrains" + suffix + ".dat";
+        pcrerrorFileName = workingDirectory +
+            "pcrerror" + suffix + ".dat";
+        correctpcrFileName = workingDirectory +
+            "correctpcr" + suffix + ".out";
         binningInputFileName = workingDirectory +
             "binningIn" + suffix + ".dat";
         binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
@@ -79,6 +90,13 @@ public class Binning implements Runnable {
      */
     public void run () {
         Execs execs = masterVariables.getExecs ();
+        File sequencesFile = new File (sequencesFileName);
+        File numbersFile = new File (numbersFileName);
+        File rgFile = new File (rgFileName);
+        File populationFile = new File (populationFileName);
+        File nameofstrainsFile = new File (nameofstrainsFileName);
+        File pcrerrorFile = new File (pcrerrorFileName);
+        File correctpcrFile = new File (correctpcrFileName);
         File binningInputFile = new File (binningInputFileName);
         File binLevelsFile = new File (binLevelsFileName);
         File binningOutputFile = new File (binningOutputFileName);
@@ -88,6 +106,22 @@ public class Binning implements Runnable {
         File divergenceMatrixOutputFile = new File (
             divergenceMatrixOutputFileName
         );
+        // Output the sequences.dat and numbers.dat files to be used by the
+        // removegaps program.
+        fasta.save (sequencesFile);
+        writeNumbersFile (numbersFile, fasta.size (), fasta.length ());
+        // Run the fasta file through the removegaps program.
+        execs.runRemovegaps (sequencesFile, numbersFile, rgFile);
+        // Run the readsynec program.
+        // XXX readsynec seems to just make sequences lowercase, done in
+        // Fasta.
+        execs.runReadsynec (rgFile, populationFile, nameofstrainsFile);
+        // Output the pcrerror.dat file to be used by the correctpcr program.
+        writePCRErrorFile (pcrerrorFile, masterVariables.getPCRError ());
+        // Run the correctpcr program.
+        execs.runCorrectpcr (populationFile, pcrerrorFile, correctpcrFile);
+        // Get the output provided by the correctpcr program.
+        readCorrectPCROutputFile (correctpcrFile);
         // Write the input values for the program to the
         // divergencematrixIn.dat file.
         writeDivergenceMatrixInputFile (divergenceMatrixInputFile);
@@ -175,19 +209,74 @@ public class Binning implements Runnable {
     }
 
     /**
+     *  Write the numbers file.
+     *
+     *  @param numbers The numbers.dat file.
+     *  @param size The number of environmental sequences.
+     *  @param length The length of the environmental sequences.
+     */
+    private void writeNumbersFile (File numbers, int size, int length) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter (new FileWriter (numbers));
+            writer.write (String.format ("%d, %d\n", size, length));
+        }
+        catch (IOException e) {
+            System.out.println ("Error writing the numbers.dat file.");
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the input file.");
+                }
+            }
+        }
+    }
+
+    /**
+     *  Write the pcrerror file.
+     *
+     *  @param PCRErrorFile The pcrerror.dat file.
+     *  @param PCRError The PCR error.
+     */
+    private void writePCRErrorFile (File PCRErrorFile, double PCRError) {
+        // Create the random number seed; an odd less than 9 digits long
+        long randValue = (long) (100000000 * Math.random ());
+        if (randValue % 2 == 0) {
+            randValue ++;
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter (
+                new FileWriter (PCRErrorFile)
+            );
+            writer.write ("" + PCRError);
+            writer.newLine ();
+            writer.write ("" + randValue);
+            writer.newLine ();
+            writer.close ();
+        }
+        catch (IOException e) {
+            e.printStackTrace ();
+        }
+    }
+
+    /**
      *  Private method to write the input file for the binning program.
      *
      *  @param inputFile The file to write to.
      */
     private void writeBinningInputFile (File inputFile) {
         BufferedWriter writer = null;
-        int nu = phylogeny.getNu ();
+        int nu = fasta.size ();
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
             writer.write (String.format (
                 " %12d %12d\n",
                 nu,
-                phylogeny.length ()
+                fasta.length ()
             ));
             for (int i = 0; i < nu; i ++) {
                 for (int j = 0; j < nu; j ++) {
@@ -248,13 +337,13 @@ public class Binning implements Runnable {
      */
     private void writeDivergenceMatrixInputFile (File inputFile) {
         BufferedWriter writer = null;
-        ArrayList<String> seqs = phylogeny.getSequences ();
+        ArrayList<String> seqs = fasta.getSequences ();
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
             writer.write (String.format (
                 " %12d %12d\n",
-                phylogeny.getNu (),
-                phylogeny.length ()
+                fasta.size (),
+                fasta.length ()
             ));
             for (int i = 0; i < seqs.size (); i ++) {
                 writer.write (seqs.get (i) + "\n");
@@ -270,6 +359,42 @@ public class Binning implements Runnable {
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the input file.");
+                }
+            }
+        }
+    }
+
+    /**
+     *  Private method to read the output file from the correctpcr
+     *  program.
+     *
+     *  @param outputFile The file to read from.
+     */
+    private void readCorrectPCROutputFile (File outputFile) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine (); // nu, lengthsequence
+            int i = 0;
+            nextLine = reader.readLine ();
+            while (nextLine != null) {
+                StringTokenizer st = new StringTokenizer (nextLine);
+                // Modify the sequence stored in the fasta file.
+                fasta.setSequence (i, st.nextToken ());
+                i ++;
+                nextLine = reader.readLine ();
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error reading the output file.");
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
@@ -319,7 +444,7 @@ public class Binning implements Runnable {
      */
     private void readDivergenceMatrixOutputFile (File outputFile) {
         BufferedReader reader = null;
-        int nu = phylogeny.getNu ();
+        int nu = fasta.size ();
         matrix = new float[nu][nu];
         try {
             reader = new BufferedReader (new FileReader (outputFile));
@@ -351,6 +476,13 @@ public class Binning implements Runnable {
         }
     }
 
+    private String sequencesFileName;
+    private String numbersFileName;
+    private String rgFileName;
+    private String populationFileName;
+    private String nameofstrainsFileName;
+    private String pcrerrorFileName;
+    private String correctpcrFileName;
     private String binningInputFileName;
     private String binLevelsFileName;
     private String binningOutputFileName;
@@ -359,7 +491,7 @@ public class Binning implements Runnable {
 
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private Fasta fasta;
 
     private ArrayList<BinLevel> bins;
     private float[][] matrix;

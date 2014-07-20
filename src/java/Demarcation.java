@@ -151,32 +151,27 @@ public class Demarcation implements Runnable {
             }
             // Append a suffix to all file names used by Demarcation.
             String suffix = "-demarcation-" + iteration;
-            // Create a new Phylogeny object containing just the sequences to
+            // Create a new Fasta object containing just the sequences to
             // be tested.
-            Phylogeny samplePhylogeny = new Phylogeny (
-                masterVariables, suffix
-            );
-            // Add the sequences from the subtree to the sample Phylogeny.
+            Fasta sampleFasta = new Fasta ();
+            // Add the sequences from the subtree to the sample Fasta.
             for (int i = 0; i < sample.size (); i ++) {
                 String id = sample.get (i);
-                samplePhylogeny.put (
+                sampleFasta.put (
                     id,
                     phylogeny.getSequence (id)
                 );
             }
-            // Add the subtree to the new Phylogeny object.
-            samplePhylogeny.loadTree (node.toString ());
             // Save a copy of the sequence data.
-            samplePhylogeny.saveFasta (
+            sampleFasta.save (
                 workingDirectory + "sequence" + suffix + ".dat"
             );
-            samplePhylogeny.setHasRun (true);
             int nu = phylogeny.getNu ();
             int sampleNu = sample.size ();
-            int length = samplePhylogeny.length ();
+            int length = phylogeny.length ();
             // Run the binning program.
             Binning sampleBinning = new Binning (
-                masterVariables, samplePhylogeny, suffix
+                masterVariables, sampleFasta, suffix
             );
             sampleBinning.run ();
             // Run the hillclimb program.

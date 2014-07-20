@@ -54,7 +54,7 @@ public class ProjectFileIO {
         int nu = phylogeny.getNu ();
         int length = phylogeny.length ();
         binning = new Binning (
-            masterVariables, phylogeny
+            masterVariables, phylogeny.getFasta ()
         );
         bruteforce = new Bruteforce (
             masterVariables, nu, length, binning
