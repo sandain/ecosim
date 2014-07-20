@@ -119,7 +119,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @param index The root of the subtree that needs to be restored to a
      *  heap.
      */
-    private void restoreHeap(ArrayList<T> list, int index) {
+    private void restoreHeap (ArrayList<T> list, int index) {
         // If index is the root, we are done.
         // Note that the left child of a node at index n is at index 2n + 1
         // and the right child of a node is at index 2n + 2, therefore if a
