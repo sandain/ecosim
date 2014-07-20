@@ -126,11 +126,6 @@ public class ProjectFileIO {
                 "  <criterion value=\"" +
                 masterVariables.getCriterion () + "\"/>\n"
             );
-            // Output the current PCR error.
-            out.write (
-                "  <pcrerror value=\"" +
-                masterVariables.getPCRError () + "\"/>\n"
-            );
             // Output the phylogeny data.
             if (phylogeny != null && phylogeny.hasRun ()) {
                 out.write (String.format (
@@ -450,12 +445,6 @@ public class ProjectFileIO {
                     masterVariables.setCriterion (new Integer (
                         attrs.getValue (uri, "value")
                     ).intValue ());
-                }
-                // Look for the pcrerror element.
-                if (localName.equals ("pcrerror")) {
-                    masterVariables.setPCRError (new Double (
-                        attrs.getValue (uri, "value")
-                    ).doubleValue ());
                 }
                 // Look for the elements within phylogeny.
                 if (activeElement.equals ("phylogeny")) {
