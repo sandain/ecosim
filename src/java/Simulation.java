@@ -119,7 +119,7 @@ public class Simulation {
         log.append (
             "Starting the phylogeny program...\n"
         );
-        phylogeny.Run ();
+        phylogeny.run ();
         // Verify that the phylogeny programs ran correctly.
         if (! phylogeny.hasRun ()) {
             log.append ("  Error running the phylogeny program!\n");
@@ -142,7 +142,7 @@ public class Simulation {
     protected void runBinning () {
         log.append ("Starting binning...\n");
         binning = new Binning (masterVariables, phylogeny);
-        binning.Run ();
+        binning.run ();
         // Verify that binning program ran correctly.
         if (! binning.hasRun ()) {
             log.append ("  Error running the binning program!\n");
@@ -166,7 +166,7 @@ public class Simulation {
         int length = phylogeny.length ();
         bruteforce = new Bruteforce (masterVariables, nu, length, binning);
         while (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
-            bruteforce.Run ();
+            bruteforce.run ();
             // Verify that bruteforce ran correctly.
             if (! bruteforce.hasRun ()) {
                 log.append ("Error running the bruteforce search program!\n");
@@ -207,7 +207,7 @@ public class Simulation {
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
-        hillclimb.Run ();
+        hillclimb.run ();
         // Verify that hillclimbing ran correctly.
         if (! hillclimb.hasRun ()) {
             log.append ("  Error running the hillclimbing program!\n");
@@ -229,7 +229,7 @@ public class Simulation {
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        omegaCI.Run ();
+        omegaCI.run ();
         // Verify that omegaCI ran correctly.
         if (! omegaCI.hasRun ()) {
             log.append (
@@ -252,7 +252,7 @@ public class Simulation {
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        sigmaCI.Run ();
+        sigmaCI.run ();
         // Verify that sigmaCI ran correctly.
         if (! sigmaCI.hasRun ()) {
             log.append (
@@ -275,7 +275,7 @@ public class Simulation {
         npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
-        npopCI.Run ();
+        npopCI.run ();
         // Verify that npopCI ran correctly.
         if (! npopCI.hasRun ()) {
             log.append (
@@ -296,7 +296,7 @@ public class Simulation {
         demarcation = new Demarcation (
             masterVariables, phylogeny, binning, hillclimb
         );
-        demarcation.Run ();
+        demarcation.run ();
         // Verify that demarcation ran correctly.
         if (! demarcation.hasRun ()) {
             log.append ("  Error running the demarcation program!\n");
