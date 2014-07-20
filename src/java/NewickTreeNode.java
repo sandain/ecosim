@@ -115,7 +115,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         for (NewickTreeNode child: children) {
             child.sortChildren ();
         }
-        Heapsorter<NewickTreeNode> sorter = 
+        Heapsorter<NewickTreeNode> sorter =
             new Heapsorter<NewickTreeNode> ();
         sorter.heapSort (children);
     }
@@ -197,7 +197,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     public double maximumDistanceFromLeafNode () {
         double maximumDistance = 0.0d;
         for (NewickTreeNode child: children) {
-            double childDistance = 
+            double childDistance =
                 child.maximumDistanceFromLeafNode () + child.getDistance ();
             if (childDistance > maximumDistance) {
                 maximumDistance = childDistance;
@@ -237,7 +237,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @return The descendants of this node.
      */
-    public ArrayList<NewickTreeNode> getDescendants() {
+    public ArrayList<NewickTreeNode> getDescendants () {
         ArrayList<NewickTreeNode> descendants =
             new ArrayList<NewickTreeNode> ();
         if (children.size () > 0) {
