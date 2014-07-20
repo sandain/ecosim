@@ -28,9 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- *  This class holds the master variables that may need to be changed later into
- *  the project, so that the programmer will not have to go through each class
- *  and change them manually.
+ *  This class holds the master variables that may need to be changed later
+ *  into the project, so that the programmer will not have to go through each
+ *  class and change them manually.
  *
  *  @author Andrew Warner
  *  @author Jason M. Wood
@@ -390,7 +390,7 @@ public class MasterVariables {
     /**
      *  The Ecotype Simulation version number.
      */
-    private String version = 
+    private String version =
         Package.getPackage ("ecosim").getImplementationVersion ();
 
     /**
