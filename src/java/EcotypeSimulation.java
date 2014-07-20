@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009-2013  Jason M. Wood, Montana State University
@@ -43,7 +43,7 @@ import java.io.File;
  *
  * @section usage Usage
  *
- *     java -jar EcoSim.jar [OPTIONS] /path/to/sequence_fasta /path/to/sequence_tree output_xml
+ *     java -jar EcoSim.jar [OPTIONS] sequence_fasta sequence_tree output_xml
  *
  * Sequences should be aligned and in a fasta formated file, with the outgroup
  * listed first.
@@ -133,57 +133,57 @@ public class EcotypeSimulation implements Runnable {
      *
      *  @param args The command line arguments.
      */
-    public EcotypeSimulation(String[] args) {
+    public EcotypeSimulation (String[] args) {
         // Initialize the master variables.
-        masterVariables = new MasterVariables();
-        execs = masterVariables.getExecs();
-        log = masterVariables.getLog();
+        masterVariables = new MasterVariables ();
+        execs = masterVariables.getExecs ();
+        log = masterVariables.getLog ();
         // Initialize variables.
         noGUI = false;
         runAll = false;
         // Check for command line arguments.
-        checkArguments(args);
+        checkArguments (args);
     }
 
     /**
      *  Run Ecotype Simulation.
      */
-    public void run() {
+    public void run () {
         // Start one of the Ecotype Simulation interfaces.
         Simulation simulation;
         if (noGUI) {
             // Start the command line interface (CLI).
-            simulation = new SimulationCLI(
+            simulation = new SimulationCLI (
                 masterVariables, fastaFile, newickFile
             );
         }
         else {
             // Start the graphical user interface (GUI).
-            simulation = new SimulationGUI(
+            simulation = new SimulationGUI (
                 masterVariables, fastaFile, newickFile
             );
         }
         // Run the phylogeny program if the fasta and newick files are loaded.
-        if (fastaFile != null && fastaFile.exists() && 
-            newickFile != null && newickFile.exists()) {
-            simulation.runPhylogeny();
+        if (fastaFile != null && fastaFile.exists () &&
+            newickFile != null && newickFile.exists ()) {
+            simulation.runPhylogeny ();
         }
         // Launch NJPlot to view the tree.
         if (! noGUI && newickFile != null) {
-            log.append("Displaying the tree with NJplot.\n\n");
-            execs.openTree(newickFile);
+            log.append ("Displaying the tree with NJplot.\n\n");
+            execs.openTree (newickFile);
         }
         // If the runAll flag has been set, run the simulation.
         if (runAll) {
-            simulation.runBinning();
-            simulation.runBruteforce();
-            simulation.runHillclimbing();
-            simulation.runNpopConfidenceInterval();
-            simulation.runOmegaConfidenceInterval();
-            simulation.runSigmaConfidenceInterval();
-            simulation.runDemarcation();
+            simulation.runBinning ();
+            simulation.runBruteforce ();
+            simulation.runHillclimbing ();
+            simulation.runNpopConfidenceInterval ();
+            simulation.runOmegaConfidenceInterval ();
+            simulation.runSigmaConfidenceInterval ();
+            simulation.runDemarcation ();
             if (outputFile != null) {
-                simulation.saveProjectFile(outputFile);
+                simulation.saveProjectFile (outputFile);
             }
         }
     }
@@ -193,9 +193,9 @@ public class EcotypeSimulation implements Runnable {
      *
      *  @param args The command line arguments.
      */
-    public static void main(final String[] args) {
-        EcotypeSimulation es = new EcotypeSimulation(args);
-        new Thread(es).start();
+    public static void main (final String[] args) {
+        EcotypeSimulation es = new EcotypeSimulation (args);
+        new Thread (es).start ();
     }
 
     /**
@@ -206,7 +206,7 @@ public class EcotypeSimulation implements Runnable {
     private void checkArguments (String[] args) {
         boolean error = false;
         for (int i = 0; i < args.length; i ++) {
-            String[] keyValue = args[i].split("=");
+            String[] keyValue = args[i].split ("=");
             String key = keyValue[0];
             String value = "";
             // Look for key=value pairs in the arguments.
@@ -214,31 +214,32 @@ public class EcotypeSimulation implements Runnable {
                 value = keyValue[1];
             }
             // Catch a space after the equal sign.
-            else if (args.length > i + 1 && args[i].endsWith("=")) {
+            else if (args.length > i + 1 && args[i].endsWith ("=")) {
                 value = args[i + 1];
                 i ++;
             }
             // Catch a space before the equal sign.
-            else if (args.length > i + 1 && args[i + 1].startsWith("=") && ! args[i + 1].equals("=")) {
-                value = args[i + 1].substring(1);
+            else if (args.length > i + 1 && args[i + 1].startsWith ("=") &&
+                ! args[i + 1].equals ("=")) {
+                value = args[i + 1].substring (1);
                 i ++;
             }
             // Catch spaces surrounding the equal sign.
-            else if (args.length > i + 2 && args[i + 1].equals("=")) {
+            else if (args.length > i + 2 && args[i + 1].equals ("=")) {
                 value = args[i + 2];
                 i += 2;
             }
             // Check for various arguments.
-            switch(key) {
+            switch (key) {
                 case "-d":
                 case "--debug":
-                    masterVariables.setDebug(true);
+                    masterVariables.setDebug (true);
                     break;
                 case "-h":
                 case "--help":
-                    System.out.println(String.format(
+                    System.out.println (String.format (
                         "Ecotype Simulation %s\n\n%s",
-                        masterVariables.getVersion(), usage
+                        masterVariables.getVersion (), usage
                     ));
                     noGUI = true;
                     break;
@@ -253,75 +254,77 @@ public class EcotypeSimulation implements Runnable {
                     break;
                 case "-t":
                 case "--threads":
-                    if (value.length() > 0) {
-                        int procs = Runtime.getRuntime().availableProcessors();
+                    if (value.length () > 0) {
+                        Runtime r = Runtime.getRuntime ();
+                        int procs = r.availableProcessors ();
                         int num = 0;
                         try {
-                            num = new Integer(value).intValue();
+                            num = new Integer (value).intValue ();
                         }
                         catch (NumberFormatException e) {
-                            System.out.println(String.format(
+                            System.out.println (String.format (
                                 "Syntax error: Expected a number.\n%s\n%s",
                                 e, usage
                             ));
-                            System.exit(1);
+                            System.exit (1);
                         }
                         if (num >= 1 && num <= procs) {
-                            masterVariables.setNumberThreads(num);
+                            masterVariables.setNumberThreads (num);
                         }
                         else {
-                            System.out.println(String.format(
-                                "Syntax error: Invalid number of threads " + 
+                            System.out.println (String.format (
+                                "Syntax error: Invalid number of threads " +
                                 "specified: %d of %d possible.\n",
                                 num, procs
                             ));
-                            System.exit(1);
+                            System.exit (1);
                         }
                     }
                     else {
                         // Number of threads not provided, print an error.
-                        System.out.print(String.format(
+                        System.out.println (String.format (
                             "Syntax error: Number of threads missing.\n%s",
                             usage
                         ));
-                        System.exit(1);
+                        System.exit (1);
                     }
                     break;
                 case "-v":
                 case "--version":
-                    log.append(String.format(
-                        "Ecotype Simulation %s\n", masterVariables.getVersion()
+                    log.append (String.format (
+                        "Ecotype Simulation %s\n",
+                        masterVariables.getVersion ()
                     ));
                     noGUI = true;
                     break;
                 default:
                     // Look for file name arguments.
-                    File arg = new File(key);
+                    File arg = new File (key);
                     // Expect the fasta file first.
-                    if (fastaFile == null && arg.isFile()) {
+                    if (fastaFile == null && arg.isFile ()) {
                         fastaFile = arg;
                         break;
                     }
                     else if (fastaFile == null) {
                         // File not found, print an error.
-                        System.out.print(String.format(
+                        System.out.println (String.format (
                             "Syntax error: File %s not found.\n%s",
                             key, usage
                         ));
-                        System.exit(1);
+                        System.exit (1);
                     }
                     // Expect the newick file second.
-                    if (newickFile == null && arg.isFile()) {
+                    if (newickFile == null && arg.isFile ()) {
                         newickFile = arg;
                         break;
                     }
                     else if (newickFile == null) {
                         // File not found, print an error.
-                        System.out.print(String.format(
+                        System.out.println (String.format (
                             "Syntax error: File %s not found.\n%s",
                             key, usage
                         ));
-                        System.exit(1);
+                        System.exit (1);
                     }
                     // Expect the save file last.
                     if (fastaFile != null && newickFile != null &&
@@ -329,13 +332,13 @@ public class EcotypeSimulation implements Runnable {
                         outputFile = arg;
                         break;
                     }
-                    if (key.length() > 0) {
+                    if (key.length () > 0) {
                         // Argument unknown, print an error.
-                        System.out.print(String.format(
+                        System.out.println (String.format (
                             "Syntax error: Unknown argument %s supplied.\n%s",
                             key, usage
                         ));
-                        System.exit(1);
+                        System.exit (1);
                     }
             }
         }
@@ -366,10 +369,11 @@ public class EcotypeSimulation implements Runnable {
         "  Options:\n" +
         "    -d, --debug        : Display debugging output.\n" +
         "    -h, --help         : Display helpful information.\n" +
-        "    -n, --nogui        : Hide the default GUI.  Implies --runall.\n" +
+        "    -n, --nogui        : Hide the default GUI.  Implies" +
+                                " --runall.\n" +
         "    -r, --runall       : Run everything, including demarcation.\n" +
-        "    -t=n, --threads=n  : Set the number of threads (n) to start, default" + 
-                                " to system maximum.\n" +
+        "    -t=n, --threads=n  : Set the number of threads (n) to start," +
+                                " default to system maximum.\n" +
         "    -v, --version      : Display the version number.\n";
 
 }
