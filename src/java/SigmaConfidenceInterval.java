@@ -190,7 +190,7 @@ public class SigmaConfidenceInterval {
             writer = new BufferedWriter (new FileWriter (inputFile));
             writer.write (String.format ("%-20d numcrit\n", bins.size ()));
             // Output just the number of bins at each crit level.
-            for (int i = 0; i < bins.size(); i ++) {
+            for (int i = 0; i < bins.size (); i ++) {
                 writer.write (String.format (
                     "%-20d\n", bins.get (i).getLevel ()
                 ));
@@ -259,7 +259,7 @@ public class SigmaConfidenceInterval {
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
                     System.out.println ("Error closing the input file.");
