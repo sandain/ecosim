@@ -1,6 +1,6 @@
 /*
- *    Ecotype Simulation models the sequence diversity within a bacterial clade
- *    as the evolutionary result of net ecotype formation and periodic
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2013  Jason M. Wood, Montana State University
@@ -45,8 +45,8 @@ public class Phylogeny implements Runnable {
      *
      *  @param masterVariables The MasterVariables object.
      */
-    public Phylogeny(MasterVariables masterVariables) {
-        this(masterVariables, "");
+    public Phylogeny (MasterVariables masterVariables) {
+        this (masterVariables, "");
     }
 
     /**
@@ -55,18 +55,22 @@ public class Phylogeny implements Runnable {
      *  @param masterVariables The MasterVariables object.
      *  @param suffix The suffix to attach to the end of file names.
      */
-    public Phylogeny(MasterVariables masterVariables, String suffix) {
+    public Phylogeny (MasterVariables masterVariables, String suffix) {
         this.masterVariables = masterVariables;
-        String workingDirectory = masterVariables.getWorkingDirectory();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         sequencesFileName = workingDirectory + "sequences" + suffix + ".dat";
         numbersFileName = workingDirectory + "numbers" + suffix + ".dat";
         rgFileName = workingDirectory + "removegaps" + suffix + ".dat";
-        populationFileName = workingDirectory + "population" + suffix + ".dat";
-        nameofstrainsFileName = workingDirectory + "namesofstrains" + suffix + ".dat";
-        pcrerrorFileName = workingDirectory + "pcrerror" + suffix + ".dat";
-        correctpcrFileName = workingDirectory + "correctpcr" + suffix + ".out";
+        populationFileName = workingDirectory +
+            "population" + suffix + ".dat";
+        nameofstrainsFileName = workingDirectory +
+            "namesofstrains" + suffix + ".dat";
+        pcrerrorFileName = workingDirectory +
+            "pcrerror" + suffix + ".dat";
+        correctpcrFileName = workingDirectory +
+            "correctpcr" + suffix + ".out";
 
-        fasta = new Fasta();
+        fasta = new Fasta ();
         newickTree = null;
 
         hasRun = false;
@@ -75,47 +79,48 @@ public class Phylogeny implements Runnable {
     /**
      *  Run the phylogeny programs.
      */
-    public void run() {
-        Execs execs = masterVariables.getExecs();
-        String workingDirectory = masterVariables.getWorkingDirectory();
-        File sequencesFile = new File(sequencesFileName);
-        File numbersFile = new File(numbersFileName);
-        File rgFile = new File(rgFileName);
-        File populationFile = new File(populationFileName);
-        File nameofstrainsFile = new File(nameofstrainsFileName);
-        File pcrerrorFile = new File(pcrerrorFileName);
-        File correctpcrFile = new File(correctpcrFileName);
+    public void run () {
+        Execs execs = masterVariables.getExecs ();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
+        File sequencesFile = new File (sequencesFileName);
+        File numbersFile = new File (numbersFileName);
+        File rgFile = new File (rgFileName);
+        File populationFile = new File (populationFileName);
+        File nameofstrainsFile = new File (nameofstrainsFileName);
+        File pcrerrorFile = new File (pcrerrorFileName);
+        File correctpcrFile = new File (correctpcrFileName);
         // Verify the sequence file exists.
-        if (fasta == null || ! fasta.isValid()) {
+        if (fasta == null || ! fasta.isValid ()) {
             return;
         }
         // Verify the newick tree exists.
-        if (newickTree == null || ! newickTree.isValid()) {
+        if (newickTree == null || ! newickTree.isValid ()) {
             return;
         }
         // Output the sequences.dat and numbers.dat files to be used by the
         // removegaps program.
-        fasta.save(sequencesFile);
-        writeNumbersFile(numbersFile, fasta.size(), fasta.length());
+        fasta.save (sequencesFile);
+        writeNumbersFile (numbersFile, fasta.size (), fasta.length ());
         // Run the fasta file through the removegaps program.
-        execs.runRemovegaps(sequencesFile, numbersFile, rgFile);
+        execs.runRemovegaps (sequencesFile, numbersFile, rgFile);
 
 
         // Run the readsynec program.
-        // XXX readsynec seems to just make sequences lowercase, done in Fasta.
-        execs.runReadsynec(rgFile, populationFile, nameofstrainsFile);
+        // XXX readsynec seems to just make sequences lowercase, done in
+        // Fasta.
+        execs.runReadsynec (rgFile, populationFile, nameofstrainsFile);
 
 
         // Output the pcrerror.dat file to be used by the correctpcr program.
-        writePCRErrorFile(pcrerrorFile, masterVariables.getPCRError());
+        writePCRErrorFile (pcrerrorFile, masterVariables.getPCRError ());
         // Run the correctpcr program.
-        execs.runCorrectpcr(populationFile, pcrerrorFile, correctpcrFile);
+        execs.runCorrectpcr (populationFile, pcrerrorFile, correctpcrFile);
         // Get the output provided by the correctpcr program.
-        readCorrectPCROutputFile(correctpcrFile);
+        readCorrectPCROutputFile (correctpcrFile);
 
 
         // Set the flag stating that the phylogeny programs have been run.
-        hasRun = verifyPhylogeny();
+        hasRun = verifyPhylogeny ();
     }
 
     /**
@@ -123,10 +128,10 @@ public class Phylogeny implements Runnable {
      *
      *  @return The identifier of the outgroup.
      */
-    public String getOutgroupIdentifier() {
+    public String getOutgroupIdentifier () {
         String identifier = "";
-        if (fasta.size() > 0) {
-            identifier = fasta.getIdentifier(0);
+        if (fasta.size () > 0) {
+            identifier = fasta.getIdentifier (0);
         }
         return identifier;
     }
@@ -136,8 +141,8 @@ public class Phylogeny implements Runnable {
      *
      *  @return The sequence of the outgroup.
      */
-    public String getOutgroupSequence() {
-        return fasta.getSequence(0);
+    public String getOutgroupSequence () {
+        return fasta.getSequence (0);
     }
 
     /**
@@ -145,8 +150,8 @@ public class Phylogeny implements Runnable {
      *
      *  @return the length of the sequences being analyzed.
      */
-    public int length() {
-        return fasta.length();
+    public int length () {
+        return fasta.length ();
     }
 
     /**
@@ -154,8 +159,8 @@ public class Phylogeny implements Runnable {
      *
      *  @return The number of environmental sequences.
      */
-    public int getNu() {
-        return fasta.size();
+    public int getNu () {
+        return fasta.size ();
     }
 
     /**
@@ -164,8 +169,8 @@ public class Phylogeny implements Runnable {
      *  @param index The index of the identifier needed.
      *  @return The identifier at the provided index.
      */
-    public String getIdentifier(int index) {
-        return fasta.getIdentifier(index);
+    public String getIdentifier (int index) {
+        return fasta.getIdentifier (index);
     }
 
     /**
@@ -174,8 +179,8 @@ public class Phylogeny implements Runnable {
      *  @param id The identifier of the sequence needed.
      *  @return The sequence with the provided identifier.
      */
-    public String getSequence(String id) {
-        return fasta.getSequence(id);
+    public String getSequence (String id) {
+        return fasta.getSequence (id);
     }
 
     /**
@@ -184,8 +189,8 @@ public class Phylogeny implements Runnable {
      *  @param index The index of the sequence needed.
      *  @return The sequence at the provided index.
      */
-    public String getSequence(int index) {
-        return fasta.getSequence(index);
+    public String getSequence (int index) {
+        return fasta.getSequence (index);
     }
 
     /**
@@ -193,8 +198,8 @@ public class Phylogeny implements Runnable {
      *
      *  @return An ArrayList<String> of the identifiers.
      */
-    public ArrayList<String> getIdentifiers() {
-        return fasta.getIdentifiers();
+    public ArrayList<String> getIdentifiers () {
+        return fasta.getIdentifiers ();
     }
 
     /**
@@ -202,8 +207,8 @@ public class Phylogeny implements Runnable {
      *
      *  @return An ArrayList<String> of the sequences.
      */
-    public ArrayList<String> getSequences() {
-        return fasta.getSequences();
+    public ArrayList<String> getSequences () {
+        return fasta.getSequences ();
     }
 
     /**
@@ -211,7 +216,7 @@ public class Phylogeny implements Runnable {
      *
      *  @return A NewickTree object containing the tree.
      */
-    public NewickTree getNewickTree() {
+    public NewickTree getNewickTree () {
         return newickTree;
     }
 
@@ -222,7 +227,7 @@ public class Phylogeny implements Runnable {
      *  @param sequence The sequence to add.
      */
     public void put (String id, String sequence) {
-        fasta.put(id, sequence);
+        fasta.put (id, sequence);
     }
 
     /**
@@ -233,7 +238,7 @@ public class Phylogeny implements Runnable {
      *  @return True if the save was a success, False otherwise.
      */
     public boolean saveFasta (String fileName) {
-        return fasta.save(fileName);
+        return fasta.save (fileName);
     }
 
     /**
@@ -244,7 +249,7 @@ public class Phylogeny implements Runnable {
      *  @return True if the save was a success, False otherwise.
      */
     public boolean saveFasta (File file) {
-        return fasta.save(file);
+        return fasta.save (file);
     }
 
     /**
@@ -255,7 +260,7 @@ public class Phylogeny implements Runnable {
      *  @return True if the save was a success, False otherwise.
      */
     public boolean saveNewick (String fileName) {
-        return newickTree.save(fileName);
+        return newickTree.save (fileName);
     }
 
     /**
@@ -266,7 +271,7 @@ public class Phylogeny implements Runnable {
      *  @return True if the save was a success, False otherwise.
      */
     public boolean saveNewick (File file) {
-        return newickTree.save(file);
+        return newickTree.save (file);
     }
 
     /**
@@ -274,7 +279,7 @@ public class Phylogeny implements Runnable {
      *
      *  @return True if Phylogeny has been run, false otherwise.
      */
-    public boolean hasRun() {
+    public boolean hasRun () {
         return hasRun;
     }
 
@@ -283,7 +288,7 @@ public class Phylogeny implements Runnable {
      *
      *  @param hasRun The new value of hasRun.
      */
-    public void setHasRun(boolean hasRun) {
+    public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
     }
 
@@ -292,9 +297,9 @@ public class Phylogeny implements Runnable {
      *
      *  @param sequenceFile The sequence file to load.
      */
-    public void loadSequenceFile(File sequenceFile) {
+    public void loadSequenceFile (File sequenceFile) {
         // Load the sequence file.
-        fasta = new Fasta(sequenceFile);
+        fasta = new Fasta (sequenceFile);
     }
 
     /**
@@ -302,12 +307,12 @@ public class Phylogeny implements Runnable {
      *
      *  @param tree The tree string to load.
      */
-    public void loadTree(String tree) {
+    public void loadTree (String tree) {
         try {
-            newickTree = new NewickTree(tree);
+            newickTree = new NewickTree (tree);
         }
         catch (InvalidNewickException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -316,12 +321,12 @@ public class Phylogeny implements Runnable {
      *
      *  @param treeFile The tree file to load.
      */
-    public void loadTreeFile(File treeFile) {
+    public void loadTreeFile (File treeFile) {
         try {
-            newickTree = new NewickTree(treeFile);
+            newickTree = new NewickTree (treeFile);
         }
         catch (InvalidNewickException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -331,28 +336,28 @@ public class Phylogeny implements Runnable {
      *
      *  @return The validity of this Phylogeny object.
      */
-    private boolean verifyPhylogeny() {
+    private boolean verifyPhylogeny () {
         boolean verified = true;
-        ArrayList<String> fastaIds = fasta.getIdentifiers();
-        ArrayList<NewickTreeNode> newickNodes = newickTree.getDescendants();
+        ArrayList<String> fastaIds = fasta.getIdentifiers ();
+        ArrayList<NewickTreeNode> newickNodes = newickTree.getDescendants ();
         // Verify the sequences in the fasta file.
         int fastaRemoved = 0;
-        for (int i = 0; i < fastaIds.size(); i ++) {
-            String id = fastaIds.get(i);
+        for (int i = 0; i < fastaIds.size (); i ++) {
+            String id = fastaIds.get (i);
             boolean found = false;
-            for (int j = 0; j < newickNodes.size(); j ++) {
-                if (id.equals(newickNodes.get(j).getName())) {
+            for (int j = 0; j < newickNodes.size (); j ++) {
+                if (id.equals (newickNodes.get (j).getName ())) {
                     found = true;
                     break;
                 }
             }
             if (! found) {
-                fasta.remove(id);
+                fasta.remove (id);
                 fastaRemoved ++;
             }
         }
         if (fastaRemoved > 0) {
-            masterVariables.getLog().append(String.format(
+            masterVariables.getLog ().append (String.format (
                 "  %d sequences in the fasta file were ignored because " +
                 "they were not found in the newick file.\n",
                 fastaRemoved
@@ -360,28 +365,29 @@ public class Phylogeny implements Runnable {
         }
         // Verify the sequences in the newick file.
         int newickRemoved = 0;
-        for (int i = 0; i < newickNodes.size(); i ++) {
-            String id = newickNodes.get(i).getName();
+        for (int i = 0; i < newickNodes.size (); i ++) {
+            String id = newickNodes.get (i).getName ();
             boolean found = false;
-            for (int j = 0; j < fastaIds.size(); j ++) {
-                if (id.equals(fastaIds.get(j))) {
+            for (int j = 0; j < fastaIds.size (); j ++) {
+                if (id.equals (fastaIds.get (j))) {
                     found = true;
                     break;
                 }
             }
             if (! found) {
-                newickTree.removeDescendant(id);
+                newickTree.removeDescendant (id);
                 newickRemoved ++;
             }
         }
         if (newickRemoved > 0) {
-            masterVariables.getLog().append(String.format(
+            masterVariables.getLog ().append (String.format (
                 "  %d sequences in the newick file were ignored because " +
                 "they were not found in the fasta file.\n",
                 newickRemoved
             ));
         }
-        if (fastaIds.size() == 0 || fastaIds.size() != newickNodes.size()) {
+        if (fastaIds.size () == 0 ||
+            fastaIds.size () != newickNodes.size ()) {
             verified = false;
         }
         return verified;
@@ -392,33 +398,35 @@ public class Phylogeny implements Runnable {
      *
      *  @param method The method to use to generate the tree.
      */
-    public File generateTree(String method) {
-        Execs execs = masterVariables.getExecs();
-        String workingDirectory = masterVariables.getWorkingDirectory();
+    public File generateTree (String method) {
+        Execs execs = masterVariables.getExecs ();
+        String workingDirectory = masterVariables.getWorkingDirectory ();
         File infile = new File (workingDirectory + "infile");
         File outfile = new File (workingDirectory + "outfile");
         File intreeFile = new File (workingDirectory + "intree");
         String outtreeFileName = workingDirectory + "outtree";
-        File outtreeFile = new File(outtreeFileName);
+        File outtreeFile = new File (outtreeFileName);
         // Create the Phylip infile.
-        writeTreeInputFile(infile);
+        writeTreeInputFile (infile);
         // Create the tree using the parsimony or neighbor-joining methods.
         switch (method) {
             case "Parsimony":
-                execs.runDNAPars();
+                execs.runDNAPars ();
                 break;
             case "Neighbor-Joining":
-                execs.runDNADist();
-                infile.renameTo(new File (workingDirectory + "infile.dnadist"));
-                outfile.renameTo(infile);
-                execs.runNJ();
+                execs.runDNADist ();
+                infile.renameTo (
+                    new File (workingDirectory + "infile.dnadist")
+                );
+                outfile.renameTo (infile);
+                execs.runNJ ();
                 break;
         }
         // Run retree on the tree to designate the outgroup.
-        outtreeFile.renameTo(intreeFile);
-        execs.runRetree(fasta.size());
+        outtreeFile.renameTo (intreeFile);
+        execs.runRetree (fasta.size ());
         // Load the Phylip outtree.
-        readTreeOutputFile(outtreeFile);
+        readTreeOutputFile (outtreeFile);
         return outtreeFile;
     }
 
@@ -429,24 +437,22 @@ public class Phylogeny implements Runnable {
      *  @param size The number of environmental sequences.
      *  @param length The length of the environmental sequences.
      */
-    private void writeNumbersFile(File numbers, int size, int length) {
+    private void writeNumbersFile (File numbers, int size, int length) {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(numbers));
-            writer.write(String.format("%d, %d\n", size, length));
+            writer = new BufferedWriter (new FileWriter (numbers));
+            writer.write (String.format ("%d, %d\n", size, length));
         }
         catch (IOException e) {
-            System.out.println("Error writing the numbers.dat file for the " +
-                               "removegaps program.");
+            System.out.println ("Error writing the numbers.dat file.");
         }
         finally {
             if (writer != null) {
                 try {
-                    writer.close();
+                    writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the input file for the " +
-                                       "removegaps program.");
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -454,28 +460,28 @@ public class Phylogeny implements Runnable {
 
     /**
      *  Write the pcrerror file.
-     *  
+     *
      *  @param PCRErrorFile The pcrerror.dat file.
      *  @param PCRError The PCR error.
      */
-    private void writePCRErrorFile(File PCRErrorFile, double PCRError) {
+    private void writePCRErrorFile (File PCRErrorFile, double PCRError) {
         // Create the random number seed; an odd less than 9 digits long
-        long randValue = (long)(100000000 * Math.random());
+        long randValue = (long) (100000000 * Math.random ());
         if (randValue % 2 == 0) {
             randValue ++;
         }
         try {
-            BufferedWriter writer = new BufferedWriter(
-                new FileWriter(PCRErrorFile)
+            BufferedWriter writer = new BufferedWriter (
+                new FileWriter (PCRErrorFile)
             );
-            writer.write("" + PCRError);
-            writer.newLine();
-            writer.write("" + randValue);
-            writer.newLine();
-            writer.close();
+            writer.write ("" + PCRError);
+            writer.newLine ();
+            writer.write ("" + randValue);
+            writer.newLine ();
+            writer.close ();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -485,33 +491,31 @@ public class Phylogeny implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readCorrectPCROutputFile(File outputFile) {
+    private void readCorrectPCROutputFile (File outputFile) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(outputFile));
-            String nextLine = reader.readLine(); // nu, lengthsequence
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine (); // nu, lengthsequence
             int i = 0;
-            nextLine = reader.readLine();
+            nextLine = reader.readLine ();
             while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer(nextLine);
+                StringTokenizer st = new StringTokenizer (nextLine);
                 // Modify the sequence stored in the fasta file.
-                fasta.setSequence(i, st.nextToken());
+                fasta.setSequence (i, st.nextToken ());
                 i ++;
-                nextLine = reader.readLine();
+                nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading the output file from the " +
-                               "correctpcr program.");
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
                 try {
-                    reader.close();
+                    reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println("Error closing the output file from " +
-                                       "the correctpcr program.");
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
@@ -522,22 +526,22 @@ public class Phylogeny implements Runnable {
      *
      *  @param outputFile The File containing the tree to read.
      */
-    private void readTreeOutputFile(File outputFile) {
+    private void readTreeOutputFile (File outputFile) {
         newickTree = null;
         try {
             // Load the tree file.
-            newickTree = new NewickTree(outputFile);
+            newickTree = new NewickTree (outputFile);
             // Rename the leaves to match the sequence names.
-            ArrayList<NewickTreeNode> leaves = newickTree.getDescendants();
-            for (int i = 0; i < leaves.size(); i ++) {
-                String name = leaves.get(i).getName();
-                int index = new Integer(name).intValue();
-                leaves.get(i).setName(fasta.getIdentifier(index));
+            ArrayList<NewickTreeNode> leaves = newickTree.getDescendants ();
+            for (int i = 0; i < leaves.size (); i ++) {
+                String name = leaves.get (i).getName ();
+                int index = new Integer (name).intValue ();
+                leaves.get (i).setName (fasta.getIdentifier (index));
             }
-            newickTree.save(outputFile);
+            newickTree.save (outputFile);
         }
         catch (InvalidNewickException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -546,24 +550,24 @@ public class Phylogeny implements Runnable {
      *
      *  @param inputFile The File to write to.
      */
-    private void writeTreeInputFile(File inputFile) {
+    private void writeTreeInputFile (File inputFile) {
         try {
-            BufferedWriter writer = new BufferedWriter(
-                new FileWriter(inputFile)
+            BufferedWriter writer = new BufferedWriter (
+                new FileWriter (inputFile)
             );
-            writer.write(String.format(
+            writer.write (String.format (
                 "%d    %d\n",
-                fasta.size(), fasta.length()
+                fasta.size (), fasta.length ()
             ));
-            for (int i = 0; i < fasta.size(); i ++) {
-                writer.write(
-                    String.format("%-10d    %s\n", i, fasta.getSequence(i))
+            for (int i = 0; i < fasta.size (); i ++) {
+                writer.write (
+                    String.format ("%-10d    %s\n", i, fasta.getSequence (i))
                 );
             }
-            writer.close();
+            writer.close ();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
