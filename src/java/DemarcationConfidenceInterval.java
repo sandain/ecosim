@@ -274,7 +274,7 @@ public class DemarcationConfidenceInterval {
                 st.nextToken (); // "bound".
                 st.nextToken (); // "npop".
                 result = new Integer (st.nextToken ()).intValue ();
-                st.nextToken(); // "likelihood".
+                st.nextToken (); // "likelihood".
                 likelihood = new Double (st.nextToken ()).doubleValue ();
                 nextLine = reader.readLine ();
             }
