@@ -80,7 +80,7 @@ public class Hillclimb implements Runnable {
     /**
      *  Run the hillclimb program.
      */
-    public void run() {
+    public void run () {
         Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
@@ -167,7 +167,7 @@ public class Hillclimb implements Runnable {
                 ));
             }
             // Write the omega value.
-            writer.write(
+            writer.write (
                 String.format ("%-20.5f omega\n", parameterSet.getOmega ())
             );
             // Write the sigma value.
