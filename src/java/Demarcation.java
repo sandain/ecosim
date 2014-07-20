@@ -39,14 +39,16 @@ public class Demarcation implements Runnable {
      *  Creates new form Demarcations
      *
      *  @param masterVariables The MasterVariables.
-     *  @param phylogeny The phylogeny data.
+     *  @param fasta The sequence data.
+     *  @param tree The phylogeny data.
      *  @param binning The binning results.
      *  @param hillclimb The hillclimbing results.
      */
-    public Demarcation (MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Hillclimb hillclimb) {
+    public Demarcation (MasterVariables masterVariables, Fasta fasta,
+        NewickTree tree, Binning binning, Hillclimb hillclimb) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.fasta = fasta;
+        this.tree = tree;
         this.binning = binning;
         this.hillclimb = hillclimb;
         hasRun = false;
@@ -60,7 +62,6 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         // Find the ecotypes.
-        NewickTree tree = phylogeny.getNewickTree ();
         findEcotypes (tree.getRoot (), hillclimb.getResult (), 0);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
@@ -130,10 +131,11 @@ public class Demarcation implements Runnable {
      */
     private void findEcotypes (NewickTreeNode node,
         ParameterSet parentHillclimbResult, int iteration) {
+        String outgroup = fasta.getIdentifier (0);
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
-            if (! name.equals (phylogeny.getOutgroupIdentifier ())) {
+            if (! name.equals (outgroup)) {
                 sample.add (name);
                 ecotypes.add (sample);
             }
@@ -142,7 +144,7 @@ public class Demarcation implements Runnable {
             ArrayList<NewickTreeNode> leaves = node.getDescendants ();
             for (int i = 0; i < leaves.size (); i ++) {
                 String name = leaves.get (i).getName ();
-                if (! name.equals (phylogeny.getOutgroupIdentifier ())) {
+                if (! name.equals (outgroup)) {
                     sample.add (name);
                 }
             }
@@ -159,16 +161,16 @@ public class Demarcation implements Runnable {
                 String id = sample.get (i);
                 sampleFasta.put (
                     id,
-                    phylogeny.getSequence (id)
+                    fasta.getSequence (id)
                 );
             }
             // Save a copy of the sequence data.
             sampleFasta.save (
                 workingDirectory + "sequence" + suffix + ".dat"
             );
-            int nu = phylogeny.getNu ();
+            int nu = fasta.size ();
             int sampleNu = sample.size ();
-            int length = phylogeny.length ();
+            int length = fasta.length ();
             // Run the binning program.
             Binning sampleBinning = new Binning (
                 masterVariables, sampleFasta, suffix
@@ -211,7 +213,8 @@ public class Demarcation implements Runnable {
     private ArrayList<ArrayList<String>> ecotypes;
     private MasterVariables masterVariables;
     private Logger log;
-    private Phylogeny phylogeny;
+    private Fasta fasta;
+    private NewickTree tree;
     private Binning binning;
     private Hillclimb hillclimb;
 

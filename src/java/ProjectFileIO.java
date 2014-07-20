@@ -51,10 +51,12 @@ public class ProjectFileIO {
         this.masterVariables = masterVariables;
         // Create new objects for each item in the project file.
         phylogeny = new Phylogeny (masterVariables);
+        Fasta fasta = phylogeny.getFasta ();
+        NewickTree tree = phylogeny.getNewickTree ();
         int nu = phylogeny.getNu ();
         int length = phylogeny.length ();
         binning = new Binning (
-            masterVariables, phylogeny.getFasta ()
+            masterVariables, fasta
         );
         bruteforce = new Bruteforce (
             masterVariables, nu, length, binning
@@ -72,7 +74,7 @@ public class ProjectFileIO {
             masterVariables, nu, length, binning, hillclimb
         );
         demarcation = new Demarcation (
-            masterVariables, phylogeny, binning, hillclimb
+            masterVariables, fasta, tree, binning, hillclimb
         );
     }
 

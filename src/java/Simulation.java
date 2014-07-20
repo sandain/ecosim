@@ -293,8 +293,10 @@ public class Simulation {
      */
     protected void runDemarcation () {
         log.append ("Starting demarcation...\n");
+        Fasta fasta = phylogeny.getFasta ();
+        NewickTree tree = phylogeny.getNewickTree ();
         demarcation = new Demarcation (
-            masterVariables, phylogeny, binning, hillclimb
+            masterVariables, fasta, tree, binning, hillclimb
         );
         demarcation.run ();
         // Verify that demarcation ran correctly.
