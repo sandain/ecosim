@@ -88,6 +88,7 @@ public class NewickTree {
     /**
      *  Returns the descendant with the given name.
      *
+     *  @param name The name of the descendant.
      *  @return NewickTreeNode of the descendant.
      */
     public NewickTreeNode getDescendant (String name) {
