@@ -835,44 +835,44 @@ module simplexmethod
     ! factorize column by column, icol = column no.
     !
     do icol = 1, n
-    l = 0
-    !
-    ! irow = row number within column icol.
-    !
-    do irow = 1, icol
-    k = k + 1
-    w = a(k)
-    if (irow .eq. icol) rsq = (w * eta) ** 2
-    m = j
-    do i = 1, irow
-    l = l + 1
-    if (i .eq. irow) exit
-    w = w - u(l) * u(m)
-    if (irow .eq. icol) rsq = rsq + (u(l) ** 2 * r(i)) ** 2
-    m = m + 1
-    end do
-    if (irow .ne. icol) exit
-    if (u(l) .gt. 0.0d0) then
-    u(k) = w / u(l)
-    else
-    u(k) = 0.0d0
-    if (abs (w) .gt. abs (rmax * a(k))) return
-    end if
-    end do
-    !
-    ! end of row, estimate relative accuracy of diagonal element.
-    !
-    rsq = sqrt (rsq)
-    if (abs (w) .gt. 5.0d0 * rsq) then
-    if (w .lt. 0.0d0) return
-    u(k) = sqrt (w)
-    r(i) = rsq / w
-    if (r(i) .gt. rmax) rmax = r(i)
-    else
-    u(k) = 0.0d0
-    nullty = nullty + 1
-    end if
-    j = j + icol
+      l = 0
+      !
+      ! irow = row number within column icol.
+      !
+      do irow = 1, icol
+        k = k + 1
+        w = a(k)
+        if (irow .eq. icol) rsq = (w * eta) ** 2
+        m = j
+        do i = 1, irow
+          l = l + 1
+          if (i .eq. irow) exit
+          w = w - u(l) * u(m)
+          if (irow .eq. icol) rsq = rsq + (u(l) ** 2 * r(i)) ** 2
+          m = m + 1
+        end do
+        if (irow .ne. icol) exit
+        if (u(l) .gt. 0.0d0) then
+          u(k) = w / u(l)
+        else
+          u(k) = 0.0d0
+          if (abs (w) .gt. abs (rmax * a(k))) return
+        end if
+      end do
+      !
+      ! end of row, estimate relative accuracy of diagonal element.
+      !
+      rsq = sqrt (rsq)
+      if (abs (w) .gt. 5.0d0 * rsq) then
+        if (w .lt. 0.0d0) return
+        u(k) = sqrt (w)
+        r(i) = rsq / w
+        if (r(i) .gt. rmax) rmax = r(i)
+      else
+        u(k) = 0.0d0
+        nullty = nullty + 1
+      end if
+      j = j + icol
     end do
     ifault = 0
     return
