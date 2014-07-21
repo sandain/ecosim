@@ -823,56 +823,59 @@ module simplexmethod
     integer                     :: l
     integer                     :: m
     ifault = 1
-    if (n .le. 0) goto 100
+    if (n .le. 0) return
     ifault = 2
     nullty = 0
     rmax = eta
     r(1) = eta
     j = 1
     k = 0
+    rsq = 0.0d0
     !
     ! factorize column by column, icol = column no.
     !
-    do 80 icol = 1, n
+    do icol = 1, n
     l = 0
     !
     ! irow = row number within column icol.
     !
-    do 40 irow = 1, icol
+    do irow = 1, icol
     k = k + 1
     w = a(k)
     if (irow .eq. icol) rsq = (w * eta) ** 2
     m = j
-    do 10 i = 1, irow
+    do i = 1, irow
     l = l + 1
-    if (i .eq. irow) goto 20
+    if (i .eq. irow) exit
     w = w - u(l) * u(m)
     if (irow .eq. icol) rsq = rsq + (u(l) ** 2 * r(i)) ** 2
     m = m + 1
-10  CONTINUE
-20  if (irow .eq. icol) goto 50
-    if (u(l) .eq. 0.0d0) goto 30
+    end do
+    if (irow .ne. icol) exit
+    if (u(l) .gt. 0.0d0) then
     u(k) = w / u(l)
-    goto 40
-30  u(k) = 0.0d0
-    if (abs (w) .gt. abs (rmax * a(k))) goto 100
-40  CONTINUE
+    else
+    u(k) = 0.0d0
+    if (abs (w) .gt. abs (rmax * a(k))) return
+    end if
+    end do
     !
     ! end of row, estimate relative accuracy of diagonal element.
     !
-50  rsq = sqrt (rsq)
-    if (abs (w) .le. 5. * rsq) goto 60
-    if (w .lt. 0.0d0) goto 100
+    rsq = sqrt (rsq)
+    if (abs (w) .gt. 5.0d0 * rsq) then
+    if (w .lt. 0.0d0) return
     u(k) = sqrt (w)
     r(i) = rsq / w
     if (r(i) .gt. rmax) rmax = r(i)
-    goto 70
-60  u(k) = 0.0d0
+    else
+    u(k) = 0.0d0
     nullty = nullty + 1
-70  j = j + icol
-80  CONTINUE
+    end if
+    j = j + icol
+    end do
     ifault = 0
-100 return
+    return
   end subroutine chola
 
 end module simplexmethod
