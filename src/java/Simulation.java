@@ -57,7 +57,7 @@ public class Simulation {
     }
 
     /**
-     *  Save the project to an XML formated file.
+     *  Save the project to a XML formated file.
      *
      *  @param file The file to save the project to.
      */
