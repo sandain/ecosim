@@ -67,6 +67,11 @@ public class Simulation {
         projectFileIO.load (file);
         // Grab the loaded variables.
         phylogeny = projectFileIO.getPhylogeny ();
+        fasta = phylogeny.getFasta ();
+        nu = phylogeny.getNu ();
+        length = phylogeny.length ();
+        outgroup = phylogeny.getOutgroupIdentifier ();
+        tree = phylogeny.getNewickTree ();
         binning = projectFileIO.getBinning ();
         bruteforce = projectFileIO.getBruteforce ();
         hillclimb = projectFileIO.getHillclimb ();
@@ -102,6 +107,10 @@ public class Simulation {
             "Opening sequence file: " + fastaFile.getName () + "\n"
         );
         phylogeny.loadSequenceFile (fastaFile);
+        fasta = phylogeny.getFasta ();
+        nu = phylogeny.getNu ();
+        length = phylogeny.length ();
+        outgroup = phylogeny.getOutgroupIdentifier ();
     }
 
     /**
@@ -117,6 +126,7 @@ public class Simulation {
             "Opening tree file: " + newickFile.getName () + "\n"
         );
         phylogeny.loadTreeFile (newickFile);
+        tree = phylogeny.getNewickTree ();
     }
 
     /**
@@ -130,6 +140,7 @@ public class Simulation {
             method
         ));
         newickFile = phylogeny.generateTree (method);
+        tree = phylogeny.getNewickTree ();
     }
 
     /**
@@ -161,7 +172,7 @@ public class Simulation {
      */
     protected void runBinning () {
         log.append ("Starting binning...\n");
-        binning = new Binning (masterVariables, phylogeny.getFasta ());
+        binning = new Binning (masterVariables, fasta);
         binning.run ();
         // Verify that binning program ran correctly.
         if (! binning.hasRun ()) {
@@ -182,8 +193,6 @@ public class Simulation {
      */
     protected void runBruteforce () {
         log.append ("Starting bruteforce search...\n");
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
         bruteforce = new Bruteforce (masterVariables, nu, length, binning);
         while (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
             bruteforce.run ();
@@ -222,8 +231,6 @@ public class Simulation {
      */
     protected void runHillclimbing () {
         log.append ("Starting hillclimbing...\n");
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
@@ -244,8 +251,6 @@ public class Simulation {
      */
     protected void runOmegaConfidenceInterval () {
         log.append ("Starting omega confidence interval...\n");
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
@@ -267,8 +272,6 @@ public class Simulation {
      */
     protected void runSigmaConfidenceInterval () {
         log.append ("Starting sigma confidence interval...\n");
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
@@ -290,8 +293,6 @@ public class Simulation {
      */
     protected void runNpopConfidenceInterval () {
         log.append ("Starting npop confidence interval...\n");
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
         npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb
         );
@@ -313,8 +314,6 @@ public class Simulation {
      */
     protected void runDemarcation () {
         log.append ("Starting demarcation...\n");
-        Fasta fasta = phylogeny.getFasta ();
-        NewickTree tree = phylogeny.getNewickTree ();
         demarcation = new Demarcation (
             masterVariables, fasta, tree, binning, hillclimb
         );
@@ -334,6 +333,11 @@ public class Simulation {
     protected File newickFile;
     protected Logger log;
     protected Phylogeny phylogeny;
+    protected Fasta fasta;
+    protected Integer nu;
+    protected Integer length;
+    protected String outgroup;
+    protected NewickTree tree;
     protected Binning binning;
     protected Bruteforce bruteforce;
     protected Hillclimb hillclimb;
