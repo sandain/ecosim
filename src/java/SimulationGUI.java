@@ -397,10 +397,6 @@ public class SimulationGUI extends Simulation {
             );
             return;
         }
-        ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, phylogeny, binning, bruteforce,
-            hillclimb, omegaCI, sigmaCI, npopCI, demarcation
-        );
         FileChooser fc = new FileChooser ("xml");
         int returnVal = fc.showSaveDialog (gui);
         if (returnVal == FileChooser.APPROVE_OPTION) {
@@ -412,7 +408,7 @@ public class SimulationGUI extends Simulation {
                 userFile = new File (userFile.getPath () + ".xml");
             }
             log.append ("Saving to: " + userFile.getName () + "\n");
-            projectFileIO.save (userFile);
+            saveProjectFile (userFile);
         }
     }
 
