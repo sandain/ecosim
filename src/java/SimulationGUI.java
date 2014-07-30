@@ -416,7 +416,6 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to load a previously saved project file.
      */
     private void loadProjectFileActionPerformed () {
-        ProjectFileIO projectFileIO = new ProjectFileIO (masterVariables);
         FileChooser fc = new FileChooser ("xml");
         int returnVal = fc.showOpenDialog (gui);
         if (returnVal == FileChooser.APPROVE_OPTION) {
@@ -428,20 +427,11 @@ public class SimulationGUI extends Simulation {
                 return;
             }
             // Load the project file.
-            projectFileIO.load (userFile);
+            loadProjectFile (userFile);
             // Update the crit selector.
             critSelector.setSelectedIndex (
                 masterVariables.getCriterion () - 1
             );
-            // Grab the loaded variables.
-            phylogeny = projectFileIO.getPhylogeny ();
-            binning = projectFileIO.getBinning ();
-            bruteforce = projectFileIO.getBruteforce ();
-            hillclimb = projectFileIO.getHillclimb ();
-            omegaCI = projectFileIO.getOmegaCI ();
-            sigmaCI = projectFileIO.getSigmaCI ();
-            npopCI = projectFileIO.getNpopCI ();
-            demarcation = projectFileIO.getDemarcation ();
             // Output the values stored in the project file.
             if (phylogeny.hasRun ()) {
                 log.append ("Phylogeny results:\n");
