@@ -57,6 +57,26 @@ public class Simulation {
     }
 
     /**
+     *  Load the project from a XML formated file.
+     *
+     *  @param file The file to load the project from.
+     */
+    public void loadProjectFile (File file) {
+        ProjectFileIO projectFileIO = new ProjectFileIO (masterVariables);
+        // Load the project file.
+        projectFileIO.load (file);
+        // Grab the loaded variables.
+        phylogeny = projectFileIO.getPhylogeny ();
+        binning = projectFileIO.getBinning ();
+        bruteforce = projectFileIO.getBruteforce ();
+        hillclimb = projectFileIO.getHillclimb ();
+        omegaCI = projectFileIO.getOmegaCI ();
+        sigmaCI = projectFileIO.getSigmaCI ();
+        npopCI = projectFileIO.getNpopCI ();
+        demarcation = projectFileIO.getDemarcation ();
+    }
+
+    /**
      *  Save the project to a XML formated file.
      *
      *  @param file The file to save the project to.
