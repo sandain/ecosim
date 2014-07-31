@@ -45,7 +45,6 @@ public class Fasta {
      *  Constructor for a Fasta object.
      */
     public Fasta () {
-        file = null;
         length = 0;
         size = 0;
         ids = new ArrayList<String> ();
@@ -59,7 +58,6 @@ public class Fasta {
      *  @param fastaFile A File containing Fasta formatted data.
      */
     public Fasta (File fastaFile) throws InvalidFastaException {
-        file = fastaFile;
         length = 0;
         size = 0;
         parseFasta (fastaFile);
@@ -250,7 +248,6 @@ public class Fasta {
             if (out != null) {
                 try {
                     out.close ();
-                    this.file = fastaFile;
                     success = true;
                 }
                 catch (IOException e) {
@@ -351,7 +348,6 @@ public class Fasta {
         }
     }
 
-    private File file;
     private ArrayList<String> ids;
     private HashMap<String, String> descriptionHash;
     private HashMap<String, String> sequenceHash;
