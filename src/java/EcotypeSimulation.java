@@ -108,7 +108,6 @@ import java.io.File;
  * @li @b NpopConfidenceInterval - Run the npop confidence interval program.
  * @li @b OmegaConfidenceInterval - Run the omega confidence interval program.
  * @li @b ParameterSet - An object to store the parameter values.
- * @li @b Phylogeny - Object to interact with the phylogeny programs.
  * @li @b ProjectFileIO - Perform IO operations for the XML project file.
  * @li @b SigmaConfidenceInterval - Run the sigma confidence interval program.
  * @li @b Simulation - The shared methods of the simulation.
@@ -161,13 +160,8 @@ public class EcotypeSimulation implements Runnable {
                 masterVariables, fastaFile, newickFile
             );
         }
-        // Run the phylogeny program if the fasta and newick files are loaded.
-        if (fastaFile != null && fastaFile.exists () &&
-            newickFile != null && newickFile.exists ()) {
-            simulation.runPhylogeny ();
-        }
         // Launch NJPlot to view the tree.
-        if (! noGUI && newickFile != null) {
+        if (! noGUI && newickFile != null && newickFile.exists ()) {
             log.append ("Displaying the tree with NJplot.\n\n");
             execs.openTree (newickFile);
         }
