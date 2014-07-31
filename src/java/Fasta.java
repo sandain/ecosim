@@ -102,15 +102,6 @@ public class Fasta {
     }
 
     /**
-     *  Gets the File associated with this Fasta object.
-     *
-     *  @return The File associated with this Fasta object.
-     */
-    public File getFile () {
-        return file;
-    }
-
-    /**
      *  Gets the identifier with the provided index.
      *
      *  @param index The index of the identifier to return.
@@ -198,42 +189,6 @@ public class Fasta {
     }
 
     /**
-     *  Get the HashMap containing the IDs and Descriptions stored in this
-     *  Fasta.
-     *
-     *  @return The HashMap containing the IDs and Descriptions stored in this
-     *  Fasta.
-     */
-    public HashMap<String, String> getDescriptionHash () {
-        HashMap<String, String> hashCopy = new HashMap<String, String> ();
-        String [] keys;
-        keys = descriptionHash.keySet ().toArray (
-            new String [size]
-        );
-        for (int i = 0; i < keys.length; i ++) {
-            hashCopy.put (keys[i], descriptionHash.get (keys[i]));
-        }
-        return hashCopy;
-    }
-
-    /**
-     *  Get the HashMap containing the IDs and Sequences stored in this Fasta.
-     *
-     *  @return The HashMap containing the IDs and Sequences stored in this
-     *  Fasta.
-     */
-    public HashMap<String, String> getSequenceHash () {
-        HashMap<String, String> hashCopy = new HashMap<String, String> ();
-        String [] keys = sequenceHash.keySet ().toArray (
-            new String [size]
-        );
-        for (int i = 0; i < keys.length; i ++) {
-            hashCopy.put (keys[i], sequenceHash.get (keys[i]));
-        }
-        return hashCopy;
-    }
-
-    /**
      *  Get the sequences stored in this Fasta.
      *
      *  @return ArrayList of Strings containing the sequences.
@@ -244,24 +199,6 @@ public class Fasta {
             sequences.add (sequenceHash.get (ids.get (i)));
         }
         return sequences;
-    }
-
-    /**
-     *  Removes a sequences from this Fasta object.
-     *
-     *  @param id The ID of the sequence to remove.
-     *  @return True if the sequence was successfully removed, False if not.
-     */
-    public boolean remove (String id) {
-        boolean success = false;
-        if (id != null) {
-            String value = sequenceHash.remove (id);
-            ids.remove (id);
-            if (value != null) {
-                success = true;
-            }
-        }
-        return success;
     }
 
     /**
