@@ -108,7 +108,12 @@ public class Binning implements Runnable {
         );
         // Output the sequences.dat and numbers.dat files to be used by the
         // removegaps program.
-        fasta.save (sequencesFile);
+        try {
+            fasta.save (sequencesFile);
+        }
+        catch (InvalidFastaException e) {
+            System.err.println ("Error saving Fasta file: " + e);
+        }
         writeNumbersFile (numbersFile, fasta.size (), fasta.length ());
         // Run the fasta file through the removegaps program.
         execs.runRemovegaps (sequencesFile, numbersFile, rgFile);
@@ -222,7 +227,7 @@ public class Binning implements Runnable {
             writer.write (String.format ("%d, %d\n", size, length));
         }
         catch (IOException e) {
-            System.out.println ("Error writing the numbers.dat file.");
+            System.err.println ("Error writing the numbers.dat file.");
         }
         finally {
             if (writer != null) {
@@ -230,7 +235,7 @@ public class Binning implements Runnable {
                     writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
+                    System.err.println ("Error closing the input file.");
                 }
             }
         }
@@ -289,7 +294,7 @@ public class Binning implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error writing the input file.");
+            System.err.println ("Error writing the input file.");
         }
         finally {
             if (writer != null) {
@@ -297,7 +302,7 @@ public class Binning implements Runnable {
                     writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
+                    System.err.println ("Error closing the input file.");
                 }
             }
         }
@@ -337,8 +342,8 @@ public class Binning implements Runnable {
      */
     private void writeDivergenceMatrixInputFile (File inputFile) {
         BufferedWriter writer = null;
-        ArrayList<String> seqs = fasta.getSequences ();
         try {
+            ArrayList<String> seqs = fasta.getSequences ();
             writer = new BufferedWriter (new FileWriter (inputFile));
             writer.write (String.format (
                 " %12d %12d\n",
@@ -350,7 +355,10 @@ public class Binning implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error writing the input file.");
+            System.err.println ("Error writing the input file.");
+        }
+        catch (InvalidFastaException e) {
+            System.err.println ("Error getting sequences from file.");
         }
         finally {
             if (writer != null) {
@@ -358,7 +366,7 @@ public class Binning implements Runnable {
                     writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
+                    System.err.println ("Error closing the input file.");
                 }
             }
         }
@@ -386,7 +394,7 @@ public class Binning implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error reading the output file.");
+            System.err.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
@@ -394,7 +402,7 @@ public class Binning implements Runnable {
                     reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the output file.");
+                    System.err.println ("Error closing the output file.");
                 }
             }
         }
@@ -422,7 +430,7 @@ public class Binning implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error reading the output file.");
+            System.err.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
@@ -430,7 +438,7 @@ public class Binning implements Runnable {
                     reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the output file.");
+                    System.err.println ("Error closing the output file.");
                 }
             }
         }
@@ -462,7 +470,7 @@ public class Binning implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error reading the output file.");
+            System.err.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
@@ -470,7 +478,7 @@ public class Binning implements Runnable {
                     reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the output file.");
+                    System.err.println ("Error closing the output file.");
                 }
             }
         }
