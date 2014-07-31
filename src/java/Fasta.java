@@ -300,9 +300,9 @@ public class Fasta {
             String id = "null";
             String description = "";
             String sequence = "";
-            String line = null;
-            while ((line = input.readLine ()) != null) {
-                if (! line.isEmpty () && line.charAt (0) == '>') {
+            String buffer = null;
+            while ((buffer = input.readLine ()) != null) {
+                if (! buffer.isEmpty () && buffer.charAt (0) == '>') {
                     // This line contains a header.
                     if (! id.equals ("null")) {
                         // Save the previous id/sequence before parsing the
@@ -316,7 +316,7 @@ public class Fasta {
                         sequence = "";
                     }
                     // Grab the id out of the header.
-                    String[] header = line.split ("\\s+", 2);
+                    String[] header = buffer.split ("\\s+", 2);
                     id = header[0].substring (1);
                     if (header.length == 2) {
                         description = header[1];
@@ -325,7 +325,7 @@ public class Fasta {
                 else {
                     // This line contains sequence (or it is empty and we can
                     // concatenate it anyway).
-                    sequence = sequence + line;
+                    sequence = sequence + buffer;
                 }
             }
             // Save the last sequence.
