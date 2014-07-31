@@ -54,11 +54,11 @@ public class Fasta {
     /**
      *  Constructor for a Fasta object using a user supplied File.
      *
-     *  @param file A File containing the Fasta data.
+     *  @param fastaFile A File containing Fasta formatted data.
      */
-    public Fasta (File file) throws InvalidFastaException {
-        this.file = file;
-        parseFasta (file);
+    public Fasta (File fastaFile) throws InvalidFastaException {
+        file = fastaFile;
+        parseFasta (fastaFile);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Fasta {
     }
 
     /**
-     *  Gets an identifier from this Fasta object that has the provided index.
+     *  Gets the identifier with the provided index.
      *
      *  @param index The index of the identifier to return.
      *  @return The identifier linked to the provided index.
@@ -117,10 +117,10 @@ public class Fasta {
     }
 
     /**
-     *  Gets a sequence from this Fasta object that has the provided ID.
+     *  Gets the sequence with the provided identifier.
      *
      *  @param id The ID of the sequence to return.
-     *  @return The sequence linked to the provided ID.
+     *  @return The sequence linked to the provided identifier.
      */
     public String getSequence (String id) {
         String value = null;
@@ -131,7 +131,7 @@ public class Fasta {
     }
 
     /**
-     *  Gets a sequence from this Fasta object that has the provided index.
+     *  Gets the sequence with the provided index.
      *
      *  @param index The index of the sequence to return.
      *  @return The sequence linked to the provided index.
@@ -278,10 +278,9 @@ public class Fasta {
     }
 
     /**
-     *  Save the Fasta data in this object to an Ecotype Simulation formatted
-     *  Fasta file.
+     *  Save the sequence data in this object to a Fasta formatted file.
      *
-     *  @param fileName File name to write the Fasta data to.
+     *  @param fileName File name to write the sequences to.
      *  @return True if the save was a success, False otherwise.
      */
     public boolean save (String fileName) {
@@ -289,10 +288,9 @@ public class Fasta {
     }
 
     /**
-     *  Save the Fasta data in this object to an Ecotype Simulation formatted
-     *  Fasta file.
+     *  Save the sequence data in this object to a Fasta formatted file.
      *
-     *  @param file File to write the Fasta data to.
+     *  @param fastaFile File to write the sequences to.
      *  @return True if the save was a success, False otherwise.
      */
     public boolean save (File file) {
@@ -326,12 +324,11 @@ public class Fasta {
     }
 
     /**
-     *  Create a new Fasta object containing a random subset of the sequences
-     *  contained in this Fasta object.
-     *
-     *  @param number The number of sequences to place in the new Fasta.
-     *  @return A new Fasta object containing a random subset of the
+     *  Create a new Fasta object containing a random subset of the
      *  sequences contained in this Fasta object.
+     *
+     *  @param number The number of sequences to select.
+     *  @return The random subset of the sequences.
      */
     public Fasta randomSubset (int number) {
         Fasta randomFasta = new Fasta ();
