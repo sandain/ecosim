@@ -130,7 +130,7 @@ public class Fasta {
      *  @param id The ID of the sequence to return.
      *  @return The sequence linked to the provided identifier.
      */
-    public String getSequence (String id) {
+    public String getSequence (String id) throws InvalidFastaException {
         String value = null;
         if (id != null) {
             value = sequenceHash.get (id);
@@ -144,7 +144,7 @@ public class Fasta {
      *  @param index The index of the sequence to return.
      *  @return The sequence linked to the provided index.
      */
-    public String getSequence (int index) {
+    public String getSequence (int index) throws InvalidFastaException {
         String value = null;
         try {
             String id = ids.get (index);
@@ -238,7 +238,7 @@ public class Fasta {
      *
      *  @return ArrayList of Strings containing the sequences.
      */
-    public ArrayList<String> getSequences () {
+    public ArrayList<String> getSequences () throws InvalidFastaException {
         ArrayList<String> sequences = new ArrayList<String> ();
         for (int i = 0; i < size; i ++) {
             sequences.add (sequenceHash.get (ids.get (i)));
@@ -284,7 +284,7 @@ public class Fasta {
      *  @param fileName File name to write the sequences to.
      *  @return True if the save was a success, False otherwise.
      */
-    public boolean save (String fileName) {
+    public boolean save (String fileName) throws InvalidFastaException {
         return save (new File (fileName));
     }
 
@@ -294,11 +294,11 @@ public class Fasta {
      *  @param fastaFile File to write the sequences to.
      *  @return True if the save was a success, False otherwise.
      */
-    public boolean save (File file) {
+    public boolean save (File fastaFile) throws InvalidFastaException {
         boolean success = false;
         BufferedWriter out = null;
         try {
-            out = new BufferedWriter (new FileWriter (file));
+            out = new BufferedWriter (new FileWriter (fastaFile));
             for (int i = 0; i < size; i ++) {
                 String key = ids.get (i);
                 out.write (">" + key + " ");
@@ -313,7 +313,7 @@ public class Fasta {
             if (out != null) {
                 try {
                     out.close ();
-                    this.file = file;
+                    this.file = fastaFile;
                     success = true;
                 }
                 catch (IOException e) {
