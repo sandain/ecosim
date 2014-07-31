@@ -56,7 +56,7 @@ public class Fasta {
      *
      *  @param file A File containing the Fasta data.
      */
-    public Fasta (File file) {
+    public Fasta (File file) throws InvalidFastaException {
         this.file = file;
         parseFasta (file);
     }
