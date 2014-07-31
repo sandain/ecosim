@@ -142,7 +142,7 @@ public class Fasta {
             value = getSequence (id);
         }
         catch (IndexOutOfBoundsException e) {
-            e.printStackTrace ();
+            throw new InvalidFastaException ("Invalid sequence: " + e);
         }
         return value;
     }
@@ -244,7 +244,7 @@ public class Fasta {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error writing to output file.");
+            throw new InvalidFastaException ("IO Error: " + e);
         }
         finally {
             if (out != null) {
@@ -254,7 +254,7 @@ public class Fasta {
                     success = true;
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing output file.");
+                    throw new InvalidFastaException ("IO Error: " + e);
                 }
             }
         }
@@ -290,7 +290,7 @@ public class Fasta {
     /**
      *  Private method to parse through a Fasta formatted text file.
      */
-    private void parseFasta (File fastaFile) {
+    private void parseFasta (File fastaFile) throws InvalidFastaException {
         BufferedReader input = null;
         sequenceHash = new HashMap<String, String> ();
         descriptionHash = new HashMap<String, String> ();
@@ -337,7 +337,7 @@ public class Fasta {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error reading from input file.");
+            throw new InvalidFastaException ("IO Error: " + e);
         }
         finally {
             if (input != null) {
@@ -345,7 +345,7 @@ public class Fasta {
                     input.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing input file.");
+                    throw new InvalidFastaException ("IO Error: " + e);
                 }
             }
         }
