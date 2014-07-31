@@ -156,18 +156,23 @@ public class Demarcation implements Runnable {
             // Create a new Fasta object containing just the sequences to
             // be tested.
             Fasta sampleFasta = new Fasta ();
-            // Add the sequences from the subtree to the sample Fasta.
-            for (int i = 0; i < sample.size (); i ++) {
-                String id = sample.get (i);
-                sampleFasta.put (
-                    id,
-                    fasta.getSequence (id)
+            try {
+                // Add the sequences from the subtree to the sample Fasta.
+                for (int i = 0; i < sample.size (); i ++) {
+                    String id = sample.get (i);
+                    sampleFasta.put (
+                        id,
+                        fasta.getSequence (id)
+                    );
+                }
+                // Save a copy of the sequence data.
+                sampleFasta.save (
+                    workingDirectory + "sequence" + suffix + ".dat"
                 );
             }
-            // Save a copy of the sequence data.
-            sampleFasta.save (
-                workingDirectory + "sequence" + suffix + ".dat"
-            );
+            catch (InvalidFastaException e) {
+                System.err.println ("Error creating sample fasta file.");
+            }
             int nu = fasta.size ();
             int sampleNu = sample.size ();
             int length = fasta.length ();
