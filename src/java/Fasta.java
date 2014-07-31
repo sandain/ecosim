@@ -46,6 +46,7 @@ public class Fasta {
      */
     public Fasta () {
         file = null;
+        length = 0;
         size = 0;
         ids = new ArrayList<String> ();
         descriptionHash = new HashMap<String, String> ();
@@ -59,6 +60,7 @@ public class Fasta {
      */
     public Fasta (File fastaFile) throws InvalidFastaException {
         file = fastaFile;
+        length = 0;
         size = 0;
         parseFasta (fastaFile);
     }
@@ -266,13 +268,6 @@ public class Fasta {
      *  Returns the length of the longest sequence.
      */
     public int length () {
-        int length = 0;
-        for (int i = 0; i < size; i ++) {
-            String id = ids.get (i);
-            if (sequenceHash.get (id).length () > length) {
-                length = sequenceHash.get (id).length ();
-            }
-        }
         return length;
     }
 
@@ -377,7 +372,9 @@ public class Fasta {
                         // line.
                         sequenceHash.put (id, sequence.toLowerCase ());
                         descriptionHash.put (id, description);
+                        int length = sequence.length ();
                         ids.add (id);
+                        if (length > this.length) this.length = length;
                         size ++;
                         sequence = "";
                     }
@@ -421,6 +418,7 @@ public class Fasta {
     private ArrayList<String> ids;
     private HashMap<String, String> descriptionHash;
     private HashMap<String, String> sequenceHash;
+    private int length;
     private int size;
 
 }
