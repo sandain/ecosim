@@ -46,9 +46,9 @@ public class Fasta {
      */
     public Fasta () {
         file = null;
-        ids = new ArrayList<String>();
-        descriptionHash = new HashMap<String, String>();
-        sequenceHash = new HashMap<String, String>();
+        ids = new ArrayList<String> ();
+        descriptionHash = new HashMap<String, String> ();
+        sequenceHash = new HashMap<String, String> ();
     }
 
     /**
