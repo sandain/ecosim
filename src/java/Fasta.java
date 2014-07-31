@@ -288,17 +288,17 @@ public class Fasta {
      *  Private method to parse through a Fasta formatted text file.
      */
     private void parseFasta (File fastaFile) throws InvalidFastaException {
-        BufferedReader input = null;
+        BufferedReader file = null;
         sequenceHash = new HashMap<String, String> ();
         descriptionHash = new HashMap<String, String> ();
         ids = new ArrayList<String> ();
         try {
-            input = new BufferedReader (new FileReader (fastaFile));
+            file = new BufferedReader (new FileReader (fastaFile));
             String id = "null";
             String description = "";
             String sequence = "";
             String buffer = null;
-            while ((buffer = input.readLine ()) != null) {
+            while ((buffer = file.readLine ()) != null) {
                 if (! buffer.isEmpty () && buffer.charAt (0) == '>') {
                     // This line contains a header.
                     if (! id.equals ("null")) {
@@ -337,9 +337,9 @@ public class Fasta {
             throw new InvalidFastaException ("IO Error: " + e);
         }
         finally {
-            if (input != null) {
+            if (file != null) {
                 try {
-                    input.close ();
+                    file.close ();
                 }
                 catch (IOException e) {
                     throw new InvalidFastaException ("IO Error: " + e);
