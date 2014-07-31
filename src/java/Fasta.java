@@ -46,6 +46,7 @@ public class Fasta {
      */
     public Fasta () {
         file = null;
+        size = 0;
         ids = new ArrayList<String> ();
         descriptionHash = new HashMap<String, String> ();
         sequenceHash = new HashMap<String, String> ();
@@ -58,6 +59,7 @@ public class Fasta {
      */
     public Fasta (File fastaFile) throws InvalidFastaException {
         file = fastaFile;
+        size = 0;
         parseFasta (fastaFile);
     }
 
@@ -68,7 +70,7 @@ public class Fasta {
      */
     public boolean isValid () {
         boolean valid = false;
-        if (ids.size () > 0) {
+        if (size > 0) {
             valid = true;
         }
         return valid;
@@ -113,7 +115,11 @@ public class Fasta {
      *  @return The identifier linked to the provided index.
      */
     public String getIdentifier (int index) {
-        return ids.get (index);
+        String id = "";
+        if (index < size) {
+            id = ids.get (index);
+        }
+        return id;
     }
 
     /**
@@ -183,7 +189,7 @@ public class Fasta {
      */
     public ArrayList<String> getIdentifiers () {
         ArrayList<String> idsCopy = new ArrayList<String> ();
-        for (int i = 0; i < ids.size (); i ++) {
+        for (int i = 0; i < size; i ++) {
             idsCopy.add (ids.get (i));
         }
         return idsCopy;
@@ -200,7 +206,7 @@ public class Fasta {
         HashMap<String, String> hashCopy = new HashMap<String, String> ();
         String [] keys;
         keys = descriptionHash.keySet ().toArray (
-            new String [descriptionHash.size ()]
+            new String [size]
         );
         for (int i = 0; i < keys.length; i ++) {
             hashCopy.put (keys[i], descriptionHash.get (keys[i]));
@@ -217,7 +223,7 @@ public class Fasta {
     public HashMap<String, String> getSequenceHash () {
         HashMap<String, String> hashCopy = new HashMap<String, String> ();
         String [] keys = sequenceHash.keySet ().toArray (
-            new String [sequenceHash.size ()]
+            new String [size]
         );
         for (int i = 0; i < keys.length; i ++) {
             hashCopy.put (keys[i], sequenceHash.get (keys[i]));
@@ -232,7 +238,7 @@ public class Fasta {
      */
     public ArrayList<String> getSequences () {
         ArrayList<String> sequences = new ArrayList<String> ();
-        for (int i = 0; i < ids.size (); i ++) {
+        for (int i = 0; i < size; i ++) {
             sequences.add (sequenceHash.get (ids.get (i)));
         }
         return sequences;
@@ -261,7 +267,7 @@ public class Fasta {
      */
     public int length () {
         int length = 0;
-        for (int i = 0; i < ids.size (); i ++) {
+        for (int i = 0; i < size; i ++) {
             String id = ids.get (i);
             if (sequenceHash.get (id).length () > length) {
                 length = sequenceHash.get (id).length ();
@@ -274,7 +280,7 @@ public class Fasta {
      *  Returns the number of sequences stored in this Fasta object.
      */
     public int size () {
-        return ids.size ();
+        return size;
     }
 
     /**
@@ -298,7 +304,7 @@ public class Fasta {
         BufferedWriter out = null;
         try {
             out = new BufferedWriter (new FileWriter (file));
-            for (int i = 0; i < ids.size (); i ++) {
+            for (int i = 0; i < size; i ++) {
                 String key = ids.get (i);
                 out.write (">" + key + " ");
                 out.write (descriptionHash.get (key) + "\n");
@@ -372,6 +378,7 @@ public class Fasta {
                         sequenceHash.put (id, sequence.toLowerCase ());
                         descriptionHash.put (id, description);
                         ids.add (id);
+                        size ++;
                         sequence = "";
                     }
                     // Grab the id out of the header.
@@ -392,6 +399,7 @@ public class Fasta {
                 sequenceHash.put (id, sequence.toLowerCase ());
                 descriptionHash.put (id, description);
                 ids.add (id);
+                size ++;
             }
         }
         catch (IOException e) {
@@ -413,5 +421,6 @@ public class Fasta {
     private ArrayList<String> ids;
     private HashMap<String, String> descriptionHash;
     private HashMap<String, String> sequenceHash;
+    private int size;
 
 }
