@@ -47,7 +47,6 @@ public class Simulation {
         this.fastaFile = fastaFile;
         this.newickFile = newickFile;
         log = masterVariables.getLog ();
-        phylogeny = new Phylogeny (masterVariables);
         if (fastaFile != null && fastaFile.exists ()) {
             loadSequenceFile ();
         }
@@ -104,11 +103,21 @@ public class Simulation {
         log.append (
             "Opening sequence file: " + fastaFile.getName () + "\n"
         );
-        phylogeny.loadSequenceFile (fastaFile);
-        fasta = phylogeny.getFasta ();
-        nu = phylogeny.getNu ();
-        length = phylogeny.length ();
-        outgroup = phylogeny.getOutgroupIdentifier ();
+        try {
+            fasta = new Fasta (fastaFile);
+            nu = fasta.size ();
+            length = fasta.length ();
+            outgroup = fasta.getIdentifier (0);
+            // Output the number of sequences loaded.
+            log.append (String.format (
+                "  %d environmental sequences.\n" +
+                "  %s is the outgroup.\n\n",
+                nu, outgroup
+            ));
+        }
+        catch (InvalidFastaException e) {
+            System.out.println ("Error loading sequence file.");
+        }
     }
 
     /**
@@ -123,8 +132,12 @@ public class Simulation {
         log.append (
             "Opening tree file: " + newickFile.getName () + "\n"
         );
-        phylogeny.loadTreeFile (newickFile);
-        tree = phylogeny.getNewickTree ();
+        try {
+            tree = new NewickTree (newickFile);
+        }
+        catch (InvalidNewickException e) {
+            System.out.println ("Error loading tree file.");
+        }
     }
 
     /**
@@ -133,36 +146,10 @@ public class Simulation {
      *  @param method The method to use to generate the tree.
      */
     protected void generateTree (String method) {
-        log.append (String.format (
-            "Generating a %s tree using Phylip...\n",
-            method
-        ));
-        newickFile = phylogeny.generateTree (method);
-        tree = phylogeny.getNewickTree ();
-    }
-
-    /**
-     *  Run the phylogeny program.
-     */
-    protected void runPhylogeny () {
-        log.append (
-            "Starting the phylogeny program...\n"
-        );
-        phylogeny.run ();
-        // Verify that the phylogeny programs ran correctly.
-        if (! phylogeny.hasRun ()) {
-            log.append ("  Error running the phylogeny program!\n");
-            return;
-        }
-        log.append (
-            "The results from the phylogeny program:\n"
-        );
-        // Output the number of sequences loaded.
-        log.append (String.format (
-            "  %d sequences loaded.\n" +
-            "  %s is the outgroup.\n\n",
-            phylogeny.getNu (), phylogeny.getOutgroupIdentifier ()
-        ));
+//        log.append (String.format (
+//            "Generating a %s tree using Phylip...\n",
+//            method
+//        ));
     }
 
     /**
@@ -330,7 +317,6 @@ public class Simulation {
     protected File fastaFile;
     protected File newickFile;
     protected Logger log;
-    protected Phylogeny phylogeny;
     protected Fasta fasta;
     protected Integer nu;
     protected Integer length;
