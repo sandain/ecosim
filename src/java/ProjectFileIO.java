@@ -49,12 +49,12 @@ public class ProjectFileIO {
      */
     public ProjectFileIO (MasterVariables masterVariables) {
         this.masterVariables = masterVariables;
+        Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
-        phylogeny = new Phylogeny (masterVariables);
-        Fasta fasta = phylogeny.getFasta ();
-        NewickTree tree = phylogeny.getNewickTree ();
-        int nu = phylogeny.getNu ();
-        int length = phylogeny.length ();
+        tree = new NewickTree ();
+        nu = 0;
+        length = 0;
+        outgroup = "";
         binning = new Binning (
             masterVariables, fasta
         );
@@ -82,7 +82,10 @@ public class ProjectFileIO {
      *  Load and save the current project.
      *
      *  @param masterVariables The master variables.
-     *  @param phylogeny The Phylogeny object.
+     *  @param nu The number of environmental sequences.
+     *  @param length the length of the environmental sequences.
+     *  @param outgroup The identifier of the outgroup sequence.
+     *  @param tree The NewickTree object.
      *  @param binning The Binning object.
      *  @param bruteforce The Bruteforce object.
      *  @param hillclimb The Hillclimb object.
@@ -91,13 +94,16 @@ public class ProjectFileIO {
      *  @param npopCI The NpopConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO (MasterVariables masterVariables,
-        Phylogeny phylogeny, Binning binning, Bruteforce bruteforce,
-        Hillclimb hillclimb, OmegaConfidenceInterval omegaCI,
+    public ProjectFileIO (MasterVariables masterVariables, Integer nu, Integer length, 
+        String outgroup, NewickTree tree, Binning binning, Bruteforce bruteforce,
+        Hillclimb hillclimb, OmegaConfidenceInterval omegaCI, 
         SigmaConfidenceInterval sigmaCI, NpopConfidenceInterval npopCI,
         Demarcation demarcation) {
         this.masterVariables = masterVariables;
-        this.phylogeny = phylogeny;
+        this.nu = nu;
+        this.length = length;
+        this.outgroup = outgroup;
+        this.tree = tree;
         this.binning = binning;
         this.bruteforce = bruteforce;
         this.hillclimb = hillclimb;
@@ -129,23 +135,16 @@ public class ProjectFileIO {
                 masterVariables.getCriterion () + "\"/>\n"
             );
             // Output the phylogeny data.
-            if (phylogeny != null && phylogeny.hasRun ()) {
+            if (tree != null && tree.isValid ()) {
                 out.write (String.format (
-                    "  <phylogeny size=\"%d\" length=\"%d\">\n",
-                    phylogeny.getNu (), phylogeny.length ()
+                    "  <phylogeny size=\"%d\" length=\"%d\">\n", nu, length
                 ));
                 out.write (String.format (
-                    "    <tree value=\"%s\"/>\n",
-                    phylogeny.getNewickTree ().toString ()
+                    "    <outgroup value=\"%s\"/>\n", outgroup
                 ));
-                ArrayList<String> identifiers = phylogeny.getIdentifiers ();
-                for (int i = 0; i < identifiers.size (); i ++) {
-                    out.write (String.format (
-                        "    <sequence identifier=\"%s\" sequence=\"%s\"/>\n",
-                        phylogeny.getIdentifier (i),
-                        phylogeny.getSequence (i)
-                    ));
-                }
+                out.write (String.format (
+                    "    <tree value=\"%s\"/>\n", tree.toString ()
+                ));
                 out.write (
                     "  </phylogeny>\n"
                 );
@@ -323,12 +322,39 @@ public class ProjectFileIO {
     }
 
     /**
-     *  Get the Phylogeny object.
+     *  Get the number of environmental sequences.
      *
-     *  @return The Phylogeny object.
+     *  @return The number of environmental sequences.
      */
-    public Phylogeny getPhylogeny () {
-        return phylogeny;
+    public Integer getNu () {
+        return nu;
+    }
+
+    /**
+     *  Get the length of the sequences.
+     *
+     *  @return The length of the sequences.
+     */
+    public Integer getLength () {
+        return length;
+    }
+
+    /**
+     *  Get the name of the outgroup.
+     *
+     *  @return The name of the outgroup.
+     */
+    public String getOutgroup () {
+        return outgroup;
+    }
+
+    /**
+     *  Get the NewickTree object.
+     *
+     *  @return The NewickTree object.
+     */
+    public NewickTree getTree () {
+        return tree;
     }
 
     /**
@@ -395,7 +421,10 @@ public class ProjectFileIO {
     }
 
     private MasterVariables masterVariables;
-    private Phylogeny phylogeny;
+    private Integer nu;
+    private Integer length;
+    private String outgroup;
+    private NewickTree tree;
     private Binning binning;
     private Bruteforce bruteforce;
     private Hillclimb hillclimb;
@@ -448,20 +477,29 @@ public class ProjectFileIO {
                         attrs.getValue (uri, "value")
                     ).intValue ());
                 }
+                // Look for the phylogeny element.
+                if (localName.equals ("phylogeny")) {
+                    nu = new Integer (attrs.getValue (uri, "size"));
+                    length = new Integer (attrs.getValue (uri, "length"));
+                }
                 // Look for the elements within phylogeny.
                 if (activeElement.equals ("phylogeny")) {
+                    // Look for the outgroup element.
+                    if (localName.equals ("outgroup")) {
+                        outgroup = attrs.getValue (uri, "value");
+                    }
                     // Look for the tree element.
                     if (localName.equals ("tree")) {
-                         phylogeny.loadTree (
-                            attrs.getValue (uri, "value")
-                        );
-                    }
-                    // Look for the sequence elements.
-                    if (localName.equals ("sequence")) {
-                        phylogeny.put (
-                            attrs.getValue (uri, "identifier"),
-                            attrs.getValue (uri, "sequence")
-                        );
+                        try {
+                            tree = new NewickTree (
+                                attrs.getValue (uri, "value")
+                            );
+                        }
+                        catch (InvalidNewickException e) {
+                            System.err.println (
+                                "Invalid Newick formatted tree found."
+                            );
+                        }
                     }
                 }
                 // Look for elements within binning.
@@ -629,10 +667,6 @@ public class ProjectFileIO {
                 // Look for the end of the ecosim save file.
                 if (localName.equals ("ecosim")) {
                     isProjectFile = false;
-                }
-                // Look for the end of the phylogeny element.
-                if (localName.equals ("phylogeny")) {
-                    phylogeny.setHasRun (true);
                 }
                 // Look for the end of the binning element.
                 if (localName.equals ("binning")) {

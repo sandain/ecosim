@@ -66,12 +66,10 @@ public class Simulation {
         // Load the project file.
         projectFileIO.load (file);
         // Grab the loaded variables.
-        phylogeny = projectFileIO.getPhylogeny ();
-        fasta = phylogeny.getFasta ();
-        nu = phylogeny.getNu ();
-        length = phylogeny.length ();
-        outgroup = phylogeny.getOutgroupIdentifier ();
-        tree = phylogeny.getNewickTree ();
+        nu = projectFileIO.getNu ();
+        length = projectFileIO.getLength ();
+        outgroup = projectFileIO.getOutgroup ();
+        tree = projectFileIO.getTree ();
         binning = projectFileIO.getBinning ();
         bruteforce = projectFileIO.getBruteforce ();
         hillclimb = projectFileIO.getHillclimb ();
@@ -88,7 +86,7 @@ public class Simulation {
      */
     public void saveProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, phylogeny, binning, bruteforce,
+            masterVariables, nu, length, outgroup, tree, binning, bruteforce,
             hillclimb, omegaCI, sigmaCI, npopCI, demarcation
         );
         projectFileIO.save (file);
