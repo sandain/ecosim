@@ -532,8 +532,14 @@ public class SimulationGUI extends Simulation {
                 }
                 break;
         }
-        // Run the phylogeny program.
-        runPhylogeny ();
+        if (nu > 0) {
+            log.append ("Phylogeny results:\n");
+            log.append (String.format (
+                "  %d environmental sequences.\n" +
+                "  %s is the outgroup.\n\n",
+                nu, outgroup
+            ));
+        }
         // Launch NJPlot to view the tree.
         log.append ("Displaying the tree with NJplot.\n\n");
         execs.openTree (newickFile);
