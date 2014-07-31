@@ -433,19 +433,21 @@ public class SimulationGUI extends Simulation {
                 masterVariables.getCriterion () - 1
             );
             // Output the values stored in the project file.
-            if (phylogeny.hasRun ()) {
+            if (nu > 0) {
                 log.append ("Phylogeny results:\n");
                 log.append (String.format (
-                    "  %s sequences loaded.\n" +
+                    "  %s environmental sequences.\n" +
                     "  %s is the outgroup.\n\n",
-                    phylogeny.getNu (), phylogeny.getOutgroupIdentifier ()
+                    nu, outgroup
                 ));
+            }
+            if (tree != null && tree.isValid ()) {
                 // Launch NJPlot to view the tree.
                 log.append ("Displaying the tree with NJplot.\n\n");
                 File treeFile = new File (
                     masterVariables.getWorkingDirectory () + "outtree"
                 );
-                phylogeny.saveNewick (treeFile);
+                tree.save (treeFile);
                 execs.openTree (treeFile);
             }
             if (binning != null && binning.hasRun ()) {
@@ -543,7 +545,7 @@ public class SimulationGUI extends Simulation {
      *  programs, or the demarcation program.
      */
     private void runBinningThroughBruteforceActionPerformed () {
-        if (! phylogeny.hasRun ()) {
+        if (nu == 0) {
             log.append ("Please open a valid fasta file first.\n");
             return;
         }
@@ -592,7 +594,7 @@ public class SimulationGUI extends Simulation {
      *  demarcation program.
      */
     private void runAllActionPerformed () {
-        if (! phylogeny.hasRun ()) {
+        if (nu == 0) {
             log.append ("Please open a valid fasta file first.\n");
             return;
         }
@@ -621,7 +623,7 @@ public class SimulationGUI extends Simulation {
      *  demarcation program.
      */
     private void runAllDemarcationActionPerformed () {
-        if (! phylogeny.hasRun ()) {
+        if (nu == 0) {
             log.append ("Please open a valid fasta file first.\n");
             return;
         }
