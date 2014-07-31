@@ -94,11 +94,11 @@ public class ProjectFileIO {
      *  @param npopCI The NpopConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO (MasterVariables masterVariables, Integer nu, Integer length, 
-        String outgroup, NewickTree tree, Binning binning, Bruteforce bruteforce,
-        Hillclimb hillclimb, OmegaConfidenceInterval omegaCI, 
-        SigmaConfidenceInterval sigmaCI, NpopConfidenceInterval npopCI,
-        Demarcation demarcation) {
+    public ProjectFileIO (MasterVariables masterVariables, Integer nu,
+        Integer length, String outgroup, NewickTree tree, Binning binning,
+        Bruteforce bruteforce, Hillclimb hillclimb,
+        OmegaConfidenceInterval omegaCI, SigmaConfidenceInterval sigmaCI,
+        NpopConfidenceInterval npopCI, Demarcation demarcation) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
