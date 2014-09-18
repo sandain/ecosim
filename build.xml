@@ -11,6 +11,7 @@
   <property name="build.dir" value="build"/>
   <property name="lib.dir" value="lib"/>
   <property name="src.dir" value="src/java"/>
+  <property name="tests.dir" value="tests/java"/>
   <property name="jarfile" value="EcoSim.jar"/>
   <property name="main-class" value="ecosim.EcotypeSimulation"/>
 
@@ -52,6 +53,38 @@
   <!-- The uninstall target. -->
   <target name="uninstall" description="Remove the jar file from the installation folder.">
     <delete file="${bin.dir}/${jarfile}"/>
+  </target>
+
+  <!-- Store path information for the check target. -->
+  <path id="check.path">
+    <pathelement location="${lib.dir}/junit4.jar"/>
+    <pathelement location="${lib.dir}/hamcrest-core.jar"/>
+    <pathelement location="${build.dir}/${jarfile}"/>
+    <pathelement path="${build.dir}/tests/java"/>
+  </path>
+
+  <!-- The check target. -->
+  <target name="check" depends="dist" description="Run the unit tests.">
+    <mkdir dir="${build.dir}/tests/java"/>
+    <!-- Copy the assets to the test build directory. -->
+    <copy todir="${build.dir}/tests/java/assets">
+      <fileset dir="${tests.dir}/assets"/>
+    </copy>
+    <!-- Compile the tests in the test build directory. -->
+    <javac srcdir="${tests.dir}" destdir="${build.dir}/tests/java" includeantruntime="false">
+      <compilerarg value="-Xlint:unchecked,deprecation"/>
+      <classpath refid="check.path"/>
+    </javac>
+    <!-- Run the tests. -->
+    <junit printsummary="on" fork="true" haltonfailure="yes">
+      <formatter type="plain"/>
+      <classpath refid="check.path"/>
+      <batchtest fork="yes" todir="${build.dir}/tests">
+        <fileset dir="${tests.dir}">
+          <include name="Test*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
   </target>
 
 </project>
