@@ -70,7 +70,7 @@ OBJECT_FILES  := $(patsubst %.f90, \
 MOD_FILES     := $(patsubst %.f90, %.mod, $(INCLUDE_FILES))
 
 # List of phony build targets.
-.PHONY: all clean install uninstall docs
+.PHONY: all clean install uninstall docs check
 
 # The main entry point for building.
 all: $(BUILD_DIR) $(BINARY_FILES)
@@ -98,6 +98,10 @@ uninstall:
 docs:
 	$(MKDIR_P) $(DOCS_DIR)
 	$(DOXYGEN) ecosim.doxy
+
+# Run the unit tests.
+check:
+	$(ANT) check
 
 # Build the binary files.
 $(BINARY_FILES) : $(BUILD_DIR)$(DIRECTORY_SEPARATOR)%$(BINARY_EXT) : \
