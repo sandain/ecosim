@@ -103,30 +103,6 @@ public class NewickTree {
     }
 
     /**
-     *  Returns an ArrayList<NewickTreeNode> that makes up the leaves of this
-     *  tree.
-     *
-     *  @return ArrayList containing the leaves.
-     */
-    public ArrayList<NewickTreeNode> getDescendants () {
-        return root.getDescendants ();
-    }
-
-    /**
-     *  Remove the descendant with the given name.
-     *
-     *  @param name The name of the descendant to remove.
-     */
-    public void removeDescendant (String name) {
-        for (NewickTreeNode descendant: root.getDescendants ()) {
-            if (descendant.getName ().equals (name)) {
-                 descendant.getParent ().removeChild (descendant);
-                 break;
-            }
-        }
-    }
-
-    /**
      *  Returns this tree as a Newick formatted String.
      *
      *  @return Newick formatted String containing the tree.
