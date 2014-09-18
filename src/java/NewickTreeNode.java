@@ -68,7 +68,12 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     public int compareTo (NewickTreeNode other) {
         Double a = maximumDistanceFromLeafNode ();
         Double b = other.maximumDistanceFromLeafNode ();
-        return a.compareTo (b);
+        int c = a.compareTo (b);
+        if (c == 0) {
+            String otherName = other.getName ();
+            c = otherName.compareTo (name);
+        }
+        return c;
     }
 
     /**
