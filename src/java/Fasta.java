@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2009-2013  Jason M. Wood, Montana State University
+ *    Copyright (C) 2009-2014  Jason M. Wood, Montana State University
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,12 +22,10 @@
 
 package ecosim;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.RandomAccessFile;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.lang.IndexOutOfBoundsException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,11 +43,13 @@ public class Fasta {
      *  Constructor for a Fasta object.
      */
     public Fasta () {
+        file = null;
+        current = 0;
         length = 0;
         size = 0;
         ids = new ArrayList<String> ();
-        descriptionHash = new HashMap<String, String> ();
-        sequenceHash = new HashMap<String, String> ();
+        sequenceLengths = new HashMap<String, Integer> ();
+        sequenceOffsets = new HashMap<String, Long> ();
     }
 
     /**
@@ -58,9 +58,71 @@ public class Fasta {
      *  @param fastaFile A File containing Fasta formatted data.
      */
     public Fasta (File fastaFile) throws InvalidFastaException {
+        try {
+            file = new RandomAccessFile (fastaFile, "rw");
+            current = 0;
+            length = 0;
+            size = 0;
+            ids = new ArrayList<String> ();
+            sequenceLengths = new HashMap<String, Integer> ();
+            sequenceOffsets = new HashMap<String, Long> ();
+            long offset = 0;
+            Sequence seq;
+            while ((seq = parseSequence ()) != null) {
+                String id = seq.getIdentifier ();
+                int length = seq.length ();
+                ids.add (id);
+                sequenceOffsets.put (id, offset);
+                sequenceLengths.put (id, length);
+                if (length > this.length) this.length = length;
+                size ++;
+                // Update the file offset.
+                offset = file.getFilePointer ();
+            }
+            file.seek (0);
+        }
+        catch (FileNotFoundException e) {
+            throw new InvalidFastaException ("Fasta file not found: " + e);
+        }
+        catch (IOException e) {
+            throw new InvalidFastaException ("IO error: " + e);
+        }
+    }
+
+    /**
+     *  Constructor for a Fasta object using pre-defined values.
+     *
+     *  @param file A RandomAccessFile containing Fasta formated data.
+     *  @param ids
+     *  @param lengths
+     *  @param offsets
+     */
+    public Fasta (RandomAccessFile file, ArrayList<String> ids,
+        HashMap<String, Integer> lengths, HashMap<String, Long> offsets) {
+        this.file = file;
+        this.ids = ids;
+        sequenceLengths = lengths;
+        sequenceOffsets = offsets;
+        current = 0;
         length = 0;
-        size = 0;
-        parseFasta (fastaFile);
+        size = ids.size ();
+        for (String id: ids) {
+            int len = lengths.get (id);
+            if (len > length) length = len;
+        }
+    }
+
+    /**
+     *  Close this Fasta.
+     */
+    public void close () throws InvalidFastaException {
+        if (file == null) return;
+        try {
+            file.close ();
+        }
+        catch (IOException e) {
+            throw new InvalidFastaException ("IO error: " + e);
+        }
     }
 
     /**
@@ -77,26 +139,65 @@ public class Fasta {
     }
 
     /**
-     *  Puts an ID and Sequence into this Fasta object.
+     *  Retrieves the next sequence from the Fasta formated file.
      *
-     *  @param id The ID of the sequence to add.
-     *  @param sequence The sequence to add.
+     *  @return The next sequence in the buffer.
      */
-    public void put (String id, String sequence) {
-        put (id, "", sequence);
+    public Sequence nextSequence () throws InvalidFastaException {
+        Sequence seq = new Sequence ();
+        if (file == null) return seq;
+        // Make sure there are sequences available.
+        if (size > current) {
+            // Seek to the location of the current sequence in the file.
+            long offset = sequenceOffsets.get (ids.get (current));
+            try {
+                file.seek (offset);
+            }
+            catch (IOException e) {
+                throw new InvalidFastaException ("IO Error: " + e);
+            }
+            // Parse the current sequence.
+            seq = parseSequence ();
+            // Increment the current sequence.
+            current ++;
+        }
+        return seq;
     }
 
     /**
-     *  Puts an ID and Sequence into this Fasta object.
+     *  Gets the Sequence with the provided index.
      *
-     *  @param id The ID of the sequence to add.
-     *  @param description The descripiton of the sequence to add.
-     *  @param sequence The sequence to add.
+     *  @param index The index of the Sequence to return.
+     *  @return The Sequence linked to the provided index.
      */
-    public void put (String id, String description, String sequence) {
-        ids.add (id);
-        descriptionHash.put (id, description);
-        sequenceHash.put (id, sequence.toLowerCase ());
+    public Sequence get (int index) throws InvalidFastaException {
+        Sequence seq = new Sequence ();
+        if (index < size) {
+            seq = get (ids.get (index));
+        }
+        return seq;
+    }
+
+    /**
+     *  Gets the Sequence with the provided identifier.
+     *
+     *  @param id The identifier of the Sequence to return.
+     *  @return The Sequence linked to the provided identifier.
+     */
+    public Sequence get (String id) throws InvalidFastaException {
+        Sequence seq = new Sequence ();
+        if (file == null) return seq;
+        if (sequenceOffsets.containsKey (id)) {
+            long offset = sequenceOffsets.get (id);
+            try {
+                file.seek (offset);
+            }
+            catch (IOException e) {
+                throw new InvalidFastaException ("IO Error: " + e);
+            }
+            seq = parseSequence ();
+        }
+        return seq;
     }
 
     /**
@@ -120,11 +221,8 @@ public class Fasta {
      *  @return The sequence linked to the provided identifier.
      */
     public String getSequence (String id) throws InvalidFastaException {
-        String value = null;
-        if (id != null) {
-            value = sequenceHash.get (id);
-        }
-        return value;
+        Sequence seq = get (id);
+        return seq.getSequence ();
     }
 
     /**
@@ -134,43 +232,30 @@ public class Fasta {
      *  @return The sequence linked to the provided index.
      */
     public String getSequence (int index) throws InvalidFastaException {
-        String value = null;
-        try {
-            String id = ids.get (index);
-            value = getSequence (id);
-        }
-        catch (IndexOutOfBoundsException e) {
-            throw new InvalidFastaException ("Invalid sequence: " + e);
-        }
-        return value;
+        Sequence seq = get (index);
+        return seq.getSequence ();
     }
 
     /**
-     *  Changes the sequence for the provided identifier.
+     *  Gets the description with the provided identifier.
      *
-     *  @param id The identifier of the sequence to change.
-     *  @param sequence The new sequence.
+     *  @param id The ID of the description to return.
+     *  @return The description linked to the provided identifier.
      */
-    public void setSequence (String id, String sequence) {
-        if (id != null) {
-            sequenceHash.put (id, sequence.toLowerCase ());
-        }
+    public String getDescription (String id) throws InvalidFastaException {
+        Sequence seq = get (id);
+        return seq.getDescription ();
     }
 
     /**
-     *  Changes the sequence at the provided index.
+     *  Gets the description with the provided index.
      *
-     *  @param index The index of the sequence to change.
-     *  @param sequence The new sequence.
+     *  @param index The index of the description to return.
+     *  @return The description linked to the provided index.
      */
-    public void setSequence (int index, String sequence) {
-        try {
-            String id = ids.get (index);
-            setSequence (id, sequence);
-        }
-        catch (IndexOutOfBoundsException e) {
-            e.printStackTrace ();
-        }
+    public String getDescription (int index) throws InvalidFastaException {
+        Sequence seq = get (index);
+        return seq.getDescription ();
     }
 
     /**
@@ -193,10 +278,41 @@ public class Fasta {
      */
     public ArrayList<String> getSequences () throws InvalidFastaException {
         ArrayList<String> sequences = new ArrayList<String> ();
-        for (int i = 0; i < size; i ++) {
-            sequences.add (sequenceHash.get (ids.get (i)));
+        int oldCurrent = current;
+        Sequence seq = null;
+        while ((seq = nextSequence ()) != null) {
+            sequences.add (seq.getSequence ());
         }
+        current = oldCurrent;
         return sequences;
+    }
+
+
+    /**
+     *  Write the next sequence from the Fasta formated file.
+     *
+     *  @return The next sequence in the buffer.
+     */
+    public void writeSequence (Sequence seq) throws InvalidFastaException {
+        String id = seq.getIdentifier ();
+        int length = seq.length ();
+        if (file == null) return;
+        try {
+            // Seek to the end of the file.
+            long offset = file.length ();
+            file.seek (offset);
+            // Write the Sequence to the file.
+            file.writeChars (seq.toString ());
+            // Add the sequence to this Fasta object.
+            ids.add (id);
+            sequenceLengths.put (id, length);
+            sequenceOffsets.put (id, offset);
+            if (length > this.length) this.length = length;
+            size ++;
+        }
+        catch (IOException e) {
+            throw new InvalidFastaException ("IO Error: " + e);
+        }
     }
 
     /**
@@ -214,51 +330,6 @@ public class Fasta {
     }
 
     /**
-     *  Save the sequence data in this object to a Fasta formatted file.
-     *
-     *  @param fileName File name to write the sequences to.
-     *  @return True if the save was a success, False otherwise.
-     */
-    public boolean save (String fileName) throws InvalidFastaException {
-        return save (new File (fileName));
-    }
-
-    /**
-     *  Save the sequence data in this object to a Fasta formatted file.
-     *
-     *  @param fastaFile File to write the sequences to.
-     *  @return True if the save was a success, False otherwise.
-     */
-    public boolean save (File fastaFile) throws InvalidFastaException {
-        boolean success = false;
-        BufferedWriter out = null;
-        try {
-            out = new BufferedWriter (new FileWriter (fastaFile));
-            for (int i = 0; i < size; i ++) {
-                String key = ids.get (i);
-                out.write (">" + key + " ");
-                out.write (descriptionHash.get (key) + "\n");
-                out.write (sequenceHash.get (key) + "\n");
-            }
-        }
-        catch (IOException e) {
-            throw new InvalidFastaException ("IO Error: " + e);
-        }
-        finally {
-            if (out != null) {
-                try {
-                    out.close ();
-                    success = true;
-                }
-                catch (IOException e) {
-                    throw new InvalidFastaException ("IO Error: " + e);
-                }
-            }
-        }
-        return success;
-    }
-
-    /**
      *  Create a new Fasta object containing a random subset of the
      *  sequences contained in this Fasta object.
      *
@@ -266,91 +337,82 @@ public class Fasta {
      *  @return The random subset of the sequences.
      */
     public Fasta randomSubset (int number) {
-        Fasta randomFasta = new Fasta ();
         ArrayList<String> oldIds = getIdentifiers ();
         Random random = new Random ();
+        ArrayList<String> newIds = new ArrayList<String> ();
+        HashMap<String, Integer> newLengths = new HashMap<String, Integer> ();
+        HashMap<String, Long> newOffsets = new HashMap<String, Long> ();
         for (int i = 0; i < number; i ++) {
             // Choose a random sequence to add to the random fasta.
             int rand = random.nextInt (oldIds.size ());
             String id = oldIds.get (rand);
-            randomFasta.put (
-                id,
-                descriptionHash.get (id),
-                sequenceHash.get (id)
-            );
+            newIds.add (id);
+            newLengths.put (id, sequenceLengths.get (id));
+            newOffsets.put (id, sequenceOffsets.get (id));
             // Remove that sequence from being picked again.
             oldIds.remove (id);
         }
-        return randomFasta;
+        return new Fasta (file, newIds, newLengths, newOffsets);
     }
 
     /**
-     *  Private method to parse through a Fasta formatted text file.
+     *  Private method to parse a Fasta formatted sequence.
+     *
+     *  @return A Sequence object.
      */
-    private void parseFasta (File fastaFile) throws InvalidFastaException {
-        BufferedReader file = null;
-        sequenceHash = new HashMap<String, String> ();
-        descriptionHash = new HashMap<String, String> ();
-        ids = new ArrayList<String> ();
+    private Sequence parseSequence () throws InvalidFastaException {
+        Sequence seq = null;
         try {
-            file = new BufferedReader (new FileReader (fastaFile));
-            String id = "null";
-            String description = "";
-            String sequence = "";
-            String buffer = null;
-            while ((buffer = file.readLine ()) != null) {
-                if (! buffer.isEmpty () && buffer.charAt (0) == '>') {
-                    // This line contains a header.
-                    if (! id.equals ("null")) {
-                        // Save the previous id/sequence before parsing the
-                        // line.
-                        sequenceHash.put (id, sequence.toLowerCase ());
-                        descriptionHash.put (id, description);
-                        int length = sequence.length ();
-                        ids.add (id);
-                        if (length > this.length) this.length = length;
-                        size ++;
-                        sequence = "";
-                    }
-                    // Grab the id out of the header.
-                    String[] header = buffer.split ("\\s+", 2);
-                    id = header[0].substring (1);
-                    if (header.length == 2) {
-                        description = header[1];
-                    }
-                }
-                else {
-                    // This line contains sequence (or it is empty and we can
-                    // concatenate it anyway).
-                    sequence = sequence + buffer;
-                }
+            // Don't try to read past the end of the file.
+            if (file.getFilePointer () == file.length ()) {
+                return seq;
             }
-            // Save the last sequence.
+            // Read the line at the current location into a buffer.
+            String buffer = file.readLine ();
+            // Make sure there is a sequence at the current location.
+            if (buffer.charAt (0) != '>') {
+                throw new InvalidFastaException (
+                    "Not a fasta formated sequence."
+                );
+            }
+            // Grab the sequence identifier and description from the buffer.
+            String[] header = buffer.split ("\\s+", 2);
+            String id = header[0].substring (1);
+            String description = "";
+            if (header.length == 2) {
+                description = header[1];
+            }
+            // Save the current file offset.
+            long offset = file.getFilePointer ();
+            // Grab the sequence data from the buffer.
+            String sequence = "";
+            while ((buffer = file.readLine ()) != null) {
+                // Stop when the next sequence is found.
+                if (buffer.charAt (0) == '>') {
+                    file.seek (offset);
+                    break;
+                }
+                // Store the sequence data.
+                sequence += buffer;
+                // Update the file offset.
+                offset = file.getFilePointer ();
+            }
+            // Store the sequence.
             if (! id.equals ("null")) {
-                sequenceHash.put (id, sequence.toLowerCase ());
-                descriptionHash.put (id, description);
-                ids.add (id);
-                size ++;
+                seq = new Sequence (id, description, sequence);
             }
         }
         catch (IOException e) {
             throw new InvalidFastaException ("IO Error: " + e);
         }
-        finally {
-            if (file != null) {
-                try {
-                    file.close ();
-                }
-                catch (IOException e) {
-                    throw new InvalidFastaException ("IO Error: " + e);
-                }
-            }
-        }
+        return seq;
     }
 
+    private RandomAccessFile file;
     private ArrayList<String> ids;
-    private HashMap<String, String> descriptionHash;
-    private HashMap<String, String> sequenceHash;
+    private HashMap<String, Integer> sequenceLengths;
+    private HashMap<String, Long> sequenceOffsets;
+    private int current;
     private int length;
     private int size;
 
