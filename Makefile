@@ -16,8 +16,7 @@ BIN_DIR := bin
 DOCS_DIR := docs
 
 # Source files used.
-SOURCE_FILES := removegaps.f90 readsynec.f90 correctpcr.f90 \
-  divergencematrix.f90 binningdanny.f90 bruteforce.f90 hillclimb.f90 \
+SOURCE_FILES := bruteforce.f90 hillclimb.f90 \
   npopCI.f90 demarcationCI.f90 omegaCI.f90 sigmaCI.f90
 
 # Source files to include when building the above source files.
