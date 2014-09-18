@@ -56,7 +56,7 @@ public class ProjectFileIO {
         length = 0;
         outgroup = "";
         binning = new Binning (
-            masterVariables, fasta
+            masterVariables, tree
         );
         bruteforce = new Bruteforce (
             masterVariables, nu, length, binning

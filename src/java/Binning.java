@@ -22,17 +22,11 @@
 
 package ecosim;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
- *  Object to interact with the binning programs.
+ *  Object to to estimate the number of bins in a provided tree using a
+ *  complete-linkage function.
  *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
@@ -40,116 +34,28 @@ import java.util.StringTokenizer;
 public class Binning implements Runnable {
 
     /**
-     *  Object to interact with the binning programs.
+     *  Object to estimate the number of bins in a provided tree.
      *
      *  @param masterVariables The MasterVariables object.
-     *  @param fasta The Fasta object.
+     *  @param tree The NewickTree object.
      */
-    public Binning (MasterVariables masterVariables, Fasta fasta) {
-        this (masterVariables, fasta, "");
-    }
-
-    /**
-     *  Object to interact with the binning programs.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param fasta The Fasta object.
-     *  @param suffix The suffix to attach to the end of file names.
-     */
-    public Binning (MasterVariables masterVariables, Fasta fasta,
-        String suffix) {
-        this.masterVariables = masterVariables;
-        this.fasta = fasta;
+    public Binning (MasterVariables masterVariables, NewickTree tree) {
+        this.tree = tree;
         bins = new ArrayList<BinLevel> ();
-        String workingDirectory = masterVariables.getWorkingDirectory ();
-        sequencesFileName = workingDirectory + "sequences" + suffix + ".dat";
-        numbersFileName = workingDirectory + "numbers" + suffix + ".dat";
-        rgFileName = workingDirectory + "removegaps" + suffix + ".dat";
-        populationFileName = workingDirectory +
-            "population" + suffix + ".dat";
-        nameofstrainsFileName = workingDirectory +
-            "namesofstrains" + suffix + ".dat";
-        pcrerrorFileName = workingDirectory +
-            "pcrerror" + suffix + ".dat";
-        correctpcrFileName = workingDirectory +
-            "correctpcr" + suffix + ".out";
-        binningInputFileName = workingDirectory +
-            "binningIn" + suffix + ".dat";
-        binLevelsFileName = workingDirectory + "binlevels" + suffix + ".dat";
-        binningOutputFileName = workingDirectory +
-            "binningOut" + suffix + ".dat";
-        divergenceMatrixInputFileName = workingDirectory +
-            "divergencematrixIn" + suffix + ".dat";
-        divergenceMatrixOutputFileName = workingDirectory +
-            "divergencematrixOut" + suffix + ".dat";
         hasRun = false;
     }
 
     /**
-     *  Run the binning programs.
+     *  Run complete-linkage binning on the provided tree.
      */
     public void run () {
-        Execs execs = masterVariables.getExecs ();
-        File sequencesFile = new File (sequencesFileName);
-        File numbersFile = new File (numbersFileName);
-        File rgFile = new File (rgFileName);
-        File populationFile = new File (populationFileName);
-        File nameofstrainsFile = new File (nameofstrainsFileName);
-        File pcrerrorFile = new File (pcrerrorFileName);
-        File correctpcrFile = new File (correctpcrFileName);
-        File binningInputFile = new File (binningInputFileName);
-        File binLevelsFile = new File (binLevelsFileName);
-        File binningOutputFile = new File (binningOutputFileName);
-        File divergenceMatrixInputFile = new File (
-            divergenceMatrixInputFileName
-        );
-        File divergenceMatrixOutputFile = new File (
-            divergenceMatrixOutputFileName
-        );
-        // Output the sequences.dat and numbers.dat files to be used by the
-        // removegaps program.
-        try {
-            fasta.save (sequencesFile);
+        // Get the number of bins for each crit level.
+        for (double crit: binLevels) {
+            int level = getNumberBins (crit, tree.getRoot ());
+            bins.add (new BinLevel (crit, level));
         }
-        catch (InvalidFastaException e) {
-            System.err.println ("Error saving Fasta file: " + e);
-        }
-        writeNumbersFile (numbersFile, fasta.size (), fasta.length ());
-        // Run the fasta file through the removegaps program.
-        execs.runRemovegaps (sequencesFile, numbersFile, rgFile);
-        // Run the readsynec program.
-        // XXX readsynec seems to just make sequences lowercase, done in
-        // Fasta.
-        execs.runReadsynec (rgFile, populationFile, nameofstrainsFile);
-        // Output the pcrerror.dat file to be used by the correctpcr program.
-        writePCRErrorFile (pcrerrorFile, masterVariables.getPCRError ());
-        // Run the correctpcr program.
-        execs.runCorrectpcr (populationFile, pcrerrorFile, correctpcrFile);
-        // Get the output provided by the correctpcr program.
-        readCorrectPCROutputFile (correctpcrFile);
-        // Write the input values for the program to the
-        // divergencematrixIn.dat file.
-        writeDivergenceMatrixInputFile (divergenceMatrixInputFile);
-        // Run the divergencematrix program.
-        execs.runDivergencematrix (
-            divergenceMatrixInputFile, divergenceMatrixOutputFile
-        );
-        // Get the output provided by the divergencematrix program.
-        readDivergenceMatrixOutputFile (divergenceMatrixOutputFile);
-        // Output the divergence matrix to be used by the binning program.
-        writeBinningInputFile (binningInputFile);
-        // Output the binLevels file to be used by the binning program.
-        writeBinLevelsFile (binLevelsFile);
-        // Run the binning program.
-        execs.runBinningdanny (
-            binningInputFile, binLevelsFile, binningOutputFile
-        );
-        // Read in the bin levels produced by the binning program.
-        readBinningOutputFile (binningOutputFile);
         // Set the flag stating that the binning programs have been run.
-        if (bins.size () == binLevels.length) {
-            hasRun = true;
-        }
+        hasRun = true;
     }
 
     /**
@@ -214,295 +120,43 @@ public class Binning implements Runnable {
     }
 
     /**
-     *  Write the numbers file.
+     *  A private recursive method to estimate the number of bins in a
+     *  provided tree.
      *
-     *  @param numbers The numbers.dat file.
-     *  @param size The number of environmental sequences.
-     *  @param length The length of the environmental sequences.
+     *  @return The number of bins.
      */
-    private void writeNumbersFile (File numbers, int size, int length) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter (new FileWriter (numbers));
-            writer.write (String.format ("%d, %d\n", size, length));
+    private int getNumberBins (double crit, NewickTreeNode node) {
+        int num = 0;
+        // Return one bin if the node is a leaf node.
+        if (node.isLeafNode ()) {
+            return 1;
         }
-        catch (IOException e) {
-            System.err.println ("Error writing the numbers.dat file.");
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the input file.");
-                }
+        // Since the children of a node come pre-sorted by maximum distance
+        // from leaf node, compare just the top two.
+        ArrayList<NewickTreeNode> children = node.getChildren ();
+        NewickTreeNode a = children.get (0);
+        NewickTreeNode b = children.get (1);
+        // Calculate the maximum distance between the leaf node ancestors
+        // of the two child nodes.
+        double distance = 0.0d;
+        distance += a.maximumDistanceFromLeafNode () + a.getDistance ();
+        distance += b.maximumDistanceFromLeafNode () + b.getDistance ();
+        // Recurse on the child nodes if the maximum distance exceeds the
+        // crit value, otherwise colapse this branch into one bin.
+        if (distance > 1.000d - crit) {
+            for (NewickTreeNode child: children) {
+                num += getNumberBins (crit, child);
             }
         }
+        else {
+            num = 1;
+        }
+        return num;
     }
 
-    /**
-     *  Write the pcrerror file.
-     *
-     *  @param PCRErrorFile The pcrerror.dat file.
-     *  @param PCRError The PCR error.
-     */
-    private void writePCRErrorFile (File PCRErrorFile, double PCRError) {
-        // Create the random number seed; an odd less than 9 digits long
-        long randValue = (long) (100000000 * Math.random ());
-        if (randValue % 2 == 0) {
-            randValue ++;
-        }
-        try {
-            BufferedWriter writer = new BufferedWriter (
-                new FileWriter (PCRErrorFile)
-            );
-            writer.write ("" + PCRError);
-            writer.newLine ();
-            writer.write ("" + randValue);
-            writer.newLine ();
-            writer.close ();
-        }
-        catch (IOException e) {
-            e.printStackTrace ();
-        }
-    }
-
-    /**
-     *  Private method to write the input file for the binning program.
-     *
-     *  @param inputFile The file to write to.
-     */
-    private void writeBinningInputFile (File inputFile) {
-        BufferedWriter writer = null;
-        int nu = fasta.size ();
-        try {
-            writer = new BufferedWriter (new FileWriter (inputFile));
-            writer.write (String.format (
-                " %12d %12d\n",
-                nu,
-                fasta.length ()
-            ));
-            for (int i = 0; i < nu; i ++) {
-                for (int j = 0; j < nu; j ++) {
-                    writer.write (String.format (
-                        " %7.4f",
-                        matrix[i][j]
-                    ));
-                }
-                writer.write ("\n");
-            }
-        }
-        catch (IOException e) {
-            System.err.println ("Error writing the input file.");
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the input file.");
-                }
-            }
-        }
-    }
-
-    /**
-     *  Private method to write the binlevels file for the binning program.
-     *
-     *  @param binLevelsFile The binlevels.dat file.
-     */
-    private void writeBinLevelsFile (File binLevelsFile) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter (new FileWriter (binLevelsFile));
-            writer.write (String.format (
-                "%d\n",
-                binLevels.length
-            ));
-            for (int i = 0; i < binLevels.length; i++) {
-                writer.write (String.format (
-                    "%5.3f\n",
-                    binLevels[i]
-                ));
-            }
-            writer.close ();
-        }
-        catch (IOException e) {
-            e.printStackTrace ();
-        }
-    }
-
-    /**
-     *  Private method to write the input file for the divergencematrix
-     *  program.
-     *
-     *  @param inputFile The file to write to.
-     */
-    private void writeDivergenceMatrixInputFile (File inputFile) {
-        BufferedWriter writer = null;
-        try {
-            ArrayList<String> seqs = fasta.getSequences ();
-            writer = new BufferedWriter (new FileWriter (inputFile));
-            writer.write (String.format (
-                " %12d %12d\n",
-                fasta.size (),
-                fasta.length ()
-            ));
-            for (int i = 0; i < seqs.size (); i ++) {
-                writer.write (seqs.get (i) + "\n");
-            }
-        }
-        catch (IOException e) {
-            System.err.println ("Error writing the input file.");
-        }
-        catch (InvalidFastaException e) {
-            System.err.println ("Error getting sequences from file.");
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the input file.");
-                }
-            }
-        }
-    }
-
-    /**
-     *  Private method to read the output file from the correctpcr
-     *  program.
-     *
-     *  @param outputFile The file to read from.
-     */
-    private void readCorrectPCROutputFile (File outputFile) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader (new FileReader (outputFile));
-            String nextLine = reader.readLine (); // nu, lengthsequence
-            int i = 0;
-            nextLine = reader.readLine ();
-            while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer (nextLine);
-                // Modify the sequence stored in the fasta file.
-                fasta.setSequence (i, st.nextToken ());
-                i ++;
-                nextLine = reader.readLine ();
-            }
-        }
-        catch (IOException e) {
-            System.err.println ("Error reading the output file.");
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the output file.");
-                }
-            }
-        }
-    }
-
-    /**
-     *  Private method to read the bin levels from the output file.
-     *
-     *  @param outputFile The file to read from.
-     */
-    private void readBinningOutputFile (File outputFile) {
-        BufferedReader reader = null;
-        bins = new ArrayList<BinLevel>();
-        try {
-            reader = new BufferedReader (new FileReader (outputFile));
-            String nextLine = reader.readLine ();
-            while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer (nextLine);
-                if (st.countTokens () == 2) {
-                    Float crit = new Float (st.nextToken ());
-                    Integer value = new Integer (st.nextToken ());
-                    bins.add (new BinLevel (crit, value));
-                }
-                nextLine = reader.readLine ();
-            }
-        }
-        catch (IOException e) {
-            System.err.println ("Error reading the output file.");
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the output file.");
-                }
-            }
-        }
-    }
-
-    /**
-     *  Private method to read the output file from the divergencematrix
-     *  program.
-     *
-     *  @param outputFile The file to read from.
-     */
-    private void readDivergenceMatrixOutputFile (File outputFile) {
-        BufferedReader reader = null;
-        int nu = fasta.size ();
-        matrix = new float[nu][nu];
-        try {
-            reader = new BufferedReader (new FileReader (outputFile));
-            String nextLine = reader.readLine ();
-            nextLine = reader.readLine (); // nu, lengthsequence
-            int i = 0;
-            while (nextLine != null) {
-                StringTokenizer st = new StringTokenizer (nextLine);
-                for (int j = 0; j < nu; j ++) {
-                    String buffer = st.nextToken ();
-                    matrix[i][j] = new Float (buffer).floatValue ();
-                }
-                i ++;
-                nextLine = reader.readLine ();
-            }
-        }
-        catch (IOException e) {
-            System.err.println ("Error reading the output file.");
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close ();
-                }
-                catch (IOException e) {
-                    System.err.println ("Error closing the output file.");
-                }
-            }
-        }
-    }
-
-    private String sequencesFileName;
-    private String numbersFileName;
-    private String rgFileName;
-    private String populationFileName;
-    private String nameofstrainsFileName;
-    private String pcrerrorFileName;
-    private String correctpcrFileName;
-    private String binningInputFileName;
-    private String binLevelsFileName;
-    private String binningOutputFileName;
-    private String divergenceMatrixInputFileName;
-    private String divergenceMatrixOutputFileName;
-
-
-    private MasterVariables masterVariables;
-    private Fasta fasta;
+    private NewickTree tree;
 
     private ArrayList<BinLevel> bins;
-    private float[][] matrix;
 
     private boolean hasRun;
 

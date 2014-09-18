@@ -153,32 +153,21 @@ public class Demarcation implements Runnable {
             }
             // Append a suffix to all file names used by Demarcation.
             String suffix = "-demarcation-" + iteration;
-            // Create a new Fasta object containing just the sequences to
+            // Create a new NewickTree containing just the sequences to
             // be tested.
-            Fasta sampleFasta = new Fasta ();
+            NewickTree sampleTree = new NewickTree ();
             try {
-                // Add the sequences from the subtree to the sample Fasta.
-                for (int i = 0; i < sample.size (); i ++) {
-                    String id = sample.get (i);
-                    sampleFasta.put (
-                        id,
-                        fasta.getSequence (id)
-                    );
-                }
-                // Save a copy of the sequence data.
-                sampleFasta.save (
-                    workingDirectory + "sequence" + suffix + ".dat"
-                );
+                sampleTree = new NewickTree (node.toString ());
             }
-            catch (InvalidFastaException e) {
-                System.err.println ("Error creating sample fasta file.");
+            catch (InvalidNewickException e) {
+                System.err.println ("Error creating subtree.");
             }
             int nu = fasta.size ();
             int sampleNu = sample.size ();
             int length = fasta.length ();
             // Run the binning program.
             Binning sampleBinning = new Binning (
-                masterVariables, sampleFasta, suffix
+                masterVariables, sampleTree
             );
             sampleBinning.run ();
             // Run the hillclimb program.
