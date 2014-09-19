@@ -26,7 +26,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module methods
   use darray
-  use tmatrix
   use ziggurat
 #ifdef _OPENMP
   use omp_lib
