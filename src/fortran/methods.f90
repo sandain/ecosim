@@ -26,7 +26,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module methods
   use darray
-  use tmatrix
   use ziggurat
 #ifdef _OPENMP
   use omp_lib
@@ -37,7 +36,6 @@ module methods
   private
 
   ! Declare public methods.
-  public :: diverge
   public :: getArgument
   public :: randomClose
   public :: randomInitialize
@@ -158,38 +156,6 @@ module methods
     end if
     return
   end subroutine canonical
-
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Generates a divergence matrix from the provided sequences.
-  !>
-  !> @param[in]     numstrains    The number of strains in the sample.
-  !> @param[in]     length        The length of the sequences in the sample.
-  !> @param[in]     seq           An array containing the sequences in the
-  !>                                sample.
-  !> @param[in,out] divergematrix The resulting divergence matrix.
-  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  subroutine diverge (numstrains, length, seq, divergematrix)
-    character(len = 1), intent(in)     :: seq(:,:)
-    integer, intent(in)                :: numstrains
-    integer, intent(in)                :: length
-    type(tmatrixReal), intent(inout)   :: divergematrix
-    ! Local variables.
-    integer :: jstrain, kstrain, knuc
-    real    :: diff
-    do jstrain = 1, numstrains
-      do kstrain = 1, jstrain - 1
-        diff = 0.0
-        do knuc = 1, length
-          if (seq(jstrain, knuc) .ne. seq(kstrain, knuc)) then
-            diff = diff + 1.0
-          end if
-        end do
-        call tmatrixSet(divergematrix, jstrain, kstrain, diff / length)
-      end do
-      call tmatrixSet(divergematrix, jstrain, jstrain, 0.0)
-    end do
-    return
-  end subroutine diverge
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Performs the niche invasion for the nascent population.

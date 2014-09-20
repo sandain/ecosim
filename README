@@ -75,7 +75,7 @@ download the binaries here:
 Cygwin is also an acceptable POSIX environment for Windows.  You can get
 installation instructions, and download the binaries here:
 
-http://cygwin.com/install.html
+  http://cygwin.com/install.html
 
 You will also need to have the Pthreads-w32 library installed.  You can get
 installation instructions, and download the binaries here:
@@ -101,5 +101,3 @@ installation folder, issue the command:
 To clean the directory of all build files, issue the command:
 
   make clean
-
-
