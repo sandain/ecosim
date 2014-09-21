@@ -181,6 +181,28 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     }
 
     /**
+     *  Returns a boolean stating whether this node is the outgroup or not.
+     *
+     *  @return A boolean stating whether this node is the outgroup or not.
+     */
+    public boolean isOutgroup () {
+        boolean outgroup = false;
+        if (parent != null) {
+            outgroup = isLeafNode () && parent.isRootNode ();
+        }
+        return outgroup;
+    }
+
+    /**
+     *  Returns whether this node is the root node or not.
+     *
+     *  @return True if this node is the root node.
+     */
+    public boolean isRootNode () {
+        return parent == null;
+    }
+
+    /**
      *  Returns the distance of this node from the root node.
      *
      *  @return The distance of this node from the root node.
@@ -226,15 +248,6 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
             }
         }
         return minimumDistance;
-    }
-
-    /**
-     *  Returns whether this node is the root node or not.
-     *
-     *  @return True if this node is the root node.
-     */
-    public boolean isRootNode () {
-          return parent == null;
     }
 
     /**
