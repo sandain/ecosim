@@ -127,10 +127,10 @@ public class Binning implements Runnable {
      */
     private int getNumberBins (double crit, NewickTreeNode node) {
         int num = 0;
+        // Return zero bins if the node is the outgroup.
+        if (node.isOutgroup ()) return 0;
         // Return one bin if the node is a leaf node.
-        if (node.isLeafNode ()) {
-            return 1;
-        }
+        if (node.isLeafNode ()) return 1;
         // Since the children of a node come pre-sorted by maximum distance
         // from leaf node, compare just the top two.
         ArrayList<NewickTreeNode> children = node.getChildren ();
