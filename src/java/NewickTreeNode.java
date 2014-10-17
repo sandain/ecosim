@@ -44,7 +44,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  @param children A list of TreeNodes which are the children of this
      *  node.
      */
-    public NewickTreeNode (String name, double distance,
+    public NewickTreeNode (String name, Double distance,
         NewickTreeNode parent,
         ArrayList<NewickTreeNode> children) {
         this.name = name;
@@ -90,7 +90,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @param distance The distance to the parent.
      */
-    public void setDistance (double distance) {
+    public void setDistance (Double distance) {
         this.distance = distance;
     }
 
@@ -137,9 +137,9 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     /**
      *  Get the distance from the parent node to this node.
      *
-     *  @return double containing the distance to the parent.
+     *  @return Double containing the distance to the parent.
      */
-    public double getDistance () {
+    public Double getDistance () {
         return distance;
     }
 
@@ -207,8 +207,8 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @return The distance of this node from the root node.
      */
-    public double distanceFromRootNode () {
-        double distanceFromRoot = 0.0d;
+    public Double distanceFromRootNode () {
+        Double distanceFromRoot = 0.0d;
         if (parent != null) {
             distanceFromRoot = distance + parent.distanceFromRootNode ();
         }
@@ -221,10 +221,10 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @return The maximum distance of this node from a leaf node.
      */
-    public double maximumDistanceFromLeafNode () {
-        double maximumDistance = 0.0d;
+    public Double maximumDistanceFromLeafNode () {
+        Double maximumDistance = 0.0d;
         for (NewickTreeNode child: children) {
-            double childDistance =
+            Double childDistance =
                 child.maximumDistanceFromLeafNode () + child.getDistance ();
             if (childDistance > maximumDistance) {
                 maximumDistance = childDistance;
@@ -238,10 +238,10 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @return The minimum distance of this node from a leaf node.
      */
-    public double minimumDistanceFromLeafNode () {
-        double minimumDistance = Double.MAX_VALUE;
+    public Double minimumDistanceFromLeafNode () {
+        Double minimumDistance = Double.MAX_VALUE;
         for (NewickTreeNode child: children) {
-            double childDistance =
+            Double childDistance =
                 child.minimumDistanceFromLeafNode () + child.getDistance ();
             if (childDistance < minimumDistance) {
                 minimumDistance = childDistance;
@@ -328,7 +328,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     /**
      *  The distance of this node from it's parent.
      */
-    private double distance;
+    private Double distance;
 
     /**
      *  The parent of this node.
