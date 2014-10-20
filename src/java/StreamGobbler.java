@@ -26,6 +26,7 @@ package ecosim;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.IOException;
 
 /**
@@ -45,11 +46,12 @@ class StreamGobbler extends Thread {
      *  Constructor for StreamGobbler.
      *
      *  @param is The input stream to use.
-     *  @param type The type of stream.
+     *  @param name The name of stream.
      */
-    public StreamGobbler (InputStream is, String type) {
+    public StreamGobbler (InputStream is, PrintStream ps, String name) {
         this.is = is;
-        this.type = type;
+        this.ps = ps;
+        this.name = name;
     }
 
     /**
@@ -61,7 +63,10 @@ class StreamGobbler extends Thread {
             BufferedReader br = new BufferedReader (isr);
             String line = null;
             while ((line = br.readLine ()) != null) {
-                System.out.println (type + ">" + line);
+                if (name.length () > 0) {
+                    ps.print (name + " ");
+                }
+                ps.println (line);
             }
          }
          catch (IOException ioe) {
@@ -70,5 +75,6 @@ class StreamGobbler extends Thread {
     }
 
     private InputStream is;
-    private String type;
+    private PrintStream ps;
+    private String name;
 }
