@@ -77,6 +77,15 @@ public class NewickTree {
     }
 
     /**
+     *  Constructor for objects of class NewickTree.
+     *
+     *  @param tree NewickTree to use.
+     */
+    public NewickTree (NewickTree tree) throws InvalidNewickException {
+        root = loadTree (tree.toString ());
+    }
+
+    /**
      *  Returns the root node of this tree.
      *
      *  @return NewickTreeNode containing the root node.
