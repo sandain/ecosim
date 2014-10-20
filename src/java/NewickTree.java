@@ -38,7 +38,7 @@ import java.util.ArrayList;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class NewickTree {
+public class NewickTree implements Comparable<NewickTree> {
 
     public NewickTree () {
         root = new NewickTreeNode ();
@@ -83,6 +83,13 @@ public class NewickTree {
      */
     public NewickTree (NewickTree tree) throws InvalidNewickException {
         root = loadTree (tree.toString ());
+    }
+
+    /**
+     *  Compare Newick Trees.
+     */
+    public int compareTo (NewickTree other) {
+        return root.compareTo (other.getRoot ());
     }
 
     /**
