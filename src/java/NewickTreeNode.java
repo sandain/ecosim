@@ -45,8 +45,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  node.
      */
     public NewickTreeNode (String name, Double distance,
-        NewickTreeNode parent,
-        ArrayList<NewickTreeNode> children) {
+        NewickTreeNode parent, ArrayList<NewickTreeNode> children) {
         this.name = name;
         this.distance = distance;
         this.parent = parent;
