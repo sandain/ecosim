@@ -402,6 +402,43 @@ public class Execs {
     }
 
     /**
+     *  Runs FastTree on the Fasta formated input file to generate a Newick
+     *  formated output file.
+     *
+     *  @param input The Fasta formated input file.
+     *  @param output The Newick formated output file.
+     *  @return The exit value.
+     */
+    public int runFastTree (File input, File output) {
+        String[] command = {
+            "/home/jwood/biotools/fasttree/FastTreeMP",
+            "-nt",
+            input.getAbsolutePath (),
+        };
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+        }
+        // Catch program output in the output file.
+        try {
+            outputStream = new PrintStream (output);
+        }
+        catch (IOException e) {
+            e.printStackTrace ();
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "FastTree>",
+            outputStream,
+            "",
+            true
+        );
+    }
+
+    /**
      *  Runs the provided application with the provided args.
      *  If the wait boolean is set, waits for the application to finish.
      *
