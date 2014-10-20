@@ -334,10 +334,8 @@ public class Execs {
             if (wait) {
                 exitVal = p.waitFor ();
                 // Also wait for the StreamGobbler threads to finish.
-                if (masterVariables.getDebug ()) {
-                    errorGobbler.join ();
-                    outputGobbler.join ();
-                }
+                if (errorGobbler != null) errorGobbler.join ();
+                if (outputGobbler != null) outputGobbler.join ();
             }
             else {
                 exitVal = 0;
