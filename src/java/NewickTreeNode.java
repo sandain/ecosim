@@ -171,21 +171,21 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     }
 
     /**
-     *  Returns a boolean stating whether this node is a leaf or not.
+     *  Returns a Boolean stating whether this node is a leaf or not.
      *
-     *  @return A boolean stating whether this node is a leaf or not.
+     *  @return A Boolean stating whether this node is a leaf or not.
      */
-    public boolean isLeafNode () {
+    public Boolean isLeafNode () {
         return children.isEmpty ();
     }
 
     /**
-     *  Returns a boolean stating whether this node is the outgroup or not.
+     *  Returns a Boolean stating whether this node is the outgroup or not.
      *
-     *  @return A boolean stating whether this node is the outgroup or not.
+     *  @return A Boolean stating whether this node is the outgroup or not.
      */
-    public boolean isOutgroup () {
-        boolean outgroup = false;
+    public Boolean isOutgroup () {
+        Boolean outgroup = false;
         if (parent != null) {
             outgroup = isLeafNode () && parent.isRootNode ();
         }
@@ -197,7 +197,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *
      *  @return True if this node is the root node.
      */
-    public boolean isRootNode () {
+    public Boolean isRootNode () {
         return parent == null;
     }
 
