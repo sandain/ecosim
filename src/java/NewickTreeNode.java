@@ -312,7 +312,12 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         if (newick.length () > 0) {
             newick = "(" + newick + ")";
         }
-        newick += name + ":" + distance;
+        if (isLeafNode ()) {
+            newick += String.format ("%s:%.5f", name, distance);
+        }
+        else {
+            newick += String.format (":%.5f", distance);
+        }
         if (parent == null) {
             newick += ";";
         }
