@@ -141,15 +141,25 @@ public class Simulation {
     }
 
     /**
-     *  Generate a tree using Phylip's Neibor-Joining or Parsimony methods.
-     *
-     *  @param method The method to use to generate the tree.
+     *  Generate a tree using FastTree.
      */
-    protected void generateTree (String method) {
-//        log.append (String.format (
-//            "Generating a %s tree using Phylip...\n",
-//            method
-//        ));
+    protected void generateTree () {
+        log.append ("Generating a tree using FastTree...\n");
+        // Store the tree in file called 'outtree'.
+        newickFile = new File (
+            masterVariables.getWorkingDirectory () + "outtree"
+        );
+        // Reroot the tree using the outgroup.
+        Execs execs = masterVariables.getExecs ();
+        execs.runFastTree (fastaFile, newickFile);
+        try {
+            tree = new NewickTree (newickFile);
+            tree.reroot (outgroup);
+            tree.save (newickFile);
+        }
+        catch (InvalidNewickException e) {
+            System.out.println ("Error loading tree file.");
+        }
     }
 
     /**

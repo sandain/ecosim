@@ -503,12 +503,11 @@ public class SimulationGUI extends Simulation {
             return;
         }
         // Ask the user if they want to provide or generate a tree.
-        String[] options = { "Parsimony", "Neighbor-Joining", "Newick" };
+        String[] options = { "Generate", "Newick" };
         int type = 0; // Default to using the Parsimony method.
         type = JOptionPane.showOptionDialog (
             gui,
-            "Generate a parsimony or neighbor-joining tree, or provide a " +
-            "Newick formatted file?",
+            "Generate a tree with FastTree or use a Newick formatted file?",
             "Tree Type",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,
@@ -517,10 +516,9 @@ public class SimulationGUI extends Simulation {
             options[type]
         );
         switch (options[type]) {
-            case "Parsimony":
-            case "Neighbor-Joining":
-                // Generate a tree with Phylip.
-                generateTree (options[type]);
+            case "Generate":
+                // Generate a tree with FastTree.
+                generateTree ();
                 break;
             case "Newick":
                 // Open the newick file chooser dialog.
