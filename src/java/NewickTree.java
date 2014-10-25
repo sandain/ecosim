@@ -119,6 +119,52 @@ public class NewickTree implements Comparable<NewickTree> {
     }
 
     /**
+     *  Reroot the tree so that the outgroup descendant is next to the root.
+     *
+     *  @param name The name of the outgroup descendant.
+     */
+    public void reroot (String name) {
+        NewickTreeNode outgroup = getDescendant (name);
+        reroot (outgroup);
+    }
+
+    /**
+     *  Reroot the tree so that the outgroup descendant is next to the root.
+     *
+     *  @param outgroup The outgroup descendant.
+     */
+    public void reroot (NewickTreeNode outgroup) {
+        NewickTreeNode newRoot = new NewickTreeNode ();
+        NewickTreeNode oldParent = outgroup.getParent ();
+        // Add the outgroup to the new root, and remove it from its old
+        // parents children.
+        oldParent.removeChild (outgroup);
+        newRoot.addChild (outgroup);
+        double distance = outgroup.getDistance () * 0.5;
+        double oldDistance = oldParent.getDistance ();
+        outgroup.setDistance (distance);
+        oldParent.setDistance (distance);
+        NewickTreeNode newParent = newRoot;
+        while (oldParent != root) {
+            NewickTreeNode node = oldParent;
+            oldParent = node.getParent ();
+            oldParent.removeChild (node);
+            newParent.addChild (node);
+            newParent = node;
+            node.setDistance (distance);
+            distance = oldDistance;
+            oldDistance = oldParent.getDistance ();
+        }
+        for (NewickTreeNode child: oldParent.getChildren ()) {
+          newParent.addChild (child);
+          distance = child.getDistance () + distance;
+          child.setDistance (distance);
+        }
+        // Save the the new root.
+        root = newRoot;
+    }
+
+    /**
      *  Returns this tree as a Newick formatted String.
      *
      *  @return Newick formatted String containing the tree.
