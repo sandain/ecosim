@@ -60,9 +60,6 @@ public class Execs {
         // Check which OS we are running on.
         if (osName.contains ("windows")) {
             binaryExtension = ".exe";
-            // Use the Phylip batch script.
-            phylipScript = workingDirectory + "phylip.bat";
-            writePhylipScript (phylipBatchScript);
         }
         else if (osName.contains ("linux")) {
             if (osArch.contains ("i386")) {
@@ -77,15 +74,9 @@ public class Execs {
                     "Architecture detected: " + osArch + "\n"
                 );
             }
-            // Use the Phylip shell script.
-            phylipScript = workingDirectory + "phylip.sh";
-            writePhylipScript (phylipShellScript);
         }
         else if (osName.contains ("mac")) {
             binaryExtension = ".app";
-            // Use the Phylip shell script.
-            phylipScript = workingDirectory + "phylip.sh";
-            writePhylipScript (phylipShellScript);
         }
         else {
             log.append ("Unsupported OS, contact the developers.\n");
@@ -179,48 +170,6 @@ public class Execs {
             "NJPlot>",
             false
         );
-    }
-
-    /**
-     *  Runs the dnapars application
-     *
-     *  @return The exit value.
-     */
-    public int runDNAPars () {
-        return runPhylip (masterVariables.getProgramDNAPars (), "V\n1\nY\n");
-    }
-
-    /**
-     *  Runs the dnadist application.
-     *
-     *  @return The exit value.
-     */
-    public int runDNADist () {
-        return runPhylip (masterVariables.getProgramDNADist (), "Y\n");
-    }
-
-    /**
-     *  Runs the Neighbor application.
-     *
-     *  @return The exit value.
-     */
-    public int runNJ () {
-        return runPhylip (masterVariables.getProgramNeighbor (), "Y\n");
-    }
-
-    /**
-     *  Runs the Retree application.
-     *
-     *  @param nu The number of environmental sequences including the
-     *      outgroup.
-     *  @return The exit value.
-     */
-    public int runRetree (int nu) {
-        String arguments = String.format (
-            "Y\nO\n%d\nW\nR\nQ\n",
-            nu
-        );
-        return runPhylip (masterVariables.getProgramRetree (), arguments);
     }
 
     /**
@@ -352,56 +301,6 @@ public class Execs {
     }
 
     /**
-     *  Run a Phylip program.
-     *
-     *  @param program The Phylip program to run.
-     *  @param arguments The arguments to the Phylip program.
-     *  @return The exit value.
-     */
-    private int runPhylip (String program, String arguments) {
-        File inputFile = new File (workingDirectory + "input");
-        BufferedWriter writer = null;
-        PrintStream errorStream = null;
-        PrintStream outputStream = null;
-        // Catch program error output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
-            errorStream = System.err;
-            outputStream = System.out;
-        }
-        try {
-            writer = new BufferedWriter (new FileWriter (inputFile));
-            writer.write (arguments);
-        }
-        catch (IOException e) {
-            e.printStackTrace ();
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
-                }
-            }
-        }
-        String[] command = {
-            phylipScript,
-            program,
-            workingDirectory,
-            Boolean.toString (masterVariables.getDebug ())
-        };
-        return runApplication (
-            command,
-            errorStream,
-            "Phylip>",
-            outputStream,
-            "",
-            true
-        );
-    }
-
-    /**
      *  Runs FastTree on the Fasta formated input file to generate a Newick
      *  formated output file.
      *
@@ -507,68 +406,11 @@ public class Execs {
         return exitVal;
     }
 
-    /**
-     *  Write the script to run Phylip.
-     *
-     *  @param script The Phylip script to write.
-     */
-    private void writePhylipScript (String script) {
-        File scriptFile = new File (phylipScript);
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter (new FileWriter (scriptFile));
-            writer.write (script);
-        }
-        catch (IOException e) {
-            System.out.println ("Error writing the script for Phylip.");
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close ();
-                }
-                catch (IOException e) {
-                    System.out.println (
-                        "Error closing the script for Phylip"
-                    );
-                }
-            }
-        }
-        scriptFile.setExecutable (true);
-    }
-
     private MasterVariables masterVariables;
     private Logger log;
-    private String phylipScript;
     private String binaryExtension;
     private String binaryDirectory;
     private String scriptDirectory;
     private String workingDirectory;
-
-    private static final String phylipBatchScript =
-        "@echo off\n" +
-        "cd \"%2\"\n" +
-        "if exist outfile del outfile\n" +
-        "if exist outtree del outtree\n" +
-        "if \"%3\"==\"true\" (\n" +
-        "  type input | \"%1\"\n" +
-        ") else (\n" +
-        "  type input | \"%1\" > screenout\n" +
-        "  del screenout\n" +
-        ")\n";
-
-    private static final String phylipShellScript =
-        "#!/bin/sh\n" +
-        "cd \"$2\"\n" +
-        "rm -f outfile outtree\n" +
-        "COMMAND=\"$1\"\n" +
-        "if [ -f /etc/debian_version ]; then\n" +
-        "  COMMAND=\"phylip $1\"\n" +
-        "fi\n" +
-        "if [ \"$3\" = \"true\" ]; then\n" +
-        "  cat input | $COMMAND\n" +
-        "else\n" +
-        "  cat input | $COMMAND > /dev/null\n" +
-        "fi\n";
 
 }
