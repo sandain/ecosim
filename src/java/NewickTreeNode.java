@@ -62,17 +62,53 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
     }
 
     /**
-     *  Compare the maximum distances from leaf nodes.
+     *  Compare nodes.
      */
     public int compareTo (NewickTreeNode other) {
-        Double a = maximumDistanceFromLeafNode ();
-        Double b = other.maximumDistanceFromLeafNode ();
-        int c = a.compareTo (b);
-        if (c == 0) {
-            String otherName = other.getName ();
-            c = otherName.compareTo (name);
+        // Compare the names of the two nodes.
+        int c = other.getName ().compareTo (name);
+        if (c != 0) return c;
+        // Check if the two nodes are root nodes.
+        c = other.isRootNode ().compareTo (isRootNode ());
+        if (c != 0) return c;
+        if (! isRootNode ()) {
+            // Check if the parents of the two nodes are root nodes.
+            NewickTreeNode otherParent = other.getParent ();
+            c = otherParent.isRootNode ().compareTo (parent.isRootNode ());
+            if (c != 0) return c;
+            // Compare the distances of the two nodes from their parents.
+            if (parent.isRootNode ()) {
+                // When the parent is the root node, compare the sums of the
+                // distance of all the root node's children. 
+                Double a = 0.0d;
+                for (NewickTreeNode child: parent.getChildren ()) {
+                    a += child.getDistance ();
+                }
+                Double b = 0.0d;
+                for (NewickTreeNode child: otherParent.getChildren ()) {
+                    b += child.getDistance ();
+                }
+                c = b.compareTo (a);
+                if (c == 0) return c;
+            }
+            else {
+                // When the parent is not the root node, compare just the
+                // distances.
+                c = other.getDistance ().compareTo (distance);
+                if (c != 0) return c;
+            }
         }
-        return c;
+        // Compare the children of the two nodes.
+        for (NewickTreeNode a: children) {
+            // Compare each child with the children of the other node.
+            for (NewickTreeNode b: other.getChildren ()) {
+                c = b.compareTo (a);
+                if (c == 0) break;
+            }
+            if (c != 0) return c;
+        }
+        // Nodes are equal.
+        return 0;
     }
 
     /**
