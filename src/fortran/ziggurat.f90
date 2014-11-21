@@ -129,7 +129,7 @@ module ziggurat
     q = ve / exp (-de)
     state%ke(0) = int (de / q * m2, kind = 8)
     state%ke(1) = 0
-    state%we(0) = real (q / m2)
+    state%we(0) = real (q / m2, kind = 4)
     state%we(255) = real (de / m2, kind = 4)
     state%fe(0) = 1.0
     state%fe(255) = real (exp (-de), kind = 4)
