@@ -70,11 +70,11 @@ module ziggurat
   ! The state variables for the ziggurat algorithm.
   type :: ziggurat_t
     integer(kind = 4) :: hz
-    integer(kind = 4) :: iz
-    integer(kind = 4) :: jz
-    integer(kind = 4) :: jsr
-    integer(kind = 4) :: ke(0:255)
-    integer(kind = 4) :: kn(0:127)
+    integer(kind = 8) :: iz
+    integer(kind = 8) :: jz
+    integer(kind = 8) :: jsr
+    integer(kind = 8) :: ke(0:255)
+    integer(kind = 8) :: kn(0:127)
     real(kind = 4)    :: fe(0:255)
     real(kind = 4)    :: fn(0:127)
     real(kind = 4)    :: we(0:255)
@@ -112,7 +112,7 @@ module ziggurat
     state%jsr = iii
     ! Tables for RNOR:
     q = vn / exp (-0.5 * dn * dn)
-    state%kn(0) = int ((dn / q) * m1)
+    state%kn(0) = int (dn / q * m1, kind = 8)
     state%kn(1) = 0
     state%wn(0) = real (q / m1)
     state%wn(127) = real (dn / m1)
@@ -120,14 +120,14 @@ module ziggurat
     state%fn(127) = real (exp (-0.5 * dn * dn))
     do i = 126, 1, -1
       dn = sqrt (-2.0 * log (vn / dn + exp (-0.5 * dn * dn)))
-      state%kn(i + 1) = int ((dn / tn) * m1)
+      state%kn(i + 1) = int (dn / tn * m1, kind = 8)
       tn = dn
       state%fn(i) = real (exp (-0.5 * dn * dn))
       state%wn(i) = real (dn / m1)
     end do
     ! Tables for REXP:
     q = ve / exp (-de)
-    state%ke(0) = int ((de / q) * m2)
+    state%ke(0) = int (de / q * m2, kind = 8)
     state%ke(1) = 0
     state%we(0) = real (q / m2)
     state%we(255) = real (de / m2)
@@ -135,7 +135,7 @@ module ziggurat
     state%fe(255) = real (exp (-de))
     do i = 254, 1, -1
       de = -log (ve / de + exp (-de))
-      state%ke(i + 1) = int ((de / te) * m2)
+      state%ke(i + 1) = int (de / te * m2, kind = 8)
       te = de
       state%fe(i) = real (exp (-de))
       state%we(i) = real (de / m2)
@@ -155,7 +155,7 @@ module ziggurat
     state%jsr = ieor (state%jsr, ishft (state%jsr, 13))
     state%jsr = ieor (state%jsr, ishft (state%jsr, -17))
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
-    return_value = state%jz + state%jsr
+    return_value = int (state%jz + state%jsr, kind = 4)
     return
   end function ziggurat_shr3
 
