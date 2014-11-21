@@ -114,31 +114,31 @@ module ziggurat
     q = vn / exp (-0.5 * dn * dn)
     state%kn(0) = int (dn / q * m1, kind = 8)
     state%kn(1) = 0
-    state%wn(0) = real (q / m1)
-    state%wn(127) = real (dn / m1)
+    state%wn(0) = real (q / m1, kind = 4)
+    state%wn(127) = real (dn / m1, kind = 4)
     state%fn(0) = 1.0
-    state%fn(127) = real (exp (-0.5 * dn * dn))
+    state%fn(127) = real (exp (-0.5 * dn * dn), kind = 4)
     do i = 126, 1, -1
       dn = sqrt (-2.0 * log (vn / dn + exp (-0.5 * dn * dn)))
       state%kn(i + 1) = int (dn / tn * m1, kind = 8)
       tn = dn
-      state%fn(i) = real (exp (-0.5 * dn * dn))
-      state%wn(i) = real (dn / m1)
+      state%fn(i) = real (exp (-0.5 * dn * dn), kind = 4)
+      state%wn(i) = real (dn / m1, kind = 4)
     end do
     ! Tables for REXP:
     q = ve / exp (-de)
     state%ke(0) = int (de / q * m2, kind = 8)
     state%ke(1) = 0
     state%we(0) = real (q / m2)
-    state%we(255) = real (de / m2)
+    state%we(255) = real (de / m2, kind = 4)
     state%fe(0) = 1.0
-    state%fe(255) = real (exp (-de))
+    state%fe(255) = real (exp (-de), kind = 4)
     do i = 254, 1, -1
       de = -log (ve / de + exp (-de))
       state%ke(i + 1) = int (de / te * m2, kind = 8)
       te = de
-      state%fe(i) = real (exp (-de))
-      state%we(i) = real (de / m2)
+      state%fe(i) = real (exp (-de), kind = 4)
+      state%we(i) = real (de / m2, kind = 4)
     end do
   end subroutine ziggurat_seed
 
