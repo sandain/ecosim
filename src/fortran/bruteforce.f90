@@ -152,10 +152,10 @@ program bruteforce
         if (avgsuccess(1) .gt. 0.0) then
           write (unit = outputUnit, fmt = outputFormat) omega, sigma, npop, &
             (avgsuccess(i), i = 1, 6)
-          if (debug) then
-            write (unit = *, fmt = outputFormat) omega, sigma, npop, &
-              (avgsuccess(i), i = 1, 6)
-          end if
+        end if
+        if (debug) then
+          write (unit = *, fmt = outputFormat) omega, sigma, npop, &
+            (avgsuccess(i), i = 1, 6)
         end if
         indexnpop = indexnpop + 1
       end do
