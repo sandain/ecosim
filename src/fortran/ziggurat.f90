@@ -56,6 +56,7 @@
 !> @copyright GNU General Public License
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module ziggurat
+  use ISO_FORTRAN_ENV
   implicit none
   private
 
@@ -69,16 +70,16 @@ module ziggurat
 
   ! The state variables for the ziggurat algorithm.
   type :: ziggurat_t
-    integer(kind = 4) :: hz
-    integer(kind = 8) :: iz
-    integer(kind = 8) :: jz
-    integer(kind = 8) :: jsr
-    integer(kind = 8) :: ke(0:255)
-    integer(kind = 8) :: kn(0:127)
-    real(kind = 4)    :: fe(0:255)
-    real(kind = 4)    :: fn(0:127)
-    real(kind = 4)    :: we(0:255)
-    real(kind = 4)    :: wn(0:127)
+    integer(kind = int32) :: hz
+    integer(kind = int64) :: iz
+    integer(kind = int64) :: jz
+    integer(kind = int64) :: jsr
+    integer(kind = int64) :: ke(0:255)
+    integer(kind = int64) :: kn(0:127)
+    real(kind = real32)   :: fe(0:255)
+    real(kind = real32)   :: fn(0:127)
+    real(kind = real32)   :: we(0:255)
+    real(kind = real32)   :: wn(0:127)
   end type ziggurat_t
 
   contains
@@ -91,20 +92,20 @@ module ziggurat
   !> @param iii The seed for the ziggurat algorithm.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine ziggurat_seed (state, iii)
-    type(ziggurat_t), intent(inout) :: state
-    integer(kind = 4), intent(in)   :: iii
+    type(ziggurat_t), intent(inout)   :: state
+    integer(kind = int32), intent(in) :: iii
     ! Local parameters.
-    integer(kind = 8), parameter :: m1 = 2147483648_8
-    integer(kind = 8), parameter :: m2 = 4294967296_8
-    real(kind = 8), parameter    :: ve = 3.949659822581572d-3
-    real(kind = 8), parameter    :: vn = 9.91256303526217d-3
+    integer(kind = int64), parameter :: m1 = 2147483648_int64
+    integer(kind = int64), parameter :: m2 = 4294967296_int64
+    real(kind = real64), parameter   :: ve = 3.949659822581572d-3
+    real(kind = real64), parameter   :: vn = 9.91256303526217d-3
     ! Local variables.
-    integer(kind = 4) :: i
-    real(kind = 8)    :: de
-    real(kind = 8)    :: dn
-    real(kind = 8)    :: te
-    real(kind = 8)    :: tn
-    real(kind = 8)    :: q
+    integer(kind = int32) :: i
+    real(kind = real64)   :: de
+    real(kind = real64)   :: dn
+    real(kind = real64)   :: te
+    real(kind = real64)   :: tn
+    real(kind = real64)   :: q
     dn = 3.442619855899
     de = 7.697117470131487
     tn = dn
@@ -112,33 +113,33 @@ module ziggurat
     state%jsr = iii
     ! Tables for RNOR:
     q = vn / exp (-0.5 * dn * dn)
-    state%kn(0) = int (dn / q * m1, kind = 8)
+    state%kn(0) = int (dn / q * m1, kind = int64)
     state%kn(1) = 0
-    state%wn(0) = real (q / m1, kind = 4)
-    state%wn(127) = real (dn / m1, kind = 4)
+    state%wn(0) = real (q / m1, kind = real32)
+    state%wn(127) = real (dn / m1, kind = real32)
     state%fn(0) = 1.0
-    state%fn(127) = real (exp (-0.5 * dn * dn), kind = 4)
+    state%fn(127) = real (exp (-0.5 * dn * dn), kind = real32)
     do i = 126, 1, -1
       dn = sqrt (-2.0 * log (vn / dn + exp (-0.5 * dn * dn)))
-      state%kn(i + 1) = int (dn / tn * m1, kind = 8)
+      state%kn(i + 1) = int (dn / tn * m1, kind = int64)
       tn = dn
-      state%fn(i) = real (exp (-0.5 * dn * dn), kind = 4)
-      state%wn(i) = real (dn / m1, kind = 4)
+      state%fn(i) = real (exp (-0.5 * dn * dn), kind = real32)
+      state%wn(i) = real (dn / m1, kind = real32)
     end do
     ! Tables for REXP:
     q = ve / exp (-de)
-    state%ke(0) = int (de / q * m2, kind = 8)
+    state%ke(0) = int (de / q * m2, kind = int64)
     state%ke(1) = 0
-    state%we(0) = real (q / m2, kind = 4)
-    state%we(255) = real (de / m2, kind = 4)
+    state%we(0) = real (q / m2, kind = real32)
+    state%we(255) = real (de / m2, kind = real32)
     state%fe(0) = 1.0
-    state%fe(255) = real (exp (-de), kind = 4)
+    state%fe(255) = real (exp (-de), kind = real32)
     do i = 254, 1, -1
       de = -log (ve / de + exp (-de))
-      state%ke(i + 1) = int (de / te * m2, kind = 8)
+      state%ke(i + 1) = int (de / te * m2, kind = int64)
       te = de
-      state%fe(i) = real (exp (-de), kind = 4)
-      state%we(i) = real (de / m2, kind = 4)
+      state%fe(i) = real (exp (-de), kind = real32)
+      state%we(i) = real (de / m2, kind = real32)
     end do
   end subroutine ziggurat_seed
 
@@ -150,12 +151,12 @@ module ziggurat
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function ziggurat_shr3 (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
-    integer(kind = 4)               :: return_value
+    integer(kind = int32)           :: return_value
     state%jz = state%jsr
     state%jsr = ieor (state%jsr, ishft (state%jsr, 13))
     state%jsr = ieor (state%jsr, ishft (state%jsr, -17))
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
-    return_value = int (state%jz + state%jsr, kind = 4)
+    return_value = int (state%jz + state%jsr, kind = int32)
     return
   end function ziggurat_shr3
 
@@ -167,7 +168,7 @@ module ziggurat
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function ziggurat_uni (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
-    real(kind = 4)                  :: return_value
+    real(kind = real32)             :: return_value
     return_value = 0.5 + ziggurat_shr3(state) * 0.2328306e-9
     return
   end function ziggurat_uni
@@ -181,14 +182,14 @@ module ziggurat
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function ziggurat_rnor (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
-    real(kind = 4)                  :: return_value
+    real(kind = real32)             :: return_value
     ! Local parameters.
-    real(kind = 4), parameter :: r = 3.442620      ! Start of the right tail.
-    real(kind = 4), parameter :: rinv = 0.2904764  ! 0.2904764 is 1/r.
+    real(kind = real32), parameter :: r = 3.442620      ! Start of the right tail.
+    real(kind = real32), parameter :: rinv = 0.2904764  ! 0.2904764 is 1/r.
     ! Local variables.
-    real(kind = 4)            :: x
-    real(kind = 4)            :: y
-    real(kind = 4)            :: z
+    real(kind = real32) :: x
+    real(kind = real32) :: y
+    real(kind = real32) :: z
     state%hz = ziggurat_shr3(state)
     state%iz = iand (state%hz, 127)
     if (abs (state%hz) .lt. state%kn(state%iz)) then
@@ -238,10 +239,10 @@ module ziggurat
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function ziggurat_rexp (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
-    real(kind = 4)                  :: return_value
+    real(kind = real32)             :: return_value
     ! Local variables.
-    real(kind = 4) :: x
-    real(kind = 4) :: y
+    real(kind = real32) :: x
+    real(kind = real32) :: y
     state%jz = ziggurat_shr3(state)
     state%iz = iand (state%jz, 255)
     if (abs (state%jz) .lt. state%ke(state%iz)) then
