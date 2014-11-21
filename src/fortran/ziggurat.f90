@@ -31,10 +31,10 @@
 !>   program zigguratTest
 !>     use ziggurat
 !>     implicit none
-!>     integer(kind=4), parameter :: iii = 123456789 !< The RNG seed.
-!>     integer(kind=4)            :: i
-!>     real(kind=4)               :: x
-!>     type(ziggurat_t)           :: rng
+!>     integer, parameter :: iii = 123456789 !< The RNG seed.
+!>     integer            :: i
+!>     real               :: x
+!>     type(ziggurat_t)   :: rng
 !>     ! Seed the RNG.
 !>     call ziggurat_seed (rng, iii)
 !>     ! Generate some random numbers.
