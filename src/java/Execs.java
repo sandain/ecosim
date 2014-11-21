@@ -310,7 +310,7 @@ public class Execs {
      */
     public int runFastTree (File input, File output) {
         String[] command = {
-            "/home/jwood/biotools/fasttree/FastTreeMP",
+            "fasttree",
             "-nt",
             input.getAbsolutePath (),
         };
