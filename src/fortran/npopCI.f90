@@ -170,9 +170,11 @@ program npopCI
     omega = exp (params(1))
     sigma = exp (params(2))
     xlikelihood = -1.0 * yvalue
+    ! avoid dividing by zero
+    if (xlikelihood .lt. 1.0e-6) exit
     ! now do likelihood ratio test
     ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
-    if (xlikelihood .lt. 1.0e-6 .or. ratio .gt. 3.84) exit
+    if (ratio .gt. 3.84) exit
     ! we're still within the CI
     iupperbound = npop
     upperlikelihood = xlikelihood
@@ -206,9 +208,11 @@ program npopCI
     omega = exp (params(1))
     sigma = exp (params(2))
     xlikelihood = -1.0 * yvalue
+    ! avoid dividing by zero
+    if (xlikelihood .lt. 1.0e-6) exit
     ! now do likelihood ratio test
     ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
-    if (xlikelihood .lt. 1.0e-6 .or. ratio .gt. 3.84) exit
+    if (ratio .gt. 3.84) exit
     ! we're still within the CI
     ilowerbound = npop
     xlowerlikelihood = xlikelihood
