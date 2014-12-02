@@ -36,6 +36,7 @@
 !> @author Jason M Wood
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module simplexmethod
+  use ISO_FORTRAN_ENV
   implicit none
   private
 
@@ -50,10 +51,11 @@ module simplexmethod
   !> @param[out]    func          The function value.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   interface
-     subroutine nelmeadFunction (nop, p, func)
-      integer, intent(in)             :: nop
-      double precision, intent(inout) :: p(nop)
-      double precision, intent(out)   :: func
+    subroutine nelmeadFunction (nop, p, func)
+      use ISO_FORTRAN_ENV
+      integer(kind = int32), intent(in)  :: nop
+      real(kind = real64), intent(inout) :: p(nop)
+      real(kind = real64), intent(out)   :: func
     end subroutine nelmeadFunction
   end interface
 
@@ -121,67 +123,67 @@ module simplexmethod
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine nelmead (p, step, nop, func, max, iprint, stopcr, nloop, &
     iquad, simp, var, functn, ifault, lout)
-    double precision, intent(inout)     :: p(nop)
-    double precision, intent(inout)     :: step(nop)
-    double precision, intent(out)       :: func
-    double precision, intent(in)        :: stopcr
-    double precision, intent(in)        :: simp
-    double precision, intent(out)       :: var(nop)
-    integer, intent(in)                 :: nop
-    integer, intent(in)                 :: max
-    integer, intent(in)                 :: iprint
-    integer, intent(in)                 :: nloop
-    integer, intent(in)                 :: iquad
-    integer, intent(out)                :: ifault
-    integer, intent(in)                 :: lout
-    procedure(nelmeadFunction), pointer :: functn
+    real(kind = real64), intent(inout)   :: p(nop)
+    real(kind = real64), intent(inout)   :: step(nop)
+    real(kind = real64), intent(out)     :: func
+    real(kind = real64), intent(in)      :: stopcr
+    real(kind = real64), intent(in)      :: simp
+    real(kind = real64), intent(out)     :: var(nop)
+    integer(kind = int32), intent(in)    :: nop
+    integer(kind = int32), intent(in)    :: max
+    integer(kind = int32), intent(in)    :: iprint
+    integer(kind = int32), intent(in)    :: nloop
+    integer(kind = int32), intent(in)    :: iquad
+    integer(kind = int32), intent(out)   :: ifault
+    integer(kind = int32), intent(in)    :: lout
+    procedure(nelmeadFunction), pointer  :: functn
     ! Local variables.
-    double precision            :: g(nop + 1, nop)
-    double precision            :: h(nop + 1)
-    double precision            :: pbar(nop)
-    double precision            :: pstar(nop)
-    double precision            :: pstst(nop)
-    double precision            :: aval(nop)
-    double precision            :: bmat(nop * (nop + 1) / 2)
-    double precision            :: pmin(nop)
-    double precision            :: vc(nop * (nop + 1) / 2)
-    double precision            :: temp(nop)
-    double precision            :: a0
-    double precision            :: hmin
-    double precision            :: hmax
-    double precision            :: hmean
-    double precision            :: hstar
-    double precision            :: hstd
-    double precision            :: hstst
-    double precision            :: rmax
-    double precision            :: savemn
-    double precision            :: test
-    double precision            :: ymin
-    double precision, parameter :: a = 1.0d0 !< Reflection Coefficient.
-    double precision, parameter :: b = 0.5d0 !< Contraction Coefficient.
-    double precision, parameter :: c = 2.0d0 !< Expansion Coefficient.
-    integer                     :: i
-    integer                     :: i1
-    integer                     :: i2
-    integer                     :: iflag
-    integer                     :: ii
-    integer                     :: ij
-    integer                     :: ijk
-    integer                     :: imin
-    integer                     :: imax
-    integer                     :: irank
-    integer                     :: irow
-    integer                     :: j
-    integer                     :: j1
-    integer                     :: jj
-    integer                     :: k
-    integer                     :: l
-    integer                     :: loop
-    integer                     :: nap
-    integer                     :: neval
-    integer                     :: nmore
-    integer                     :: np1
-    integer                     :: nullty
+    real(kind = real64)            :: g(nop + 1, nop)
+    real(kind = real64)            :: h(nop + 1)
+    real(kind = real64)            :: pbar(nop)
+    real(kind = real64)            :: pstar(nop)
+    real(kind = real64)            :: pstst(nop)
+    real(kind = real64)            :: aval(nop)
+    real(kind = real64)            :: bmat(nop * (nop + 1) / 2)
+    real(kind = real64)            :: pmin(nop)
+    real(kind = real64)            :: vc(nop * (nop + 1) / 2)
+    real(kind = real64)            :: temp(nop)
+    real(kind = real64)            :: a0
+    real(kind = real64)            :: hmin
+    real(kind = real64)            :: hmax
+    real(kind = real64)            :: hmean
+    real(kind = real64)            :: hstar
+    real(kind = real64)            :: hstd
+    real(kind = real64)            :: hstst
+    real(kind = real64)            :: rmax
+    real(kind = real64)            :: savemn
+    real(kind = real64)            :: test
+    real(kind = real64)            :: ymin
+    real(kind = real64), parameter :: a = 1.0d0 !< Reflection Coefficient.
+    real(kind = real64), parameter :: b = 0.5d0 !< Contraction Coefficient.
+    real(kind = real64), parameter :: c = 2.0d0 !< Expansion Coefficient.
+    integer(kind = int32)          :: i
+    integer(kind = int32)          :: i1
+    integer(kind = int32)          :: i2
+    integer(kind = int32)          :: iflag
+    integer(kind = int32)          :: ii
+    integer(kind = int32)          :: ij
+    integer(kind = int32)          :: ijk
+    integer(kind = int32)          :: imin
+    integer(kind = int32)          :: imax
+    integer(kind = int32)          :: irank
+    integer(kind = int32)          :: irow
+    integer(kind = int32)          :: j
+    integer(kind = int32)          :: j1
+    integer(kind = int32)          :: jj
+    integer(kind = int32)          :: k
+    integer(kind = int32)          :: l
+    integer(kind = int32)          :: loop
+    integer(kind = int32)          :: nap
+    integer(kind = int32)          :: neval
+    integer(kind = int32)          :: nmore
+    integer(kind = int32)          :: np1
+    integer(kind = int32)          :: nullty
     !
     ! if progress reports have been requested, print heading.
     !
@@ -709,26 +711,26 @@ module simplexmethod
   !>                                4 decimal digits.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine syminv (a, n, c, w, nullty, ifault, rmax)
-    double precision, intent(inout) :: a(:)
-    double precision, intent(inout) :: c(:)
-    double precision, intent(inout) :: w(n)
-    double precision, intent(out)   :: rmax
-    integer, intent(in)             :: n
-    integer, intent(out)            :: nullty
-    integer, intent(out)            :: ifault
+    real(kind = real64), intent(inout)   :: a(:)
+    real(kind = real64), intent(inout)   :: c(:)
+    real(kind = real64), intent(inout)   :: w(n)
+    real(kind = real64), intent(out)     :: rmax
+    integer(kind = int32), intent(in)    :: n
+    integer(kind = int32), intent(out)   :: nullty
+    integer(kind = int32), intent(out)   :: ifault
     ! Local Variables
-    double precision :: x
-    integer          :: i
-    integer          :: icol
-    integer          :: irow
-    integer          :: j
-    integer          :: jcol
-    integer          :: k
-    integer          :: l
-    integer          :: ndiag
-    integer          :: nn
-    integer          :: nrow
-    integer          :: mdiag
+    real(kind = real64)   :: x
+    integer(kind = int32) :: i
+    integer(kind = int32) :: icol
+    integer(kind = int32) :: irow
+    integer(kind = int32) :: j
+    integer(kind = int32) :: jcol
+    integer(kind = int32) :: k
+    integer(kind = int32) :: l
+    integer(kind = int32) :: ndiag
+    integer(kind = int32) :: nn
+    integer(kind = int32) :: nrow
+    integer(kind = int32) :: mdiag
     nrow = n
     ifault = 1
     if (nrow .le. 0) goto 100
@@ -804,24 +806,24 @@ module simplexmethod
   !>                                 accuracy of each diagonal element of u.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine chola (a, n, u, nullty, ifault, rmax, r)
-    double precision, intent(in)  :: a(:)
-    double precision, intent(out) :: u(:)
-    double precision, intent(out) :: rmax
-    double precision, intent(out) :: r(:)
-    integer, intent(in)           :: n
-    integer, intent(out)          :: nullty
-    integer, intent(out)          :: ifault
+    real(kind = real64), intent(in)      :: a(:)
+    real(kind = real64), intent(out)     :: u(:)
+    real(kind = real64), intent(out)     :: rmax
+    real(kind = real64), intent(out)     :: r(:)
+    integer(kind = int32), intent(in)    :: n
+    integer(kind = int32), intent(out)   :: nullty
+    integer(kind = int32), intent(out)   :: ifault
     ! Local Variables
-    double precision, parameter :: eta = epsilon(1.0d0)
-    double precision            :: rsq
-    double precision            :: w
-    integer                     :: i
-    integer                     :: icol
-    integer                     :: irow
-    integer                     :: j
-    integer                     :: k
-    integer                     :: l
-    integer                     :: m
+    real(kind = real64), parameter :: eta = epsilon(1.0d0)
+    real(kind = real64)            :: rsq
+    real(kind = real64)            :: w
+    integer(kind = int32)          :: i
+    integer(kind = int32)          :: icol
+    integer(kind = int32)          :: irow
+    integer(kind = int32)          :: j
+    integer(kind = int32)          :: k
+    integer(kind = int32)          :: l
+    integer(kind = int32)          :: m
     ifault = 1
     if (n .le. 0) return
     ifault = 2
