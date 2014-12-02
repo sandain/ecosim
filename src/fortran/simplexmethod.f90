@@ -749,7 +749,7 @@ module simplexmethod
     irow = nrow
     ndiag = nn
 10  if (c(ndiag) .eq. 0.0d0) goto 60
-    L = ndiag
+    l = ndiag
     do 20 i = irow, nrow
     w(i) = c(l)
     l = l + i
