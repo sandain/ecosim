@@ -47,7 +47,8 @@ module simplexmethod
   public :: nelmeadFunction
 
   ! Declare private global parameters.
-  real(kind = real64), parameter :: eta = epsilon(1.0d0)
+  real(kind = real64), parameter :: eta = epsilon(1.0d0) !< Epsilon.
+  real(kind = real64), parameter :: neta = -1.0d0 * eta  !< Negative epsilon.
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> An interface for functions to be optimized using the simplex method.
@@ -211,7 +212,10 @@ module simplexmethod
     loop = 0
     iflag = 0
     do i = 1, nop
-      if (step(i) .ne. 0.0d0) nap = nap + 1
+      ! check to see if step(i) is not equal to zero.
+      if (step(i) .lt. neta .or. step(i) .gt. eta) then
+        nap = nap + 1
+      end if
     end do
     !
     ! if nap = 0 evaluate function at the starting point and return.
@@ -226,7 +230,10 @@ module simplexmethod
 40  g(1, i) = p(i)
     irow = 2
     do 60 i = 1, nop
-    if (step(i) .eq. 0.0d0) goto 60
+    ! check to see if step(i) is equal to zero.
+    if (step(i) .gt. neta .and. step(i) .lt. eta) then
+      goto 60
+    end if
     do 50 j = 1, nop
 50  g(irow, j) = p(j)
     g(irow, i) = p(i) + step(i)
@@ -303,7 +310,10 @@ module simplexmethod
     !
 200 if (hstst .ge. hmin) goto 320
     do 210 i = 1, nop
-    if (step(i) .ne. 0.0d0) g(imax, i) = pstst(i)
+    ! check to see if step(i) is not equal to zero.
+    if (step(i) .lt. neta .or. step(i) .gt. eta) then
+      g(imax, i) = pstst(i)
+    end if
 210 CONTINUE
     h(imax) = hstst
     goto 340
@@ -322,7 +332,10 @@ module simplexmethod
     !
     if (hstar .gt. hmax) goto 260
     do 250 i = 1, nop
-    if (step(i) .ne. 0.0d0) g(imax, i) = pstar(i)
+    ! check to see if step(i) is not equal to zero.
+    if (step(i) .lt. neta .or. step(i) .gt. eta) then
+      g(imax, i) = pstar(i)
+    end if
 250 CONTINUE
     hmax = hstar
     h(imax) = hstar
@@ -342,7 +355,10 @@ module simplexmethod
     !
 280 if (hstst .gt. hmax) goto 300
     do 290 i = 1, nop
-    if (step(i) .ne. 0.0d0) g(imax, i) = pstst(i)
+    ! check to see if step(i) is not equal to zero.
+    if (step(i) .lt. neta .or. step(i) .gt. eta) then
+      g(imax, i) = pstst(i)
+    end if
 290 CONTINUE
     h(imax) = hstst
     goto 340
@@ -355,7 +371,10 @@ module simplexmethod
 300 do 315 i = 1, np1
     if (i .eq. imin) goto 315
     do 310 J = 1, nop
-    if (step(j) .ne. 0.0d0) g(i, j) = (g(i, j) + g(imin, j)) * 0.5
+    ! check to see if step(j) is not equal to zero.
+    if (step(j) .lt. neta .or. step(j) .gt. eta) then
+      g(i, j) = (g(i, j) + g(imin, j)) * 0.5
+    end if
 310 p(j) = g(i, j)
     call functn (nop, p, h(i))
     neval = neval + 1
@@ -368,7 +387,10 @@ module simplexmethod
     ! replace maximum point by pstar & h(imax) by hstar.
     !
 320 do 330 i = 1, nop
-    if (step(i) .ne. 0.0d0) g(imax, i) = pstar(i)
+    ! check to see if step(i) is not equal to zero.
+    if (step(i) .lt. neta .or. step(i) .gt. eta) then
+      g(imax, i) = pstst(i)
+    end if
 330 CONTINUE
     h(imax) = hstar
     !
@@ -399,7 +421,10 @@ module simplexmethod
     ! find the centroid of the current simplex and the function value there.
     !
 410 do 380 i = 1, nop
-    if (step(i) .eq. 0.0d0) goto 380
+    ! check to see if step(i) is equal to zero.
+    if (step(i) .gt. neta .and. step(i) .lt. eta) then
+      goto 380
+    end if
     p(i) = 0.0d0
     do 370 J = 1, np1
 370 p(i) = p(i) + g(J, I)
@@ -467,7 +492,10 @@ module simplexmethod
 470 test = abs (h(i) - func)
     if (test .ge. simp) goto 490
     do 480 j = 1, nop
-    if (step(j) .ne. 0.0d0) g(i, j) = (g(i, j) - p(j)) + g(i, j)
+    ! check to see if step(j) is not equal to zero.
+    if (step(j) .lt. neta .or. step(j) .gt. eta) then
+      g(i, j) = (g(i, j) - p(j)) + g(i, j)
+    end if
 480 pstst(j) = g(i, j)
     call functn (nop, pstst, h(i))
     nmore = nmore + 1
@@ -665,7 +693,10 @@ module simplexmethod
     ii = 0
     do 850 i = 1, nop
     ii = ii + i
-    if (vc(ii) .ne. 0.0d0) vc(ii) = 1.0d0
+    ! check to see if vc(ii) is not equal to zero.
+    if (vc(ii) .lt. neta .or. vc(ii) .gt. eta) then
+      vc(ii) = 1.0d0
+    end if
 850 CONTINUE
     goto 880
     !
@@ -754,7 +785,8 @@ module simplexmethod
     nn = nrow * (nrow + 1) / 2
     irow = nrow
     ndiag = nn
-10  if (c(ndiag) .eq. 0.0d0) goto 60
+    ! check to see if c(ndiag) is equal to zero.
+10  if (c(ndiag) .gt. neta .and. c(ndiag) .lt. eta) goto 60
     l = ndiag
     do 20 i = irow, nrow
     w(i) = c(l)
