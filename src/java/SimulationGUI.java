@@ -211,11 +211,11 @@ public class SimulationGUI extends Simulation {
         JPanel pane = new JPanel ();
         pane.setLayout (new GridLayout (5,1,15,15));
         // Create Buttons.
-        JButton runBinningThroughBruteforce = new JButton ();
-        runBinningThroughBruteforce.setText ("Run through Bruteforce");
-        runBinningThroughBruteforce.addActionListener (new ActionListener () {
+        JButton runBruteforce = new JButton ();
+        runBruteforce.setText ("Run Bruteforce Search");
+        runBruteforce.addActionListener (new ActionListener () {
             public void actionPerformed (ActionEvent evt) {
-                runBinningThroughBruteforceActionPerformed ();
+                runBruteforceActionPerformed ();
             }
         });
         JButton runHillclimbing = new JButton ();
@@ -240,7 +240,7 @@ public class SimulationGUI extends Simulation {
             }
         });
         // Add everything to the pane.
-        pane.add (runBinningThroughBruteforce);
+        pane.add (runBruteforce);
         pane.add (runHillclimbing);
         pane.add (runAll);
         pane.add (runAllDemarcation);
@@ -533,15 +533,17 @@ public class SimulationGUI extends Simulation {
         // Launch NJPlot to view the tree.
         log.append ("Displaying the tree with NJplot.\n\n");
         execs.openTree (newickFile);
+        // Run binning on the tree.
+        runBinning ();
     }
 
     /**
-     *  The user has asked to run the binning and bruteforce programs,
+     *  The user has asked to run the bruteforce program,
      *  but not the hillclimb, omega, sigma, or npop confidence interval
      *  programs, or the demarcation program.
      */
-    private void runBinningThroughBruteforceActionPerformed () {
-        if (nu == 0) {
+    private void runBruteforceActionPerformed () {
+        if (binning == null || ! binning.hasRun ()) {
             log.append ("Please open a valid fasta file first.\n");
             return;
         }
@@ -552,7 +554,6 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runBinning ();
                 runBruteforce ();
                 running = false;
             }
@@ -601,7 +602,6 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runBinning ();
                 runBruteforce ();
                 runHillclimbing ();
                 runOmegaConfidenceInterval ();
@@ -630,7 +630,6 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runBinning ();
                 runBruteforce ();
                 runHillclimbing ();
                 runOmegaConfidenceInterval ();
