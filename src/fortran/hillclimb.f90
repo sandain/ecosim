@@ -124,18 +124,23 @@ program hillclimb
   ! should be accurate to about 15 decimals.  If we set simp = 1.0d-6,
   ! we should get about 9 dec. digits accuracy in fitting the surface.
   simp = 1.0d-6
-  params(1) = log (omega)
-  step(1) = log (omega) / 2.0
-  params(2) = log (sigma)
-  step(2) = log (sigma) / 2.0
-  params(3) = npop
-  step(3) = npop / 2.0
+  ! Return value starts off at zero.
   yvalue = 0.0
-  call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
-    nloop, iquad, simp, var, functn, ier, lout)
-  omega = exp (params(1))
-  sigma = exp (params(2))
-  npop = nint (params(3))
+  ! Make sure omega and sigma are greater than zero.
+  if (omega .gt. 0.0 .and. sigma .gt. 0.0) then
+    ! Setup the parameters for Nelder-Mead.
+    params(1) = log (omega)
+    step(1) = log (omega) / 2.0
+    params(2) = log (sigma)
+    step(2) = log (sigma) / 2.0
+    params(3) = npop
+    step(3) = npop / 2.0
+    call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
+      nloop, iquad, simp, var, functn, ier, lout)
+    omega = exp (params(1))
+    sigma = exp (params(2))
+    npop = nint (params(3))
+  end if
   ! Output the answer.
   write (unit = outputUnit, fmt = *) omega, sigma, npop, yvalue
   ! Close the random number generator.
