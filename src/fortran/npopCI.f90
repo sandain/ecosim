@@ -33,53 +33,54 @@
 !>         each bounding value.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 program npopCI
+  use ISO_FORTRAN_ENV
   use methods
   use simplexmethod
   implicit none
   ! Local variables
-  character(len = 256) :: inputFile
-  character(len = 256) :: outputFile
-  logical              :: fileExists
-  integer              :: npop
-  integer              :: i
-  integer              :: ier
-  integer              :: iprint
-  integer              :: iquad
-  integer              :: maxf
-  integer              :: lout
-  integer              :: nloop
-  integer              :: istep
-  integer              :: ilowerbound
-  integer              :: iupperbound
-  integer              :: npopsolution
-  integer, parameter   :: nparams = 2
-  integer, parameter   :: outputUnit = 4
-  double precision     :: upperlikelihood
-  double precision     :: xlikelihood
-  double precision     :: xlowerlikelihood
-  double precision     :: omegasolution
-  double precision     :: sigmasolution
-  double precision     :: xlikelihoodsolution
-  double precision     :: ratio
-  double precision     :: omega
-  double precision     :: sigma
-  double precision     :: simp
-  double precision     :: step(nparams)
-  double precision     :: stopcr
-  double precision     :: var(nparams)
-  double precision     :: params(nparams)
-  double precision     :: yvalue
+  character(len = 256)             :: inputFile
+  character(len = 256)             :: outputFile
+  logical                          :: fileExists
+  integer(kind = int32)            :: npop
+  integer(kind = int32)            :: i
+  integer(kind = int32)            :: ier
+  integer(kind = int32)            :: iprint
+  integer(kind = int32)            :: iquad
+  integer(kind = int32)            :: maxf
+  integer(kind = int32)            :: lout
+  integer(kind = int32)            :: nloop
+  integer(kind = int32)            :: istep
+  integer(kind = int32)            :: ilowerbound
+  integer(kind = int32)            :: iupperbound
+  integer(kind = int32)            :: npopsolution
+  integer(kind = int32), parameter :: nparams = 2
+  integer(kind = int32), parameter :: outputUnit = 4
+  real(kind = real64)              :: upperlikelihood
+  real(kind = real64)              :: xlikelihood
+  real(kind = real64)              :: xlowerlikelihood
+  real(kind = real64)              :: omegasolution
+  real(kind = real64)              :: sigmasolution
+  real(kind = real64)              :: xlikelihoodsolution
+  real(kind = real64)              :: ratio
+  real(kind = real64)              :: omega
+  real(kind = real64)              :: sigma
+  real(kind = real64)              :: simp
+  real(kind = real64)              :: step(nparams)
+  real(kind = real64)              :: stopcr
+  real(kind = real64)              :: var(nparams)
+  real(kind = real64)              :: params(nparams)
+  real(kind = real64)              :: yvalue
   ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: jwhichxavg
-  real    :: crit(1000)
+  integer(kind = int32) :: numcrit
+  integer(kind = int32) :: nu
+  integer(kind = int32) :: nrep
+  integer(kind = int32) :: lengthseq
+  integer(kind = int32) :: realdata(1000)
+  integer(kind = int32) :: jwhichxavg
+  real(kind = real32)   :: crit(1000)
   common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
   ! parameters common block
-  integer :: npopfornelmead
+  integer(kind = int32) :: npopfornelmead
   common/parameters/npopfornelmead
   ! The function to be used by the Nelder-Mead minimization function.
   procedure(nelmeadFunction), pointer :: functn
@@ -246,25 +247,25 @@ program npopCI
   !> @param[out]    yvalue        The resulting value of the function.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine callfredprogram(nparams, params, yvalue)
-    integer, intent(in)             :: nparams
-    double precision, intent(inout) :: params(nparams)
-    double precision, intent(out)   :: yvalue
+    integer(kind = int32), intent(in)    :: nparams
+    real(kind = real64), intent(inout)   :: params(nparams)
+    real(kind = real64), intent(out)     :: yvalue
     ! Local variables
-    double precision   :: avgsuccess(6)
-    double precision   :: omega
-    double precision   :: sigma
-    integer            :: npop
+    real(kind = real64)   :: avgsuccess(6)
+    real(kind = real64)   :: omega
+    real(kind = real64)   :: sigma
+    integer(kind = int32) :: npop
     ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: jwhichxavg
-    real    :: crit(1000)
+    integer(kind = int32) :: numcrit
+    integer(kind = int32) :: nu
+    integer(kind = int32) :: nrep
+    integer(kind = int32) :: lengthseq
+    integer(kind = int32) :: realdata(1000)
+    integer(kind = int32) :: jwhichxavg
+    real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
     ! parameters common block
-    integer :: npopfornelmead
+    integer(kind = int32) :: npopfornelmead
     common/parameters/npopfornelmead
     omega = exp (params(1))
     sigma = exp (params(2))
@@ -297,24 +298,24 @@ program npopCI
   !>                                of jwhichxavg.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine readinput (fname, omega, sigma, npop, istep, likelihood)
-    character(len = *), intent(in) :: fname
-    integer, intent(out)           :: npop
-    integer, intent(out)           :: istep
-    double precision, intent(out)  :: omega
-    double precision, intent(out)  :: sigma
-    double precision, intent(out)  :: likelihood
+    character(len = *), intent(in)       :: fname
+    integer(kind = int32), intent(out)   :: npop
+    integer(kind = int32), intent(out)   :: istep
+    real(kind = real64), intent(out)     :: omega
+    real(kind = real64), intent(out)     :: sigma
+    real(kind = real64), intent(out)     :: likelihood
     ! Local variables
-    integer            :: iii
-    integer            :: jcrit
-    integer, parameter :: input_unit = 1
+    integer(kind = int32)            :: iii
+    integer(kind = int32)            :: jcrit
+    integer(kind = int32), parameter :: input_unit = 1
     ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: jwhichxavg
-    real    :: crit(1000)
+    integer(kind = int32) :: numcrit
+    integer(kind = int32) :: nu
+    integer(kind = int32) :: nrep
+    integer(kind = int32) :: lengthseq
+    integer(kind = int32) :: realdata(1000)
+    integer(kind = int32) :: jwhichxavg
+    real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
     ! Open the input file.
     open (unit = input_unit, file = fname, action = 'read', &
