@@ -134,6 +134,12 @@ public class Simulation {
         );
         try {
             tree = new NewickTree (newickFile);
+            tree.reroot (outgroup);
+            // Store the tree in file called 'outtree'.
+            newickFile = new File (
+                masterVariables.getWorkingDirectory () + "outtree"
+            );
+            tree.save (newickFile);
         }
         catch (InvalidNewickException e) {
             System.out.println ("Error loading tree file.");
