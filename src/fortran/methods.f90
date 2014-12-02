@@ -25,6 +25,7 @@
 !> various programs of the Ecotype Simulation application.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module methods
+  use ISO_FORTRAN_ENV
   use darray
   use ziggurat
 #ifdef _OPENMP
@@ -44,12 +45,13 @@ module methods
 
   ! Declare public variables.
   logical, public :: debug = .false.       !< Display debug information.
-  integer, public :: numberThreads = 1     !< The number of threads to start.
+  integer(kind = int32), public :: &
+    numberThreads = 1                      !< The number of threads to start.
 
   ! Declare private global parameters.
-  integer, parameter :: &
+  integer(kind = int32), parameter :: &
     EVENT_NICHE_INVASION     = 1001        !< Niche invasion event.
-  integer, parameter :: &
+  integer(kind = int32), parameter :: &
     EVENT_PERIODIC_SELECTION = 1002        !< Periodic selection event.
 
   type(ziggurat_t), allocatable :: rng(:)  !< The state variables for the RNG.
@@ -85,19 +87,19 @@ module methods
   !>                                strains.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine binning (bin, div, crit, ncoalesce, numcrit, numanctot)
-    integer, intent(out)               :: bin(:)
-    integer, intent(in)                :: numcrit
-    integer, intent(in)                :: numanctot
-    real, intent(in)                   :: crit(:)
-    type(darrayInteger), intent(in)    :: ncoalesce
-    type(darrayReal), intent(in)       :: div
+    integer(kind = int32), intent(out)   :: bin(:)
+    integer(kind = int32), intent(in)    :: numcrit
+    integer(kind = int32), intent(in)    :: numanctot
+    real(kind = real32), intent(in)      :: crit(:)
+    type(darrayInteger), intent(in)      :: ncoalesce
+    type(darrayReal), intent(in)         :: div
     ! Local variables.
-    integer :: lused
-    integer :: janc
-    integer :: jcrit
-    integer :: nbins
-    real    :: criterion
-    real    :: div2
+    integer(kind = int32) :: lused
+    integer(kind = int32) :: janc
+    integer(kind = int32) :: jcrit
+    integer(kind = int32) :: nbins
+    real(kind = real32)   :: criterion
+    real(kind = real32)   :: div2
     nbins = 1
     lused = 0
     do jcrit = 1, numcrit
@@ -128,28 +130,28 @@ module methods
   !>                                ecotype.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine canonical (npop, nu, numstrain)
-    integer, intent(in)                :: npop
-    integer, intent(in)                :: nu
-    integer, intent(out)               :: numstrain(:)
+    integer(kind = int32), intent(in)    :: npop
+    integer(kind = int32), intent(in)    :: nu
+    integer(kind = int32), intent(out)   :: numstrain(:)
     ! Local variables.
-    integer :: upto
-    integer :: ipop
-    integer :: istrain
-    integer :: numberofstrains
-    real    :: x
+    integer(kind = int32) :: upto
+    integer(kind = int32) :: ipop
+    integer(kind = int32) :: istrain
+    integer(kind = int32) :: numberofstrains
+    real(kind = real32)   :: x
     numstrain(1) = nu
     if (npop .gt. 1) then
       do upto = 2, npop
         ! for the upto - 1 population, choose a random population (ipop)
         do
           call randomNumber (x)
-          ipop = int (x * (upto - 1)) + 1
+          ipop = int (x * (upto - 1), kind = int32) + 1
           numberofstrains = numstrain(ipop)
           if (numberofstrains .gt. 1) exit
         end do
         ! next, pick a random breakpoint
         call randomNumber (x)
-        istrain = int (x * (numberofstrains - 1)) + 1
+        istrain = int (x * (numberofstrains - 1), kind = int32) + 1
         numstrain(ipop) = istrain
         numstrain(upto) = numberofstrains - istrain
       end do
@@ -175,20 +177,20 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine doNicheInvasion (activepop, numanctot, numstrain, ncoalesce, &
     lengthseq, time, div)
-    integer, intent(inout)             :: activepop
-    integer, intent(inout)             :: numanctot
-    integer, intent(inout)             :: numstrain(:)
-    integer, intent(in)                :: lengthseq
-    real, intent(in)                   :: time
-    type(darrayInteger), intent(inout) :: ncoalesce
-    type(darrayReal), intent(inout)    :: div
+    integer(kind = int32), intent(inout) :: activepop
+    integer(kind = int32), intent(inout) :: numanctot
+    integer(kind = int32), intent(inout) :: numstrain(:)
+    integer(kind = int32), intent(in)    :: lengthseq
+    real(kind = real32), intent(in)      :: time
+    type(darrayInteger), intent(inout)   :: ncoalesce
+    type(darrayReal), intent(inout)      :: div
     ! Local variables.
-    integer :: popfornascent
-    real    :: x
+    integer(kind = int32) :: popfornascent
+    real(kind = real32)   :: x
     if (activepop .eq. 0) return
     ! Choose the population for the nascent population
     call randomNumber (x)
-    popfornascent = int (x * activepop) + 1
+    popfornascent = int (x * activepop, kind = int32) + 1
     numanctot = numanctot + 1
     call darraySet (ncoalesce, numanctot, numstrain(popfornascent) + 1)
     call darraySet (div, numanctot, time / lengthseq)
@@ -215,22 +217,22 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine doPeriodicSelection (activepop, numanctot, numstrain, &
     ncoalesce, lengthseq, time, div)
-    integer, intent(in)                :: activepop
-    integer, intent(inout)             :: numstrain(:)
-    integer, intent(inout)             :: numanctot
-    integer, intent(in)                :: lengthseq
-    real, intent(in)                   :: time
-    type(darrayInteger), intent(inout) :: ncoalesce
-    type(darrayReal), intent(inout)    :: div
+    integer(kind = int32), intent(in)    :: activepop
+    integer(kind = int32), intent(inout) :: numstrain(:)
+    integer(kind = int32), intent(inout) :: numanctot
+    integer(kind = int32), intent(in)    :: lengthseq
+    real(kind = real32), intent(in)      :: time
+    type(darrayInteger), intent(inout)   :: ncoalesce
+    type(darrayReal), intent(inout)      :: div
     ! Local variables.
-    integer              :: allocateStatus
-    integer              :: chosen
-    integer, allocatable :: eligiblepspop(:)
-    integer              :: numcoalesce
-    integer              :: popforps
-    integer              :: jpop
-    integer              :: numeligible
-    real                 :: x
+    integer(kind = int32)              :: allocateStatus
+    integer(kind = int32)              :: chosen
+    integer(kind = int32), allocatable :: eligiblepspop(:)
+    integer(kind = int32)              :: numcoalesce
+    integer(kind = int32)              :: popforps
+    integer(kind = int32)              :: jpop
+    integer(kind = int32)              :: numeligible
+    real(kind = real32)                   :: x
     ! Allocate memory.
     allocate (eligiblepspop(activepop), stat = allocateStatus)
     if (allocateStatus .gt. 0) then
@@ -246,7 +248,7 @@ module methods
     end do
     if (numeligible .gt. 0) then
       call randomNumber (x)
-      chosen = int (x * numeligible) + 1
+      chosen = int (x * numeligible, kind = int32) + 1
       popforps = eligiblepspop(chosen)
       numanctot = numanctot + 1
       numcoalesce = numstrain(popforps)
@@ -278,12 +280,12 @@ module methods
   !>                                periodic selection.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine eligible (numstrain, activepop, eligibleNI, eligiblePS)
-    integer, intent(in)                :: numstrain(:)
-    integer, intent(in)                :: activepop
-    integer, intent(out)               :: eligibleNI
-    integer, intent(out)               :: eligiblePS
+    integer(kind = int32), intent(in)    :: numstrain(:)
+    integer(kind = int32), intent(in)    :: activepop
+    integer(kind = int32), intent(out)   :: eligibleNI
+    integer(kind = int32), intent(out)   :: eligiblePS
     ! Local variables.
-    integer :: jpop
+    integer(kind = int32) :: jpop
     eligibleNI = activepop
     if (activepop .eq. 1) then
       eligibleNI = 0
@@ -302,11 +304,11 @@ module methods
   !> @param[out]    out           The value to return.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine getIntegerArgument (arg, out)
-    integer, intent(in)               :: arg
-    integer, intent(out)              :: out
+    integer(kind = int32), intent(in)    :: arg
+    integer(kind = int32), intent(out)   :: out
     ! Local variables.
-    character(len = 100) :: buffer
-    integer              :: error
+    character(len = 100)  :: buffer
+    integer(kind = int32) :: error
     call getarg (arg, buffer)
     read (unit = buffer, fmt = *, iostat = error) out
     if (error .ne. 0) then
@@ -325,8 +327,8 @@ module methods
   !> @param[out]    out           The value to return.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine getLogicalArgument (arg, out)
-    integer, intent(in)                :: arg
-    logical, intent(out)               :: out
+    integer(kind = int32), intent(in)    :: arg
+    logical, intent(out)                 :: out
     ! Local variables.
     character(len = 100) :: buffer
     call getarg (arg, buffer)
@@ -355,11 +357,11 @@ module methods
   !> @param[out]    out           The value to return.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine getRealArgument (arg, out)
-    integer, intent(in)                :: arg
-    real, intent(out)                  :: out
+    integer(kind = int32), intent(in)    :: arg
+    real(kind = real32), intent(out)     :: out
     ! Local variables.
     character(len = 100) :: buffer
-    integer              :: error
+    integer(kind = int32)              :: error
     call getarg (arg, buffer)
     read (unit = buffer, fmt = *, iostat = error) out
     if (error .ne. 0) then
@@ -378,8 +380,8 @@ module methods
   !> @param[out]    out           The value to return.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine getStringArgument (arg, out)
-    integer, intent(in)                :: arg
-    character(len = *), intent(out)    :: out
+    integer(kind = int32), intent(in)    :: arg
+    character(len = *), intent(out)      :: out
     call getarg (arg, out)
     return
   end subroutine getStringArgument
@@ -392,14 +394,14 @@ module methods
   !> @param         nsubs         The actual number of substitutions.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine poisson (xmean, nsubs)
-    double precision, intent(in)       :: xmean
-    integer, intent(out)               :: nsubs
+    real(kind = real64), intent(in)      :: xmean
+    integer(kind = int64), intent(out)   :: nsubs
     ! Local variables.
-    integer          :: jmut
-    double precision :: accumprob
-    double precision :: expect
-    double precision :: prob
-    real             :: x
+    integer(kind = int32) :: jmut
+    real(kind = real64)   :: accumprob
+    real(kind = real64)   :: expect
+    real(kind = real64)   :: prob
+    real(kind = real32)   :: x
     expect = xmean
     call randomNumber (x)
     accumprob = 0.0
@@ -414,7 +416,7 @@ module methods
         return
       end if
     end do
-    nsubs = int (expect)
+    nsubs = int (expect, kind = int64)
     return
   end subroutine poisson
 
@@ -423,7 +425,7 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine randomClose ()
     ! Local variables.
-    integer :: allocateStatus
+    integer(kind = int32) :: allocateStatus
     ! Deallocate space for the RNG.
     deallocate (rng, stat = allocateStatus)
     if (allocateStatus .gt. 0) then
@@ -441,11 +443,11 @@ module methods
   !>                                generator.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine randomInitialize (iii)
-    integer, intent(in)                :: iii
+    integer(kind = int32), intent(in)    :: iii
     ! Local variables.
-    integer :: i
-    integer :: allocateStatus
-    real    :: x
+    integer(kind = int32) :: i
+    integer(kind = int32) :: allocateStatus
+    real(kind = real32)   :: x
     ! Allocate space for each thread's RNG.
     allocate (rng(numberThreads), stat = allocateStatus)
     if (allocateStatus .gt. 0) then
@@ -456,7 +458,7 @@ module methods
     ! Seed the RNG of each thread.
     do i = 1, numberThreads
       call random_number (x)
-      call ziggurat_seed (rng(i), int (iii * x))
+      call ziggurat_seed (rng(i), int (iii * x, kind = int32))
     end do
   end subroutine randomInitialize
 
@@ -466,9 +468,9 @@ module methods
   !> @param[out]    x             The random number generated
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine randomNumber (x)
-    real, intent(out)                  :: x
+    real(kind = real32), intent(out)     :: x
     ! Local variables.
-    integer :: n
+    integer(kind = int32) :: n
 #ifdef _OPENMP
     n = omp_get_thread_num() + 1
 #else
@@ -514,20 +516,20 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine runProgram (omega, sigma, npop, numcrit, nu, nrep, &
     lengthseq, realdata, crit, avgsuccess)
-    double precision, intent(in)       :: omega
-    double precision, intent(in)       :: sigma
-    double precision, intent(out)      :: avgsuccess(6)
-    integer, intent(in)                :: lengthseq
-    integer, intent(in)                :: npop
-    integer, intent(in)                :: nu
-    integer, intent(in)                :: numcrit
-    integer, intent(in)                :: nrep
-    integer, intent(in)                :: realdata(:)
-    real, intent(in)                   :: crit(:)
+    real(kind = real64), intent(in)      :: omega
+    real(kind = real64), intent(in)      :: sigma
+    real(kind = real64), intent(out)     :: avgsuccess(6)
+    integer(kind = int32), intent(in)    :: lengthseq
+    integer(kind = int32), intent(in)    :: npop
+    integer(kind = int32), intent(in)    :: nu
+    integer(kind = int32), intent(in)    :: numcrit
+    integer(kind = int32), intent(in)    :: nrep
+    integer(kind = int32), intent(in)    :: realdata(:)
+    real(kind = real32), intent(in)      :: crit(:)
     ! Local variables.
-    integer :: i
-    integer :: irep
-    logical :: success(6, nrep)
+    integer(kind = int32) :: i
+    integer(kind = int32) :: irep
+    logical               :: success(6, nrep)
     ! Initialize the avgsuccess array with values of 0.
     avgsuccess = (/ (0.0d0, i = 1, 6) /)
     ! Make sure that omega has valid values.
@@ -562,7 +564,7 @@ module methods
         if (success(i, irep)) avgsuccess(i) = avgsuccess(i) + 1.0d0
       end do
     end do
-    avgsuccess = (/ (avgsuccess(i) / real (nrep), i = 1, 6) /)
+    avgsuccess = (/ (avgsuccess(i) / real (nrep, kind = real64), i = 1, 6) /)
     return
   end subroutine runProgram
 
@@ -597,25 +599,25 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine simulation (omega, sigma, npop, numcrit, nu, lengthseq, &
     realdata, crit, success)
-    double precision, intent(in)       :: omega
-    double precision, intent(in)       :: sigma
-    integer, intent(in)                :: npop
-    integer, intent(in)                :: numcrit
-    integer, intent(in)                :: nu
-    integer, intent(in)                :: lengthseq
-    integer, intent(in)                :: realdata(:)
-    real, intent(in)                   :: crit(:)
-    logical, intent(out)               :: success(6)
+    real(kind = real64), intent(in)      :: omega
+    real(kind = real64), intent(in)      :: sigma
+    integer(kind = int32), intent(in)    :: npop
+    integer(kind = int32), intent(in)    :: numcrit
+    integer(kind = int32), intent(in)    :: nu
+    integer(kind = int32), intent(in)    :: lengthseq
+    integer(kind = int32), intent(in)    :: realdata(:)
+    real(kind = real32), intent(in)      :: crit(:)
+    logical, intent(out)                 :: success(6)
     ! Local variables.
-    integer              :: activepop
-    integer              :: allocateStatus
-    integer              :: bin(numcrit)
-    integer              :: event
-    integer              :: jpop
-    integer              :: ntotalpop
-    integer              :: numanctot
-    integer, allocatable :: numstrain(:)
-    real                 :: time
+    integer(kind = int32)                :: activepop
+    integer(kind = int32)                :: allocateStatus
+    integer(kind = int32)                :: bin(numcrit)
+    integer(kind = int32)                :: event
+    integer(kind = int32)                :: jpop
+    integer(kind = int32)                :: ntotalpop
+    integer(kind = int32)                :: numanctot
+    integer(kind = int32), allocatable   :: numstrain(:)
+    real(kind = real32)                  :: time
     type(darrayInteger) :: ncoalesce
     type(darrayReal)    :: div
     ! Initialize the dynamic arrays.
@@ -687,15 +689,15 @@ module methods
   !> @param[out]    time           The time of the last ancestor described.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine startpops (npop, nu, activepop, numstrain, div, numanctot, time)
-    integer, intent(in)                :: npop
-    integer, intent(in)                :: nu
-    integer, intent(out)               :: activepop
-    integer, intent(out)               :: numstrain(:)
-    integer, intent(out)               :: numanctot
-    real, intent(out)                  :: time
-    type(darrayReal), intent(inout)    :: div
+    integer(kind = int32), intent(in)    :: npop
+    integer(kind = int32), intent(in)    :: nu
+    integer(kind = int32), intent(out)   :: activepop
+    integer(kind = int32), intent(out)   :: numstrain(:)
+    integer(kind = int32), intent(out)   :: numanctot
+    real(kind = real32), intent(out)     :: time
+    type(darrayReal), intent(inout)      :: div
     ! Local variables.
-    integer :: i
+    integer(kind = int32) :: i
     ! activepop is the number of active populations (note some will disappear
     ! in the backwards simulation as they become invented in reverse)
     activepop = npop
@@ -732,15 +734,15 @@ module methods
   !>                                6: 105% tolerance.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine testForSuccessFit (bin, numcrit, realdata, success)
-    integer, intent(in)                :: bin(:)
-    integer, intent(in)                :: numcrit
-    integer, intent(in)                :: realdata(:)
-    logical, intent(out)               :: success(6)
+    integer(kind = int32), intent(in)    :: bin(:)
+    integer(kind = int32), intent(in)    :: numcrit
+    integer(kind = int32), intent(in)    :: realdata(:)
+    logical, intent(out)                 :: success(6)
     ! Local variables.
-    integer :: i
-    integer :: jcrit
-    real    :: xbin
-    real    :: xreal
+    integer(kind = int32) :: i
+    integer(kind = int32) :: jcrit
+    real(kind = real32)   :: xbin
+    real(kind = real32)   :: xreal
     ! Initialize the success array.
     success = (/ (.false., i = 1, 6) /)
     do jcrit = 1, numcrit
@@ -815,21 +817,21 @@ module methods
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine whichEventAndWhen (omega, sigma, numstrain, activepop, time, &
     event)
-    double precision, intent(in)       :: omega
-    double precision, intent(in)       :: sigma
-    integer, intent(in)                :: numstrain(:)
-    integer, intent(in)                :: activepop
-    integer, intent(out)               :: event
-    real, intent(inout)                :: time
+    real(kind = real64), intent(in)      :: omega
+    real(kind = real64), intent(in)      :: sigma
+    integer(kind = int32), intent(in)    :: numstrain(:)
+    integer(kind = int32), intent(in)    :: activepop
+    integer(kind = int32), intent(out)   :: event
+    real(kind = real32), intent(inout)   :: time
     ! Local variables.
-    integer          :: eligibleNI
-    integer          :: eligiblePS
-    integer          :: nsubs
-    double precision :: effectiveOmega
-    double precision :: effectiveSigma
-    double precision :: rateKey
-    double precision :: timeWait
-    real             :: x
+    integer(kind = int32) :: eligibleNI
+    integer(kind = int32) :: eligiblePS
+    integer(kind = int64) :: nsubs
+    real(kind = real64)   :: effectiveOmega
+    real(kind = real64)   :: effectiveSigma
+    real(kind = real64)   :: rateKey
+    real(kind = real64)   :: timeWait
+    real(kind = real32)   :: x
     ! subroutine eligible returns the number of populations eligible for
     ! niche invasion and periodic selection.
     call eligible (numstrain, activepop, eligibleNI, eligiblePS)
