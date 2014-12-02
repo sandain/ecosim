@@ -3,7 +3,7 @@
 !    as the evolutionary result of net ecotype formation, periodic selection,
 !    and drift, yielding a certain number of ecotypes.
 !
-!    Copyright (C) 2013  Jason M. Wood, Montana State University
+!    Copyright (C) 2014  Jason M. Wood, Montana State University
 !
 !    This program is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 !>   program darrayTest
 !>     use darray
 !>     implicit none
-!>     integer(kind=4)     :: i
+!>     integer             :: i
 !>     type(darrayInteger) :: integerArray
 !>     ! Initialize the dynamic array with an initial size of 5.
 !>     call darrayInitialize(integerArray, 5)
@@ -48,6 +48,7 @@
 !> @copyright GNU General Public License
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module darray
+  use ISO_FORTRAN_ENV
   implicit none
   private
 
@@ -63,32 +64,32 @@ module darray
   public :: darrayGet
   public :: darraySet
 
-  !> The integer darray: integer(kind=4).
+  !> The integer darray: integer(kind = int32).
   type :: darrayInteger
-    integer(kind = 4), allocatable :: array(:)
-    integer(kind = 4)              :: capacity
-    integer(kind = 4)              :: initialCapacity
+    integer(kind = int32), allocatable :: array(:)
+    integer(kind = int32)              :: capacity
+    integer(kind = int32)              :: initialCapacity
   end type darrayInteger
 
-  !> The long darray: integer(kind=8).
+  !> The long darray: integer(kind = int64).
   type :: darrayLong
-    integer(kind = 8), allocatable :: array(:)
-    integer(kind = 4)              :: capacity
-    integer(kind = 4)              :: initialCapacity
+    integer(kind = int64), allocatable :: array(:)
+    integer(kind = int32)              :: capacity
+    integer(kind = int32)              :: initialCapacity
   end type darrayLong
 
-  !> The real darray: real(kind=4).
+  !> The real darray: real(kind = real32).
   type :: darrayReal
-    real(kind = 4), allocatable    :: array(:)
-    integer(kind = 4)              :: capacity
-    integer(kind = 4)              :: initialCapacity
+    real(kind = real32), allocatable   :: array(:)
+    integer(kind = int32)              :: capacity
+    integer(kind = int32)              :: initialCapacity
   end type darrayReal
 
-  !> The double precision darray: real(kind=8).
+  !> The double precision darray: real(kind = real64).
   type :: darrayDouble
-    real(kind = 8), allocatable    :: array(:)
-    integer(kind = 4)              :: capacity
-    integer(kind = 4)              :: initialCapacity
+    real(kind = real64), allocatable   :: array(:)
+    integer(kind = int32)              :: capacity
+    integer(kind = int32)              :: initialCapacity
   end type darrayDouble
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -335,8 +336,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetInteger (darray, index) result (returnValue)
     type(darrayInteger), intent(in)    :: darray
-    integer(kind=4), intent(in)        :: index
-    integer(kind=4)                    :: returnValue
+    integer(kind = int32), intent(in)  :: index
+    integer(kind = int32)              :: returnValue
     ! Grab the element at the provided index.
     if (index .le. darray%capacity) then
       returnValue = darray%array(index)
@@ -358,8 +359,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetLong (darray, index) result (returnValue)
     type(darrayLong), intent(in)       :: darray
-    integer(kind=4), intent(in)        :: index
-    integer(kind=8)                    :: returnValue
+    integer(kind = int32), intent(in)  :: index
+    integer(kind = int64)              :: returnValue
     ! Grab the element at the provided index.
     if (index .le. darray%capacity) then
       returnValue = darray%array(index)
@@ -381,8 +382,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetReal (darray, index) result (returnValue)
     type(darrayReal), intent(in)       :: darray
-    integer(kind=4), intent(in)        :: index
-    real(kind=4)                       :: returnValue
+    integer(kind = int32), intent(in)  :: index
+    real(kind = real32)                :: returnValue
     ! Grab the element at the provided index.
     if (index .le. darray%capacity) then
       returnValue = darray%array(index)
@@ -404,8 +405,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetDouble (darray, index) result (returnValue)
     type(darrayDouble), intent(in)     :: darray
-    integer(kind=4), intent(in)        :: index
-    real(kind=8)                       :: returnValue
+    integer(kind = int32), intent(in)  :: index
+    real(kind = real64)                :: returnValue
     ! Grab the element at the provided index.
     if (index .le. darray%capacity) then
       returnValue = darray%array(index)
@@ -427,8 +428,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darraySetInteger (darray, index, input)
     type(darrayInteger), intent(inout) :: darray
-    integer(kind=4), intent(in)        :: index
-    integer(kind=4), intent(in)        :: input
+    integer(kind = int32), intent(in)  :: index
+    integer(kind = int32), intent(in)  :: input
     ! Make sure that the dynamic array capacity is large enough.
     do while (index .ge. darray%capacity)
       call darrayReallocateInteger(darray)
@@ -446,8 +447,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darraySetLong (darray, index, input)
     type(darrayLong), intent(inout)    :: darray
-    integer(kind=4), intent(in)        :: index
-    integer(kind=8), intent(in)        :: input
+    integer(kind = int32), intent(in)  :: index
+    integer(kind = int64), intent(in)  :: input
     ! Make sure that the dynamic array capacity is large enough.
     do while (index .ge. darray%capacity)
       call darrayReallocateLong(darray)
@@ -465,8 +466,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darraySetReal (darray, index, input)
     type(darrayReal), intent(inout)    :: darray
-    integer(kind=4), intent(in)        :: index
-    real(kind=4), intent(in)           :: input
+    integer(kind = int32), intent(in)  :: index
+    real(kind = real32), intent(in)    :: input
     ! Make sure that the dynamic array capacity is large enough.
     do while (index .ge. darray%capacity)
       call darrayReallocateReal(darray)
@@ -484,8 +485,8 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darraySetDouble (darray, index, input)
     type(darrayDouble), intent(inout)  :: darray
-    integer(kind=4), intent(in)        :: index
-    real(kind=8), intent(in)           :: input
+    integer(kind = int32), intent(in)  :: index
+    real(kind = real64), intent(in)    :: input
     ! Make sure that the dynamic array capacity is large enough.
     do while (index .ge. darray%capacity)
       call darrayReallocateDouble(darray)
@@ -502,9 +503,9 @@ module darray
   subroutine darrayReallocateInteger (darray)
     type(darrayInteger), intent(inout) :: darray
     ! Local variables
-    integer(kind=4)              :: allocate_status
-    integer(kind=4)              :: capacity
-    integer(kind=4), allocatable :: tmp_array(:)
+    integer(kind = int32)              :: allocate_status
+    integer(kind = int32)              :: capacity
+    integer(kind = int32), allocatable :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
     ! Allocate space for the temporary array.
@@ -556,9 +557,9 @@ module darray
   subroutine darrayReallocateLong (darray)
     type(darrayLong), intent(inout)    :: darray
     ! Local variables
-    integer(kind=4)              :: allocate_status
-    integer(kind=4)              :: capacity
-    integer(kind=8), allocatable :: tmp_array(:)
+    integer(kind = int32)              :: allocate_status
+    integer(kind = int32)              :: capacity
+    integer(kind = int64), allocatable :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
     ! Allocate space for the temporary array.
@@ -610,9 +611,9 @@ module darray
   subroutine darrayReallocateReal (darray)
     type(darrayReal), intent(inout)    :: darray
     ! Local variables
-    integer(kind=4)              :: allocate_status
-    integer(kind=4)              :: capacity
-    real(kind=4), allocatable    :: tmp_array(:)
+    integer(kind = int32)              :: allocate_status
+    integer(kind = int32)              :: capacity
+    real(kind = real32), allocatable   :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
     ! Allocate space for the temporary array.
@@ -664,9 +665,9 @@ module darray
   subroutine darrayReallocateDouble (darray)
     type(darrayDouble), intent(inout)  :: darray
     ! Local variables
-    integer(kind=4)              :: allocate_status
-    integer(kind=4)              :: capacity
-    real(kind=8), allocatable    :: tmp_array(:)
+    integer(kind = int32)              :: allocate_status
+    integer(kind = int32)              :: capacity
+    real(kind = real64), allocatable   :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
     ! Allocate space for the temporary array.
