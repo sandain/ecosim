@@ -154,25 +154,30 @@ program demarcationCI
     if (npop .lt. 1 .and. testednpopequalsone) exit
     if (npop .lt. 1) npop = 1
     if (npop .eq. 1) testednpopequalsone = .true.
-    params(1) = log (omega)
-    step(1) = log (omega) / 2.0
-    if (log (omega) .lt. 0.3 .and. log (omega) .gt. -0.3) then
-      step(1) = 0.15
-    end if
-    params(2) = log (sigma)
-    step(2) = log (sigma) / 2.0
-    if (log (sigma) .lt. 0.3 .and. log (sigma) .gt. -0.3) then
-      step(2) = 0.15
-    end if
+    ! Return value starts off at zero.
     yvalue = 0.0
-    npopfornelmead = npop
-    call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
-      nloop, iquad, simp, var, functn, ier, lout)
-    omega = exp (params(1))
-    sigma = exp (params(2))
+    ! Make sure omega and sigma are greater than zero.
+    if (omega .gt. 0.0 .and. sigma .gt. 0.0) then
+      ! Setup the parameters for Nelder-Mead.
+      params(1) = log (omega)
+      step(1) = log (omega) / 2.0
+      if (log (omega) .lt. 0.3 .and. log (omega) .gt. -0.3) then
+        step(1) = 0.15
+      end if
+      params(2) = log (sigma)
+      step(2) = log (sigma) / 2.0
+      if (log (sigma) .lt. 0.3 .and. log (sigma) .gt. -0.3) then
+        step(2) = 0.15
+      end if
+      npopfornelmead = npop
+      call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
+        nloop, iquad, simp, var, functn, ier, lout)
+      omega = exp (params(1))
+      sigma = exp (params(2))
+    end if
     xlikelihood = -1.0 * yvalue
     ! avoid dividing by zero
-    if (xlikelihood .lt. 1.0e-6) exit
+    if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
     ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
     if (ratio .gt. 3.84) exit
