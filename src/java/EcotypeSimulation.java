@@ -65,11 +65,6 @@ import java.io.File;
  *
  * @section fortran Fortran
  * @subsection fortran-programs Programs
- * @li @b ::readsynec - Verifies sequence data input.
- * @li @b ::removegaps - Removes gaps in sequence data.
- * @li @b ::correctpcr - Corrects the sequence data for PCR error.
- * @li @b ::divergencematrix - Calculates the divergence matrix.
- * @li @b ::binningdanny - Bins the sequence data using the divergence matrix.
  * @li @b ::bruteforce - Brute force search of the omega/sigma/npop space.
  * @li @b ::hillclimb - Performs a hillclimbing on the bruteforce result.
  * @li @b ::omegaci - Calculates the confidence interval of the omega value.
@@ -81,7 +76,6 @@ import java.io.File;
  * @li @b ::darray - Stores dynamic arrays.
  * @li @b ::methods - Common methods of the simulation.
  * @li @b ::simplexmethod - The Nelder-Mead Simplex Method.
- * @li @b ::tmatrix - Stores a triangular matix.
  * @li @b ::ziggurat - The Ziggurat Random Number Generator.
  *
  * @section java Java
