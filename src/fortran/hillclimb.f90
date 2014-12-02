@@ -32,39 +32,40 @@
 !>         solution.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 program hillclimb
+  use ISO_FORTRAN_ENV
   use methods
   use simplexmethod
   implicit none
   ! Local variables
-  character(len = 256) :: inputFile
-  character(len = 256) :: outputFile
-  logical              :: fileExists
-  integer              :: npop
-  integer              :: i
-  integer              :: ier
-  integer              :: iprint
-  integer              :: iquad
-  integer              :: lout
-  integer              :: maxf
-  integer              :: nloop
-  integer, parameter   :: nparams = 3
-  integer, parameter   :: outputUnit = 4
-  double precision     :: omega
-  double precision     :: sigma
-  double precision     :: simp
-  double precision     :: step(nparams)
-  double precision     :: stopcr
-  double precision     :: var(nparams)
-  double precision     :: params(nparams)
-  double precision     :: yvalue
+  character(len = 256)             :: inputFile
+  character(len = 256)             :: outputFile
+  logical                          :: fileExists
+  integer(kind = int32)            :: npop
+  integer(kind = int32)            :: i
+  integer(kind = int32)            :: ier
+  integer(kind = int32)            :: iprint
+  integer(kind = int32)            :: iquad
+  integer(kind = int32)            :: lout
+  integer(kind = int32)            :: maxf
+  integer(kind = int32)            :: nloop
+  integer(kind = int32), parameter :: nparams = 3
+  integer(kind = int32), parameter :: outputUnit = 4
+  real(kind = real64)              :: omega
+  real(kind = real64)              :: sigma
+  real(kind = real64)              :: simp
+  real(kind = real64)              :: step(nparams)
+  real(kind = real64)              :: stopcr
+  real(kind = real64)              :: var(nparams)
+  real(kind = real64)              :: params(nparams)
+  real(kind = real64)              :: yvalue
   ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: jwhichxavg
-  real    :: crit(1000)
+  integer(kind = int32) :: numcrit
+  integer(kind = int32) :: nu
+  integer(kind = int32) :: nrep
+  integer(kind = int32) :: lengthseq
+  integer(kind = int32) :: realdata(1000)
+  integer(kind = int32) :: jwhichxavg
+  real(kind = real32)   :: crit(1000)
   common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
   ! The function to be used by the Nelder-Mead minimization function.
   procedure(nelmeadFunction), pointer :: functn
@@ -139,7 +140,7 @@ program hillclimb
       nloop, iquad, simp, var, functn, ier, lout)
     omega = exp (params(1))
     sigma = exp (params(2))
-    npop = nint (params(3))
+    npop = nint (params(3), kind = int32)
   end if
   ! Output the answer.
   write (unit = outputUnit, fmt = *) omega, sigma, npop, yvalue
@@ -161,28 +162,28 @@ program hillclimb
   !> @param[out]    yvalue        The resulting value of the function.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine callfredprogram (nparams, params, yvalue)
-    integer, intent(in)             :: nparams
-    double precision, intent(inout) :: params(nparams)
-    double precision, intent(out)   :: yvalue
+    integer(kind = int32), intent(in)    :: nparams
+    real(kind = real64), intent(inout)   :: params(nparams)
+    real(kind = real64), intent(out)     :: yvalue
     ! Local variables
-    double precision   :: avgsuccess(6)
-    double precision   :: omega
-    double precision   :: sigma
-    integer            :: npop
+    real(kind = real64)   :: avgsuccess(6)
+    real(kind = real64)   :: omega
+    real(kind = real64)   :: sigma
+    integer(kind = int32) :: npop
     ! bldanny common blocknparams
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: jwhichxavg
-    real    :: crit(1000)
+    integer(kind = int32) :: numcrit
+    integer(kind = int32) :: nu
+    integer(kind = int32) :: nrep
+    integer(kind = int32) :: lengthseq
+    integer(kind = int32) :: realdata(1000)
+    integer(kind = int32) :: jwhichxavg
+    real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
     if (params(3) .lt. 2.0) params(3) = 2
     if (params(3) .gt. nu)  params(3) = nu
     omega = exp (params(1))
     sigma = exp (params(2))
-    npop = nint (params(3))
+    npop = nint (params(3), kind = int32)
     if (debug) then
       write (unit = *, fmt = *) 'omega= ', omega
       write (unit = *, fmt = *) 'sigma= ', sigma
@@ -206,22 +207,22 @@ program hillclimb
   !> @param[out]    npop          The npop value to be tested.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine readinput (fname, omega, sigma, npop)
-    character(len = *), intent(in) :: fname
-    integer, intent(out)           :: npop
-    double precision, intent(out)  :: omega
-    double precision, intent(out)  :: sigma
+    character(len = *), intent(in)       :: fname
+    integer(kind = int32), intent(out)   :: npop
+    real(kind = real64), intent(out)     :: omega
+    real(kind = real64), intent(out)     :: sigma
     ! Local variables
-    integer            :: iii
-    integer            :: jcrit
-    integer, parameter :: input_unit = 1
+    integer(kind = int32)            :: iii
+    integer(kind = int32)            :: jcrit
+    integer(kind = int32), parameter :: input_unit = 1
     ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: jwhichxavg
-    real    :: crit(1000)
+    integer(kind = int32) :: numcrit
+    integer(kind = int32) :: nu
+    integer(kind = int32) :: nrep
+    integer(kind = int32) :: lengthseq
+    integer(kind = int32) :: realdata(1000)
+    integer(kind = int32) :: jwhichxavg
+    real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
     ! Open the input file.
     open (unit = input_unit, file = fname, action = 'read', &
