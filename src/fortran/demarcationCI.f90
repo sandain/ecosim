@@ -150,12 +150,9 @@ program demarcationCI
   ilowerbound = npopsolution
   xlowerlikelihood = xlikelihoodsolution
   do
-    if (npop - istep .lt. 1 .and. testednpopequalsone) exit
-    if (npop - istep .lt. 1) then
-      npop = 1
-    else
-      npop = npop - istep
-    end if
+    npop = npop - istep
+    if (npop .lt. 1 .and. testednpopequalsone) exit
+    if (npop .lt. 1) npop = 1
     if (npop .eq. 1) testednpopequalsone = .true.
     params(1) = log (omega)
     step(1) = log (omega) / 2.0
