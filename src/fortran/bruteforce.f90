@@ -33,43 +33,44 @@
 !>         the run program subroutine.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 program bruteforce
+  use ISO_FORTRAN_ENV
   use methods
   implicit none
   ! Local variables
-  character(len = 256)          :: inputFile
-  character(len = 256)          :: outputFile
-  character(len = *), parameter :: outputFormat = &
+  character(len = 256)             :: inputFile
+  character(len = 256)             :: outputFile
+  character(len = *), parameter    :: outputFormat = &
     "(f15.7,',',f15.7,',',i10,6(',',1e18.10))"
-  logical                       :: fileExists
-  integer                       :: npop
-  integer                       :: npopbot
-  integer                       :: npoptop
-  integer                       :: i
-  integer                       :: indexsigma
-  integer                       :: indexomega
-  integer                       :: indexnpop
-  integer                       :: numincsomega
-  integer                       :: numincssigma
-  integer                       :: numincsnpop
-  integer, parameter            :: outputUnit = 2
-  double precision              :: omega
-  double precision              :: omegabot
-  double precision              :: omegatop
-  double precision              :: sigma
-  double precision              :: sigmabot
-  double precision              :: sigmatop
-  double precision              :: avgsuccess(6)
-  double precision              :: diffomega
-  double precision              :: diffnpop
-  double precision              :: diffsigma
+  logical                          :: fileExists
+  integer(kind = int32)            :: npop
+  integer(kind = int32)            :: npopbot
+  integer(kind = int32)            :: npoptop
+  integer(kind = int32)            :: i
+  integer(kind = int32)            :: indexsigma
+  integer(kind = int32)            :: indexomega
+  integer(kind = int32)            :: indexnpop
+  integer(kind = int32)            :: numincsomega
+  integer(kind = int32)            :: numincssigma
+  integer(kind = int32)            :: numincsnpop
+  integer(kind = int32), parameter :: outputUnit = 2
+  real(kind = real64)              :: omega
+  real(kind = real64)              :: omegabot
+  real(kind = real64)              :: omegatop
+  real(kind = real64)              :: sigma
+  real(kind = real64)              :: sigmabot
+  real(kind = real64)              :: sigmatop
+  real(kind = real64)              :: avgsuccess(6)
+  real(kind = real64)              :: diffomega
+  real(kind = real64)              :: diffnpop
+  real(kind = real64)              :: diffsigma
   ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: jwhichxavg
-  real    :: crit(1000)
+  integer(kind = int32) :: numcrit
+  integer(kind = int32) :: nu
+  integer(kind = int32) :: nrep
+  integer(kind = int32) :: lengthseq
+  integer(kind = int32) :: realdata(1000)
+  integer(kind = int32) :: jwhichxavg
+  real(kind = real32)   :: crit(1000)
   common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
   ! Provide default file names to use.
   inputFile = 'bruteforceIn.dat'
@@ -113,7 +114,8 @@ program bruteforce
   ! to sigmatop, and npopbot to npoptop
   diffomega = log10 (omegatop) - log10 (omegabot)
   diffsigma = log10 (sigmatop) - log10 (sigmabot)
-  diffnpop = log10 (real (npoptop)) - log10 (real (npopbot))
+  diffnpop = log10 (real (npoptop, kind = real32)) - &
+    log10 (real (npopbot, kind = real32))
   if (numincsomega .eq. 0) then
     omegatop = omegabot + 1
     diffomega = log10 (omegatop) - log10 (omegabot)
@@ -128,7 +130,8 @@ program bruteforce
   endif
   if (numincsnpop .eq. 0) then
     npoptop = npopbot + 1
-    diffnpop = log10 (real (npoptop)) - log10 (real (npopbot))
+    diffnpop = log10 (real (npoptop, kind = real32)) - &
+      log10 (real (npopbot, kind = real32))
     diffnpop = 2.0 * diffnpop
     numincsnpop = 1
   endif
@@ -142,8 +145,8 @@ program bruteforce
         (diffsigma / numincssigma) * 0.999)
       indexnpop = 0
       do while (indexnpop .lt. numincsnpop)
-        npop = nint (10.0 ** (log10 (real (npopbot)) + indexnpop * &
-          (diffnpop / numincsnpop) * 0.999))
+        npop = nint (10.0 ** (log10 (real (npopbot, kind = real32)) + &
+          indexnpop * (diffnpop / numincsnpop) * 0.999), kind = int32)
         if (npop .gt. nu) npop = nu
         call runprogram (omega, sigma, npop, numcrit, nu, nrep, &
           lengthseq, realdata, crit, avgsuccess)
@@ -191,28 +194,28 @@ program bruteforce
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine readinput(fname, omegabot, omegatop, sigmabot, sigmatop, &
     npopbot, npoptop, numincsomega, numincssigma, numincsnpop)
-    character(len = *), intent(in) :: fname
-    integer, intent(out)           :: npopbot
-    integer, intent(out)           :: npoptop
-    double precision, intent(out)  :: omegabot
-    double precision, intent(out)  :: omegatop
-    double precision, intent(out)  :: sigmabot
-    double precision, intent(out)  :: sigmatop
-    integer, intent(out)           :: numincsomega
-    integer, intent(out)           :: numincssigma
-    integer, intent(out)           :: numincsnpop
+    character(len = *), intent(in)       :: fname
+    integer(kind = int32), intent(out)   :: npopbot
+    integer(kind = int32), intent(out)   :: npoptop
+    real(kind = real64), intent(out)     :: omegabot
+    real(kind = real64), intent(out)     :: omegatop
+    real(kind = real64), intent(out)     :: sigmabot
+    real(kind = real64), intent(out)     :: sigmatop
+    integer(kind = int32), intent(out)   :: numincsomega
+    integer(kind = int32), intent(out)   :: numincssigma
+    integer(kind = int32), intent(out)   :: numincsnpop
     ! Local variables
-    integer            :: iii
-    integer            :: jcrit
-    integer, parameter :: input_unit = 1
+    integer(kind = int32)            :: iii
+    integer(kind = int32)            :: jcrit
+    integer(kind = int32), parameter :: input_unit = 1
     ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: jwhichxavg
-    real    :: crit(1000)
+    integer(kind = int32) :: numcrit
+    integer(kind = int32) :: nu
+    integer(kind = int32) :: nrep
+    integer(kind = int32) :: lengthseq
+    integer(kind = int32) :: realdata(1000)
+    integer(kind = int32) :: jwhichxavg
+    real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
     ! Open the input file.
     open (unit = input_unit, file = fname, action = 'read', &
