@@ -46,6 +46,7 @@ class StreamGobbler extends Thread {
      *  Constructor for StreamGobbler.
      *
      *  @param is The input stream to use.
+     *  @param ps The print stream to use.
      *  @param name The name of stream.
      */
     public StreamGobbler (InputStream is, PrintStream ps, String name) {
