@@ -3,7 +3,7 @@
 !    as the evolutionary result of net ecotype formation and periodic
 !    selection, yielding a certain number of ecotypes.
 !
-!    Copyright (C) 2009-2013  Fred Cohan, Wesleyan University
+!    Copyright (C) 2009-2014  Fred Cohan, Wesleyan University
 !                             Danny Krizanc, Wesleyan University
 !                             Jason M. Wood, Montana State University
 !
