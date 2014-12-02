@@ -25,6 +25,7 @@ package ecosim;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -319,6 +320,7 @@ public class SimulationGUI extends Simulation {
         final JTextArea logTextArea = new JTextArea ();
         logTextArea.setColumns (20);
         logTextArea.setRows (5);
+        logTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         logTextArea.setEditable (false);
         logTextArea.setDoubleBuffered (true);
         logTextArea.append (log.toString ());
