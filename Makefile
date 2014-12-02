@@ -1,7 +1,7 @@
 # Fortran compiler options.
 CC := gfortran
-CFLAGS := -cpp -fbounds-check -fopenmp -g -lgfortran -lm -O3 -Wall -Wextra
-LDFLAGS := -cpp -fbounds-check -fopenmp -g -O3 -Wall -Wextra
+CFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall -Wextra
+LDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -O0 -Wall -Wextra
 
 # Apache Ant, used to compile the Java source.
 ANT := ant
