@@ -37,11 +37,17 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module simplexmethod
   use ISO_FORTRAN_ENV
+
   implicit none
+
   private
 
+  ! Declare public methods.
   public :: nelmead
   public :: nelmeadFunction
+
+  ! Declare private global parameters.
+  real(kind = real64), parameter :: eta = epsilon(1.0d0)
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> An interface for functions to be optimized using the simplex method.
@@ -814,7 +820,6 @@ module simplexmethod
     integer(kind = int32), intent(out)   :: nullty
     integer(kind = int32), intent(out)   :: ifault
     ! Local Variables
-    real(kind = real64), parameter :: eta = epsilon(1.0d0)
     real(kind = real64)            :: rsq
     real(kind = real64)            :: w
     integer(kind = int32)          :: i
