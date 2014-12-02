@@ -746,6 +746,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 5.0 .or. xbin / xreal .gt. 5.0) return
     end do
     ! Meets the 500% criterion.
@@ -753,6 +754,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 2.0 .or. xbin / xreal .gt. 2.0) return
     end do
     ! Meets the 200% criterion.
@@ -760,6 +762,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 1.5 .or. xbin / xreal .gt. 1.5) return
     end do
     ! Meets the 150% criterion.
@@ -767,6 +770,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 1.25 .or. xbin / xreal .gt. 1.25) return
     end do
     ! Meets the 125% criterion.
@@ -774,6 +778,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 1.1 .or. xbin / xreal .gt. 1.1) return
     end do
     ! Meets the 110% criterion.
@@ -781,6 +786,7 @@ module methods
     do jcrit = 1, numcrit
       xreal = realdata(jcrit)
       xbin = bin(jcrit)
+      if (xreal .lt. 1.0d-6 .or. xbin .lt. 1.0d-6) return
       if (xreal / xbin .gt. 1.05 .or. xbin / xreal .gt. 1.05) return
     end do
     ! Meets the 105% criterion.
