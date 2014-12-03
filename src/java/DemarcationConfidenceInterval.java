@@ -49,12 +49,12 @@ public class DemarcationConfidenceInterval {
      *  @param sampleNu The number of sequences in the subsample.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
-     *  @param hillclimb The Hillclimb object.
+     *  @param hillclimbResult The result from hillclimbing.
      */
     public DemarcationConfidenceInterval (MasterVariables masterVariables,
         int nu, int sampleNu, int length, Binning binning,
-        Hillclimb hillclimb) {
-        this (masterVariables, nu, sampleNu, length, binning, hillclimb, "");
+        ParameterSet<Double> hillclimbResult) {
+        this (masterVariables, nu, sampleNu, length, binning, hillclimbResult, "");
     }
 
     /**
@@ -65,18 +65,18 @@ public class DemarcationConfidenceInterval {
      *  @param sampleNu The number of sequences in the subsample.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
-     *  @param hillclimb The Hillclimb object.
+     *  @param hillclimbResult The result from hillclimbing.
      *  @param suffix The suffix to attach to the end of file names.
      */
     public DemarcationConfidenceInterval (MasterVariables masterVariables,
         int nu, int sampleNu, int length, Binning binning,
-        Hillclimb hillclimb, String suffix) {
+        ParameterSet<Double> hillclimbResult, String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.sampleNu = sampleNu;
         this.length = length;
         this.binning = binning;
-        this.hillclimb = hillclimb;
+        this.hillclimbResult = hillclimbResult;
         String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "demarcationIn" + suffix + ".dat";
         outputFileName = workingDirectory + "demarcationOut" + suffix +
@@ -150,7 +150,7 @@ public class DemarcationConfidenceInterval {
      *  @return the demarcation confidence interval.
      */
     public String toString () {
-        int npop = hillclimb.getResult ().getNpop ();
+        int npop = hillclimbResult.getNpop ();
         return String.format ("%d (%d)", npop, result);
     }
     /**
@@ -161,7 +161,6 @@ public class DemarcationConfidenceInterval {
      */
     private void writeInputFile (File inputFile) {
         ArrayList<BinLevel> bins = binning.getBinLevels ();
-        ParameterSet<Double> hillclimbResult = hillclimb.getResult ();
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
@@ -296,7 +295,7 @@ public class DemarcationConfidenceInterval {
     private int sampleNu;
     private int length;
     private Binning binning;
-    private Hillclimb hillclimb;
+    private ParameterSet<Double> hillclimbResult;
 
     private int result = 0;
     private double likelihood = 0.0;

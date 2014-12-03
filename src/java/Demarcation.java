@@ -180,7 +180,7 @@ public class Demarcation implements Runnable {
             DemarcationConfidenceInterval demarcConf =
                 new DemarcationConfidenceInterval (
                 masterVariables, nu, sampleNu, length,
-                sampleBinning, sampleHillclimb, suffix
+                sampleBinning, sampleHillclimb.getResult (), suffix
             );
             demarcConf.run ();
             // If 1 is the lower bound of the confidence interval, add the
