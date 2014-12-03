@@ -174,7 +174,7 @@ program npopCI
       omega = exp (params(1))
       sigma = exp (params(2))
     end if
-    xlikelihood = -1.0 * yvalue
+    xlikelihood = -1.0d0 * yvalue
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
@@ -216,7 +216,7 @@ program npopCI
       omega = exp (params(1))
       sigma = exp (params(2))
     end if
-    xlikelihood = -1.0 * yvalue
+    xlikelihood = -1.0d0 * yvalue
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
@@ -278,7 +278,7 @@ program npopCI
     end if
     call runprogram (omega, sigma, npop, numcrit, nu, nrep, &
       lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0 * avgsuccess(jwhichxavg)
+    yvalue = -1.0d0 * avgsuccess(jwhichxavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
     end if
