@@ -51,30 +51,14 @@ public class NpopConfidenceInterval {
      */
     public NpopConfidenceInterval (MasterVariables masterVariables,
         int nu, int length, Binning binning, Hillclimb hillclimb) {
-        this (masterVariables, nu, length, binning, hillclimb, "");
-    }
-
-    /**
-     *  Run the npop confidence interval program.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param nu The number of environmental sequences.
-     *  @param length The length of the sequences being analyzed.
-     *  @param binning The Binning object.
-     *  @param hillclimb The Hillclimb object.
-     *  @param suffix The suffix to attach to the end of file names.
-     */
-    public NpopConfidenceInterval (MasterVariables masterVariables,
-        int nu, int length, Binning binning, Hillclimb hillclimb,
-        String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        inputFileName = workingDirectory + "npopIn" + suffix + ".dat";
-        outputFileName = workingDirectory + "npopOut" + suffix + ".dat";
+        inputFileName = workingDirectory + "npopIn.dat";
+        outputFileName = workingDirectory + "npopOut.dat";
         hasRun = false;
     }
 
