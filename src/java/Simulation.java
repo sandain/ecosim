@@ -253,7 +253,7 @@ public class Simulation {
     protected void runOmegaConfidenceInterval () {
         log.append ("Starting omega confidence interval...\n");
         omegaCI = new OmegaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         omegaCI.run ();
         // Verify that omegaCI ran correctly.
