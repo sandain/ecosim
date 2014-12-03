@@ -233,14 +233,15 @@ public class OmegaConfidenceInterval {
             int whichavg = masterVariables.getCriterion ();
             writer.write (String.format ("%-20d whichavg\n", whichavg));
             // Write the likelihoodsolution value.
-            writer.write (String.format (
-                "%-20.5f likelihoodsolution\n", hillclimbResult.getValue ()
-            ));
+            writer.write (
+                String.format (
+                    "%-20.5f likelihoodsolution\n",
+                    hillclimbResult.getValue ()
+                )
+            );
         }
         catch (IOException e) {
-            System.out.println (
-                "Error writing the input file."
-            );
+            System.out.println ("Error writing the input file.");
         }
         finally {
             if (writer != null) {
@@ -248,9 +249,7 @@ public class OmegaConfidenceInterval {
                     writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println (
-                        "Error closing the input file."
-                    );
+                    System.out.println ("Error closing the input file.");
                 }
             }
         }
@@ -296,9 +295,7 @@ public class OmegaConfidenceInterval {
             }
         }
         catch (IOException e) {
-            System.out.println (
-                "Error reading the output file."
-            );
+            System.out.println ("Error reading the output file.");
         }
         finally {
             if (reader != null) {
@@ -306,9 +303,7 @@ public class OmegaConfidenceInterval {
                     reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println (
-                        "Error closing the output file."
-                    );
+                    System.out.println ("Error closing the output file.");
                 }
             }
         }
