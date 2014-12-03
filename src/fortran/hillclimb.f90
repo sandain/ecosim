@@ -142,6 +142,7 @@ program hillclimb
     sigma = exp (params(2))
     npop = nint (params(3), kind = int32)
   end if
+  yvalue = -1.0d0 * yvalue
   ! Output the answer.
   write (unit = outputUnit, fmt = *) omega, sigma, npop, yvalue
   ! Close the random number generator.
