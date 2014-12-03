@@ -125,7 +125,7 @@ program omegaCI
   sigmasolution = sigma
   npopsolution = npop
   ! Set max. no. of function evaluations = maxf, print every iprint.
-  maxf= 100
+  maxf = 100
   if (debug) then
     iprint = 1
   else
