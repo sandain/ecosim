@@ -50,30 +50,14 @@ public class SigmaConfidenceInterval {
      */
     public SigmaConfidenceInterval (MasterVariables masterVariables,
         int nu, int length, Binning binning, Hillclimb hillclimb) {
-        this (masterVariables, nu, length, binning, hillclimb, "");
-    }
-
-   /**
-     *  Run the sigma confidence interval program.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param nu The number of environmental sequences.
-     *  @param length The length of the sequences being analyzed.
-     *  @param binning The Binning object.
-     *  @param hillclimb The Hillclimb object.
-     *  @param suffix The suffix to attach to the end of file names.
-     */
-    public SigmaConfidenceInterval (MasterVariables masterVariables,
-        int nu, int length, Binning binning, Hillclimb hillclimb,
-        String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         this.hillclimb = hillclimb;
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        inputFileName = workingDirectory + "sigmaIn" + suffix + ".dat";
-        outputFileName = workingDirectory + "sigmaOut" + suffix + ".dat";
+        inputFileName = workingDirectory + "sigmaIn.dat";
+        outputFileName = workingDirectory + "sigmaOut.dat";
         hasRun = false;
     }
 
