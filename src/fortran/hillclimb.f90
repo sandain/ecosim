@@ -191,7 +191,7 @@ program hillclimb
     end if
     call runprogram (omega, sigma, npop, numcrit, nu, nrep, &
       lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0 * avgsuccess(jwhichxavg)
+    yvalue = -1.0d0 * avgsuccess(jwhichxavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
     end if
