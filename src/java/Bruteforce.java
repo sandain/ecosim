@@ -302,12 +302,6 @@ public class Bruteforce implements Runnable {
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
             writer.write (String.format ("%-20d numcrit\n", bins.size ()));
-            // Output just the number of clusters at each crit level.
-            for (int i = 0; i < bins.size (); i ++) {
-                writer.write (String.format (
-                    "%-20d\n", bins.get (i).getLevel ()
-                ));
-            }
             // Output the crit levels and the number of clusters.
             for (int j = 0; j < bins.size (); j ++) {
                 writer.write (String.format (
