@@ -226,24 +226,28 @@ module simplexmethod
     !
     ! set up the initial simplex.
     !
-30  do 40 i = 1, nop
-40  g(1, i) = p(i)
+30  continue
+    do i = 1, nop
+      g(1, i) = p(i)
+    end do
     irow = 2
     do 60 i = 1, nop
     ! check to see if step(i) is equal to zero.
     if (step(i) .gt. neta .and. step(i) .lt. eta) then
       goto 60
     end if
-    do 50 j = 1, nop
-50  g(irow, j) = p(j)
+    do j = 1, nop
+      g(irow, j) = p(j)
+    end do
     g(irow, i) = p(i) + step(i)
     irow = irow + 1
 60  CONTINUE
     !
     np1 = nap + 1
     do 90 i = 1, np1
-    do 70 j = 1, nop
-70  p(j) = g(i, j)
+    do j = 1, nop
+      p(j) = g(i, j)
+    end do
     call functn (nop, p, h(i))
     neval = neval + 1
     if (iprint .le. 0) goto 90
@@ -272,21 +276,25 @@ module simplexmethod
     !
     ! find the centroid of the vertices other than p(imax).
     !
-    do 130 i = 1, nop
-130 pbar(i) = 0.0d0
+    do i = 1, nop
+      pbar(i) = 0.0d0
+    end do
     do 150 i = 1, np1
     if (i .eq. imax) goto 150
-    do 140 J = 1, nop
-140 pbar(j) = pbar(j) + g(i, j)
+    do J = 1, nop
+      pbar(j) = pbar(j) + g(i, j)
+    end do
 150 CONTINUE
-    do 160 J = 1, nop
-160 pbar(j) = pbar(j) / float (nap)
+    do J = 1, nop
+      pbar(j) = pbar(j) / float (nap)
+    end do
     !
     ! reflect maximum through pbar to pstar,
     ! hstar = function value at pstar.
     !
-    do 170 i = 1, nop
-170 pstar(i) = a * (pbar(i) - g(imax, i)) + pbar(i)
+    do i = 1, nop
+      pstar(i) = a * (pbar(i) - g(imax, i)) + pbar(i)
+    end do
     call functn (nop, pstar, hstar)
     neval = neval + 1
     if (iprint .le. 0) goto 180
@@ -297,8 +305,9 @@ module simplexmethod
     ! hstst = function value at pstst.
     !
 180 if (hstar .ge. hmin) goto 220
-    do 190 i = 1, nop
-190 pstst(i) = c * (pstar(i) - pbar(i)) + pbar(i)
+    do i = 1, nop
+      pstst(i) = c * (pstar(i) - pbar(i)) + pbar(i)
+    end do
     call functn (nop, pstst, hstst)
     neval = neval + 1
     if (iprint .le. 0) goto 200
@@ -309,12 +318,12 @@ module simplexmethod
     ! hmax by hstst, then test for convergence.
     !
 200 if (hstst .ge. hmin) goto 320
-    do 210 i = 1, nop
-    ! check to see if step(i) is not equal to zero.
-    if (step(i) .lt. neta .or. step(i) .gt. eta) then
-      g(imax, i) = pstst(i)
-    end if
-210 CONTINUE
+    do i = 1, nop
+      ! check to see if step(i) is not equal to zero.
+      if (step(i) .lt. neta .or. step(i) .gt. eta) then
+        g(imax, i) = pstst(i)
+      end if
+    end do
     h(imax) = hstst
     goto 340
     !
@@ -331,20 +340,21 @@ module simplexmethod
     ! if hstar < = hmax, replace p(imax) by pstar & hmax by hstar.
     !
     if (hstar .gt. hmax) goto 260
-    do 250 i = 1, nop
-    ! check to see if step(i) is not equal to zero.
-    if (step(i) .lt. neta .or. step(i) .gt. eta) then
-      g(imax, i) = pstar(i)
-    end if
-250 CONTINUE
+    do i = 1, nop
+      ! check to see if step(i) is not equal to zero.
+      if (step(i) .lt. neta .or. step(i) .gt. eta) then
+        g(imax, i) = pstar(i)
+      end if
+    end do
     hmax = hstar
     h(imax) = hstar
     !
     ! contracted step to the point pstst,
     ! hstst = function value at pstst.
     !
-260 do 270 i = 1, nop
-270 pstst(i) = b * g(imax, i) + (1.0 - b) * pbar(i)
+260 do i = 1, nop
+      pstst(i) = b * g(imax, i) + (1.0 - b) * pbar(i)
+    end do
     call functn (nop, pstst, hstst)
     neval = neval + 1
     if (iprint .le. 0) goto 280
@@ -354,12 +364,12 @@ module simplexmethod
     ! if hstst < hmax replace p(imax) BY pstst & hmax BY hstst.
     !
 280 if (hstst .gt. hmax) goto 300
-    do 290 i = 1, nop
-    ! check to see if step(i) is not equal to zero.
-    if (step(i) .lt. neta .or. step(i) .gt. eta) then
-      g(imax, i) = pstst(i)
-    end if
-290 CONTINUE
+    do i = 1, nop
+      ! check to see if step(i) is not equal to zero.
+      if (step(i) .lt. neta .or. step(i) .gt. eta) then
+        g(imax, i) = pstst(i)
+      end if
+    end do
     h(imax) = hstst
     goto 340
     !
@@ -370,12 +380,13 @@ module simplexmethod
     !
 300 do 315 i = 1, np1
     if (i .eq. imin) goto 315
-    do 310 J = 1, nop
-    ! check to see if step(j) is not equal to zero.
-    if (step(j) .lt. neta .or. step(j) .gt. eta) then
-      g(i, j) = (g(i, j) + g(imin, j)) * 0.5
-    end if
-310 p(j) = g(i, j)
+    do j = 1, nop
+      ! check to see if step(j) is not equal to zero.
+      if (step(j) .lt. neta .or. step(j) .gt. eta) then
+        g(i, j) = (g(i, j) + g(imin, j)) * 0.5
+      end if
+      p(j) = g(i, j)
+    end do
     call functn (nop, p, h(i))
     neval = neval + 1
     if (iprint .le. 0) goto 315
@@ -386,12 +397,12 @@ module simplexmethod
     !
     ! replace maximum point by pstar & h(imax) by hstar.
     !
-320 do 330 i = 1, nop
-    ! check to see if step(i) is not equal to zero.
-    if (step(i) .lt. neta .or. step(i) .gt. eta) then
-      g(imax, i) = pstst(i)
-    end if
-330 CONTINUE
+320 do i = 1, nop
+      ! check to see if step(i) is not equal to zero.
+      if (step(i) .lt. neta .or. step(i) .gt. eta) then
+        g(imax, i) = pstst(i)
+      end if
+    end do
     h(imax) = hstar
     !
     ! if loop = nloop test for convergence, otherwise repeat main cycle.
@@ -403,11 +414,13 @@ module simplexmethod
     !
     hstd = 0.0d0
     hmean = 0.0d0
-    do 350 i = 1, np1
-350 hmean = hmean + h(i)
+    do i = 1, np1
+      hmean = hmean + h(i)
+    end do
     hmean = hmean / float (np1)
-    do 360 i = 1, np1
-360 hstd = hstd + (h(i) - hmean) ** 2
+    do i = 1, np1
+      hstd = hstd + (h(i) - hmean) ** 2
+    end do
     hstd = sqrt (hstd / float (np1))
     !
     ! if the rms > stopcr, set iflag & loop to xero and goto the
@@ -426,8 +439,9 @@ module simplexmethod
       goto 380
     end if
     p(i) = 0.0d0
-    do 370 J = 1, np1
-370 p(i) = p(i) + g(J, I)
+    do j = 1, np1
+      p(i) = p(i) + g(j, i)
+    end do
     p(i) = p(i) / float (np1)
 380 CONTINUE
     call functn (nop, p, func)
@@ -491,12 +505,13 @@ module simplexmethod
     do 490 i = 1, np1
 470 test = abs (h(i) - func)
     if (test .ge. simp) goto 490
-    do 480 j = 1, nop
-    ! check to see if step(j) is not equal to zero.
-    if (step(j) .lt. neta .or. step(j) .gt. eta) then
-      g(i, j) = (g(i, j) - p(j)) + g(i, j)
-    end if
-480 pstst(j) = g(i, j)
+    do j = 1, nop
+      ! check to see if step(j) is not equal to zero.
+      if (step(j) .lt. neta .or. step(j) .gt. eta) then
+        g(i, j) = (g(i, j) - p(j)) + g(i, j)
+      end if
+      pstst(j) = g(i, j)
+    end do
     call functn (nop, pstst, h(i))
     nmore = nmore + 1
     neval = neval + 1
@@ -509,14 +524,15 @@ module simplexmethod
     !
     ! function values are calculated at an additional nap points.
     !
-    do 510 i = 1, nap
-    i1 = i + 1
-    do 500 j = 1, nop
-500 pstar(j) = (g(1, j) + g(i1, j)) * 0.5
-    call functn (nop, pstar, aval(i))
-    nmore = nmore + 1
-    neval = neval + 1
-510 CONTINUE
+    do i = 1, nap
+      i1 = i + 1
+      do j = 1, nop
+        pstar(j) = (g(1, j) + g(i1, j)) * 0.5
+      end do
+      call functn (nop, pstar, aval(i))
+      nmore = nmore + 1
+      neval = neval + 1
+    end do
     !
     ! the matrix of estimated second derivatives is calculated and its
     ! lower triangle is stored in bmat.
@@ -526,35 +542,38 @@ module simplexmethod
     i1 = i - 1
     i2 = i + 1
     if (i1 .lt. 1) goto 540
-    do 530 j = 1, i1
-    j1 = j + 1
-    do 520 k = 1, nop
-520 pstst(k) = (g(i2, k) + g(j1, k)) * 0.5
-    call functn (nop, pstst, hstst)
-    nmore = nmore + 1
-    neval = neval + 1
-    l = i * (i - 1) / 2 + j
-    bmat(l) = 2.0 * (hstst + a0 - aval(i) - aval(j))
-530 CONTINUE
+    do j = 1, i1
+      j1 = j + 1
+      do k = 1, nop
+        pstst(k) = (g(i2, k) + g(j1, k)) * 0.5
+      end do
+      call functn (nop, pstst, hstst)
+      nmore = nmore + 1
+      neval = neval + 1
+      l = i * (i - 1) / 2 + j
+      bmat(l) = 2.0 * (hstst + a0 - aval(i) - aval(j))
+    end do
 540 CONTINUE
     l = 0
-    do 550 i = 1, nap
-    i1 = i + 1
-    l = l + i
-    bmat(l) = 2.0 * (h(i1) + a0 - 2.0 * aval(i))
-550 CONTINUE
+    do i = 1, nap
+      i1 = i + 1
+      l = l + i
+      bmat(l) = 2.0 * (h(i1) + a0 - 2.0 * aval(i))
+    end do
     !
     ! the vector of estimated first derivatives is calculated and
     ! stored in aval.
     !
-    do 560 i = 1, nap
-    i1 = i + 1
-560 aval(i) = 2.0 * aval(i) - (h(i1) + 3.0 * a0) * 0.5
+    do i = 1, nap
+      i1 = i + 1
+      aval(i) = 2.0 * aval(i) - (h(i1) + 3.0 * a0) * 0.5
+    end do
     !
     ! the matrix q of Nelder & Mead is calculated and stored in g.
     !
-    do 570 i = 1, nop
-570 pmin(i) = g(1, i)
+    do i = 1, nop
+      pmin(i) = g(1, i)
+    end do
     do 580 i = 1, nap
     i1 = i + 1
     do 580 j = 1, nop
@@ -600,8 +619,9 @@ module simplexmethod
     ! quadratic.
     !
     ymin = 0.0d0
-    do 660 i = 1, nap
-660 ymin = ymin + h(i) * aval(i)
+    do i = 1, nap
+      ymin = ymin + h(i) * aval(i)
+    end do
     ymin = a0 - ymin
     do 670 i = 1, nop
     pstst(i) = 0.0d0
@@ -635,17 +655,19 @@ module simplexmethod
     do 750 j = i, nop
     l = j * (j - 1) / 2 + i
     vc(l) = 0.0d0
-    do 740 k = 1, nap
-740 vc(l) = vc(l) + h(k) * g(k, j)
+    do k = 1, nap
+      vc(l) = vc(l) + h(k) * g(k, j)
+    end do
 750 CONTINUE
 760 CONTINUE
     !
     ! the diagonal elelments of vc are copied into var.
     !
     j = 0
-    do 770 i = 1, nop
+    do i = 1, nop
       j = j + i
-770 var(i) = vc(j)
+      var(i) = vc(j)
+    end do
     if (iprint .lt. 0) return
     write (unit = lout, fmt = 1160) irank
 1160 format (' Rank of information matrix =', I3/ &
@@ -672,32 +694,32 @@ module simplexmethod
 800 ijk = 2
     ii = 0
     ij = 0
-    do 840 i = 1, nop
-    ii = ii + i
-    if (vc(ii) .gt. 0.0d0) then
-      vc(ii) = 1.0 / sqrt (vc(ii))
-    else
-      vc(ii) = 0.0d0
-    end if
-    jj = 0
-    do 830 j = 1, i - 1
-    jj = jj + j
-    ij = ij + 1
-    vc(ij) = vc(ij) * vc(ii) * vc(jj)
-830 CONTINUE
-    ij = ij + 1
-840 CONTINUE
+    do i = 1, nop
+      ii = ii + i
+      if (vc(ii) .gt. 0.0d0) then
+        vc(ii) = 1.0 / sqrt (vc(ii))
+      else
+        vc(ii) = 0.0d0
+      end if
+      jj = 0
+      do j = 1, i - 1
+        jj = jj + j
+        ij = ij + 1
+        vc(ij) = vc(ij) * vc(ii) * vc(jj)
+      end do
+      ij = ij + 1
+    end do
     !
     write (unit = lout, fmt = 1200)
 1200 format (//' CORRELATION MATRIX: - ')
     ii = 0
-    do 850 i = 1, nop
-    ii = ii + i
-    ! check to see if vc(ii) is not equal to zero.
-    if (vc(ii) .lt. neta .or. vc(ii) .gt. eta) then
-      vc(ii) = 1.0d0
-    end if
-850 CONTINUE
+    do i = 1, nop
+      ii = ii + i
+      ! check to see if vc(ii) is not equal to zero.
+      if (vc(ii) .lt. neta .or. vc(ii) .gt. eta) then
+        vc(ii) = 1.0d0
+      end if
+    end do
     goto 880
     !
     ! exit, on successful termination.
@@ -788,10 +810,10 @@ module simplexmethod
     ! check to see if c(ndiag) is equal to zero.
 10  if (c(ndiag) .gt. neta .and. c(ndiag) .lt. eta) goto 60
     l = ndiag
-    do 20 i = irow, nrow
-    w(i) = c(l)
-    l = l + i
-20  CONTINUE
+    do i = irow, nrow
+      w(i) = c(l)
+      l = l + i
+    end do
     icol = nrow
     jcol = nn
     mdiag = nn
@@ -812,10 +834,10 @@ module simplexmethod
     jcol = jcol - 1
     goto 30
 60  l = ndiag
-    do 70 j = irow, nrow
-    c(l) = 0.0d0
-    l = l + j
-70  CONTINUE
+    do j = irow, nrow
+      c(l) = 0.0d0
+      l = l + j
+    end do
 80  ndiag = ndiag - irow
     irow = irow - 1
     if (irow .ne. 0) goto 10
