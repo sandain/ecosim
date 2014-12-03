@@ -327,13 +327,9 @@ program sigmaCI
     ! numcrit is the number of criteria for making cluster bins
     read (unit = input_unit, fmt = *) numcrit
     do jcrit = 1, numcrit
-      ! realdata(jcrit) is the number of bins in the real data at criterion
-      ! jcrit
-      read (unit = input_unit, fmt = *) realdata(jcrit)
-    end do
-    do jcrit = 1, numcrit
-      ! crit(jcrit) is the jcrit th criterion value
-      read (unit = input_unit, fmt = *) crit(jcrit)
+      ! crit() is the criterion value
+      ! realdata() is the number of bins in the real data
+      read (unit = input_unit, fmt = *) crit(jcrit), realdata(jcrit)
     end do
     ! omega is the rate of niche invasion per eligible parental population
     ! measured as niche invasions per nucleotide substitution in a given gene
