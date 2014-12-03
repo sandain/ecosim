@@ -47,15 +47,15 @@ public class NpopConfidenceInterval {
      *  @param nu The number of environmental sequences.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
-     *  @param hillclimb The Hillclimb object.
+     *  @param hillclimbResult The result from hillclimbing.
      */
-    public NpopConfidenceInterval (MasterVariables masterVariables,
-        int nu, int length, Binning binning, Hillclimb hillclimb) {
+    public NpopConfidenceInterval (MasterVariables masterVariables, int nu,
+        int length, Binning binning, ParameterSet<Double> hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
-        this.hillclimb = hillclimb;
+        this.hillclimbResult = hillclimbResult;
         String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "npopIn.dat";
         outputFileName = workingDirectory + "npopOut.dat";
@@ -162,7 +162,6 @@ public class NpopConfidenceInterval {
      */
     private void writeInputFile (File inputFile) {
         ArrayList<BinLevel> bins = binning.getBinLevels ();
-        ParameterSet<Double> hillclimbResult = hillclimb.getResult ();
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
@@ -303,7 +302,7 @@ public class NpopConfidenceInterval {
     private int nu;
     private int length;
     private Binning binning;
-    private Hillclimb hillclimb;
+    private ParameterSet<Double> hillclimbResult;
 
     private int [] result = { 0, 0 };
     private double [] likelihood = { 0.0, 0.0 };

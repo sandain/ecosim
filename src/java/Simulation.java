@@ -295,7 +295,7 @@ public class Simulation {
     protected void runNpopConfidenceInterval () {
         log.append ("Starting npop confidence interval...\n");
         npopCI = new NpopConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         npopCI.run ();
         // Verify that npopCI ran correctly.

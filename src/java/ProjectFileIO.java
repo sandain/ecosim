@@ -71,7 +71,7 @@ public class ProjectFileIO {
             masterVariables, nu, length, binning, hillclimb
         );
         npopCI = new NpopConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         demarcation = new Demarcation (
             masterVariables, fasta, tree, binning, hillclimb
