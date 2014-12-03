@@ -68,7 +68,7 @@ public class ProjectFileIO {
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb
+            masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
