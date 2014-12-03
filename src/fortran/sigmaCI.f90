@@ -162,7 +162,6 @@ program sigmaCI
       end if
       params(2) = npop
       step(2) = npop / 2.0
-      yvalue = 0.0
       sigmafornelmead = sigma
       call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
         nloop, iquad, simp, var, functn, ier, lout)
