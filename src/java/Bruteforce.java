@@ -296,7 +296,7 @@ public class Bruteforce implements Runnable {
      *  @param inputFile The file to write to.
      */
     private void writeInputFile (File inputFile) {
-        ArrayList<BinLevel> bins = binning.getBinLevels ();
+        ArrayList<BinLevel> bins = binning.getBins ();
         int numincs[] = masterVariables.getNumIncs ();
         BufferedWriter writer = null;
         try {

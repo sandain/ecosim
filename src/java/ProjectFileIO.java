@@ -151,7 +151,7 @@ public class ProjectFileIO {
             }
             // Output the binning data.
             if (binning != null && binning.hasRun ()) {
-                ArrayList<BinLevel> bins = binning.getBinLevels ();
+                ArrayList<BinLevel> bins = binning.getBins ();
                 out.write ("  <binning>\n");
                 out.write ("    <bins size=\"" + bins.size () + "\">\n");
                 // Output the crit levels and the number of bins.

@@ -454,7 +454,7 @@ public class SimulationGUI extends Simulation {
             }
             if (binning != null && binning.hasRun ()) {
                 log.append ("Binning result:\n");
-                ArrayList<BinLevel> bins = binning.getBinLevels ();
+                ArrayList<BinLevel> bins = binning.getBins ();
                 for (int i = 0; i < bins.size (); i ++) {
                     log.append ("  " + bins.get (i).toString () + "\n");
                 }

@@ -182,7 +182,7 @@ public class Simulation {
         }
         // Output the results from binning.
         log.append ("The result from binning:\n");
-        ArrayList<BinLevel> bins = binning.getBinLevels ();
+        ArrayList<BinLevel> bins = binning.getBins ();
         for (int i = 0; i < bins.size (); i ++) {
             log.append ("  " + bins.get (i).toString () + "\n");
         }

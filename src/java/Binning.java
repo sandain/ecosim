@@ -73,7 +73,7 @@ public class Binning implements Runnable {
      *
      *  @return The bin levels.
      */
-    public ArrayList<BinLevel> getBinLevels () {
+    public ArrayList<BinLevel> getBins () {
         return bins;
     }
 
@@ -91,7 +91,7 @@ public class Binning implements Runnable {
      *
      *  @param bins The new bin levels.
      */
-    public void setBinLevels (ArrayList<BinLevel> bins) {
+    public void setBins (ArrayList<BinLevel> bins) {
         this.bins = bins;
     }
 

@@ -167,7 +167,7 @@ public class SigmaConfidenceInterval {
      *  @param inputFile The file to write to.
      */
     private void writeInputFile (File inputFile) {
-        ArrayList<BinLevel> bins = binning.getBinLevels ();
+        ArrayList<BinLevel> bins = binning.getBins ();
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
