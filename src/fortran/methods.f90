@@ -38,6 +38,7 @@ module methods
 
   ! Declare public methods.
   public :: getArgument
+  public :: gtest
   public :: randomClose
   public :: randomInitialize
   public :: randomNumber
@@ -385,6 +386,61 @@ module methods
     call getarg (arg, out)
     return
   end subroutine getStringArgument
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !> Calculate the G statistic for a contingency table.
+  !>
+  !> @param[in]     nrows         The number of rows in the table.
+  !> @param[in]     ncols         The number of columns in the table.
+  !> @param[in]     x             The contingency table.
+  !> @return                      The G statistic.
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  function gtest (nrows, ncols, x)  result (return_value)
+    integer(kind = int32), intent(in)    :: nrows
+    integer(kind = int32), intent(in)    :: ncols
+    real(kind = real32), intent(in)      :: x(nrows, ncols)
+    real(kind = real32)                  :: return_value
+    ! Local variables.
+    integer(kind = int32) :: i
+    integer(kind = int32) :: j
+    real(kind = real32)   :: g
+    real(kind = real32)   :: n
+    real(kind = real32)   :: sr(nrows)
+    real(kind = real32)   :: sc(ncols)
+    real(kind = real32)   :: e(nrows, ncols)
+    ! Calculate the number of observations.
+    n = sum (x)
+    ! Make sure there is at least one positive observation.
+    if (.not. n .gt. 0.0) then
+      write (unit = *, fmt = *) "At least one entry of x must be positive."
+      stop
+    end if
+    ! Make sure there are no negative observations.
+    if (any (x .lt. 0.0)) then
+      write (unit = *, fmt = *) "All entrys must be nonnegative."
+      stop
+    end if
+    ! Calculate the row and column totals.
+    sr = (/ (sum (x(i,:)), i = 1, nrows) /)
+    sc = (/ (sum (x(:,i)), i = 1, ncols) /)
+    ! Calculate the expected matrix.
+    do i = 1, nrows
+      do j = 1, ncols
+        e(i,j) = sr(i) * sc(j) / n
+      end do
+    end do
+    ! Calculate the G statistic.
+    g = 0.0
+    do i = 1, nrows
+      do j = 1, ncols
+        if (x(i,j) .gt. 0.0) g = g + x(i,j) * log (x(i,j) / e(i,j))
+      end do
+    end do
+    g = 2.0 * g
+    ! Return the G statistic value.
+    return_value = g
+    return
+  end function gtest
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Takes the expected number of substitutions, and gives back the actual
