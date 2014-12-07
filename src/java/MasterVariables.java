@@ -329,7 +329,7 @@ public class MasterVariables {
      *
      *  ie: "a == 100.0" --> "a >= 100.0 - EPSILON"
      */
-    public static final double EPSILON = 0.00001;
+    public static final double EPSILON = 1.0e-6;
 
     /**
      *  The optimal number of successes that we want in bruteforce.
