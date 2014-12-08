@@ -49,29 +49,14 @@ public class Bruteforce implements Runnable {
      */
     public Bruteforce (MasterVariables masterVariables,
         int nu, int length, Binning binning) {
-        this (masterVariables, nu, length, binning, "");
-    }
-
-    /**
-     *  Run the bruteforce program.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param nu The number of environmental sequences.
-     *  @param length The length of the sequences being analyzed.
-     *  @param binning The Binning object.
-     *  @param suffix The suffix to attach to the end of file names.
-     */
-    public Bruteforce (MasterVariables masterVariables,
-        int nu, int length, Binning binning, String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         results = new ArrayList<ParameterSet<Likelihood>> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        inputFileName = workingDirectory + "bruteforceIn" + suffix + ".dat";
-        outputFileName = workingDirectory + "bruteforceOut" + suffix +
-            ".dat";
+        inputFileName = workingDirectory + "bruteforceIn.dat";
+        outputFileName = workingDirectory + "bruteforceOut.dat";
         hasRun = false;
     }
 
