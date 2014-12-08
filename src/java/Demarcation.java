@@ -42,15 +42,15 @@ public class Demarcation implements Runnable {
      *  @param fasta The sequence data.
      *  @param tree The phylogeny data.
      *  @param binning The binning results.
-     *  @param hillclimb The hillclimbing results.
+     *  @param hclimbResult The result from hillclimbing.
      */
     public Demarcation (MasterVariables masterVariables, Fasta fasta,
-        NewickTree tree, Binning binning, Hillclimb hillclimb) {
+        NewickTree tree, Binning binning, ParameterSet<Double> hclimbResult) {
         this.masterVariables = masterVariables;
         this.fasta = fasta;
         this.tree = tree;
         this.binning = binning;
-        this.hillclimb = hillclimb;
+        this.hclimbResult = hclimbResult;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
@@ -62,7 +62,7 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         // Find the ecotypes.
-        findEcotypes (tree.getRoot (), hillclimb.getResult (), 0);
+        findEcotypes (tree.getRoot (), hclimbResult, 0);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -210,6 +210,6 @@ public class Demarcation implements Runnable {
     private Fasta fasta;
     private NewickTree tree;
     private Binning binning;
-    private Hillclimb hillclimb;
+    private ParameterSet<Double> hclimbResult;
 
 }
