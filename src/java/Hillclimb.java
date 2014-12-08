@@ -175,9 +175,7 @@ public class Hillclimb implements Runnable {
             // Write the nu value.
             writer.write (String.format ("%-20d nu\n", nu));
             // Write the nrep value.
-            writer.write (
-                String.format ("%-20d nrep\n", masterVariables.getNrep ())
-            );
+            writer.write (String.format ("%-20d nrep\n", nrep));
             // Create the random number seed; an odd integer less than nine
             // digits long.
             long iii = (long)(100000000 * Math.random ());
@@ -263,6 +261,8 @@ public class Hillclimb implements Runnable {
     private Binning binning;
     private ParameterSet parameterSet;
     private ParameterSet<Double> result;
+
+    private int nrep = 1000;
 
     private boolean hasRun;
 
