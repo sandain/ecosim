@@ -230,7 +230,6 @@ public class Bruteforce implements Runnable {
      */
     private void writeInputFile (File inputFile) {
         ArrayList<BinLevel> bins = binning.getBins ();
-        int numincs[] = masterVariables.getNumIncs ();
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
@@ -315,6 +314,7 @@ public class Bruteforce implements Runnable {
     private int nrep = 100;
     private double[] omegaRange = { 0.001, 100.0 };
     private double[] sigmaRange = { 0.001, 100.0 };
+    private int[] numincs = { 20, 20, 20 };
 
     private ArrayList<ParameterSet<Likelihood>> results;
 
