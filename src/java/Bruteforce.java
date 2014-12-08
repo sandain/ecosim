@@ -251,7 +251,7 @@ public class Bruteforce implements Runnable {
             writer.write (String.format ("%-20s sigma range\n",
                 String.format ("%.4f,%.4f", sigmaRange[0], sigmaRange[1])
             ));
-            // Write the range of pop.
+            // Write the range of npop.
             writer.write (String.format ("%-20s npop range\n",
                 String.format ("%d,%d", 1, nu)
             ));
