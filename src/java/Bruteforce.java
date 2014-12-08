@@ -67,16 +67,6 @@ public class Bruteforce implements Runnable {
         this.nu = nu;
         this.length = length;
         this.binning = binning;
-        omegaRange = new double [2];
-        sigmaRange = new double [2];
-        npopRange = new int[2];
-        // Fill omega, sigma, and npop ranges with default values.
-        omegaRange[0] = 0.0001;
-        omegaRange[1] = 100.0;
-        sigmaRange[0] = 0.0001;
-        sigmaRange[1] = 100.0;
-        npopRange[0] = 1;
-        npopRange[1] = nu;
         results = new ArrayList<ParameterSet<Likelihood>> ();
         String workingDirectory = masterVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "bruteforceIn" + suffix + ".dat";
@@ -156,33 +146,6 @@ public class Bruteforce implements Runnable {
         return results.size ();
     }
 
-    /**
-     *  Return the omega range.
-     *
-     *  @return The omega range.
-     */
-    public double [] getOmegaRange () {
-        return omegaRange;
-    }
-
-     /**
-     *  Return the sigma range.
-     *
-     *  @return The sigma range.
-     */
-    public double [] getSigmaRange () {
-        return sigmaRange;
-    }
-
-    /**
-     *  Return the npop range.
-     *
-     *  @return The npop range.
-     */
-    public int [] getNpopRange () {
-        return npopRange;
-    }
-
    /**
      *  Add a result to the list of results.
      *
@@ -199,36 +162,6 @@ public class Bruteforce implements Runnable {
      */
     public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
-    }
-
-    /**
-     *  Changes the value of omegaRange.
-     *
-     *  @param omegaRange The new value of omegaRange.
-     */
-    public void setOmegaRange (double [] omegaRange) {
-        this.omegaRange = omegaRange;
-        hasRun = false;
-    }
-
-    /**
-     *  Changes the value of sigmaRange.
-     *
-     *  @param sigmaRange The new value of sigmaRange.
-     */
-    public void setSigmaRange (double [] sigmaRange) {
-        this.sigmaRange = sigmaRange;
-        hasRun = false;
-    }
-
-    /**
-     *  Changes the value of npopRange.
-     *
-     *  @param npopRange The new value of npopRange.
-     */
-    public void setNpopRange (int [] npopRange) {
-        this.npopRange = npopRange;
-        hasRun = false;
     }
 
     /**
@@ -320,7 +253,7 @@ public class Bruteforce implements Runnable {
             ));
             // Write the range of pop.
             writer.write (String.format ("%-20s npop range\n",
-                String.format ("%d,%d", npopRange[0], npopRange[1])
+                String.format ("%d,%d", 1, nu)
             ));
             // Write the numics values.
             writer.write (String.format (
@@ -380,9 +313,8 @@ public class Bruteforce implements Runnable {
     private Binning binning;
 
     private int nrep = 100;
-    private double [] omegaRange;
-    private double [] sigmaRange;
-    private int [] npopRange;
+    private double[] omegaRange = { 0.001, 100.0 };
+    private double[] sigmaRange = { 0.001, 100.0 };
 
     private ArrayList<ParameterSet<Likelihood>> results;
 
