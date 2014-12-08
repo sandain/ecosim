@@ -145,51 +145,6 @@ public class MasterVariables {
     }
 
     /**
-     *  Get the range for omega.
-     *
-     *  @return double array containing the default range of omega.
-     */
-    public double[] getOmegaRange () {
-        return omegaRange;
-    }
-
-    /**
-     *  Get the range for sigma.
-     *
-     *  @return double array containing the default range of sigma.
-     */
-    public double[] getSigmaRange () {
-        return sigmaRange;
-    }
-
-    /**
-     *  Get the numincs value.
-     *
-     *  @return int array containing the Default values of xnumincs.
-     */
-    public int[] getNumIncs () {
-        return xnumincs;
-    }
-
-    /**
-     *  Get the number of reps.
-     *
-     *  @return The default number of reps.
-     */
-    public int getNrep () {
-        return nrep;
-    }
-
-    /**
-     *  Get the step value.
-     *
-     *  @return The default number of reps.
-     */
-    public int getStep () {
-        return step;
-    }
-
-    /**
      *  Return the default log.
      *
      *  @return The default log.
@@ -356,31 +311,6 @@ public class MasterVariables {
      *  According to Akmaev and Wang, it is 1.37e-4, or 1/7300
      */
     private double pcrerror = 8.33e-6;
-
-    /**
-     *  The default range for omega.
-     */
-    private double[] omegaRange = { 0.001, 100.0 };
-
-    /**
-     *  The default range for sigma.
-     */
-    private double[] sigmaRange = { 0.001, 100.0 };
-
-    /**
-     *  The default values for xnumincs.
-     */
-    private int[] xnumincs = { 20, 20, 20 };
-
-    /**
-     *  The default number of reps to do of fred method.
-     */
-    private int nrep = 1000;
-
-    /**
-     *  The default step value.
-     */
-    private int step = 3;
 
     /**
      *  The default number of threads is equal to the system maximum.
