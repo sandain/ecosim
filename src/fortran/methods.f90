@@ -398,16 +398,16 @@ module methods
   function gtest (nrows, ncols, x)  result (return_value)
     integer(kind = int32), intent(in)    :: nrows
     integer(kind = int32), intent(in)    :: ncols
-    real(kind = real32), intent(in)      :: x(nrows, ncols)
-    real(kind = real32)                  :: return_value
+    real(kind = real64), intent(in)      :: x(nrows, ncols)
+    real(kind = real64)                  :: return_value
     ! Local variables.
     integer(kind = int32) :: i
     integer(kind = int32) :: j
-    real(kind = real32)   :: g
-    real(kind = real32)   :: n
-    real(kind = real32)   :: sr(nrows)
-    real(kind = real32)   :: sc(ncols)
-    real(kind = real32)   :: e(nrows, ncols)
+    real(kind = real64)   :: g
+    real(kind = real64)   :: n
+    real(kind = real64)   :: sr(nrows)
+    real(kind = real64)   :: sc(ncols)
+    real(kind = real64)   :: e(nrows, ncols)
     ! Calculate the number of observations.
     n = sum (x)
     ! Make sure there is at least one positive observation.
