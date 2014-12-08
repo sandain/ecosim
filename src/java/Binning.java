@@ -144,7 +144,7 @@ public class Binning implements Runnable {
         distance += b.maximumDistanceFromLeafNode () + b.getDistance ();
         // Recurse on the child nodes if the maximum distance exceeds the
         // crit value, otherwise colapse this branch into one bin.
-        if (distance > 1.000d - crit + masterVariables.EPSILON) {
+        if (distance > 1.000d - crit - masterVariables.EPSILON) {
             for (NewickTreeNode child: children) {
                 num += getNumberBins (crit, child);
             }
