@@ -193,17 +193,13 @@ public class DemarcationConfidenceInterval {
                 String.format ("%-20d npop\n", npop)
             );
             // Write the step value.
-            writer.write (
-                String.format ("%-20d step\n", masterVariables.getStep ())
-            );
+            writer.write (String.format ("%-20d step\n", step));
             // Write the nu value.
             writer.write (
                 String.format ("%-20d nu\n", sampleNu)
             );
             // Write the nrep value.
-            writer.write (
-                String.format ("%-20d nrep\n", masterVariables.getNrep ())
-            );
+            writer.write (String.format ("%-20d nrep\n", nrep));
             // Create the random number seed; an odd integer less than nine
             // digits long.
             long iii = (long)(100000000 * Math.random ());
@@ -297,6 +293,8 @@ public class DemarcationConfidenceInterval {
     private Binning binning;
     private ParameterSet<Double> hillclimbResult;
 
+    private int nrep = 1000;
+    private int step = 3;
     private int result = 0;
     private double likelihood = 0.0;
 
