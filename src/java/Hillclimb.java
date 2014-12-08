@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-
 /**
  *  Object to interact with the hillclimbing program.
  *
