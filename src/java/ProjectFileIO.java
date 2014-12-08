@@ -169,25 +169,7 @@ public class ProjectFileIO {
             if (bruteforce != null && bruteforce.hasRun ()) {
                 ArrayList<ParameterSet<Likelihood>> results =
                     bruteforce.getResults ();
-                double [] omegaRange = bruteforce.getOmegaRange ();
-                double [] sigmaRange = bruteforce.getSigmaRange ();
-                int [] npopRange = bruteforce.getNpopRange ();
                 out.write ("  <bruteforce>\n");
-                out.write (String.format (
-                    "    <omegaRange low=\"%.5f\" high=\"%.5f\"/>\n",
-                    omegaRange[0],
-                    omegaRange[1]
-                ));
-                out.write (String.format (
-                    "    <sigmaRange low=\"%.5f\" high=\"%.5f\"/>\n",
-                    sigmaRange[0],
-                    sigmaRange[1]
-                ));
-                out.write (String.format (
-                    "    <npopRange low=\"%d\" high=\"%d\"/>\n",
-                    npopRange[0],
-                    npopRange[1]
-                ));
                 out.write (String.format (
                     "    <results size=\"%d\">\n", results.size ()
                 ));
@@ -513,39 +495,6 @@ public class ProjectFileIO {
                 }
                 // Look for elements within bruteforce.
                 if (activeElement.equals ("bruteforce")) {
-                    // Grab the omega range.
-                    if (localName.equals ("omegaRange")) {
-                        double [] omegaRange = new double [2];
-                        omegaRange[0] = new Double (
-                            attrs.getValue (uri, "low")
-                        ).doubleValue ();
-                        omegaRange[1] = new Double (
-                            attrs.getValue (uri, "high")
-                        ).doubleValue ();
-                        bruteforce.setOmegaRange (omegaRange);
-                    }
-                    // Grab the sigma range.
-                    if (localName.equals ("sigmaRange")) {
-                        double [] sigmaRange = new double [2];
-                        sigmaRange[0] = new Double (
-                            attrs.getValue (uri, "low")
-                        ).doubleValue ();
-                        sigmaRange[1] = new Double (
-                            attrs.getValue (uri, "high")
-                        ).doubleValue ();
-                        bruteforce.setSigmaRange (sigmaRange);
-                    }
-                    // Grab the sigma range.
-                    if (localName.equals ("npopRange")) {
-                        int [] npopRange = new int [2];
-                        npopRange[0] = new Integer (
-                            attrs.getValue (uri, "low")
-                        ).intValue ();
-                        npopRange[1] = new Integer (
-                            attrs.getValue (uri, "high")
-                        ).intValue ();
-                        bruteforce.setNpopRange (npopRange);
-                    }
                     if (localName.equals ("result")) {
                         bruteforce.addResult (new ParameterSet<Likelihood> (
                             new Double (attrs.getValue (uri, "omega")),
