@@ -332,9 +332,7 @@ public class Bruteforce implements Runnable {
             // Write the nu value.
             writer.write (String.format ("%-20d nu\n", nu));
             // Write the nrep value.
-            writer.write (String.format (
-                "%-20d nrep\n", masterVariables.getNrep ()
-            ));
+            writer.write (String.format ("%-20d nrep\n", nrep));
             // Create the random number seed; an odd integer less than nine
             // digits long.
             long iii = (long)(100000000 * Math.random ());
@@ -381,6 +379,7 @@ public class Bruteforce implements Runnable {
     private int length;
     private Binning binning;
 
+    private int nrep = 100;
     private double [] omegaRange;
     private double [] sigmaRange;
     private int [] npopRange;
