@@ -122,8 +122,10 @@ public class Binning implements Runnable {
 
     /**
      *  A private recursive method to estimate the number of bins in a
-     *  provided tree.
+     *  provided tree using a complete-linkage method.
      *
+     *  @param crit The sequence criterion level.
+     *  @param node The current node in the tree to examine.
      *  @return The number of bins.
      */
     private int getNumberBins (double crit, NewickTreeNode node) {
@@ -132,8 +134,7 @@ public class Binning implements Runnable {
         if (node.isOutgroup ()) return 0;
         // Return one bin if the node is a leaf node.
         if (node.isLeafNode ()) return 1;
-        // Since the children of a node come pre-sorted by maximum distance
-        // from leaf node, compare just the top two.
+        // There can only be two children.
         ArrayList<NewickTreeNode> children = node.getChildren ();
         NewickTreeNode a = children.get (0);
         NewickTreeNode b = children.get (1);
