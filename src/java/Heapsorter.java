@@ -29,6 +29,7 @@ import java.util.ArrayList;
  *  Runs the heapsort on a given set of data.
  *
  *  @author Andrew Warner
+ *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
 public class Heapsorter<T extends Comparable<T>> {
