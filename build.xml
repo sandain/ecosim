@@ -25,7 +25,7 @@
     <!-- Create the time stamp. -->
     <tstamp/>
     <!-- Compile the java code. -->
-    <javac srcdir="${src.dir}" destdir="${build.dir}/java" includeantruntime="false">
+    <javac srcdir="${src.dir}" destdir="${build.dir}/java" includeantruntime="false" debug="true">
       <compilerarg value="-Xlint:unchecked,deprecation"/>
     </javac>
     <!-- Create the jar file. -->
