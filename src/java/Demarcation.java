@@ -59,8 +59,9 @@ public class Demarcation implements Runnable {
      *  Run the demarcation program.
      */
     public void run () {
+        iteration = 0;
         // Find the ecotypes.
-        findEcotypes (tree.getRoot (), 0);
+        findEcotypes (tree.getRoot ());
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -124,9 +125,8 @@ public class Demarcation implements Runnable {
      *  Otherwise, recurse on the children of node.
      *
      *  @param node The current node representing the subclade.
-     *  @param iteration The number of nodes already visited.
      */
-    private void findEcotypes (NewickTreeNode node, int iteration) {
+    private void findEcotypes (NewickTreeNode node) {
         String outgroup = fasta.getIdentifier (0);
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
@@ -147,8 +147,6 @@ public class Demarcation implements Runnable {
             if (sample.size () == 0) {
                 return;
             }
-            // Append a suffix to all file names used by Demarcation.
-            String suffix = "-" + iteration;
             // Create a new NewickTree containing just the sequences to
             // be tested.
             NewickTree sampleTree = new NewickTree ();
@@ -166,7 +164,10 @@ public class Demarcation implements Runnable {
                 masterVariables, sampleTree
             );
             sampleBinning.run ();
-
+            // Increment the iteration variable used in the file names.
+            iteration ++;
+            // Append a suffix to all file names used by Demarcation.
+            String suffix = "-" + iteration;
             // Run the demarcation confidence interval program.
             DemarcationConfidenceInterval demarcConf =
                 new DemarcationConfidenceInterval (
@@ -182,8 +183,7 @@ public class Demarcation implements Runnable {
             else {
                 ArrayList<NewickTreeNode> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
-                    iteration ++;
-                    findEcotypes (children.get (i), iteration);
+                    findEcotypes (children.get (i));
                 }
             }
         }
@@ -197,5 +197,7 @@ public class Demarcation implements Runnable {
     private Fasta fasta;
     private NewickTree tree;
     private ParameterSet<Double> hclimbResult;
+
+    private int iteration;
 
 }
