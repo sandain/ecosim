@@ -62,7 +62,7 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         // Find the ecotypes.
-        findEcotypes (tree.getRoot (), hclimbResult, 0);
+        findEcotypes (tree.getRoot (), 0);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -126,11 +126,9 @@ public class Demarcation implements Runnable {
      *  Otherwise, recurse on the children of node.
      *
      *  @param node The current node representing the subclade.
-     *  @param parentHillclimbResult The Hillclimb result of the parent node.
      *  @param iteration The number of nodes already visited.
      */
-    private void findEcotypes (NewickTreeNode node,
-        ParameterSet parentHillclimbResult, int iteration) {
+    private void findEcotypes (NewickTreeNode node, int iteration) {
         String outgroup = fasta.getIdentifier (0);
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
@@ -152,7 +150,7 @@ public class Demarcation implements Runnable {
                 return;
             }
             // Append a suffix to all file names used by Demarcation.
-            String suffix = "-demarcation-" + iteration;
+            String suffix = "-" + iteration;
             // Create a new NewickTree containing just the sequences to
             // be tested.
             NewickTree sampleTree = new NewickTree ();
@@ -170,17 +168,12 @@ public class Demarcation implements Runnable {
                 masterVariables, sampleTree
             );
             sampleBinning.run ();
-            // Run the hillclimb program.
-            Hillclimb sampleHillclimb = new Hillclimb (
-                masterVariables, sampleNu, length, sampleBinning,
-                parentHillclimbResult, suffix
-            );
-            sampleHillclimb.run ();
+
             // Run the demarcation confidence interval program.
             DemarcationConfidenceInterval demarcConf =
                 new DemarcationConfidenceInterval (
                 masterVariables, nu, sampleNu, length,
-                sampleBinning, sampleHillclimb.getResult (), suffix
+                sampleBinning, hclimbResult, suffix
             );
             demarcConf.run ();
             // If 1 is the lower bound of the confidence interval, add the
@@ -192,11 +185,7 @@ public class Demarcation implements Runnable {
                 ArrayList<NewickTreeNode> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
                     iteration ++;
-                    findEcotypes (
-                        children.get (i),
-                        sampleHillclimb.getResult (),
-                        iteration
-                    );
+                    findEcotypes (children.get (i), iteration);
                 }
             }
         }
