@@ -41,15 +41,13 @@ public class Demarcation implements Runnable {
      *  @param masterVariables The MasterVariables.
      *  @param fasta The sequence data.
      *  @param tree The phylogeny data.
-     *  @param binning The binning results.
      *  @param hclimbResult The result from hillclimbing.
      */
     public Demarcation (MasterVariables masterVariables, Fasta fasta,
-        NewickTree tree, Binning binning, ParameterSet<Double> hclimbResult) {
+        NewickTree tree, ParameterSet<Double> hclimbResult) {
         this.masterVariables = masterVariables;
         this.fasta = fasta;
         this.tree = tree;
-        this.binning = binning;
         this.hclimbResult = hclimbResult;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
@@ -198,7 +196,6 @@ public class Demarcation implements Runnable {
     private Logger log;
     private Fasta fasta;
     private NewickTree tree;
-    private Binning binning;
     private ParameterSet<Double> hclimbResult;
 
 }
