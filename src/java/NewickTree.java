@@ -143,6 +143,7 @@ public class NewickTree implements Comparable<NewickTree> {
         double distance = outgroup.getDistance () * 0.5;
         double oldDistance = oldParent.getDistance ();
         outgroup.setDistance (distance);
+        outgroup.setOutgroup (true);
         oldParent.setDistance (distance);
         NewickTreeNode newParent = newRoot;
         while (oldParent != root) {

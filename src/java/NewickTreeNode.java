@@ -50,6 +50,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         this.distance = distance;
         this.parent = parent;
         this.children = children;
+        outgroup = false;
     }
 
     /**
@@ -127,6 +128,15 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      */
     public void setDistance (Double distance) {
         this.distance = distance;
+    }
+
+    /**
+     *  Let this node know whether or not it is the outgroup.
+     *
+     *  @param outgroup Whether or not this node is the outgroup.
+     */
+    public void setOutgroup (Boolean outgroup) {
+        this.outgroup = outgroup;
     }
 
     /**
@@ -221,10 +231,6 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  @return A Boolean stating whether this node is the outgroup or not.
      */
     public Boolean isOutgroup () {
-        Boolean outgroup = false;
-        if (parent != null) {
-            outgroup = isLeafNode () && parent.isRootNode ();
-        }
         return outgroup;
     }
 
@@ -379,5 +385,10 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
      *  A list of children of this node.
      */
     private ArrayList<NewickTreeNode> children;
+
+    /**
+     *  Whether or not this node is the outgroup.
+     */
+    private boolean outgroup;
 
 }
