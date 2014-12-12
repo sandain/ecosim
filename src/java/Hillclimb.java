@@ -50,29 +50,14 @@ public class Hillclimb implements Runnable {
      */
     public Hillclimb (MasterVariables masterVariables, int nu, int length,
         Binning binning, ParameterSet parameterSet) {
-        this (masterVariables, nu, length, binning, parameterSet, "");
-    }
-
-    /**
-     *  Run the hillclimb program.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param nu The number of environmental sequences.
-     *  @param length The length of the sequences being analyzed.
-     *  @param binning The Binning object.
-     *  @param parameterSet The set of parameters to optimize.
-     *  @param suffix The suffix to attach to the end of file names.
-     */
-    public Hillclimb (MasterVariables masterVariables, int nu, int length,
-        Binning binning, ParameterSet parameterSet, String suffix) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         this.parameterSet = parameterSet;
         String workingDirectory = masterVariables.getWorkingDirectory ();
-        inputFileName = workingDirectory + "hillclimbIn" + suffix + ".dat";
-        outputFileName = workingDirectory + "hillclimbOut" + suffix + ".dat";
+        inputFileName = workingDirectory + "hillclimbIn.dat";
+        outputFileName = workingDirectory + "hillclimbOut.dat";
         hasRun = false;
     }
 
