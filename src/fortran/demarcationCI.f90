@@ -57,8 +57,6 @@ program demarcationCI
   integer(kind = int32)            :: npopsolution
   integer(kind = int32), parameter :: nparams = 2
   integer(kind = int32), parameter :: outputUnit = 4
-  real(kind = real64)              :: omegasolution
-  real(kind = real64)              :: sigmasolution
   real(kind = real64)              :: xlikelihoodsolution
   real(kind = real64)              :: ratio
   real(kind = real64)              :: xlikelihood
@@ -123,8 +121,6 @@ program demarcationCI
   ! Open the output file.
   open (unit = outputUnit, file = trim (outputFile), &
     access = 'sequential', form = 'formatted')
-  omegasolution = omega
-  sigmasolution = sigma
   npopsolution = npop
   ! Set max. no. of function evaluations = maxf, print every iprint.
   maxf = 100
