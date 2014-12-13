@@ -120,9 +120,8 @@ public class Demarcation implements Runnable {
 
     /**
      *  Find the ecotypes using a recursive algorithm.  If the subclade of
-     *  the tree represented by node has a demarcation confidence interval
-     *  with a lower bound of 1, demarcate the subclade as an ecotype.
-     *  Otherwise, recurse on the children of node.
+     *  the tree represented by node has an optimal npop value of 1, demarcate
+     *  the subclade as an ecotype. Otherwise, recurse on the node's children.
      *
      *  @param node The current node representing the subclade.
      */
@@ -159,7 +158,7 @@ public class Demarcation implements Runnable {
             int nu = fasta.size ();
             int sampleNu = sample.size ();
             int length = fasta.length ();
-            // Run the binning program.
+            // Run the binning program on the sample tree.
             Binning sampleBinning = new Binning (
                 masterVariables, sampleTree
             );
@@ -175,8 +174,8 @@ public class Demarcation implements Runnable {
                 sampleBinning, hclimbResult, suffix
             );
             demarcConf.run ();
-            // If 1 is the lower bound of the confidence interval, add the
-            // list of sequences to the list of ecotypes
+            // If 1 is the most likely npop value, add the list of sequences
+            // to the list of ecotypes
             if (demarcConf.getResult () == 1) {
                 ecotypes.add (sample);
             }
