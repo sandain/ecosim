@@ -259,8 +259,6 @@ public class DemarcationConfidenceInterval {
                 // The first line contains the lower value of the confidence
                 // interval for demarcation and the likelihood for that
                 // value.
-                st.nextToken (); // "lower".
-                st.nextToken (); // "bound".
                 st.nextToken (); // "npop".
                 result = new Integer (st.nextToken ()).intValue ();
                 st.nextToken (); // "likelihood".

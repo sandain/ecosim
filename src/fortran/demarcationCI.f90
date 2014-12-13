@@ -187,7 +187,7 @@ program demarcationCI
     xlowerlikelihood = xlikelihood
   end do
   ! Output the answer.
-  write (unit = outputUnit, fmt = *) 'lower bound npop ', ilowerbound, &
+  write (unit = outputUnit, fmt = *) 'npop ', ilowerbound, &
      ' likelihood ', xlowerlikelihood
   ! Close the random number generator.
   call randomClose ()
