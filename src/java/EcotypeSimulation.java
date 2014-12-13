@@ -85,8 +85,6 @@ import java.io.File;
  * @li @b Bruteforce - Object to interact with the bruteforce search program.
  * @li @b Demarcation - Demarcates ecotypes based on the hillclimbing values
  *        and the phylogeny of the sequences.
- * @li @b DemarcationConfidenceInterval - Run the demarcation confidence
- *        interval program.
  * @li @b Execs - Holds the executable methods for the cohan program.
  * @li @b Fasta - Handles the input and output of fasta formatted text files.
  * @li @b FileChooser - Defines a custom file chooser.
