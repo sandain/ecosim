@@ -205,15 +205,15 @@ public class Execs {
     }
 
     /**
-     *  Runs the Demarcation Confidence Interval application.
+     *  Runs the Demarcation application.
      *
-     *  @param input The demarcationCI input file.
-     *  @param output The demarcationCI output file.
+     *  @param input The demarcation input file.
+     *  @param output The demarcation output file.
      *  @return The exit value.
      */
-    public int runDemarcationCI (File input, File output) {
+    public int runDemarcation (File input, File output) {
         String[] command = {
-            binaryDirectory + "demarcationCI" + binaryExtension,
+            binaryDirectory + "demarcation" + binaryExtension,
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -229,9 +229,9 @@ public class Execs {
         return runApplication (
             command,
             errorStream,
-            "ERROR (Demarcation CI)>",
+            "ERROR (Demarcation)>",
             outputStream,
-            "Demarcation CI>",
+            "Demarcation>",
             true
         );
     }

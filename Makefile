@@ -17,7 +17,7 @@ DOCS_DIR := docs
 
 # Source files used.
 SOURCE_FILES := bruteforce.f90 hillclimb.f90 \
-  npopCI.f90 demarcationCI.f90 omegaCI.f90 sigmaCI.f90
+  npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
 
 # Source files to include when building the above source files.
 INCLUDE_FILES := darray.f90 ziggurat.f90 methods.f90 simplexmethod.f90

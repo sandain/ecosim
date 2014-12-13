@@ -33,7 +33,7 @@ import java.util.StringTokenizer;
 
 
 /**
- *  Run the demarcation confidence interval program.
+ *  Run the demarcation program.
  *
  *
  *  @author Jason M. Wood
@@ -42,7 +42,7 @@ import java.util.StringTokenizer;
 public class DemarcationConfidenceInterval {
 
     /**
-     *  Run the demarcation confidence interval program.
+     *  Run the demarcation program.
      *
      *  @param masterVariables The MasterVariables object.
      *  @param nu The number of environmental sequences.
@@ -58,7 +58,7 @@ public class DemarcationConfidenceInterval {
     }
 
     /**
-     *  Run the demarcation confidence interval program.
+     *  Run the demarcation program.
      *
      *  @param masterVariables The MasterVariables object.
      *  @param nu The number of environmental sequences.
@@ -85,31 +85,30 @@ public class DemarcationConfidenceInterval {
     }
 
     /**
-     *  Run the demarcation confidence interval program.
+     *  Run the demarcation program.
      */
     public void run () {
         Execs execs = masterVariables.getExecs ();
         int hashCode = this.hashCode ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
-        // Write the input values for the program to the demarcationIn.dat
-        // file.
+        // Write the input values for the program to the input file.
         writeInputFile (inputFile);
-        // Run the demarcationCI program.
-        execs.runDemarcationCI (inputFile, outputFile);
-        // Get the output provided by the demarcationCI program.
+        // Run the demarcation program.
+        execs.runDemarcation (inputFile, outputFile);
+        // Get the output provided by the demarcation program.
         readOutputFile (outputFile);
-        // Set the flag stating that the confidence interval program has run.
+        // Set the flag stating that the demarcation program has run.
         if (result > 0) {
             hasRun = true;
         }
     }
 
     /**
-     *  Returns true if the demarcation confidence interval has been run,
+     *  Returns true if the demarcation program has been run,
      *  false otherwise.
      *
-     *  @return True if the demarcation confidence interval has been run,
+     *  @return True if the demarcation program has been run,
      *  false otherwise.
      */
     public boolean hasRun () {
@@ -126,7 +125,7 @@ public class DemarcationConfidenceInterval {
     }
 
     /**
-     *  Returns the result of the demarcation confidence interval program.
+     *  Returns the result of the demarcation program.
      *
      *  @return The result.
      */
@@ -135,8 +134,7 @@ public class DemarcationConfidenceInterval {
     }
 
     /**
-     *  Returns the likelihood of the result of the demarcation confidence
-     *  interval program.
+     *  Returns the likelihood of the result of the demarcation program.
      *
      *  @return The likelihood.
      */
@@ -145,17 +143,16 @@ public class DemarcationConfidenceInterval {
     }
 
     /**
-     *  Returns the demarcation confidence interval as a String.
+     *  Returns the demarcation result as a String.
      *
-     *  @return the demarcation confidence interval.
+     *  @return the demarcation result.
      */
     public String toString () {
         int npop = hillclimbResult.getNpop ();
         return String.format ("%d (%d)", npop, result);
     }
     /**
-     *  Private method to write the input file for the demarcation confidence
-     *  interval program.
+     *  Private method to write the input file for the demarcation program.
      *
      *  @param inputFile The file to write to.
      */
@@ -245,7 +242,7 @@ public class DemarcationConfidenceInterval {
 
     /**
      *  Private method to read the output file from the demarcation
-     *  confidence interval program.
+     *  program.
      *
      *  @param outputFile The file to read from.
      */
@@ -256,9 +253,8 @@ public class DemarcationConfidenceInterval {
             String nextLine = reader.readLine ();
             while (nextLine != null) {
                 StringTokenizer st = new StringTokenizer (nextLine);
-                // The first line contains the lower value of the confidence
-                // interval for demarcation and the likelihood for that
-                // value.
+                // The output contains the most likely npop and the likelihood
+                // for that value.
                 st.nextToken (); // "npop".
                 result = new Integer (st.nextToken ()).intValue ();
                 st.nextToken (); // "likelihood".
@@ -295,8 +291,6 @@ public class DemarcationConfidenceInterval {
     private int step = 3;
     private int result = 0;
     private double likelihood = 0.0;
-
-    private int runNumber;
 
     private boolean hasRun;
 
