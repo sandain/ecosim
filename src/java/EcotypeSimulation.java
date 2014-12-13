@@ -70,7 +70,7 @@ import java.io.File;
  * @li @b ::omegaci - Calculates the confidence interval of the omega value.
  * @li @b ::sigmaci - Calculates the confidence interval of the sigma value.
  * @li @b ::npopci - Calculates the confidence interval of the npop value.
- * @li @b ::demarcationci - Calculates the lower bound of the npop CI.
+ * @li @b ::demarcation - Calculates npop values used to demarcate ecotypes.
  *
  * @subsection fortran-libraries Libraries
  * @li @b ::darray - Stores dynamic arrays.
