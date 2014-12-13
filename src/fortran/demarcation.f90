@@ -21,20 +21,18 @@
 !    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!> The demarcationCI program calculates the lower portion of the confidence
-!> interval for npop (number of ecotypes) using the Nelder-Mead simplex
-!> method for function minimization.  This lower portion of the confidence
-!> interval is then used to demarcate ecotypes.
+!> The demarcation program calculates the most likely value of npop (number of
+!> ecotypes) using the Nelder-Mead simplex method for function minimization.
+!> This npop value is then used to demarcate ecotypes.
 !>
 !> @pre  Requires that the demarcationIn.dat file exist and that it contains
-!>         all of the variables necessary to calculate the lower confidence
-!>         interval for npop.
+!>         all of the variables necessary to calculate the most likely value
+!>         of npop.
 !>
-!> @post Generates the demarcationOut.dat file that contains the lower bounds
-!>         of the npop confidence interval plus a likelihood value for the
-!>         bounding value.
+!> @post Generates the demarcationOut.dat file that contains the most likely
+!>         value of npop and its likelihood value.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-program demarcationCI
+program demarcation
   use ISO_FORTRAN_ENV
   use methods
   use simplexmethod
@@ -142,8 +140,6 @@ program demarcationCI
   ! should be accurate to about 15 decimals.  If we set simp = 1.0d-6,
   ! we should get about 9 dec. digits accuracy in fitting the surface.
   simp = 1.0d-6
-  ! first, we'll look for the upper CI bound, starting
-  ! with the given values of omega, sigma, and npop
   ilowerbound = npopsolution
   xlowerlikelihood = xlikelihoodsolution
   do
@@ -178,7 +174,6 @@ program demarcationCI
     ! now do likelihood ratio test
     ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
     if (ratio .gt. 3.84) exit
-    ! we're still within the CI
     ilowerbound = npop
     xlowerlikelihood = xlikelihood
   end do
@@ -320,4 +315,4 @@ program demarcationCI
     return
   end subroutine readinput
 
-end program demarcationCI
+end program demarcation
