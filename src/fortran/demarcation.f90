@@ -183,7 +183,7 @@ program demarcation
   ! Close the random number generator.
   call randomClose ()
   ! Close the output file.
-   close (unit = outputUnit)
+  close (unit = outputUnit)
   ! Successful termination of program.
   stop
 
