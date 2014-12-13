@@ -23,7 +23,14 @@
 
 package ecosim;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  *  Demarcates ecotypes based on the hillclimbing values and the phylogeny of
@@ -155,28 +162,45 @@ public class Demarcation implements Runnable {
             catch (InvalidNewickException e) {
                 System.err.println ("Error creating subtree.");
             }
-            int nu = fasta.size ();
-            int sampleNu = sample.size ();
-            int length = fasta.length ();
             // Run the binning program on the sample tree.
             Binning sampleBinning = new Binning (
                 masterVariables, sampleTree
             );
             sampleBinning.run ();
+            Integer nu = sample.size ();
+            Integer length = fasta.length ();
+            // Use the omega and sigma values from hillclimbing.
+            Double omega = hclimbResult.getOmega ();
+            Double sigma = hclimbResult.getSigma ();
+            // Estimate the value of npop by multiplying the npop value found
+            // in hillclimbing by the ratio of the sample size to the total
+            // number of environmental sequences.
+            Integer npop = hclimbResult.getNpop () * nu / fasta.size ();
+            if (npop < 1) {
+                npop = 1;
+            }
+            Double likelihood = hclimbResult.getValue ();
             // Increment the iteration variable used in the file names.
             iteration ++;
-            // Append a suffix to all file names used by Demarcation.
-            String suffix = "-" + iteration;
-            // Run the demarcation confidence interval program.
-            DemarcationConfidenceInterval demarcConf =
-                new DemarcationConfidenceInterval (
-                masterVariables, nu, sampleNu, length,
-                sampleBinning, hclimbResult, suffix
+            File inputFile = new File (
+                workingDirectory + "demarcationIn-" + iteration + ".dat"
             );
-            demarcConf.run ();
+            File outputFile = new File (
+                workingDirectory + "demarcationOut-" + iteration + ".dat"
+            );
+            // Write the input values for the demarcation program.
+            writeInputFile (
+                inputFile, sampleBinning, nu, length, omega, sigma, npop,
+                likelihood
+            );
+            // Run the demarcation program.
+            Execs execs = masterVariables.getExecs ();
+            execs.runDemarcation (inputFile, outputFile);
+            // Get the output provided by the demarcation program.
+            Integer result = readOutputFile (outputFile);
             // If 1 is the most likely npop value, add the list of sequences
             // to the list of ecotypes
-            if (demarcConf.getResult () == 1) {
+            if (result == 1) {
                 ecotypes.add (sample);
             }
             else {
@@ -188,6 +212,125 @@ public class Demarcation implements Runnable {
         }
     }
 
+    /**
+     *  Private method to write the input file for the demarcation program.
+     *
+     *  @param inputFile The file to write to.
+     *  @param binning The binning results.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the environmental sequences.
+     *  @param omega The omega estimate.
+     *  @param sigma The sigma estimate.
+     *  @param npop The npop estimate.
+     *  @param likelihood The likelihood of the omega, sigma, npop estimates.
+     */
+    private void writeInputFile (File inputFile, Binning binning, Integer nu,
+        Integer length, Double omega, Double sigma, Integer npop,
+        Double likelihood) {
+        ArrayList<BinLevel> bins = binning.getBins ();
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter (new FileWriter (inputFile));
+            writer.write (String.format ("%-20d numcrit\n", bins.size ()));
+            // Output the crit levels and the number of bins.
+            for (int j = 0; j < bins.size (); j ++) {
+                writer.write (String.format (
+                    "%-20.6f %-20d\n",
+                    bins.get (j).getCrit (),
+                    bins.get (j).getLevel ()
+                ));
+            }
+            // Write the omega value.
+            writer.write (String.format ("%-20.5f omega\n", omega));
+            // Write the sigma value.
+            writer.write (String.format ("%-20.5f sigma\n", sigma));
+            // Write the npop value.
+            writer.write (String.format ("%-20d npop\n", npop));
+            // Write the step value.
+            writer.write (String.format ("%-20d step\n", step));
+            // Write the nu value.
+            writer.write (String.format ("%-20d nu\n", nu));
+            // Write the nrep value.
+            writer.write (String.format ("%-20d nrep\n", nrep));
+            // Create the random number seed; an odd integer less than nine
+            // digits long.
+            long iii = (long)(100000000 * Math.random ());
+            if (iii % 2 == 0) {
+                iii ++;
+            }
+            // Write the random number seed.
+            writer.write (
+                String.format ("%-20d iii (random number seed)\n", iii)
+            );
+            // Write the length of the sequences.
+            writer.write (
+                String.format (
+                    "%-20d lengthseq (after deleting gaps, etc.)\n",
+                    length
+                )
+            );
+            // Write the whichavg value.
+            int whichavg = masterVariables.getCriterion ();
+            writer.write (String.format ("%-20d whichavg\n", whichavg));
+            // Write the likelihoodsolution value.
+            writer.write (String.format (
+                "%-20.5f likelihoodsolution\n", likelihood
+            ));
+        }
+        catch (IOException e) {
+            System.out.println ("Error writing the input file.");
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the input file.");
+                }
+            }
+        }
+    }
+
+    /**
+     *  Private method to read the output file from the demarcation program.
+     *
+     *  @param outputFile The file to read from.
+     */
+    private Integer readOutputFile (File outputFile) {
+        BufferedReader reader = null;
+        Integer result = 0;
+        Double likelihood = 0.0d;
+        try {
+            reader = new BufferedReader (new FileReader (outputFile));
+            String nextLine = reader.readLine ();
+            while (nextLine != null) {
+                StringTokenizer st = new StringTokenizer (nextLine);
+                // The output contains the most likely npop and the likelihood
+                // for that value.
+                st.nextToken (); // "npop".
+                result = new Integer (st.nextToken ());
+                st.nextToken (); // "likelihood".
+                likelihood = new Double (st.nextToken ());
+                nextLine = reader.readLine ();
+            }
+        }
+        catch (IOException e) {
+            System.out.println ("Error reading the output file.");
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close ();
+                }
+                catch (IOException e) {
+                    System.out.println ("Error closing the output file.");
+                }
+            }
+        }
+        return result;
+    }
+
     private boolean hasRun;
     private String workingDirectory;
     private ArrayList<ArrayList<String>> ecotypes;
@@ -196,6 +339,9 @@ public class Demarcation implements Runnable {
     private Fasta fasta;
     private NewickTree tree;
     private ParameterSet<Double> hclimbResult;
+
+    private Integer nrep = 1000;
+    private Integer step = 1;
 
     private int iteration;
 
