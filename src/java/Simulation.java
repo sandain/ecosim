@@ -316,7 +316,8 @@ public class Simulation {
     protected void runDemarcation () {
         log.append ("Starting demarcation...\n");
         demarcation = new Demarcation (
-            masterVariables, fasta, tree, hillclimb.getResult ()
+            masterVariables, nu, length, outgroup, tree,
+            hillclimb.getResult ()
         );
         demarcation.run ();
         // Verify that demarcation ran correctly.

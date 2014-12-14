@@ -72,7 +72,8 @@ public class ProjectFileIO {
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         demarcation = new Demarcation (
-            masterVariables, fasta, tree, hillclimb.getResult ()
+            masterVariables, nu, length, outgroup, tree,
+            hillclimb.getResult ()
         );
     }
 

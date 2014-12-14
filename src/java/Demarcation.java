@@ -46,14 +46,19 @@ public class Demarcation implements Runnable {
      *  Creates new form Demarcations
      *
      *  @param masterVariables The MasterVariables.
-     *  @param fasta The sequence data.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the environmental sequences.
+     *  @param outgroup The name of the outgroup.
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
      */
-    public Demarcation (MasterVariables masterVariables, Fasta fasta,
-        NewickTree tree, ParameterSet<Double> hclimbResult) {
+    public Demarcation (MasterVariables masterVariables, Integer nu,
+        Integer length, String outgroup, NewickTree tree,
+        ParameterSet<Double> hclimbResult) {
         this.masterVariables = masterVariables;
-        this.fasta = fasta;
+        this.nu = nu;
+        this.length = length;
+        this.outgroup = outgroup;
         this.tree = tree;
         this.hclimbResult = hclimbResult;
         hasRun = false;
@@ -133,7 +138,6 @@ public class Demarcation implements Runnable {
      *  @param node The current node representing the subclade.
      */
     private void findEcotypes (NewickTreeNode node) {
-        String outgroup = fasta.getIdentifier (0);
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
@@ -167,15 +171,14 @@ public class Demarcation implements Runnable {
                 masterVariables, sampleTree
             );
             sampleBinning.run ();
-            Integer nu = sample.size ();
-            Integer length = fasta.length ();
+            Integer sampleNu = sample.size ();
             // Use the omega and sigma values from hillclimbing.
             Double omega = hclimbResult.getOmega ();
             Double sigma = hclimbResult.getSigma ();
             // Estimate the value of npop by multiplying the npop value found
             // in hillclimbing by the ratio of the sample size to the total
             // number of environmental sequences.
-            Integer npop = hclimbResult.getNpop () * nu / fasta.size ();
+            Integer npop = hclimbResult.getNpop () * sampleNu / nu;
             if (npop < 1) {
                 npop = 1;
             }
@@ -190,8 +193,7 @@ public class Demarcation implements Runnable {
             );
             // Write the input values for the demarcation program.
             writeInputFile (
-                inputFile, sampleBinning, nu, length, omega, sigma, npop,
-                likelihood
+                inputFile, sampleBinning, sampleNu, omega, sigma, npop, likelihood
             );
             // Run the demarcation program.
             Execs execs = masterVariables.getExecs ();
@@ -217,15 +219,14 @@ public class Demarcation implements Runnable {
      *
      *  @param inputFile The file to write to.
      *  @param binning The binning results.
-     *  @param nu The number of environmental sequences.
-     *  @param length The length of the environmental sequences.
+     *  @param sampleNu The number of environmental sequences.
      *  @param omega The omega estimate.
      *  @param sigma The sigma estimate.
      *  @param npop The npop estimate.
      *  @param likelihood The likelihood of the omega, sigma, npop estimates.
      */
-    private void writeInputFile (File inputFile, Binning binning, Integer nu,
-        Integer length, Double omega, Double sigma, Integer npop,
+    private void writeInputFile (File inputFile, Binning binning,
+        Integer sampleNu, Double omega, Double sigma, Integer npop,
         Double likelihood) {
         ArrayList<BinLevel> bins = binning.getBins ();
         BufferedWriter writer = null;
@@ -249,7 +250,7 @@ public class Demarcation implements Runnable {
             // Write the step value.
             writer.write (String.format ("%-20d step\n", step));
             // Write the nu value.
-            writer.write (String.format ("%-20d nu\n", nu));
+            writer.write (String.format ("%-20d nu\n", sampleNu));
             // Write the nrep value.
             writer.write (String.format ("%-20d nrep\n", nrep));
             // Create the random number seed; an odd integer less than nine
@@ -336,7 +337,9 @@ public class Demarcation implements Runnable {
     private ArrayList<ArrayList<String>> ecotypes;
     private MasterVariables masterVariables;
     private Logger log;
-    private Fasta fasta;
+    private String outgroup;
+    private Integer length;
+    private Integer nu;
     private NewickTree tree;
     private ParameterSet<Double> hclimbResult;
 
