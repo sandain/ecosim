@@ -1,4 +1,4 @@
-Ecotype Simulation
+# Ecotype Simulation
 
 The original version (Windows only) can be found at: http://fcohan.web.wesleyan.edu/ecosim/
 
