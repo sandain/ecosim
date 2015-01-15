@@ -678,8 +678,8 @@ public class Demarcations extends javax.swing.JFrame {
         // Set the sequencevals so that we can do hillclimbing.
         values.setSeqVals(selector.getSeqVals());
         // Run the demarc confidence interval.
-        File input = new File(workingDirectory + "demarcationsIn.dat");
-        File output = new File(workingDirectory + "demarcationsOut.dat");
+        File input = new File(workingDirectory + "demarcationIn.dat");
+        File output = new File(workingDirectory + "demarcationOut.dat");
         DemarcationConfidence demarcConf = new DemarcationConfidence(hClimbResult, values, masterVariables, input, output);
         int [] interval = demarcConf.demarcations();
         double bestLike = demarcConf.getBestLike();
@@ -739,8 +739,8 @@ public class Demarcations extends javax.swing.JFrame {
         values.setBins(bins);
         values.setSeqVals(selector.getSeqVals());
         // Run the demarc confidence interval.
-        File input = new File(workingDirectory + "demarcationsIn.dat");
-        File output = new File(workingDirectory + "demarcationsOut.dat");
+        File input = new File(workingDirectory + "demarcationIn.dat");
+        File output = new File(workingDirectory + "demarcationOut.dat");
         DemarcationConfidence demarcConf = new DemarcationConfidence(currentValue, values, masterVariables, input, output);
         int [] interval = demarcConf.demarcations();
         narr.writeInput(output);
