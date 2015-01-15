@@ -1,8 +1,8 @@
 Ecotype Simulation README
+=========================
 
 
-INSTALLATION
-================================================================================
+## INSTALLATION
 
 Extract the contents of the archive to your hard drive:
 
@@ -16,34 +16,32 @@ Create a Desktop shortcut to the shell script for your platform.
 
 
 
-REQUIREMENTS - EXECUTION
-================================================================================
+## REQUIREMENTS - EXECUTION
 
-Java 6 JRE
-------------------------------
+### Java 6 JRE
+
 A Java 6 Runtime Environment (JRE) is required to execute this program.  You
 can download it here:
 
   http://java.sun.com/javase/downloads/index.jsp
 
-NJplot
-------------------------------
+### NJplot
+
 The NJplot executable must be accessible via your system's PATH, or in the
 EcoSim directory.  You can download it here:
 
   http://pbil.univ-lyon1.fr/software/njplot.html
 
 
-PHYLIP
-------------------------------
+### PHYLIP
+
 The PHYLIP executable must be in your system's PATH, or in the EcoSim
 directory.  You can download it here:
 
   http://www.phylip.com/
 
 
-REQUIREMENTS - COMPILATION
-================================================================================
+## REQUIREMENTS - COMPILATION
 
 To compile the Fortran programs, you will need to have a Fortran compiler
 installed.  You can download and get installation instructions for the
@@ -62,8 +60,7 @@ here:
 
   http://ant.apache.org/manual/install.html
 
-Windows
-==============================
+## Windows
 
 The Makefile was created to compile these programs in a POSIX environment with
 access to the GNU Make system.  If you wish to compile these programs in a
@@ -84,12 +81,9 @@ installation instructions, and download the binaries here:
   http://sourceware.org/pthreads-win32/
 
 
-BUILDING THE SOURCE
-================================================================================
+## BUILDING THE SOURCE
 
-Make
-------------------------------
-
+### Make
 To build the binary files, and create the jar, issue the command:
 
   make
