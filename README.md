@@ -9,8 +9,8 @@ Extract the contents of the archive to your hard drive:
 * POSIX (Linux, OSX, etc): `~/ecosim/`
 
 Create a Desktop shortcut to the shell script for your platform.
-* Windows: `C:\EcoSim\runEcoSim.bat`
-* POSIX (Linux, OSX, etc): `~/ecosim/runEcoSim.sh`
+* Windows: `C:\EcoSim\ecosim.bat`
+* POSIX (Linux, OSX, etc): `~/ecosim/ecosim.sh`
 
 
 ## REQUIREMENTS - EXECUTION
