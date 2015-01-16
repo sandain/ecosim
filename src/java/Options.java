@@ -52,7 +52,7 @@ public class Options {
     /**
      *  Return the specified directory option.
      *
-     *  @param option One of BINARY_DIRECTORY, SCRIPT_DIRECTORY, HELP_DIRECTORY, WORKING_DIRECTORY
+     *  @param option One of BINARY_DIRECTORY, SCRIPT_DIRECTORY, HELP_DIRECTORY
      */
     public String getDirectoryOption(String option) {
         String directory = directoryOptions.get(option);
@@ -111,7 +111,6 @@ public class Options {
     public static String BINARY_DIRECTORY = "Binary Directory";
     public static String SCRIPT_DIRECTORY = "Script Directory";
     public static String HELP_DIRECTORY = "Help Directory";
-    public static String WORKING_DIRECTORY = "Working Directory";
 
     // Helper Program Labels
     public static String NJPLOT = "NJplot";
@@ -160,7 +159,6 @@ public class Options {
         BINARY_DIRECTORY,
         SCRIPT_DIRECTORY,
         HELP_DIRECTORY,
-        WORKING_DIRECTORY
     };
 
     private String[] helperProgramList = {
@@ -187,10 +185,6 @@ public class Options {
         defaultDirectoryOptions.put (
             HELP_DIRECTORY,
             System.getProperty("user.dir") + System.getProperty("file.separator") + "help" + System.getProperty("file.separator")
-        );
-        defaultDirectoryOptions.put (
-            WORKING_DIRECTORY,
-            System.getProperty("user.dir") + System.getProperty("file.separator") + "working" + System.getProperty("file.separator")
         );
     }
 
