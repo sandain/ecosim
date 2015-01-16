@@ -54,9 +54,9 @@ public class Execs {
         String osName = System.getProperty("os.name").toLowerCase();
         String osArch = System.getProperty("os.arch").toLowerCase();
         String osVersion = System.getProperty("os.version");
-        binaryDirectory = options.getDirectoryOption(Options.BINARY_DIRECTORY);
-        scriptDirectory = options.getDirectoryOption(Options.SCRIPT_DIRECTORY);
-        workingDirectory = options.getDirectoryOption(Options.WORKING_DIRECTORY);
+        binaryDirectory = masterVariables.getBinaryDirectory ();
+        scriptDirectory = masterVariables.getScriptDirectory ();
+        workingDirectory = masterVariables.getWorkingDirectory ();
         // Setup the rest of the variables.
         log = masterVariables.getLog();
         pcrerror = new File (workingDirectory + "pcrerror.dat");
