@@ -27,8 +27,11 @@
 package ecosim;
 
 import java.io.File;
-import javax.swing.JTextArea;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Hashtable;
+import javax.swing.JTextArea;
 
 /**
  *  This class holds the master variables that may need to be changed later into
@@ -43,10 +46,18 @@ public class MasterVariables {
      *  The MasterVariables constructor.
      */
     public MasterVariables() {
+        // Create a temporary directory to serve as the working directory.
+        try {
+            Path tempDirectory = Files.createTempDirectory ("es1-");
+            workingDirectory = tempDirectory.toString () +
+                System.getProperty ("file.separator");
+        }
+        catch (IOException e) {
+            e.printStackTrace ();
+        }
         options = OptionsIO.load();
         debug = false;
         log = new JTextArea();
-        String workingDirectory = options.getDirectoryOption(Options.WORKING_DIRECTORY);
         narrOut = new File(workingDirectory + "narrative.txt");
         narr = new NarrWriter(narrOut);
         noOutgroup = new File(workingDirectory + "noOutgroup.dat");
@@ -197,7 +208,7 @@ public class MasterVariables {
      *  @return String containing the working directory.
      */
     public String getWorkingDirectory() {
-        return options.getDirectoryOption(Options.WORKING_DIRECTORY);
+        return workingDirectory;
     }
 
     /**
@@ -345,6 +356,14 @@ public class MasterVariables {
      */
     private int nrep = 20;
 
+    /**
+     *  The location of the working directory.
+     */
+    private String workingDirectory;
+
+    /**
+     *  Display the debug information if true.
+     */
     private boolean debug;
 
     private JTextArea log;
