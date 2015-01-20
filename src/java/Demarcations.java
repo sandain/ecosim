@@ -307,7 +307,8 @@ public class Demarcations extends javax.swing.JFrame {
                     NewickTree tree = new NewickTree(treeFile);
                 }
                 catch (InvalidNewickException e) {
-                    log.append("That is not a valid tree file, please choose a valid newick tree file.\n");
+                    log.append ("That is not a valid tree file, please choose a valid newick tree file.");
+                    log.append (System.getProperty ("line.separator"));
                     System.out.println(e);
                     return;
                 }
@@ -326,7 +327,8 @@ public class Demarcations extends javax.swing.JFrame {
             if (returnVal == FileChooser.APPROVE_OPTION) {
                 inputFasta = new Fasta(fc.getSelectedFile());
                 if (! inputFasta.isValid()) {
-                    log.append("That is not a valid fasta file, please choose a properly formatted fasta file.\n");
+                    log.append ("That is not a valid fasta file, please choose a properly formatted fasta file.");
+                    log.append (System.getProperty ("line.separator"));
                     return;
                 }
                 Thread thread = new Thread() {
@@ -355,7 +357,8 @@ public class Demarcations extends javax.swing.JFrame {
             if (returnVal == FileChooser.APPROVE_OPTION) {
                 File output = fc.getSelectedFile();
                 SelectSeqBins fileMaker = new SelectSeqBins(new Fasta(fastaRGCopy), data, output, masterVariables);
-                log.append("Saved to file: " + output.getPath() + "\n");
+                log.append ("Saved to file: " + output.getPath ());
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -368,7 +371,8 @@ public class Demarcations extends javax.swing.JFrame {
             if (returnVal == FileChooser.APPROVE_OPTION) {
                 inputFasta = new Fasta(fc.getSelectedFile());
                 if (! inputFasta.isValid()) {
-                    log.append("That is not a valid fasta file, please choose a properly formatted fasta file.\n");
+                    log.append ("That is not a valid fasta file, please choose a properly formatted fasta file.");
+                    log.append (System.getProperty ("line.separator"));
                     return;
                 }
                 Thread thread = new Thread() {
@@ -412,8 +416,10 @@ public class Demarcations extends javax.swing.JFrame {
             }
             // See if that clade has had homogeneity run on it successfully.
             String message = "Now using the following values for demarcations:";
-            log.append(message + "\n");
-            log.append(currentValue.toString() + "\n");
+            log.append (message);
+            log.append (System.getProperty ("line.separator"));
+            log.append (currentValue.toString ());
+            log.append (System.getProperty ("line.separator"));
             narr.println(message);
             narr.println(currentValue.toString());
             selectedGenes.setListData(data);
@@ -547,7 +553,8 @@ public class Demarcations extends javax.swing.JFrame {
         // Run and time hillclimbing.
         long startTime, stopTime, runTime;
         double hourTime;
-        log.append("Running hillclimbing... \n");
+        log.append ("Running hillclimbing... ");
+        log.append (System.getProperty ("line.separator"));
         narr.println("Running hillclimbing ");
         startTime = System.currentTimeMillis();
         hillOne.run();
@@ -555,18 +562,25 @@ public class Demarcations extends javax.swing.JFrame {
         runTime = stopTime - startTime;
         hourTime = (double)runTime / 3600000;
         FredOutVal hClimbResult = hillOne.getValue();
-        log.append("\nThe values from hill climbing: ");
-        log.append("\nomega: " + hClimbResult.getOmega());
-        log.append("\nsigma: " + hClimbResult.getSigma());
-        log.append("\nnpop: " + hClimbResult.getNpop() + "\n");
+        log.append (System.getProperty ("line.separator"));
+        log.append("The values from hill climbing:");
+        log.append (System.getProperty ("line.separator"));
+        log.append("omega: " + hClimbResult.getOmega ());
+        log.append (System.getProperty ("line.separator"));
+        log.append("sigma: " + hClimbResult.getSigma ());
+        log.append (System.getProperty ("line.separator"));
+        log.append("npop: " + hClimbResult.getNpop ());
+        log.append (System.getProperty ("line.separator"));
         narr.println();
         narr.println("The values from hill climbing: ");
         narr.println("omega: " + hClimbResult.getOmega());
         narr.println("sigma: " + hClimbResult.getSigma());
         narr.println("npop: " + hClimbResult.getNpop());
         hClimbResult = values.fullLike(hClimbResult);
-        log.append("The full likelihood from hill climbing: \n");
-        log.append(hClimbResult.toString() + "\n");
+        log.append ("The full likelihood from hill climbing: ");
+        log.append (System.getProperty ("line.separator"));
+        log.append (hClimbResult.toString ());
+        log.append (System.getProperty ("line.separator"));
         narr.println("The full likelihood from hill climbing: ");
         narr.println(hClimbResult.toString());
         return hClimbResult;
@@ -661,12 +675,15 @@ public class Demarcations extends javax.swing.JFrame {
         String name = (String)model.getElementAt(indices[0]);
         Vector<String> data = clades.get(model.getElementAt(indices[0]));
         if (data.size() < 2) {
-            log.append("Clade " + name + " is too small, add more more sequences!\n");
+            log.append ("Clade " + name + " is too small, add more more sequences!");
+            log.append (System.getProperty ("line.separator"));
             return;
         }
-        log.append("Running full analysis on the following sequences: \n");
+        log.append ("Running full analysis on the following sequences: ");
+        log.append (System.getProperty ("line.separator"));
         for (int i = 0; i < data.size(); i ++) {
-            log.append((String)data.get(i) + "\n");
+            log.append ((String)data.get(i));
+            log.append (System.getProperty ("line.separator"));
         }
         ArrayList<String> sequences = new ArrayList<String>();
         for (int j = 0; j < data.size(); j ++) {
@@ -690,8 +707,11 @@ public class Demarcations extends javax.swing.JFrame {
         percentages[sortPer] = bestLike;
         int npop = interval[0]; // The best npop value.
         FredOutVal homGen = new FredOutVal(hClimbResult.getOmega(),hClimbResult.getSigma(), npop, hClimbResult.getDrift(), percentages, masterVariables);
-        log.append("\nRunning hillclimbing with the following value:\n");
-        log.append(homGen.toString() + "\n");
+        log.append (System.getProperty ("line.separator"));
+        log.append ("Running hillclimbing with the following value:");
+        log.append (System.getProperty ("line.separator"));
+        log.append (homGen.toString ());
+        log.append (System.getProperty ("line.separator"));
         narr.println();
         narr.println("Running hillclimbing with the following value:");
         narr.println(homGen.toString());
@@ -709,7 +729,8 @@ public class Demarcations extends javax.swing.JFrame {
         else {
             message = "The selected clade had a likelihood that was not significantly better than the likelihood for the whole set";
         }
-        log.append(message + "\n");
+        log.append (message);
+        log.append (System.getProperty ("line.separator"));
         narr.println(message);
     }
 
@@ -730,9 +751,11 @@ public class Demarcations extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please add sequences first");
             return;
         }
-        log.append("Running demarcation on the following sequences: \n");
+        log.append ("Running demarcation on the following sequences:");
+        log.append (System.getProperty ("line.separator"));
         for (int i = 0; i < selected.size(); i ++) {
-            log.append(selected.get(i) + "\n");
+            log.append (selected.get (i));
+            log.append (System.getProperty ("line.separator"));
         }
         SelectSeqBins selector = new SelectSeqBins(new Fasta(fastaRGCopy), selected, masterVariables);
         ArrayList<String> bins = selector.getBins();
@@ -746,11 +769,13 @@ public class Demarcations extends javax.swing.JFrame {
         narr.writeInput(output);
         // Write the output to the log and narrator.
         message = "The optimal value was at " + interval[0] + " and the confidence interval stretched from " + interval[1] + " to " + interval[2];
-        log.append(message + "\n");
+        log.append (message);
+        log.append (System.getProperty ("line.separator"));
         narr.println(message);
         if (interval[1] == 1) {
             message = "The confidence interval included 1";
-            log.append(message + "\n");
+            log.append (message);
+            log.append (System.getProperty ("line.separator"));
             narr.println(message);
         }
     }
