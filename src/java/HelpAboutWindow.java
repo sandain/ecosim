@@ -96,23 +96,35 @@ public class HelpAboutWindow extends JFrame implements Runnable {
     private JEditorPane makeIndexPane(String type) {
         JEditorPane editorPane = new JEditorPane();
         String index = new String();
-        index += "<!DOCTYPE html>\n";
-        index += "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n";
-        index += "  <head>\n";
-        index += "    <title>\n";
-        index += "      Help / About\n";
-        index += "    </title>\n";
-        index += "  </head>\n";
-        index += "  <frameset cols=\"20%,80%\">\n";
-        index += "    <frame src=\"file:///" + masterVariables.getHelpDirectory() + "menu.html" + "\" name=\"menu\" />\n";
+        index += "<!DOCTYPE html>" + System.getProperty ("line.separator");
+        index += "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+        index += System.getProperty ("line.separator");
+        index += "  <head>" + System.getProperty ("line.separator");
+        index += "    <title>" + System.getProperty ("line.separator");
+        index += "      Help / About";
+        index += System.getProperty ("line.separator");
+        index += "    </title>" + System.getProperty ("line.separator");
+        index += "  </head>" + System.getProperty ("line.separator");
+        index += "  <frameset cols=\"20%,80%\">";
+        index += System.getProperty ("line.separator");
+        index += "    <frame src=\"file:///";
+        index += masterVariables.getHelpDirectory () + "menu.html";
+        index += "\" name=\"menu\" />";
+        index += System.getProperty ("line.separator");
         if (type.equals(userGuide)) {
-            index += "    <frame src=\"file:///" + masterVariables.getHelpDirectory() + "userguide.html" + "\" name=\"body\" />\n";
+            index += "    <frame src=\"file:///";
+            index += masterVariables.getHelpDirectory () + "userguide.html";
+            index += "\" name=\"body\" />";
+            index += System.getProperty ("line.separator");
         }
         else if (type.equals(about)) {
-            index += "    <frame src=\"file:///" + masterVariables.getHelpDirectory() + "about.html" + "\" name=\"body\" />\n";
+            index += "    <frame src=\"file:///";
+            index += masterVariables.getHelpDirectory () + "about.html";
+            index += "\" name=\"body\" />";
+            index += System.getProperty ("line.separator");
         }
-        index += "  </frameset>\n";
-        index += "</html>\n";
+        index += "  </frameset>" + System.getProperty ("line.separator");
+        index += "</html>" + System.getProperty ("line.separator");
         try {
             File temp = File.createTempFile("index", ".html", new File(masterVariables.getWorkingDirectory()));
             BufferedWriter out = new BufferedWriter(new FileWriter(temp));
