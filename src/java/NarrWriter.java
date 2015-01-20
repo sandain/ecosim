@@ -78,7 +78,7 @@ public class NarrWriter {
         try {
             output.write(s);
             output.newLine();
-            allText.append(s + "\n");
+            allText.append (s + System.getProperty ("line.separator"));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class NarrWriter {
     public void println() {
         try {
             output.newLine();
-            allText.append("\n");
+            allText.append (System.getProperty ("line.separator"));
         }
         catch (IOException e) {
             e.printStackTrace();
