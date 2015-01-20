@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import javax.swing.JTextArea;
 
 /**
@@ -113,7 +114,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Brute Force", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Brute Force Search)>",
+            outputStream,
+            "Brute Force Search>",
+            true
+        );
     }
 
     /**
@@ -152,7 +167,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Hill Climb", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Hill Climb)>",
+            outputStream,
+            "Hill Climb>",
+            true
+        );
     }
 
     /**
@@ -166,7 +195,14 @@ public class Execs {
             options.getHelperProgram(Options.NJPLOT),
             treeFile
         };
-        return runApplication("NJPlot", command, false);
+        return runApplication (
+            command,
+            System.err,
+            "ERROR (NJPlot)>",
+            System.out,
+            "NJPlot>",
+            false
+        );
     }
 
     /**
@@ -220,7 +256,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Drift CI", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Drift CI)>",
+            outputStream,
+            "Drift CI>",
+            true
+        );
     }
 
     /**
@@ -236,7 +286,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Npop CI", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Npop CI)>",
+            outputStream,
+            "Npop CI>",
+            true
+        );
     }
 
     /**
@@ -252,7 +316,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Demarcation", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Demarcation)>",
+            outputStream,
+            "Demarcation>",
+            true
+        );
     }
 
     /**
@@ -268,7 +346,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Omega CI", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Omega CI)>",
+            outputStream,
+            "Omega CI>",
+            true
+        );
     }
 
     /**
@@ -284,7 +376,21 @@ public class Execs {
             Integer.toString (masterVariables.getNumberThreads ()),
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Sigma CI", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Sigma CI)>",
+            outputStream,
+            "Sigma CI>",
+            true
+        );
     }
 
     /**
@@ -324,7 +430,21 @@ public class Execs {
             workingDirectory + "fasta.dat",
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Remove Gaps", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Remove Gaps)>",
+            outputStream,
+            "Remove Gaps>",
+            true
+        );
     }
 
     /**
@@ -340,7 +460,21 @@ public class Execs {
             workingDirectory + "namesofstrains.dat",
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Read Synec", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Read Synec)>",
+            outputStream,
+            "Read Synec>",
+            true
+        );
     }
 
     /**
@@ -356,7 +490,21 @@ public class Execs {
             workingDirectory + "correctpcr.out",
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Correct PCR", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Correct PCR)>",
+            outputStream,
+            "Correct PCR>",
+            true
+        );
     }
 
     /**
@@ -371,7 +519,21 @@ public class Execs {
             workingDirectory + "identitymatrix.dat",
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Divergence Matrix", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Divergence Matrix)>",
+            outputStream,
+            "Divergence Matrix>",
+            true
+        );
     }
 
     /**
@@ -387,7 +549,21 @@ public class Execs {
             workingDirectory + "output.dat",
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Binning", command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Binning)>",
+            outputStream,
+            "Binning>",
+            true
+        );
     }
 
     /**
@@ -425,7 +601,21 @@ public class Execs {
             workingDirectory,
             Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication(program, command, true);
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program error output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Phylip " + program + ")>",
+            outputStream,
+            "Phylip " + program + ">",
+            true
+        );
     }
 
 
@@ -433,46 +623,67 @@ public class Execs {
      *  Runs the provided application with the provided args.
      *  If the wait boolean is set, waits for the application to finish.
      *
-     *  @param name The name  of the application.
-     *  @param command A String array containing the path and filename of the application, and any arguments.
+     *  @param command A String array containing the path and filename of the
+     *  application, and any arguments.
+     *  @param errorStream The IO Stream to print error messages to.
+     *  @param errorMessage The title for error messages.
+     *  @param outputStream The IO Stream to print standard messages to.
+     *  @param outputMessage The title for the output messages.
      *  @param wait Set to TRUE to wait for application to exit.
      *  @return The exit value.
      */
-    private int runApplication(String name, String[] command, boolean wait) {
+    private int runApplication (
+        String[] command, PrintStream errorStream, String errorMessage,
+        PrintStream outputStream, String outputMessage, boolean wait
+    ) {
         int exitVal = -1;
         try {
-            Process p = new ProcessBuilder(command).start();
+            ProcessBuilder pb = new ProcessBuilder (command);
+            Process p = pb.start ();
             StreamGobbler errorGobbler = null;
             StreamGobbler outputGobbler = null;
             // Display debugging output if needed.
-            if (masterVariables.getDebug()) {
-                log.append ("Execute: " + command[0]);
-                log.append (System.getProperty ("line.separator"));
+            if (masterVariables.getDebug ()) {
+                System.out.print ("Execute:");
+                for (int i = 0; i < command.length; i ++) {
+                    System.out.print (" " + command[i]);
+                }
+                System.out.print ("\n");
+            }
+            if (errorStream != null) {
                 // Grab error messages.
-                errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR (" + name + ")");
-                errorGobbler.start();
+                errorGobbler = new StreamGobbler (
+                    p.getErrorStream (),
+                    errorStream,
+                    errorMessage
+                );
+                errorGobbler.start ();
+            }
+            if (outputStream != null) {
                 // Grab output messages.
-                outputGobbler = new StreamGobbler(p.getInputStream(), name);
-                outputGobbler.start();
+                outputGobbler = new StreamGobbler (
+                    p.getInputStream (),
+                    outputStream,
+                    outputMessage
+                );
+                outputGobbler.start ();
             }
             // Wait for application to finish if needed.
             if (wait) {
-                exitVal = p.waitFor();
+                exitVal = p.waitFor ();
                 // Also wait for the StreamGobbler threads to finish.
-                if (masterVariables.getDebug()) {
-                    errorGobbler.join();
-                    outputGobbler.join();
-                }
+                if (errorGobbler != null) errorGobbler.join ();
+                if (outputGobbler != null) outputGobbler.join ();
             }
             else {
                 exitVal = 0;
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         return exitVal;
     }
@@ -567,7 +778,7 @@ public class Execs {
     private static final String phylipBatchScript =
         "@echo off" +
         System.getProperty ("line.separator") +
-        "cd \"%2\"" +
+        "cd /D \"%2\"" +
         System.getProperty ("line.separator") +
         "if exist outfile del outfile" +
         System.getProperty ("line.separator") +
