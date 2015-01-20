@@ -122,7 +122,10 @@ public class TreeFinder {
             output.write(sequenceVals[0] + "    " + sequenceVals[1]);
             output.newLine();
             for (int i = 0; i < ids.size(); i ++) {
-                output.write(String.format("%-10d    %s\n", i, fasta.get(i)));
+                output.write (String.format (
+                    "%-10d    %s", i, fasta.get(i)
+                ));
+                output.newLine ();
             }
             output.close();
         }
