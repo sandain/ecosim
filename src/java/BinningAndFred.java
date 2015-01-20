@@ -90,7 +90,8 @@ public class BinningAndFred implements Runnable {
             masterVariables.setSortPercentage(userChoice);
         }
         // Run fred and get the best value to run the full likelihood.
-        log.append("Running binning program...\n");
+        log.append ("Running binning program...");
+        log.append (System.getProperty ("line.separator"));
         narr.println("Running binning program...");
         ArrayList<FredOutVal> results = getFredOutput(inFasta, fredMethodInput);
         bestFred = findBestHclimb(results);
@@ -143,7 +144,8 @@ public class BinningAndFred implements Runnable {
         narr.println("The input for full likelihood: ");
         narr.writeInput(fredMethodInput);
         // Run fred method.
-        log.append("Running Brute Force Search...\n");
+        log.append ("Running Brute Force Search...");
+        log.append (System.getProperty ("line.separator"));
         execs.runBruteforce();
         // Read in results.
         ArrayList<FredOutVal> results = fredValsReader.readFredOutVals(fredOutput);
@@ -249,7 +251,8 @@ public class BinningAndFred implements Runnable {
         narr.println("The input for Brute Force Search is: ");
         narr.writeInput(fredMethodInput);
         // Run fred method.
-        log.append("Running Brute Force Search...\n");
+        log.append ("Running Brute Force Search...");
+        log.append (System.getProperty ("line.separator"));
         execs.runBruteforce();
         // Read in results.
         ArrayList<FredOutVal> results = fredValsReader.readFredOutVals(fredOutput);
@@ -276,8 +279,10 @@ public class BinningAndFred implements Runnable {
             case 5: criterion = "1.05x";
                     break;
         }
-        log.append("Now checking at " + criterion + "\n");
-        narr.println("Now checking at " + criterion + "\n");
+        log.append ("Now checking at " + criterion);
+        log.append (System.getProperty ("line.separator"));
+        narr.println("Now checking at " + criterion);
+        narr.println();
     }
 
     /**
@@ -303,15 +308,18 @@ public class BinningAndFred implements Runnable {
         int sortPer;
         FredOutVal actualLikelihoods = null;
         printSorting();
-        log.append("(the criterion that values are sorted by)\n");
+        log.append ("(the criterion that values are sorted by)");
+        log.append (System.getProperty ("line.separator"));
         narr.println("(the criterion that values are sorted by)");
         while (true) {
             // Keep running full likelihoods and timing hillclimbing until we find a good likelihood to run it on.
-            log.append("\n");
+            log.append (System.getProperty ("line.separator"));
             // Don't run full likelihood again if we already have them.
             if (actualLikelihoods == null) {
-                log.append("Running full likelihood with the following result:\n");
-                log.append(bestFred.toString() + "\n");
+                log.append ("Running full likelihood with the following result:");
+                log.append (System.getProperty ("line.separator"));
+                log.append (bestFred.toString());
+                log.append (System.getProperty ("line.separator"));
                 narr.println();
                 narr.println("Running full likelihood with the following result:");
                 narr.println(bestFred.toString());
@@ -336,32 +344,41 @@ public class BinningAndFred implements Runnable {
             // Figure out the number of reps needed to get 50 successes.
             nrep = (int)(50 / percentages[sortPer]);
             predictedTime = NHCLIMB_REPS * (((double) nrep / NREP_FULL_LIKE) * hourTime);
-            log.append("\n");
-            log.append("Actual likelihood's for hillclimbing: \n");
-            log.append(actualLikelihoods.toString() + "\n");
+            log.append (System.getProperty ("line.separator"));
+            log.append ("Actual likelihood's for hillclimbing: ");
+            log.append (System.getProperty ("line.separator"));
+            log.append (actualLikelihoods.toString());
+            log.append (System.getProperty ("line.separator"));
             narr.println("Actual likelihood's for hillclimbing: ");
             narr.println(actualLikelihoods.toString());
             printSorting();
-            log.append("\nTesting hillclimbing...\n");
+            log.append (System.getProperty ("line.separator"));
+            log.append ("Testing hillclimbing...");
+            log.append (System.getProperty ("line.separator"));
             narr.println();
             narr.println("Testing hillclimbing...");
             String predicted = String.format("Predicted Run time: %.2g hours", predictedTime);
-            log.append(predicted + "\n");
+            log.append (predicted + System.getProperty ("line.separator"));
             narr.println(predicted);
             if (userChoice != -1) {
                 return actualLikelihoods;
             }
             if (predictedTime < numHours) {
-                log.append("Can be run in a reasonable amount of time, continuing...\n");
+                log.append ("Can be run in a reasonable amount of time, continuing...");
+                log.append (System.getProperty ("line.separator"));
                 narr.println("Can be run in a reasonable amount of time, continuing...");
                 return actualLikelihoods;
             }
             if (masterVariables.getSortPercentage() == 0) {
-                log.append("Cannot decrease precision further, using last data point as hillclimb seed...\n");
+                log.append ("Cannot decrease precision further, using ");
+                log.append ("last data point as hillclimb seed...");
+                log.append (System.getProperty ("line.separator"));
                 narr.println("Cannot decrease precision further, using last data point as hillclimb seed...");
                 return actualLikelihoods;
             }
-            log.append("Hill Climbing would take longer than " + numHours + " hours, decreasing precision...\n");
+            log.append ("Hill Climbing would take longer than " + numHours);
+            log.append (" hours, decreasing precision...");
+            log.append (System.getProperty ("line.separator"));
             narr.println("Hill Climbing would take longer than " + numHours + " hours, decreasing precision...");
             masterVariables.setSortPercentage(sortPer - 1);
         }
