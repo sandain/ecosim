@@ -97,7 +97,9 @@ public class NewickTree {
         boolean success = false;
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
-            out.write(root.toString() + "\n");
+            out.write (
+                root.toString() + System.getProperty ("line.separator")
+            );
             out.close();
             success = true;
         }
