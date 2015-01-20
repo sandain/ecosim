@@ -116,7 +116,8 @@ public class EcotypeSimulation extends JFrame {
      *  parameters with a better likelihood is found (via) hillclimbing it will return that value.
      */
     public FredOutVal runDriftConfidenceInterval() {
-       log.append("Starting drift confidence interval...\n");
+       log.append ("Starting drift confidence interval...");
+       log.append (System.getProperty ("line.separator"));
        narr.println("Starting drift confidence interval...");
        ArrayList<String> bins = values.getBins();
        int[] sequenceVals = values.getSeqVals();
@@ -125,8 +126,10 @@ public class EcotypeSimulation extends JFrame {
        DriftConfidence drift = new DriftConfidence(hClimbResult, values, masterVariables, driftIn, driftOut);
        // Run the lower bound.
        FredOutVal driftRes = drift.lowerBound();
-       log.append("The result from driftCI lower bound:\n");
-       log.append("  " + driftRes.toString() + "\n");
+       log.append ("The result from driftCI lower bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + driftRes.toString());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from driftCI:");
        narr.println("  " + driftRes.toString());
        driftConfidenceInterval = 1 / driftRes.getDrift();
@@ -140,7 +143,8 @@ public class EcotypeSimulation extends JFrame {
      *  it returns the value with that better likelihood.
      */
     public FredOutVal runOmegaConfidenceInterval() {
-       log.append("Starting omega confidence interval...\n");
+       log.append ("Starting omega confidence interval...");
+       log.append (System.getProperty ("line.separator"));
        narr.println("Starting omega confidence interval...");
        ArrayList<String> bins = values.getBins();
        int[] sequenceVals = values.getSeqVals();
@@ -149,14 +153,18 @@ public class EcotypeSimulation extends JFrame {
        OmegaConfidence omega = new OmegaConfidence(hClimbResult, values, masterVariables, omegaIn, omegaOut);
        // Run the lower bound.
        FredOutVal omegaRes = omega.lowerBound();
-       log.append("The result from omegaCI lower bound:\n");
-       log.append("  " + omegaRes.toString() + "\n");
+       log.append ("The result from omegaCI lower bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + omegaRes.toString());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from omegaCI:");
        narr.println("  " + omegaRes.toString());
        // Run the upper bound.
        FredOutVal omegaUpRes = omega.upperBound();
-       log.append("The result from omegaCI upper bound:\n");
-       log.append("  " + omegaUpRes.toString() + "\n");
+       log.append ("The result from omegaCI upper bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + omegaUpRes.toString());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from omegaCI upper bound:");
        narr.println("  " + omegaUpRes.toString());
        omegaConfidenceInterval = new double[2];
@@ -220,14 +228,22 @@ public class EcotypeSimulation extends JFrame {
     private boolean checkArguments (String[] args) {
         boolean error = false;
         String errorMessage = "";
-        errorMessage += "Syntax error: Unknown argument supplied.\n";
-        errorMessage += "Usage: java -jar EcoSim.jar [OPTION]...\n";
-        errorMessage += "  Options\n";
-        errorMessage += "    -d, --debug   : Displays debugging output in a separate terminal window.\n";
-        errorMessage += "    -a, --about   : Displays the about window.\n";
-        errorMessage += "    -h, --help    : Displays the help window.\n";
-        errorMessage += "    -l, --license : Displays the license window.\n";
-        errorMessage += "    -v, --version : Displays the version window.\n";
+        errorMessage += "Syntax error: Unknown argument supplied.";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "Usage: java -jar EcoSim.jar [OPTION]...";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "  Options";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "    -d, --debug   : Displays debugging output.";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "    -a, --about   : Displays the about window.";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "    -h, --help    : Displays the help window.";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "    -l, --license : Displays the license window.";
+        errorMessage += System.getProperty ("line.separator");
+        errorMessage += "    -v, --version : Displays the version window.";
+        errorMessage += System.getProperty ("line.separator");
         for (String arg: args) {
             if (arg.equals("-d") || arg.equals("--debug")) {
                 masterVariables.setDebug(true);
@@ -487,8 +503,11 @@ public class EcotypeSimulation extends JFrame {
                 thread.start();
             }
             else {
-                log.append("Please run through hillclimbing or load a saved "+
-                    "file before running demarcations.\n");
+                log.append (
+                    "Please run through hillclimbing or load a saved " +
+                    "file before running demarcations."
+                );
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -502,10 +521,12 @@ public class EcotypeSimulation extends JFrame {
                     File inputFile = fc.getSelectedFile();
                     inputFasta = new Fasta(inputFile);
                     noOutgroupFasta = removeOutgroup(inputFasta);
-                    log.append("Opening: " + inputFile.getName() + "\n");
+                    log.append ("Opening: " + inputFile.getName());
+                    log.append (System.getProperty ("line.separator"));
                     // Test that the file extension is correct and that the file can be read.
                     if (! inputFasta.isValid()) {
-                        log.append("That is not a valid fasta file, please choose one.\n");
+                        log.append ("That is not a valid fasta file.");
+                        log.append (System.getProperty ("line.separator"));
                     }
                     else {
                         if (chooseTree() != -1) {
@@ -520,7 +541,11 @@ public class EcotypeSimulation extends JFrame {
                 }
             }
             else {
-                log.append("Please run through hillclimbing or load a saved file before running demarcations.\n");
+                log.append (
+                    "Please run through hillclimbing or load a saved file " +
+                    "before running demarcations."
+                );
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -539,7 +564,8 @@ public class EcotypeSimulation extends JFrame {
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == FileChooser.APPROVE_OPTION) {
                 tree = fc.getSelectedFile();
-                log.append("Opening: " + tree.getName() + "\n");
+                log.append ("Opening: " + tree.getName ());
+                log.append (System.getProperty ("line.separator"));
             }
             else {
                 useNewick = -1;
@@ -593,10 +619,12 @@ public class EcotypeSimulation extends JFrame {
                 if (! ((path.substring(path.length() - 4, path.length())).equals(".cpm"))) {
                     userFile = new File(userFile.getPath()+".cpm");
                 }
-                log.append("Saving to: " + userFile.getName() + "\n");
+                log.append ("Saving to: " + userFile.getName ());
+                log.append (System.getProperty ("line.separator"));
                 narr.println("Saving to: " + userFile.getName());
                 if (!saveFile(userFile)) {
-                    log.append("Please run up to hillclimbing before  saving to a file.\n");
+                    log.append ("Please run up to hillclimbing before saving to a file.");
+                    log.append (System.getProperty ("line.separator"));
                 }
             }
         }
@@ -608,13 +636,17 @@ public class EcotypeSimulation extends JFrame {
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == FileChooser.APPROVE_OPTION) {
                 File savedFile = fc.getSelectedFile();
-                log.append("Opening: " + savedFile.getName() + "\n");
+                log.append ("Opening: " + savedFile.getName());
+                log.append (System.getProperty ("line.separator"));
                 String name = savedFile.getName();
                 // Test that the file extension is correct and that the file can be read.
                 if (! savedFile.canRead() || ! ((name.substring(name.length() - 4, name.length()).equals(".cpm"))) ||
                     ! recoverSavedData(savedFile)) {
-                    log.append("That is not a valid saved file, please choose"+
-                        " a file previously saved in this program.\n");
+                    log.append (
+                        "That is not a valid saved file, please choose" +
+                        " a file previously saved in this program."
+                    );
+                    log.append (System.getProperty ("line.separator"));
                 }
             }
         }
@@ -628,9 +660,14 @@ public class EcotypeSimulation extends JFrame {
                 File inputFile = fc.getSelectedFile();
                 inputFasta = new Fasta(inputFile);
                 noOutgroupFasta = removeOutgroup(inputFasta);
-                log.append("Opening: " + inputFile.getName() + "\n");
+                log.append ("Opening: " + inputFile.getName ());
+                log.append (System.getProperty ("line.separator"));
                 if (! inputFasta.isValid()) {
-                    log.append("That is not a valid fasta file, please choose a properly formatted fasta file.\n");
+                    log.append (
+                        "That is not a valid fasta file, please choose a " +
+                        "properly formatted fasta file."
+                    );
+                    log.append (System.getProperty ("line.separator"));
                     return;
                 }
                 narr.println("Opening: " + inputFile.getName());
@@ -641,13 +678,15 @@ public class EcotypeSimulation extends JFrame {
     private void runAllActionPerformed(ActionEvent evt) {
         if (evt.getSource() == runAll) {
             if (! inputFasta.isValid()) {
-                log.append("Please open a valid fasta file first.\n");
+                log.append ("Please open a valid fasta file first.");
+                log.append (System.getProperty ("line.separator"));
                 return;
             }
             Thread thread = new Thread() {
                 public void run() {
                     if (running) {
-                        log.append("Already running...\n");
+                        log.append ("Already running...");
+                        log.append (System.getProperty ("line.separator"));
                     }
                     else {
                         running = true;
@@ -672,13 +711,15 @@ public class EcotypeSimulation extends JFrame {
     private void runToHClimbActionPerformed(ActionEvent evt) {
         if (evt.getSource() == runToHClimb) {
             if (! inputFasta.isValid()) {
-                log.append("Please open a valid fasta file first.\n");
+                log.append ("Please open a valid fasta file first.");
+                log.append (System.getProperty ("line.separator"));
                 return;
             }
             Thread thread = new Thread() {
                 public void run() {
                     if (running) {
-                        log.append("Already running...\n");
+                        log.append ("Already running...");
+                        log.append (System.getProperty ("line.separator"));
                     }
                     else {
                         running = true;
@@ -701,7 +742,8 @@ public class EcotypeSimulation extends JFrame {
                 Thread thread = new Thread() {
                     public void run() {
                         if (running) {
-                            log.append("Already running...\n");
+                            log.append ("Already running...");
+                            log.append (System.getProperty ("line.separator"));
                         }
                         else {
                             running = true;
@@ -720,8 +762,11 @@ public class EcotypeSimulation extends JFrame {
                 thread.start();
             }
             else {
-                log.append("You must run binning and hillclimbing from a "+
-                    "fasta file before you can run a confidence interval.\n");
+                log.append (
+                    "You must run binning and hillclimbing from a " +
+                    "fasta file before you can run a confidence interval."
+                );
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -732,7 +777,8 @@ public class EcotypeSimulation extends JFrame {
                 Thread thread = new Thread() {
                     public void run() {
                         if (running) {
-                            log.append("Already running...\n");
+                            log.append ("Already running...");
+                            log.append (System.getProperty ("line.separator"));
                         }
                         else {
                             running = true;
@@ -751,8 +797,11 @@ public class EcotypeSimulation extends JFrame {
                 thread.start();
             }
             else {
-                log.append("You must run binning and hillclimbing from a "+
-                    "fasta file before you can run a confidence interval.\n");
+                log.append (
+                    "You must run binning and hillclimbing from a " +
+                    "fasta file before you can run a confidence interval."
+                );
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -763,7 +812,8 @@ public class EcotypeSimulation extends JFrame {
                 Thread thread = new Thread() {
                     public void run() {
                         if (running) {
-                            log.append("Already running...\n");
+                            log.append ("Already running...");
+                            log.append (System.getProperty ("line.separator"));
                         }
                         else {
                             running = true;
@@ -782,8 +832,11 @@ public class EcotypeSimulation extends JFrame {
                 thread.start();
             }
             else {
-                log.append("You must run binning and hillclimbing from a "+
-                    "fasta file before you can run a confidence interval.\n");
+                log.append (
+                    "You must run binning and hillclimbing from a " +
+                    "fasta file before you can run a confidence interval."
+                );
+                log.append (System.getProperty ("line.separator"));
             }
         }
     }
@@ -794,7 +847,8 @@ public class EcotypeSimulation extends JFrame {
                 Thread thread = new Thread() {
                     public void run() {
                         if (running) {
-                            log.append("Already running...\n");
+                            log.append ("Already running...");
+                            log.append (System.getProperty ("line.separator"));
                         }
                         else {
                             running = true;
@@ -812,21 +866,28 @@ public class EcotypeSimulation extends JFrame {
                 };
                 thread.start();
             }
-            else log.append("You must run binning and hillclimbing from a "+
-                    "fasta file before you can run a confidence interval.\n");
+            else {
+                log.append (
+                    "You must run binning and hillclimbing from a " +
+                    "fasta file before you can run a confidence interval."
+                );
+                log.append (System.getProperty ("line.separator"));
+            }
         }
     }
 
     private void runAllDemarcsActionPerformed(ActionEvent evt) {
         if (evt.getSource() == runAllDemarcs) {
             if (! inputFasta.isValid()) {
-                log.append("Please open a valid fasta file first.\n");
+                log.append ("Please open a valid fasta file first.");
+                log.append (System.getProperty ("line.separator"));
                 return;
             }
             Thread thread = new Thread() {
                 public void run() {
                     if (running) {
-                        log.append("Already running...\n");
+                        log.append ("Already running...");
+                        log.append (System.getProperty ("line.separator"));
                     }
                     else {
                         running = true;
@@ -874,7 +935,8 @@ public class EcotypeSimulation extends JFrame {
      *  in hillclimbing, otherwise it returns that better value.
      */
     private FredOutVal runSigmaConfidenceInterval() {
-       log.append("Starting sigma confidence interval: \n");
+       log.append ("Starting sigma confidence interval: ");
+       log.append (System.getProperty ("line.separator"));
        narr.println("Starting sigma confidence interval: ");
        ArrayList<String> bins = values.getBins();
        int[] sequenceVals = values.getSeqVals();
@@ -884,23 +946,28 @@ public class EcotypeSimulation extends JFrame {
        SigmaConfidence sigma = new SigmaConfidence(hClimbResult, values, masterVariables, sigmaIn, sigmaOut);
        // Run the lower bound.
        FredOutVal sigmaRes = sigma.lowerBound();
-       log.append("The result from the lower bound of sigmaCI:\n");
-       log.append("  " + sigmaRes.toString() + "\n");
+       log.append ("The result from the lower bound of sigmaCI:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + sigmaRes.toString ());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from the lower bound of sigmaCI:");
        narr.println("  " + sigmaRes.toString());
        // Run the upper bound.
        FredOutVal sigmaUpRes = sigma.upperBound();
        // If sigma is greater than 100, the sigma confidence interval class will have returned null for the answer to the upper bound.
        if (sigmaUpRes == null) {
-           log.append("The upper bound of sigma is greater than 100\n");
+           log.append ("The upper bound of sigma is greater than 100");
+           log.append (System.getProperty ("line.separator"));
            narr.println("The upper bound of sigma is greater than 100");
            sigmaConfidenceInterval = new double[2];
            sigmaConfidenceInterval[0] = sigmaRes.getSigma();
            sigmaConfidenceInterval[1] = 100.0;
            return null;
         }
-       log.append("The result from sigmaCI upper bound:\n");
-       log.append("  " + sigmaUpRes.toString() + "\n");
+       log.append ("The result from sigmaCI upper bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + sigmaUpRes.toString ());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from sigmaCI upper bound:");
        narr.println("  " + sigmaUpRes.toString());
        sigmaConfidenceInterval = new double[2];
@@ -916,7 +983,8 @@ public class EcotypeSimulation extends JFrame {
      *  during the confidence interval run, otherwise null
      */
     private FredOutVal runNpopConfidenceInterval() {
-       log.append("Starting npop confidence interval...\n");
+       log.append ("Starting npop confidence interval...");
+       log.append (System.getProperty ("line.separator"));
        narr.println("Starting npop confidence interval...");
        ArrayList<String> bins = values.getBins();
        int[] sequenceVals = values.getSeqVals();
@@ -925,14 +993,18 @@ public class EcotypeSimulation extends JFrame {
        NpopConfidence npop = new NpopConfidence(hClimbResult, values, masterVariables, npopIn, npopOut);
        // Run the lower bound.
        FredOutVal npopRes = npop.lowerBound();
-       log.append("The result from npopCI lower bound:\n");
-       log.append("  " + npopRes.toString() + "\n");
+       log.append ("The result from npopCI lower bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + npopRes.toString ());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from npopCI:");
        narr.println("  " + npopRes.toString());
        // Run the upper bound.
        FredOutVal npopUpRes = npop.upperBound();
-       log.append("The result from npopCI upper bound:\n");
-       log.append("  " + npopUpRes.toString() + "\n");
+       log.append ("The result from npopCI upper bound:");
+       log.append (System.getProperty ("line.separator"));
+       log.append ("  " + npopUpRes.toString ());
+       log.append (System.getProperty ("line.separator"));
        narr.println("The result from npopCI upper bound:");
        narr.println("  " + npopUpRes.toString());
        npopConfidenceInterval = new int[2];
@@ -949,13 +1021,19 @@ public class EcotypeSimulation extends JFrame {
      */
     private boolean userApproval(FredOutVal newValue) {
         String prompt = "";
-        prompt += "The program has found a value from the confidence interval that\n";
-        prompt += "has a better likelihood than the value from hill climbing.\n";
-        prompt += "The Value is:\n";
-        prompt += "omega: " + newValue.getOmega() + "\n";
-        prompt += "sigma: " + newValue.getSigma() + "\n";
-        prompt += "npop: " + newValue.getNpop() + "\n";
-        prompt += "drift: " + newValue.getDrift() + "\n";
+        prompt += "The program has found a value from the confidence interval that";
+        prompt += System.getProperty ("line.separator");
+        prompt += "has a better likelihood than the value from hill climbing.";
+        prompt += System.getProperty ("line.separator");
+        prompt += "The Value is:" + System.getProperty ("line.separator");
+        prompt += "omega: " + newValue.getOmega ();
+        prompt += System.getProperty ("line.separator");
+        prompt += "sigma: " + newValue.getSigma ();
+        prompt += System.getProperty ("line.separator");
+        prompt += "npop: " + newValue.getNpop ();
+        prompt += System.getProperty ("line.separator");
+        prompt += "drift: " + newValue.getDrift ();
+        prompt += System.getProperty ("line.separator");
         prompt += "Re-do hillclimbing?";
         JOptionPane useNewVal = new JOptionPane(prompt,JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
         JDialog dialog = useNewVal.createDialog(EcotypeSimulation.this, "Better parameters found");
@@ -963,14 +1041,17 @@ public class EcotypeSimulation extends JFrame {
         dialog.setVisible(true);
         Integer selectedValue = (Integer)useNewVal.getValue();
         if (selectedValue.intValue() == JOptionPane.YES_OPTION) {
-            log.append("User elected to re-do hillclimbing on the value:\n");
-            log.append("  " + newValue.toString() + "\n");
+            log.append ("User elected to re-do hillclimbing on the value:");
+            log.append (System.getProperty ("line.separator"));
+            log.append ("  " + newValue.toString());
+            log.append (System.getProperty ("line.separator"));
             narr.println("User elected to re-do hillclimbing on the value:");
             narr.println("  " + newValue.toString());
             return true;
         }
         else {
-            log.append("User elected to continue with the current value from hillclimbing\n");
+            log.append ("User elected to continue with the current value from hillclimbing");
+            log.append (System.getProperty ("line.separator"));
             narr.println("User elected to continue with the current value from hillclimbing");
             return false;
         }
@@ -990,30 +1071,41 @@ public class EcotypeSimulation extends JFrame {
         // Run and time hillclimbing.
         long startTime, stopTime, runTime;
         double hourTime;
-        log.append("Running hillclimbing...\n");
+        log.append ("Running hillclimbing...");
+        log.append (System.getProperty ("line.separator"));
         narr.println("Running hillclimbing...");
         startTime = System.currentTimeMillis();
         hillOne.run();
         stopTime = System.currentTimeMillis();
         runTime = stopTime - startTime;
         hourTime = (double)runTime / 3600000;
-        log.append(String.format("Actual runtime was: %.2g hours.\n", hourTime));
+        log.append (String.format (
+            "Actual runtime was: %.2g hours.", hourTime
+        ));
+        log.append (System.getProperty ("line.separator"));
         FredOutVal hClimbResult = hillOne.getValue();
         String omegaResult = String.format("omega: %.3g", hClimbResult.getOmega());
         String sigmaResult = String.format("sigma: %.3g", hClimbResult.getSigma());
         String npopResult = String.format("npop: %1d", hClimbResult.getNpop());
-        log.append("\nThe values from hill climbing:\n");
-        log.append("  " + omegaResult + "\n");
-        log.append("  " + sigmaResult + "\n");
-        log.append("  " + npopResult + "\n");
+        log.append (System.getProperty ("line.separator"));
+        log.append ("The values from hill climbing:");
+        log.append (System.getProperty ("line.separator"));
+        log.append ("  " + omegaResult);
+        log.append (System.getProperty ("line.separator"));
+        log.append ("  " + sigmaResult);
+        log.append (System.getProperty ("line.separator"));
+        log.append ("  " + npopResult);
+        log.append (System.getProperty ("line.separator"));
         narr.println();
         narr.println("The values from hill climbing: ");
         narr.println(omegaResult);
         narr.println(sigmaResult);
         narr.println(npopResult);
         hClimbResult = values.fullLike(hClimbResult);
-        log.append("The full likelihood from hill climbing:\n");
-        log.append("  " + hClimbResult.toString() + "\n");
+        log.append ("The full likelihood from hill climbing:");
+        log.append (System.getProperty ("line.separator"));
+        log.append ("  " + hClimbResult.toString ());
+        log.append (System.getProperty ("line.separator"));
         narr.println("The full likelihood from hill climbing:");
         narr.println("  " + hClimbResult.toString());
         return hClimbResult;
@@ -1024,9 +1116,12 @@ public class EcotypeSimulation extends JFrame {
      */
     private void printResults() {
         if (hClimbResult != null) {
-            log.append("Final results\n");
-            log.append("The result from hillclimbing was:\n");
-            log.append(hClimbResult.toString() + "\n");
+            log.append ("Final results");
+            log.append (System.getProperty ("line.separator"));
+            log.append ("The result from hillclimbing was:");
+            log.append (System.getProperty ("line.separator"));
+            log.append (hClimbResult.toString ());
+            log.append (System.getProperty ("line.separator"));
             narr.println("Final results");
             narr.println("The result from hillclimbing was:");
             narr.println(hClimbResult.toString());
@@ -1047,7 +1142,8 @@ public class EcotypeSimulation extends JFrame {
             else {
                 omegaLow = String.format("%.3g", omegaConfidenceInterval[0]);
             }
-            log.append("omega: " + omega + " (" + omegaLow + " to " + omegaHigh + ")\n");
+            log.append ("omega: " + omega + " (" + omegaLow + " to " + omegaHigh + ")");
+            log.append (System.getProperty ("line.separator"));
             narr.println("omega: " + omega + " (" + omegaLow + " to " + omegaHigh + ")");
         }
         if (sigmaConfidenceInterval != null) {
@@ -1066,11 +1162,13 @@ public class EcotypeSimulation extends JFrame {
             else {
                 sigmaLow = String.format("%.3g", sigmaConfidenceInterval[0]);
             }
-            log.append("sigma: " + sigma + " (" + sigmaLow + " to " + sigmaHigh + ")\n");
+            log.append ("sigma: " + sigma + " (" + sigmaLow + " to " + sigmaHigh + ")");
+            log.append (System.getProperty ("line.separator"));
             narr.println("sigma: " + sigma + " (" + sigmaLow + " to " + sigmaHigh + ")");
         }
         if (npopConfidenceInterval != null) {
-            log.append("npop: " + hClimbResult.getNpop() + " (" + npopConfidenceInterval[0] + " to " + npopConfidenceInterval[1] + ")\n");
+            log.append ("npop: " + hClimbResult.getNpop() + " (" + npopConfidenceInterval[0] + " to " + npopConfidenceInterval[1] + ")");
+            log.append (System.getProperty ("line.separator"));
             narr.println("npop: " + hClimbResult.getNpop() + " (" + npopConfidenceInterval[0] + " to " + npopConfidenceInterval[1] + ")");
         }
         if (driftConfidenceInterval != 0) {
@@ -1081,7 +1179,8 @@ public class EcotypeSimulation extends JFrame {
             else {
                 driftHigh = String.format("%.3g", driftConfidenceInterval);
             }
-            log.append("drift: 0 (0, " + driftHigh + ")\n");
+            log.append ("drift: 0 (0, " + driftHigh + ")");
+            log.append (System.getProperty ("line.separator"));
             narr.println("drift: 0 (0, " + driftHigh + ")");
         }
     }
@@ -1124,50 +1223,50 @@ public class EcotypeSimulation extends JFrame {
         try {
             BufferedWriter saveOut = new BufferedWriter(new FileWriter(output));
             // Write the log.
-            saveOut.write("CohanLabProg save file\n");
+            saveOut.write("CohanLabProg save file" + System.getProperty ("line.separator"));
             String allText = log.getText();
-            saveOut.write(allText + "\n");
+            saveOut.write(allText + System.getProperty ("line.separator"));
             // Write the narrator.
-            saveOut.write("narr\n");
+            saveOut.write("narr" + System.getProperty ("line.separator"));
             String allNarrText = narr.getText();
-            saveOut.write(allNarrText + "\n");
+            saveOut.write(allNarrText + System.getProperty ("line.separator"));
             // Write the bins.
-            saveOut.write("bins\n");
+            saveOut.write("bins" + System.getProperty ("line.separator"));
             ArrayList<String> bins = values.getBins();
             for (int i = 0; i < bins.size(); i ++) {
-                saveOut.write(bins.get(i) + "\n");
+                saveOut.write(bins.get(i) + System.getProperty ("line.separator"));
             }
             // Write the sequenceVals.
-            saveOut.write("sequenceVals\n");
+            saveOut.write("sequenceVals" + System.getProperty ("line.separator"));
             int[] sequenceVals = values.getSeqVals();
-            saveOut.write(sequenceVals[0] + " " + sequenceVals[1] + "\n");
+            saveOut.write(sequenceVals[0] + " " + sequenceVals[1] + System.getProperty ("line.separator"));
             // Write the sorting percentage.
             int sortPer = masterVariables.getSortPercentage();
-            saveOut.write("sortPer\n");
-            saveOut.write(sortPer+"\n");
+            saveOut.write("sortPer" + System.getProperty ("line.separator"));
+            saveOut.write(sortPer+System.getProperty ("line.separator"));
             // Write the hClimbResult.
-            saveOut.write("hClimbResult\n");
+            saveOut.write("hClimbResult" + System.getProperty ("line.separator"));
             double[] percentages = hClimbResult.getPercentages();
             String save = "";
             save += hClimbResult.getOmega() + " " + hClimbResult.getSigma() + " " + hClimbResult.getNpop();
             save += " " + hClimbResult.getDrift() + " " + percentages[0] + " " + percentages[1] + " ";
-            save += percentages[2] + " " + percentages[3] + " " + percentages[4] + " " + percentages[5] + "\n";
+            save += percentages[2] + " " + percentages[3] + " " + percentages[4] + " " + percentages[5] + System.getProperty ("line.separator");
             saveOut.write(save);
             if (omegaConfidenceInterval != null) {
-                saveOut.write("omega ci\n");
-                saveOut.write(omegaConfidenceInterval[0] + " " + omegaConfidenceInterval[1] + "\n");
+                saveOut.write("omega ci" + System.getProperty ("line.separator"));
+                saveOut.write(omegaConfidenceInterval[0] + " " + omegaConfidenceInterval[1] + System.getProperty ("line.separator"));
             }
             if (sigmaConfidenceInterval != null) {
-                saveOut.write("sigma ci\n");
-                saveOut.write(sigmaConfidenceInterval[0] + " " + sigmaConfidenceInterval[1] + "\n");
+                saveOut.write("sigma ci" + System.getProperty ("line.separator"));
+                saveOut.write(sigmaConfidenceInterval[0] + " " + sigmaConfidenceInterval[1] + System.getProperty ("line.separator"));
             }
             if (npopConfidenceInterval != null) {
-                saveOut.write("npop ci\n");
-                saveOut.write(npopConfidenceInterval[0] + " " + npopConfidenceInterval[1] + "\n");
+                saveOut.write("npop ci" + System.getProperty ("line.separator"));
+                saveOut.write(npopConfidenceInterval[0] + " " + npopConfidenceInterval[1] + System.getProperty ("line.separator"));
             }
             if (driftConfidenceInterval != 0) {
-                saveOut.write("drift ci\n");
-                saveOut.write(driftConfidenceInterval + "\n");
+                saveOut.write("drift ci" + System.getProperty ("line.separator"));
+                saveOut.write(driftConfidenceInterval + System.getProperty ("line.separator"));
             }
             saveOut.close();
         }
@@ -1193,7 +1292,8 @@ public class EcotypeSimulation extends JFrame {
             log.setText("");
             line = savedIn.readLine();
             while (! (line.equals("narr"))) {
-                log.append(line + "\n");
+                log.append (line);
+                log.append (System.getProperty ("line.separator"));
                 line = savedIn.readLine();
             }
             // Delete the old narrative file and rewrite the new one.
