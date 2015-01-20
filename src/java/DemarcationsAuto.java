@@ -77,8 +77,8 @@ public class DemarcationsAuto extends JFrame {
         narr = masterVariables.getNarrator();
         log = new JTextArea();
         workingDirectory = masterVariables.getWorkingDirectory();
-        input = new File(workingDirectory + "demarcationsIn.dat");
-        output = new File(workingDirectory + "demarcationsOut.dat");
+        input = new File(workingDirectory + "demarcationIn.dat");
+        output = new File(workingDirectory + "demarcationOut.dat");
         fastaOutput = new File(workingDirectory + "fasta.dat");
         numbers = new File(workingDirectory + "numbers.dat");
         narrOut = new File(workingDirectory + "narrDemarcAuto.txt");
@@ -108,15 +108,19 @@ public class DemarcationsAuto extends JFrame {
         initComponents();
         Iterator iter = ecotypes.iterator();
         for (int i = 1; iter.hasNext(); i++) {
-            log.append("Ecotype " + i + ": " + iter.next() + "\n");
+            log.append ("Ecotype " + i + ": " + iter.next ());
+            log.append (System.getProperty ("line.separator"));
         }
+        log.append (System.getProperty ("line.separator"));
         if (recombs.size() > 0) {
-            log.append("\nThe following were found to be recombinants and thus ignored: ");
+            log.append ("The following were found to be recombinants and thus ignored: ");
+            log.append (System.getProperty ("line.separator"));
             Iterator recombIter = recombs.iterator();
             log.append("" + recombIter.next());
             while (recombIter.hasNext()) log.append(", " + recombIter.next());
+            log.append (System.getProperty ("line.separator"));
         }
-        log.append("\nThe sequence " + outgroup + " was assumed to be the outgroup, and so it was ignored.");
+        log.append("The sequence " + outgroup + " was assumed to be the outgroup, and so it was ignored." + System.getProperty ("line.separator"));
     }
 
     /**
@@ -221,19 +225,19 @@ public class DemarcationsAuto extends JFrame {
                 }
                 Iterator<ArrayList<String>> ecotypesIterator = ecotypes.iterator();
                 for (int j = 1; ecotypesIterator.hasNext(); j++) {
-                    writer.append('\n');
-                    writer.append("" + j);
+                    writer.append (System.getProperty ("line.separator"));
+                    writer.append ("" + j);
                     ArrayList<String> currentEcotype = ecotypesIterator.next();
                     Iterator seqIterator = currentEcotype.iterator();
                     while (seqIterator.hasNext()) {
                         writer.append("," + seqIterator.next());
                     }
                 }
-                writer.append('\n');
-                writer.append("Outgroup");
-                writer.append(outgroup);
-                writer.append('\n');
-                writer.append("Recombinants");
+                writer.append (System.getProperty ("line.separator"));
+                writer.append ("Outgroup");
+                writer.append (outgroup);
+                writer.append (System.getProperty ("line.separator"));
+                writer.append ("Recombinants");
                 Iterator<String> iter = recombs.iterator();
                 while (iter.hasNext()) {
                     writer.append("," + iter.next());
