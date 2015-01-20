@@ -275,8 +275,13 @@ public class Fasta {
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
             for (int i = 0; i < ids.size(); i ++) {
                 String key = ids.get(i);
-                out.write(">" + key + "\n");
-                out.write(fastaHash.get(key) + "\n");
+                out.write (
+                    ">" + key + System.getProperty ("line.separator")
+                );
+                out.write (
+                    fastaHash.get (key) +
+                    System.getProperty ("line.separator")
+                );
             }
             out.close();
             success = true;
