@@ -64,7 +64,8 @@ public class TreeFinder {
         }
         else {
             execs.runDNADist();
-            outfile.renameTo(infile);
+            infile.renameTo (new File (workingDirectory + "infile.dnadist"));
+            outfile.renameTo (new File (workingDirectory + "infile"));
             execs.runNJ();
         }
         // Load the Phlyip outtree.
