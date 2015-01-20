@@ -55,7 +55,6 @@ public class Execs {
         String osArch = System.getProperty("os.arch").toLowerCase();
         String osVersion = System.getProperty("os.version");
         binaryDirectory = masterVariables.getBinaryDirectory ();
-        scriptDirectory = masterVariables.getScriptDirectory ();
         workingDirectory = masterVariables.getWorkingDirectory ();
         // Setup the rest of the variables.
         log = masterVariables.getLog();
@@ -63,10 +62,11 @@ public class Execs {
         // Check which OS we are running on.
         if (osName.contains("windows")) {
             binaryExtension = ".exe";
-            scriptExtension = ".bat";
+            // Use the Phylip batch script.
+            phylipScript = workingDirectory + "phylip.bat";
+            writePhylipScript(phylipBatchScript);
         }
         else if (osName.contains("linux")) {
-            scriptExtension = ".sh";
             if (osArch.contains("i386")) {
                 binaryExtension = ".i386";
             }
@@ -74,18 +74,28 @@ public class Execs {
                 binaryExtension = ".amd64";
             }
             else {
-                log.append("Unsupported Linux architecture, contact the developers.\n");
-                log.append("Architecture detected: " + osArch + "\n");
+                log.append ("Unsupported Linux architecture, contact the developers.");
+                log.append (System.getProperty ("line.separator"));
+                log.append("Architecture detected: " + osArch);
+                log.append (System.getProperty ("line.separator"));
             }
+            // Use the Phylip shell script.
+            phylipScript = workingDirectory + "phylip.sh";
+            writePhylipScript(phylipShellScript);
         }
         else if (osName.contains("mac")) {
             binaryExtension = ".app";
-            scriptExtension = ".sh";
+            // Use the Phylip shell script.
+            phylipScript = workingDirectory + "phylip.sh";
+            writePhylipScript(phylipShellScript);
         }
         else {
-            log.append("Unsupported OS, contact the developers.\n");
-            log.append("OS detected: " + osName + "\n");
-            log.append("Architecture detected: " + osArch + "\n");
+            log.append("Unsupported OS, contact the developers.");
+            log.append (System.getProperty ("line.separator"));
+            log.append("OS detected: " + osName);
+            log.append (System.getProperty ("line.separator"));
+            log.append("Architecture detected: " + osArch);
+            log.append (System.getProperty ("line.separator"));
         }
     }
 
@@ -165,7 +175,12 @@ public class Execs {
      *  @return The exit value.
      */
     public int runDNAPars() {
-        return runPhylip(Options.DNAPARS);
+        return runPhylip (
+            Options.DNAPARS,
+            "V" + System.getProperty ("line.separator") +
+            "1" + System.getProperty ("line.separator") +
+            "Y" + System.getProperty ("line.separator")
+        );
     }
 
     /**
@@ -174,7 +189,10 @@ public class Execs {
      *  @return The exit value.
      */
     public int runDNADist() {
-        return runPhylip(Options.DNADIST);
+        return runPhylip (
+            Options.DNADIST,
+            "Y" + System.getProperty ("line.separator")
+        );
     }
 
     /**
@@ -183,7 +201,10 @@ public class Execs {
      *  @return The exit value.
      */
     public int runNJ() {
-        return runPhylip(Options.NEIGHBOR);
+        return runPhylip (
+            Options.NEIGHBOR,
+            "Y" + System.getProperty ("line.separator")
+        );
     }
 
     /**
@@ -373,16 +394,40 @@ public class Execs {
      *  Run a Phylip program.
      *
      *  @param program The Phylip program to run.
+     *  @param arguments The arguments to the Phylip program.
      *  @return The exit value.
      */
-    private int runPhylip(String program) {
+    private int runPhylip(String program, String arguments) {
+        File inputFile = new File (workingDirectory + "input");
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(inputFile));
+            writer.write(arguments);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                }
+                catch (IOException e) {
+                    System.out.println(
+                        "Error closing the input file for Phylip."
+                    );
+                }
+            }
+        }
         String[] command = {
-            scriptDirectory + "phylip" + scriptExtension,
+            phylipScript,
             options.getHelperProgram(program),
-            workingDirectory
+            workingDirectory,
+            Boolean.toString(masterVariables.getDebug())
         };
-        return runApplication("Phylip", command, true);
+        return runApplication(program, command, true);
     }
+
 
     /**
      *  Runs the provided application with the provided args.
@@ -401,7 +446,8 @@ public class Execs {
             StreamGobbler outputGobbler = null;
             // Display debugging output if needed.
             if (masterVariables.getDebug()) {
-                log.append("Execute: " + command[0] + "\n");
+                log.append ("Execute: " + command[0]);
+                log.append (System.getProperty ("line.separator"));
                 // Grab error messages.
                 errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR (" + name + ")");
                 errorGobbler.start();
@@ -478,17 +524,92 @@ public class Execs {
         changePCRError(PCRError);
     }
 
+    /**
+     *  Write the script to run Phylip.
+     *
+     *  @param script The Phylip script to write.
+     */
+    private void writePhylipScript(String script) {
+        File scriptFile = new File(phylipScript);
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(scriptFile));
+            writer.write(script);
+        }
+        catch (IOException e) {
+            System.out.println("Error writing the script for Phylip.");
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                }
+                catch (IOException e) {
+                    System.out.println("Error closing the script for Phylip");
+                }
+            }
+        }
+        scriptFile.setExecutable(true);
+    }
+
     private MasterVariables masterVariables;
     private Options options;
     private JTextArea log;
     private File pcrerror;
+    private String phylipScript;
     private String binaryExtension;
-    private String scriptExtension;
     private String binaryDirectory;
-    private String scriptDirectory;
     private String workingDirectory;
     private double defaultPCRError = 8.33e-6;
     private double defaultBinLevels[] = {
         0.650, 0.700, 0.750, 0.800, 0.850, 0.9000, 0.9500, 0.9600, 0.9700, 0.9800, 0.9900, 0.9950, 1.0000
     };
+    private static final String phylipBatchScript =
+        "@echo off" +
+        System.getProperty ("line.separator") +
+        "cd \"%2\"" +
+        System.getProperty ("line.separator") +
+        "if exist outfile del outfile" +
+        System.getProperty ("line.separator") +
+        "if exist outtree del outtree" +
+        System.getProperty ("line.separator") +
+        "if \"%3\"==\"true\" (" +
+        System.getProperty ("line.separator") +
+        "  type input | \"%1\"" +
+        System.getProperty ("line.separator") +
+        ") else (" +
+        System.getProperty ("line.separator") +
+        "  type input | \"%1\" > screenout" +
+        System.getProperty ("line.separator") +
+        "  del screenout" +
+        System.getProperty ("line.separator") +
+        ")" +
+        System.getProperty ("line.separator");
+
+    private static final String phylipShellScript =
+        "#!/bin/sh" +
+        System.getProperty ("line.separator") +
+        "cd \"$2\"" +
+        System.getProperty ("line.separator") +
+        "rm -f outfile outtree" +
+        System.getProperty ("line.separator") +
+        "COMMAND=\"$1\"" +
+        System.getProperty ("line.separator") +
+        "if [ -f /etc/debian_version ]; then" +
+        System.getProperty ("line.separator") +
+        "  COMMAND=\"phylip $1\"" +
+        System.getProperty ("line.separator") +
+        "fi" +
+        System.getProperty ("line.separator") +
+        "if [ \"$3\" = \"true\" ]; then" +
+        System.getProperty ("line.separator") +
+        "  cat input | $COMMAND" +
+        System.getProperty ("line.separator") +
+        "else" +
+        System.getProperty ("line.separator") +
+        "  cat input | $COMMAND > /dev/null" +
+        System.getProperty ("line.separator") +
+        "fi" +
+        System.getProperty ("line.separator");
+
 }
