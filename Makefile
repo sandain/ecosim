@@ -1,5 +1,7 @@
 # Fortran compiler options.
 CC := gfortran
+#CC := i686-w64-mingw32-gfortran
+
 CFLAGS := -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,zero,overflow -ffpe-summary=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall -Wextra
 LDFLAGS := -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,zero,overflow -ffpe-summary=invalid,zero,overflow -g -O0 -Wall -Wextra
 # OpenMP is currently broken with ES1.  Only enable it if you want to help debug.
@@ -30,7 +32,26 @@ INCLUDE_FILES := darray.f90 tmatrix.f90 ziggurat.f90 methods.f90 simplexmethod.f
 OS := $(shell uname -s)
 
 # Set operating system specific variables.
-ifeq ($(OS), Linux)
+ifneq (,$(findstring mingw, $(CC)))
+  # Cross-compile for Windows.
+  CFLAGS := $(CFLAGS) -static -lpthread
+  MKDIR_P := mkdir -p
+  BINARY_EXT := .exe
+  DIRECTORY_SEPARATOR := /
+else ifneq (,$(findstring windows, $(OS)))
+  # GnuWin.
+  CFLAGS := $(CFLAGS) -static -lpthread
+  MKDIR_P := mkdir
+  BINARY_EXT := .exe
+  DIRECTORY_SEPARATOR := \\
+else ifneq (,$(findstring CYGWIN, $(OS)))
+  # Cygwin.
+  CFLAGS := $(CFLAGS) -static -lpthread
+  MKDIR_P := mkdir
+  BINARY_EXT := .exe
+  DIRECTORY_SEPARATOR := \\
+else ifeq ($(OS), Linux)
+  # Linux.
   MKDIR_P := mkdir -p
   ifeq ($(shell getconf LONG_BIT), 64)
     BINARY_EXT := .amd64
@@ -39,19 +60,10 @@ ifeq ($(OS), Linux)
   endif
   DIRECTORY_SEPARATOR := /
 else ifeq ($(OS), Darwin)
+  # OS X and Darwin.
   MKDIR_P := mkdir -p
   BINARY_EXT := .app
   DIRECTORY_SEPARATOR := /
-else ifneq (,$(findstring windows, $(OS)))
-  CFLAGS := $(CFLAGS) -static -lpthread
-  MKDIR_P := mkdir
-  BINARY_EXT := .exe
-  DIRECTORY_SEPARATOR := \\
-else ifneq (,$(findstring CYGWIN, $(OS)))
-  CFLAGS := $(CFLAGS) -static -lpthread
-  MKDIR_P := mkdir
-  BINARY_EXT := .exe
-  DIRECTORY_SEPARATOR := \\
 endif
 
 BUILD_DIR := build$(DIRECTORY_SEPARATOR)fortran
