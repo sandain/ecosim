@@ -1,6 +1,12 @@
 Ecotype Simulation README
 =========================
 
+## Download
+
+Windows binaries and source code can be found here:
+
+https://github.com/sandain/es1/releases
+
 
 ## INSTALLATION
 
