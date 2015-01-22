@@ -55,6 +55,24 @@ public class Logger extends Observable {
     }
 
     /**
+     *  Append text to the log.
+     *
+     *  @param str The text to append to the log.
+     */
+    public void appendln (String str) {
+        append (str);
+        append (System.getProperty ("line.separator"));
+    }
+
+    /**
+     *  Append a new line to the log.
+     */
+    public void appendln () {
+        append (System.getProperty ("line.separator"));
+    }
+
+
+    /**
      *  Return the length in number of characters in the log.
      *
      *  @return the length of the log.
