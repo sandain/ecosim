@@ -97,23 +97,18 @@ public class Simulation {
     protected void loadSequenceFile () {
         // Verify that the fasta file exists.
         if (fastaFile == null || ! fastaFile.exists ()) {
-            log.append ("Error loading the Fasta file!\n");
+            log.appendln ("Error loading the Fasta file!");
             return;
         }
-        log.append (
-            "Opening sequence file: " + fastaFile.getName () + "\n"
-        );
+        log.appendln ("Opening sequence file: " + fastaFile.getName ());
         try {
             fasta = new Fasta (fastaFile);
             nu = fasta.size ();
             length = fasta.length ();
             outgroup = fasta.getIdentifier (0);
             // Output the number of sequences loaded.
-            log.append (String.format (
-                "  %d environmental sequences.\n" +
-                "  %s is the outgroup.\n\n",
-                nu, outgroup
-            ));
+            log.appendln (String.format ("  %d environmental sequences.", nu));
+            log.appendln (String.format ("  %s is the outgroup.", outgroup));
         }
         catch (InvalidFastaException e) {
             System.out.println ("Error loading sequence file.");
@@ -126,12 +121,10 @@ public class Simulation {
     protected void loadTreeFile () {
         // Verify that the tree file exists.
         if (newickFile == null || ! newickFile.exists ()) {
-            log.append ("Error loading the Newick tree!\n");
+            log.appendln ("Error loading the Newick tree!");
             return;
         }
-        log.append (
-            "Opening tree file: " + newickFile.getName () + "\n"
-        );
+        log.appendln ("Opening tree file: " + newickFile.getName ());
         try {
             tree = new NewickTree (newickFile);
             tree.reroot (outgroup);
@@ -150,7 +143,7 @@ public class Simulation {
      *  Generate a tree using FastTree.
      */
     protected void generateTree () {
-        log.append ("Generating a tree using FastTree...\n");
+        log.appendln ("Generating a tree using FastTree...");
         // Store the tree in file called 'outtree'.
         newickFile = new File (
             masterVariables.getWorkingDirectory () + "outtree"
@@ -172,34 +165,34 @@ public class Simulation {
      *  Run the binning program.
      */
     protected void runBinning () {
-        log.append ("Starting binning...\n");
+        log.appendln ("Starting binning...");
         binning = new Binning (masterVariables, tree);
         binning.run ();
         // Verify that binning program ran correctly.
         if (! binning.hasRun ()) {
-            log.append ("  Error running the binning program!\n");
+            log.appendln ("  Error running the binning program!");
             return;
         }
         // Output the results from binning.
-        log.append ("The result from binning:\n");
+        log.appendln ("The result from binning:");
         ArrayList<BinLevel> bins = binning.getBins ();
         for (int i = 0; i < bins.size (); i ++) {
-            log.append ("  " + bins.get (i).toString () + "\n");
+            log.appendln ("  " + bins.get (i).toString ());
         }
-        log.append ("\n");
+        log.appendln ();
     }
 
     /**
      *  Run the bruteforce program.
      */
     protected void runBruteforce () {
-        log.append ("Starting bruteforce search...\n");
+        log.appendln ("Starting bruteforce search...");
         bruteforce = new Bruteforce (masterVariables, nu, length, binning);
         while (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
             bruteforce.run ();
             // Verify that bruteforce ran correctly.
             if (! bruteforce.hasRun ()) {
-                log.append ("Error running the bruteforce search program!\n");
+                log.appendln ("Error running the bruteforce search program!");
                 return;
             }
             // Verify that there are enough bruteforce results.
@@ -210,12 +203,12 @@ public class Simulation {
                     masterVariables.getCriterionLabel (criterion) + ")"
                 );
                 if (criterion > 2) {
-                    log.append (", lowering the value.\n");
+                    log.appendln (", lowering the value.");
                     criterion --;
                     masterVariables.setCriterion (criterion);
                 }
                 else {
-                    log.append (", aborting.\n");
+                    log.appendln (", aborting.");
                     bruteforce.setHasRun (false);
                     return;
                 }
@@ -223,98 +216,103 @@ public class Simulation {
         }
         // Output the best bruteforce result.
         ParameterSet bestBruteforceResult = bruteforce.getBestResult ();
-        log.append ("The best result from bruteforce:\n");
-        log.append (bestBruteforceResult.toString () + "\n\n");
+        log.appendln ("The best result from bruteforce:");
+        log.appendln (bestBruteforceResult.toString ());
+        log.appendln ();
     }
 
     /**
      *  Run the hillclimbing program.
      */
     protected void runHillclimbing () {
-        log.append ("Starting hillclimbing...\n");
+        log.appendln ("Starting hillclimbing...");
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
         hillclimb.run ();
         // Verify that hillclimbing ran correctly.
         if (! hillclimb.hasRun ()) {
-            log.append ("  Error running the hillclimbing program!\n");
+            log.appendln ("  Error running the hillclimbing program!");
             return;
         }
         // Output the hillclimbing result.
         ParameterSet hClimbResult = hillclimb.getResult ();
-        log.append ("The result from hillclimb:\n");
-        log.append (hClimbResult.toString () + "\n\n");
+        log.appendln ("The result from hillclimb:");
+        log.appendln (hClimbResult.toString ());
+        log.appendln ();
     }
 
     /**
      *  Run the omega confidence interval program.
      */
     protected void runOmegaConfidenceInterval () {
-        log.append ("Starting omega confidence interval...\n");
+        log.appendln ("Starting omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         omegaCI.run ();
         // Verify that omegaCI ran correctly.
         if (! omegaCI.hasRun ()) {
-            log.append (
-                "  Error running the omega confidence interval program!\n"
+            log.appendln (
+                "  Error running the omega confidence interval program!"
             );
             return;
         }
         // Output the omegaCI result.
-        log.append ("The result from omegaCI:\n");
-        log.append ("  " + omegaCI.toString () + "\n\n");
+        log.appendln ("The result from omegaCI:");
+        log.appendln ("  " + omegaCI.toString ());
+        log.appendln ();
     }
 
     /**
      *  Run the sigma confidence interval program.
      */
     protected void runSigmaConfidenceInterval () {
-        log.append ("Starting sigma confidence interval...\n");
+        log.appendln ("Starting sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         sigmaCI.run ();
         // Verify that sigmaCI ran correctly.
         if (! sigmaCI.hasRun ()) {
-            log.append (
-                "  Error running the sigma confidence interval program!\n"
+            log.appendln (
+                "  Error running the sigma confidence interval program!"
             );
             return;
         }
         // Output the sigmaCI result.
-        log.append ("The result from sigmaCI:\n");
-        log.append ("  " + sigmaCI.toString () + "\n\n");
+        log.appendln ("The result from sigmaCI:");
+        log.appendln ("  " + sigmaCI.toString ());
+        log.appendln ();
     }
 
     /**
      *  Run the npop confidence interval program.
      */
     protected void runNpopConfidenceInterval () {
-        log.append ("Starting npop confidence interval...\n");
+        log.appendln ("Starting npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         npopCI.run ();
         // Verify that npopCI ran correctly.
         if (! npopCI.hasRun ()) {
-            log.append (
-                "  Error running the npop confidence interval program!\n"
+            log.appendln (
+                "  Error running the npop confidence interval program!"
             );
             return;
         }
         // Output the npopCI result.
-        log.append ("The result from npopCI:\n");
-        log.append ("  " + npopCI.toString () + "\n\n");
+        log.appendln ("The result from npopCI:");
+        log.appendln ("  " + npopCI.toString ());
+        log.appendln ();
     }
 
     /**
      *  Run the demarcation program.
      */
     protected void runDemarcation () {
-        log.append ("Starting demarcation...\n");
+        log.appendln ("Starting demarcation...");
         demarcation = new Demarcation (
             masterVariables, nu, length, outgroup, tree,
             hillclimb.getResult ()
@@ -322,12 +320,13 @@ public class Simulation {
         demarcation.run ();
         // Verify that demarcation ran correctly.
         if (! demarcation.hasRun ()) {
-            log.append ("  Error running the demarcation program!\n");
+            log.appendln ("  Error running the demarcation program!");
             return;
         }
         // Output the demarcation result.
-        log.append ("The result from demarcation:\n");
-        log.append (demarcation.toString () + "\n\n");
+        log.appendln ("The result from demarcation:");
+        log.appendln (demarcation.toString ());
+        log.appendln ();
     }
 
     protected MasterVariables masterVariables;
