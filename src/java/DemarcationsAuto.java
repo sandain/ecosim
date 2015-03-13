@@ -349,8 +349,8 @@ public class DemarcationsAuto extends JFrame {
             values.setBins(bins);
             values.setSeqVals(selector.getSeqVals());
             DemarcationConfidence demarcConf = new DemarcationConfidence(hClimbResult, values, masterVariables, input, output);
-            // If 1 is the lower bound of the confidence interval, add the list of sequences to the list of ecotypes
-            if (demarcConf.demarcations()[1] == 1) {
+            // If 1 is the value determined by the demarcation method, add the list of sequences to the list of ecotypes
+            if (demarcConf.demarcations ()[masterVariables.DEMARCATION_METHOD] == 1) {
                 ecotypes.add(sequences);
             }
             else {
