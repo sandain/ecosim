@@ -311,6 +311,15 @@ public class MasterVariables {
     public static final double CI_NUMBER = 6.83;
 
     /**
+     * The method to use for auto demarcation.
+     *
+     * [0] Use the optimal npop value for fine-scale demarcation.
+     * [1] Use the lower bound of the confidence interval.
+     * [2] Use the upper bound of the confidence interval.
+     */
+    public static final int DEMARCATION_METHOD = 1;
+
+    /**
      *  The default number of threads is equal to the system maximum.
      */
     private int numThreads = Runtime.getRuntime ().availableProcessors ();
