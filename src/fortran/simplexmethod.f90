@@ -285,7 +285,7 @@ module simplexmethod
       pbar(j) = pbar(j) + g(i, j)
     end do
 150 CONTINUE
-    do J = 1, nop
+    do j = 1, nop
       pbar(j) = pbar(j) / float (nap)
     end do
     !
@@ -336,7 +336,7 @@ module simplexmethod
     if (hstar .lt. h(i)) goto 320
 230 CONTINUE
     !
-    ! hstar > ALL function values except possibly hmax.
+    ! hstar > all function values except possibly hmax.
     ! if hstar < = hmax, replace p(imax) by pstar & hmax by hstar.
     !
     if (hstar .gt. hmax) goto 260
@@ -361,7 +361,7 @@ module simplexmethod
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
       neval, hstst, (pstst(j), j = 1, nop)
     !
-    ! if hstst < hmax replace p(imax) BY pstst & hmax BY hstst.
+    ! if hstst < hmax replace p(imax) by pstst & hmax BY hstst.
     !
 280 if (hstst .gt. hmax) goto 300
     do i = 1, nop
@@ -374,7 +374,7 @@ module simplexmethod
     goto 340
     !
     ! hstst > hmax.
-    ! shring the simplex by replacing each point, other than the current
+    ! shrink the simplex by replacing each point, other than the current
     ! minimum, by a point mid-way between its current position and the
     ! minimum.
     !
@@ -423,7 +423,7 @@ module simplexmethod
     end do
     hstd = sqrt (hstd / float (np1))
     !
-    ! if the rms > stopcr, set iflag & loop to xero and goto the
+    ! if the rms > stopcr, set iflag & loop to zero and goto the
     ! start of the main cycle again.
     !
     if (hstd .le. stopcr .or. neval .gt. max) goto 410
@@ -661,7 +661,7 @@ module simplexmethod
 750 CONTINUE
 760 CONTINUE
     !
-    ! the diagonal elelments of vc are copied into var.
+    ! the diagonal elements of vc are copied into var.
     !
     j = 0
     do i = 1, nop
@@ -675,7 +675,7 @@ module simplexmethod
     ijk = 1
     goto 880
     !
-790 CONTINUE
+790 continue
     write (unit = lout, fmt = 1170)
 1170 format (/' if the function minimized was - Log(likelihood), '/ &
       ' this is the covariance matrix of the parameters.'/ &
