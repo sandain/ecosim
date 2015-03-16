@@ -241,7 +241,7 @@ module simplexmethod
     end do
     g(irow, i) = p(i) + step(i)
     irow = irow + 1
-60  CONTINUE
+60  continue
     !
     np1 = nap + 1
     do 90 i = 1, np1
@@ -253,7 +253,7 @@ module simplexmethod
     if (iprint .le. 0) goto 90
     write (unit = lout, fmt = 1010) neval, h(i), (p(j), j = 1, nop)
 1010 format (/1X, I4, 2X, G12.5, 2X, 5G11.4, 3(/21X, 5G11.4))
-90  CONTINUE
+90  continue
     !
     ! start of main cycle.
     !
@@ -272,7 +272,7 @@ module simplexmethod
 110 if (h(i) .ge. hmin) goto 120
     imin = i
     hmin = h(i)
-120 CONTINUE
+120 continue
     !
     ! find the centroid of the vertices other than p(imax).
     !
@@ -284,7 +284,7 @@ module simplexmethod
     do J = 1, nop
       pbar(j) = pbar(j) + g(i, j)
     end do
-150 CONTINUE
+150 continue
     do j = 1, nop
       pbar(j) = pbar(j) / float (nap)
     end do
@@ -334,7 +334,7 @@ module simplexmethod
 220 do 230 i = 1, np1
     if (i .eq. imax) goto 230
     if (hstar .lt. h(i)) goto 320
-230 CONTINUE
+230 continue
     !
     ! hstar > all function values except possibly hmax.
     ! if hstar < = hmax, replace p(imax) by pstar & hmax by hstar.
@@ -392,7 +392,7 @@ module simplexmethod
     if (iprint .le. 0) goto 315
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
       neval, h(i), (p(j), j = 1, nop)
-315 CONTINUE
+315 continue
     goto 340
     !
     ! replace maximum point by pstar & h(imax) by hstar.
@@ -443,7 +443,7 @@ module simplexmethod
       p(i) = p(i) + g(j, i)
     end do
     p(i) = p(i) / float (np1)
-380 CONTINUE
+380 continue
     call functn (nop, p, func)
     neval = neval + 1
     if (iprint .le. 0) goto 390
@@ -520,7 +520,7 @@ module simplexmethod
     if (iprint .ge. 0) write (unit = lout, fmt = 1010) &
       neval, hmin, (pstst(j), j = 1, nop)
     goto 470
-490 CONTINUE
+490 continue
     !
     ! function values are calculated at an additional nap points.
     !
@@ -553,7 +553,7 @@ module simplexmethod
       l = i * (i - 1) / 2 + j
       bmat(l) = 2.0 * (hstst + a0 - aval(i) - aval(j))
     end do
-540 CONTINUE
+540 continue
     l = 0
     do i = 1, nap
       i1 = i + 1
@@ -578,12 +578,12 @@ module simplexmethod
     i1 = i + 1
     do 580 j = 1, nop
     g(i1, j) = g(i1, j) - g(1, j)
-580 CONTINUE
+580 continue
     do 590 i = 1, nap
     i1 = i + 1
     do 590 j = 1, nop
     g(i, j) = g(i1, j)
-590 CONTINUE
+590 continue
     !
     ! invert bmat.
     !
@@ -612,8 +612,8 @@ module simplexmethod
     goto 630
 620 l = j * (j - 1) / 2 + i
 630 h(i) = h(i) + bmat(l) * aval(j)
-640 CONTINUE
-650 CONTINUE
+640 continue
+650 continue
     !
     ! find the position, pmin, & value, ymin, of the minimum of the
     ! quadratic.
@@ -650,16 +650,16 @@ module simplexmethod
     goto 710
 700 l = k * (k - 1) / 2 + j
 710 h(j) = h(j) + bmat(l) * g(k, i) * 0.5
-720 CONTINUE
-730 CONTINUE
+720 continue
+730 continue
     do 750 j = i, nop
     l = j * (j - 1) / 2 + i
     vc(l) = 0.0d0
     do k = 1, nap
       vc(l) = vc(l) + h(k) * g(k, j)
     end do
-750 CONTINUE
-760 CONTINUE
+750 continue
+760 continue
     !
     ! the diagonal elements of vc are copied into var.
     !
@@ -739,7 +739,7 @@ module simplexmethod
     write (unit = lout, fmt = 1230) (vc(j), j = i1, i2)
     goto 910
 900 write (unit = lout, fmt = 1230) (bmat(j), j = i1, i2)
-910 CONTINUE
+910 continue
 1230 format (1X, 6G13.5)
     write (unit = lout, fmt = 1240)
 1240 format (/)
