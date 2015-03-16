@@ -281,7 +281,7 @@ module simplexmethod
     end do
     do 150 i = 1, np1
     if (i .eq. imax) goto 150
-    do J = 1, nop
+    do j = 1, nop
       pbar(j) = pbar(j) + g(i, j)
     end do
 150 continue
