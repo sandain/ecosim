@@ -5,7 +5,7 @@
 !
 !    Copyright (C) 2009-2015  Fred Cohan, Wesleyan University
 !                             Danny Krizanc, Wesleyan University
-!                             Jason Wood, Montana State University
+!                             Jason M. Wood, Montana State University
 !
 !    This program is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
@@ -778,7 +778,7 @@ module methods
   subroutine getLogicalArgument (arg, out)
     integer, intent(in)               :: arg
     logical, intent(out)              :: out
-   ! Local variables.
+    ! Local variables.
     character(len = 100) :: buffer
     call getarg (arg, buffer)
     ! Unless we receive an appropriate true string, return false.
