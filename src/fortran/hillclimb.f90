@@ -140,7 +140,7 @@ program hillclimb
   ! variables occurs through the COMMON block
   ! yvalue is the value returned for success level determined by jwhichxavg
   call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-    outputUnit)
+    outputUnit, probthreshold)
   close (unit = outputUnit)
   stop
 

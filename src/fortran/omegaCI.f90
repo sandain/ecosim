@@ -167,7 +167,7 @@ program omegaCI
     yvalue = 0.0d0
     ! yvalue is the negative of the likelihood
     call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-      outputUnit)
+      outputUnit, probthreshold)
     write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
     if (-yvalue .lt. probthreshold .or. xincs .eq. 0) exit
   end do

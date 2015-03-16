@@ -140,7 +140,7 @@ program npopCI
     if (log (sigma) .lt. 0.3d0 .and. log (sigma) .gt. -0.3d0) step(2) = 0.15d0
     yvalue = 0.0d0
     call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-     outputUnit)
+     outputUnit, probthreshold)
     write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
     if (-yvalue .lt. probthreshold) exit
   end do

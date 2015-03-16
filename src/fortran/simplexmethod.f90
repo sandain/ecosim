@@ -129,7 +129,7 @@ module simplexmethod
   !> @param[in]     lout          The file handle to output to.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine nelmead (p, step, nop, func, max, iprint, stopcr, nloop, &
-    iquad, simp, var, functn, ifault, lout)
+    iquad, simp, var, functn, ifault, lout, probthresh)
     real(kind = real64), intent(inout)   :: p(nop)
     real(kind = real64), intent(inout)   :: step(nop)
     real(kind = real64), intent(out)     :: func
@@ -143,6 +143,7 @@ module simplexmethod
     integer(kind = int32), intent(in)    :: iquad
     integer(kind = int32), intent(out)   :: ifault
     integer(kind = int32), intent(in)    :: lout
+    real, intent(in)                     :: probthresh
     procedure(nelmeadFunction), pointer  :: functn
     ! Local variables.
     real(kind = real64)            :: g(nop + 1, nop)
@@ -166,6 +167,7 @@ module simplexmethod
     real(kind = real64)            :: savemn
     real(kind = real64)            :: test
     real(kind = real64)            :: ymin
+    real(kind = real64)            :: calcprob
     real(kind = real64), parameter :: a = 1.0d0 !< Reflection Coefficient.
     real(kind = real64), parameter :: b = 0.5d0 !< Contraction Coefficient.
     real(kind = real64), parameter :: c = 2.0d0 !< Expansion Coefficient.
@@ -249,6 +251,12 @@ module simplexmethod
       p(j) = g(i, j)
     end do
     call functn (nop, p, h(i))
+    ! added July 2007.
+    calcprob = -h(i)
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 90
     write (unit = lout, fmt = 1010) neval, h(i), (p(j), j = 1, nop)
@@ -296,6 +304,12 @@ module simplexmethod
       pstar(i) = a * (pbar(i) - g(imax, i)) + pbar(i)
     end do
     call functn (nop, pstar, hstar)
+    ! added July 2007.
+    calcprob = -hstar
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 180
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
@@ -309,6 +323,12 @@ module simplexmethod
       pstst(i) = c * (pstar(i) - pbar(i)) + pbar(i)
     end do
     call functn (nop, pstst, hstst)
+    ! added July 2007.
+    calcprob = -hstst
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 200
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
@@ -356,6 +376,12 @@ module simplexmethod
       pstst(i) = b * g(imax, i) + (1.0 - b) * pbar(i)
     end do
     call functn (nop, pstst, hstst)
+    ! added July 2007.
+    calcprob = -hstst
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 280
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
@@ -388,6 +414,12 @@ module simplexmethod
       p(j) = g(i, j)
     end do
     call functn (nop, p, h(i))
+    ! added July 2007.
+    calcprob = -h(i)
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 315
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
@@ -445,6 +477,12 @@ module simplexmethod
     p(i) = p(i) / float (np1)
 380 continue
     call functn (nop, p, func)
+    ! added July 2007.
+    calcprob = -func
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     neval = neval + 1
     if (iprint .le. 0) goto 390
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
@@ -513,6 +551,12 @@ module simplexmethod
       pstst(j) = g(i, j)
     end do
     call functn (nop, pstst, h(i))
+    ! added July 2007.
+    calcprob = -h(i)
+    if (calcprob .ge. probthresh) then
+      func = -calcprob
+      return
+    endif
     nmore = nmore + 1
     neval = neval + 1
     if (h(i) .ge. hmin) goto 470
@@ -530,6 +574,12 @@ module simplexmethod
         pstar(j) = (g(1, j) + g(i1, j)) * 0.5
       end do
       call functn (nop, pstar, aval(i))
+      ! added July 2007.
+      calcprob = -aval(i)
+      if (calcprob .ge. probthresh) then
+        func = -calcprob
+        return
+      endif
       nmore = nmore + 1
       neval = neval + 1
     end do
@@ -548,6 +598,12 @@ module simplexmethod
         pstst(k) = (g(i2, k) + g(j1, k)) * 0.5
       end do
       call functn (nop, pstst, hstst)
+      ! added July 2007.
+      calcprob = -hstst
+     if (calcprob .ge. probthresh) then
+        func = -calcprob
+        return
+      endif
       nmore = nmore + 1
       neval = neval + 1
       l = i * (i - 1) / 2 + j
