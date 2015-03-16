@@ -361,7 +361,7 @@ module simplexmethod
     if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
       neval, hstst, (pstst(j), j = 1, nop)
     !
-    ! if hstst < hmax replace p(imax) by pstst & hmax BY hstst.
+    ! if hstst < hmax replace p(imax) by pstst & hmax by hstst.
     !
 280 if (hstst .gt. hmax) goto 300
     do i = 1, nop
