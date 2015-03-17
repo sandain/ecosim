@@ -215,7 +215,7 @@ module methods
   !    popfordrift :
   !    activepop   :
   !    realname    :
-  !    drift          :
+  !    xn          :
   !    numstrain   :
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine choosepopdrift (popfordrift, activepop, realname, xn, numstrain)
@@ -1177,7 +1177,6 @@ module methods
     return
   end subroutine simulation
 
-
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Start the population simulation.
   !>
@@ -1215,18 +1214,18 @@ module methods
     integer, intent(in)               :: nu
     integer, intent(out)              :: activepop
     integer, intent(out)              :: ntotalpop
-    integer, intent(out)              :: numstrain(:)
-    integer, intent(out)              :: realname(:)
-    integer, intent(out)              :: activename(:)
-    integer, intent(out)              :: numanc(:)
-    integer, intent(out)              :: numdesc(:)
+    integer, intent(inout)            :: numstrain(:)
+    integer, intent(inout)            :: realname(:)
+    integer, intent(inout)            :: activename(:)
+    integer, intent(inout)            :: numanc(:)
+    integer, intent(inout)            :: numdesc(:)
     integer, intent(out)              :: numanctot
     integer, intent(out)              :: ntotalpopwithinvented
-    integer, intent(out)              :: nameanc(:,:)
-    integer, intent(out)              :: namedesc(:,:)
-    integer, intent(out)              :: namestrain(:,:)
+    integer, intent(inout)            :: nameanc(:,:)
+    integer, intent(inout)            :: namedesc(:,:)
+    integer, intent(inout)            :: namestrain(:,:)
     double precision, intent(out)     :: time
-    real, intent(out)                 :: ancdist(:,:)
+    real, intent(inout)               :: ancdist(:,:)
     ! Local variables.
     integer :: strainname
     integer :: jpop
