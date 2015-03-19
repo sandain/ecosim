@@ -194,8 +194,10 @@ program bruteforce
   call cpu_time (time2)
   delta = time2 - time1
   write (unit = timeUnit, fmt = *) delta, '    time'
+  ! Close the random number generator.
+  call randomClose ()
   ! Close the output files.
-  close (unit = outputUnit);
-  close (unit = timeUnit);
+  close (unit = outputUnit)
+  close (unit = timeUnit)
   stop
 end program bruteforce

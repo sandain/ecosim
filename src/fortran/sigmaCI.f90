@@ -171,6 +171,8 @@ program sigmaCI
     write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
     if (-yvalue .lt. probthreshold .or. xincs .eq. 0) exit
   end do
+  ! Close the random number generator.
+  call randomClose ()
   ! Close output file.
   close (unit = outputUnit)
   stop

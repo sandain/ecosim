@@ -115,6 +115,8 @@ program demarcation
     call fredprogram (nparams, params, yvalue)
     write (unit = outputUnit, fmt = *) params(3), ',', yvalue
   end do
+  ! Close the random number generator.
+  call randomClose ()
   ! Close the output file.
   close (unit = outputUnit)
   stop

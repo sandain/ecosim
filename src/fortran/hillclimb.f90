@@ -141,6 +141,9 @@ program hillclimb
   ! yvalue is the value returned for success level determined by jwhichxavg
   call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
     outputUnit, probthreshold)
+  ! Close the random number generator.
+  call randomClose ()
+  ! Close the output file.
   close (unit = outputUnit)
   stop
 

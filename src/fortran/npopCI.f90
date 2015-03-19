@@ -144,6 +144,8 @@ program npopCI
     write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
     if (-yvalue .lt. probthreshold) exit
   end do
+  ! Close the random number generator.
+  call randomClose ()
   ! Close the output file.
   close (unit = outputUnit)
   stop
