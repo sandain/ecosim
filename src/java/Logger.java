@@ -60,8 +60,7 @@ public class Logger extends Observable {
      *  @param str The text to append to the log.
      */
     public void appendln (String str) {
-        append (str);
-        append (System.getProperty ("line.separator"));
+        append (str + System.getProperty ("line.separator"));
     }
 
     /**
