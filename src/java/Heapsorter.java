@@ -23,7 +23,7 @@
 
 package ecosim;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *  Runs the heapsort on a given set of data.
@@ -47,7 +47,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @post list is sorted using heapsort and returned in descending order.
      *  @param list The list of values to be sorted.
      */
-    public void heapSort (ArrayList<T> list) {
+    public void heapSort (List<T> list) {
         for (int index = 0; index < list.size (); index ++) {
             // Restore the heap property as each element is added.
             restoreHeap (list, index);
@@ -72,7 +72,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @param end The index of the end of the tree, ie the index of the
      *  first value no longer in the tree (but still in the array).
      */
-    private void pushdown (ArrayList<T> list, int root, int end) {
+    private void pushdown (List<T> list, int root, int end) {
         // If root has no left node, it is a leaf, and therefore we are done.
         if (2 * root + 1 > (end - 1)) {
             return;
@@ -107,7 +107,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @param one The first index.
      *  @param two The second index.
      */
-    private void swap (ArrayList<T> list, int one, int two) {
+    private void swap (List<T> list, int one, int two) {
         T storage = list.get (one);
         list.set (one, list.get (two));
         list.set (two, storage);
@@ -121,7 +121,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @param index The root of the subtree that needs to be restored to a
      *  heap.
      */
-    private void restoreHeap (ArrayList<T> list, int index) {
+    private void restoreHeap (List<T> list, int index) {
         // If index is the root, we are done.
         // Note that the left child of a node at index n is at index 2n + 1
         // and the right child of a node is at index 2n + 2, therefore if a
