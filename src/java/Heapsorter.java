@@ -47,7 +47,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  @post list is sorted using heapsort and returned in descending order.
      *  @param list The list of values to be sorted.
      */
-    public void heapSort (List<T> list) {
+    public void sort (List<T> list) {
         for (int index = 0; index < list.size (); index ++) {
             // Restore the heap property as each element is added.
             restoreHeap (list, index);

@@ -167,7 +167,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
         }
         Heapsorter<NewickTreeNode> sorter =
             new Heapsorter<NewickTreeNode> ();
-        sorter.heapSort (children);
+        sorter.sort (children);
     }
 
     /**
