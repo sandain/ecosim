@@ -90,7 +90,7 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
                     b += child.getDistance ();
                 }
                 c = b.compareTo (a);
-                if (c == 0) return c;
+                if (c != 0) return c;
             }
             else {
                 // When the parent is not the root node, compare just the
