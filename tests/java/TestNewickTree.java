@@ -89,11 +89,6 @@ public class TestNewickTree {
         );
     }
 
-    @After
-    public void teardown () {
-
-    }
-
     private NewickTree tree;
 
 }
