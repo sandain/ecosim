@@ -24,6 +24,7 @@
 package ecosim;
 
 import java.util.List;
+import java.util.Comparator;
 
 /**
  *  Runs the heapsort on a given set of data.
@@ -34,7 +35,20 @@ import java.util.List;
  */
 public class Heapsorter<T extends Comparable<T>> {
 
+    /**
+     *  The default Heapsorter constructor.
+     */
     public Heapsorter () {
+        c = new DefaultComparator<T> ();
+    }
+
+    /**
+     *  Heapsorter constructor when using a custom Comparator.
+     *
+     *  @param c The Comparator to use for sorting.
+     */
+    public Heapsorter (Comparator<T> c) {
+        this.c = c;
     }
 
     /**
@@ -43,7 +57,7 @@ public class Heapsorter<T extends Comparable<T>> {
      *  element is popped off a list of the elements in descending order
      *  remains.
      *
-     *  @pre list is an unsorted array of objects that implement comparable.
+     *  @pre list is an unsorted array of objects that implement Comparable.
      *  @post list is sorted using heapsort and returned in descending order.
      *  @param list The list of values to be sorted.
      */
@@ -65,6 +79,22 @@ public class Heapsorter<T extends Comparable<T>> {
     }
 
     /**
+     *  A static sorting method.
+     *  Note that we construct a min heap originally so that, once each
+     *  element is popped off a list of the elements in descending order
+     *  remains.
+     *
+     *  @pre list is an unsorted array of objects that implement Comparable.
+     *  @post list is sorted using heapsort and returned in descending order.
+     *  @param list The list of values to be sorted.
+     *  @param c The Comparator to use for sorting.
+     */
+    public void sort (List<T> list, Comparator<T> c) {
+        this.c = c;
+        sort (list);
+    }
+
+    /**
      *  @pre list is a min-heap except for the root.
      *  @post list is a min-heap.
      *  @param list The list of values.
@@ -81,19 +111,19 @@ public class Heapsorter<T extends Comparable<T>> {
         if (2 * root + 2 > (end - 1)) {
             // If root has no right node, check if it is greater than its
             // left node. If it is, swap it, and then break.
-            if (list.get (root).compareTo (list.get (left)) > 0) {
+            if (c.compare (list.get (root), list.get (left)) > 0) {
                 swap (list, root, left);
             }
             return;
         }
         int right = 2 * root + 2;
-        if (list.get (left).compareTo (list.get (right)) < 0) {
-            if (list.get (root).compareTo (list.get (left)) > 0) {
+        if (c.compare (list.get (left), list.get (right)) < 0) {
+            if (c.compare (list.get (root), list.get (left)) > 0) {
                 swap (list, root, left);
                 pushdown (list, left, end);
             }
         }
-        else if (list.get (root).compareTo (list.get (right)) > 0) {
+        else if (c.compare (list.get (root), list.get (right)) > 0) {
             swap (list, root, right);
             pushdown (list, right, end);
         }
@@ -139,7 +169,7 @@ public class Heapsorter<T extends Comparable<T>> {
         }
         // If we already have a min heap property - IE the parent is less
         // than the child, then we are done.
-        if (list.get (parent).compareTo (list.get (index)) <= 0) {
+        if (c.compare(list.get (parent), list.get (index)) <= 0) {
             return;
         }
         // Otherwise switch the parent and the child and then recursively
@@ -147,4 +177,14 @@ public class Heapsorter<T extends Comparable<T>> {
         swap (list, parent, index);
         restoreHeap (list, parent);
     }
+
+    private Comparator<T> c;
+
+    private class DefaultComparator<T extends Comparable<T>> implements Comparator<T> {
+        @Override
+        public int compare (T a, T b) {
+            return a.compareTo (b);
+        }
+    }
+
 }
