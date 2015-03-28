@@ -108,7 +108,7 @@ public class Bruteforce implements Runnable {
             // Sort the results.
             Heapsorter<ParameterSet<Likelihood>> h =
                 new Heapsorter<ParameterSet<Likelihood>> ();
-            h.heapSort (results);
+            h.sort (results);
         }
         if (results.size () > 0) {
             result = results.get (0);
