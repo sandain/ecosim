@@ -9,12 +9,6 @@ ANT := ant
 # Doxygen, used to compile the documentation for the Fortran and Java code.
 DOXYGEN := doxygen
 
-# Directory in which to store the resulting binary files.
-BIN_DIR := bin
-
-# Directory in which to store the resulting documentation files.
-DOCS_DIR := docs
-
 # Source files used.
 SOURCE_FILES := bruteforce.f90 hillclimb.f90 \
   npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
@@ -50,41 +44,37 @@ else ifneq (,$(findstring CYGWIN, $(OS)))
   DIRECTORY_SEPARATOR := \\
 endif
 
-BUILD_DIR := build$(DIRECTORY_SEPARATOR)fortran
-SOURCE_DIR := src$(DIRECTORY_SEPARATOR)fortran
+BUILD_DIR := build$(DIRECTORY_SEPARATOR)
+SOURCE_DIR := src$(DIRECTORY_SEPARATOR)
+BIN_DIR := bin$(DIRECTORY_SEPARATOR)
+DOCS_DIR := docs$(DIRECTORY_SEPARATOR)
+
+FORTRAN_BUILD_DIR := $(BUILD_DIR)fortran$(DIRECTORY_SEPARATOR)
+FORTRAN_SOURCE_DIR := $(SOURCE_DIR)fortran$(DIRECTORY_SEPARATOR)
 
 # Files to be created.
-INSTALL_FILES := $(patsubst %.f90, \
-                   $(BIN_DIR)$(DIRECTORY_SEPARATOR)%$(BINARY_EXT), \
-                   $(SOURCE_FILES) \
-                 )
-BINARY_FILES  := $(patsubst %.f90, \
-                   $(BUILD_DIR)$(DIRECTORY_SEPARATOR)%$(BINARY_EXT), \
-                   $(SOURCE_FILES) \
-                 )
-OBJECT_FILES  := $(patsubst %.f90, \
-                   $(BUILD_DIR)$(DIRECTORY_SEPARATOR)%.o, \
-                   $(INCLUDE_FILES) \
-                 )
+INSTALL_FILES := $(patsubst %.f90, $(BIN_DIR)%$(BINARY_EXT), $(SOURCE_FILES))
+BINARY_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%$(BINARY_EXT), $(SOURCE_FILES))
+OBJECT_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%.o, $(INCLUDE_FILES))
 MOD_FILES     := $(patsubst %.f90, %.mod, $(INCLUDE_FILES))
 
 # List of phony build targets.
 .PHONY: all clean install uninstall docs check
 
 # The main entry point for building.
-all: $(BUILD_DIR) $(BINARY_FILES)
+all: $(BINARY_FILES)
 	$(ANT)
 
 # Remove the old build files.
 clean:
-	rm -f $(BINARY_FILES) $(OBJECT_FILES) $(MOD_FILES)
-	rm -Rf $(BUILD_DIR)
 	rm -f Doxyfile.log
+	rm -f $(MOD_FILES)
+	rm -Rf $(BUILD_DIR)
 	rm -Rf $(DOCS_DIR)
-	$(ANT) clean
 
 # Install the binary files to the appropriate location.
-install: $(BUILD_DIR) $(BINARY_FILES) $(BIN_DIR)
+install: $(BINARY_FILES)
+	$(MKDIR_P) $(BIN_DIR)
 	cp -f $(BINARY_FILES) $(BIN_DIR)
 	$(ANT) install
 
@@ -103,20 +93,12 @@ check:
 	$(ANT) check
 
 # Build the binary files.
-$(BINARY_FILES) : $(BUILD_DIR)$(DIRECTORY_SEPARATOR)%$(BINARY_EXT) : \
-  $(SOURCE_DIR)$(DIRECTORY_SEPARATOR)%.f90 $(OBJECT_FILES)
+$(FORTRAN_BUILD_DIR)%$(BINARY_EXT) : $(FORTRAN_SOURCE_DIR)%.f90 $(OBJECT_FILES)
+	$(MKDIR_P) $(FORTRAN_BUILD_DIR)
 	$(CC) $^ $(CFLAGS) -o $@
 
 # Build the object files.
-$(OBJECT_FILES) : $(BUILD_DIR)$(DIRECTORY_SEPARATOR)%.o : \
-  $(SOURCE_DIR)$(DIRECTORY_SEPARATOR)%.f90
+$(FORTRAN_BUILD_DIR)%.o : $(FORTRAN_SOURCE_DIR)%.f90
+	$(MKDIR_P) $(FORTRAN_BUILD_DIR)
 	$(CC) -c $^ $(LDFLAGS) -o $@
-
-# Make sure the build directory is there.
-$(BUILD_DIR):
-	$(MKDIR_P) $(BUILD_DIR)
-
-# Make sure the bin directory is there.
-$(BIN_DIR):
-	$(MKDIR_P) $(BIN_DIR)
 
