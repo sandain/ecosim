@@ -310,7 +310,7 @@ public class Execs {
      */
     public int runFastTree (File input, File output) {
         String[] command = {
-            "fasttreeMP",
+            binaryDirectory + "fasttree" + binaryExtension,
             "-nt",
             input.getAbsolutePath (),
         };
