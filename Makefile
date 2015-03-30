@@ -93,12 +93,12 @@ check:
 	$(ANT) check
 
 # Build the fortran binary files.
-$(FORTRAN_BUILD_DIR)%$(BINARY_EXT) : $(FORTRAN_SOURCE_DIR)%.f90 $(FORTRAN_OBJECT_FILES)
+$(FORTRAN_BUILD_DIR)%$(BINARY_EXT): $(FORTRAN_SOURCE_DIR)%.f90 $(FORTRAN_OBJECT_FILES)
 	@$(MKDIR_P) $(FORTRAN_BUILD_DIR)
 	$(FC) $^ $(FCFLAGS) -o $@
 
 # Build the fortran object files.
-$(FORTRAN_BUILD_DIR)%.o : $(FORTRAN_SOURCE_DIR)%.f90
+$(FORTRAN_BUILD_DIR)%.o: $(FORTRAN_SOURCE_DIR)%.f90
 	@$(MKDIR_P) $(FORTRAN_BUILD_DIR)
 	$(FC) -c $^ $(FLDFLAGS) -o $@
 
