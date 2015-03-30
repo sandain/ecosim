@@ -9,13 +9,6 @@ ANT := ant
 # Doxygen, used to compile the documentation for the Fortran and Java code.
 DOXYGEN := doxygen
 
-# Source files used.
-SOURCE_FILES := bruteforce.f90 hillclimb.f90 \
-  npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
-
-# Source files to include when building the above source files.
-INCLUDE_FILES := darray.f90 ziggurat.f90 methods.f90 simplexmethod.f90
-
 # Determine the operating system.
 OS := $(shell uname -s)
 
@@ -49,14 +42,17 @@ SOURCE_DIR := src$(DIRECTORY_SEPARATOR)
 BIN_DIR := bin$(DIRECTORY_SEPARATOR)
 DOCS_DIR := docs$(DIRECTORY_SEPARATOR)
 
+# Fortran configuration.
+FORTRAN_SOURCE_FILES := bruteforce.f90 hillclimb.f90 npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
+FORTRAN_INCLUDE_FILES := darray.f90 ziggurat.f90 methods.f90 simplexmethod.f90
 FORTRAN_BUILD_DIR := $(BUILD_DIR)fortran$(DIRECTORY_SEPARATOR)
 FORTRAN_SOURCE_DIR := $(SOURCE_DIR)fortran$(DIRECTORY_SEPARATOR)
 
 # Files to be created.
-FORTRAN_INSTALL_FILES := $(patsubst %.f90, $(BIN_DIR)%$(BINARY_EXT), $(SOURCE_FILES))
-FORTRAN_BINARY_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%$(BINARY_EXT), $(SOURCE_FILES))
-FORTRAN_OBJECT_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%.o, $(INCLUDE_FILES))
-FORTRAN_MOD_FILES     := $(patsubst %.f90, %.mod, $(INCLUDE_FILES))
+FORTRAN_INSTALL_FILES := $(patsubst %.f90, $(BIN_DIR)%$(BINARY_EXT), $(FORTRAN_SOURCE_FILES))
+FORTRAN_BINARY_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%$(BINARY_EXT), $(FORTRAN_SOURCE_FILES))
+FORTRAN_OBJECT_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%.o, $(FORTRAN_INCLUDE_FILES))
+FORTRAN_MOD_FILES     := $(patsubst %.f90, %.mod, $(FORTRAN_INCLUDE_FILES))
 
 # List of phony build targets.
 .PHONY: all clean install uninstall docs check
