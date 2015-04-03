@@ -37,32 +37,15 @@ program demarcation
   integer                             :: i
   integer                             :: istep
   integer                             :: indexnpop
-  integer                             :: npop
-  integer                             :: npoprange(2)
-  integer                             :: numincsomega
-  integer                             :: numincssigma
-  integer                             :: numincsnpop
-  integer                             :: numincsxn
   integer, parameter                  :: nparams = 4
   integer, parameter                  :: outputUnit = 2
   double precision                    :: params(nparams)
   double precision                    :: yvalue
-  double precision                    :: omega
-  double precision                    :: omegarange(2)
-  double precision                    :: sigma  
-  double precision                    :: sigmarange(2)
-  double precision                    :: xn
-  double precision                    :: xnrange(2)
-  real                                :: probthreshold
-  ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: whichavg
-  real    :: crit(1000)
-  common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
+  type(acinas_data)                   :: acinas
+  type(number_increments)             :: numincs
+  type(parameters_data)               :: bottom
+  type(parameters_data)               :: top
+  type(parameters_data)               :: parameters
   ! Provide default file names to use.
   inputFile = 'demarcationIn.dat'
   outputFile = 'demarcationOut.dat'
@@ -94,22 +77,20 @@ program demarcation
     stop
   end if
   ! Read in the input file.
-  call readinput (trim (inputFile), omegarange, sigmarange, npoprange, &
-    xnrange, numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
+  call readinput (trim (inputFile), acinas, bottom, top, numincs)
   ! Open the output file.
   open(unit = outputUnit, file = trim (outputFile), access = 'sequential', form = 'formatted')
-  omega = omegarange(1)
-  sigma = sigmarange(1)
-  xn = xnrange(1)
-  istep = numincsnpop
+  parameters%omega = bottom%omega
+  parameters%sigma = bottom%sigma
+  parameters%xn = bottom%xn
+  istep = numincs%npop
   if (istep .le. 0) istep = 1
-  do indexnpop = npoprange(1), npoprange(1), numincsnpop
-    npop = indexnpop
-    params(1) = log (omega)
-    params(2) = log (sigma)
-    params(3) = npop
-    params(4) = log (xn)
+  do indexnpop = bottom%npop, top%npop, numincs%npop
+    parameters%npop = indexnpop
+    params(1) = log (parameters%omega)
+    params(2) = log (parameters%sigma)
+    params(3) = parameters%npop
+    params(4) = log (parameters%xn)
     yvalue = 0.0
     ! yvalue is the negative of the likelihood
     call fredprogram (nparams, params, yvalue)
@@ -129,38 +110,24 @@ program demarcation
     double precision, intent(inout) :: params(nparams)
     double precision, intent(out)   :: yvalue
     ! Local variables
-    integer          :: npop
-    double precision :: omega
-    double precision :: sigma
-    double precision :: xn
     real             :: avgsuccess(6)
-    ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: whichavg
-    real    :: crit(1000)
-    common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
     ! Make sure that npop is in the right range.
     if (params(3) .lt. 1.0d0) params(3) = 1.0d0
-    if (params(3) .gt. nu) params(3) = nu
-    omega = exp (params(1))
-    sigma = exp (params(2))
-    npop = nint (params(3))
-    xn = exp (params(4))
+    if (params(3) .gt. acinas%nu) params(3) = acinas%nu
+    parameters%omega = exp (params(1))
+    parameters%sigma = exp (params(2))
+    parameters%npop = nint (params(3))
+    parameters%xn = exp (params(4))
     if (debug) then
-      write (unit = *, fmt = *) 'omega= ', omega
-      write (unit = *, fmt = *) 'sigma= ', sigma
-      write (unit = *, fmt = *) 'npop= ', npop
-      write (unit = *, fmt = *) 'xn= ', xn
+      write (unit = *, fmt = *) 'omega= ', parameters%omega
+      write (unit = *, fmt = *) 'sigma= ', parameters%sigma
+      write (unit = *, fmt = *) 'npop= ', parameters%npop
+      write (unit = *, fmt = *) 'xn= ', parameters%xn
     end if
     ! avgsuccess is a count of the number of results that are within X% tolerance
     ! for a particular set of parameter values.
-    call runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-      lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0d0 * avgsuccess(whichavg)
+    call simulation (acinas, parameters, avgsuccess)
+    yvalue = -1.0d0 * avgsuccess(acinas%whichavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
       write (unit = *, fmt = *)

@@ -41,12 +41,6 @@ program npopCI
   integer                             :: maxf
   integer                             :: nloop
   integer                             :: indexnpop
-  integer                             :: npop
-  integer                             :: npoprange(2)
-  integer                             :: numincsomega
-  integer                             :: numincssigma
-  integer                             :: numincsnpop
-  integer                             :: numincsxn
   integer, parameter                  :: outputUnit = 2
   integer, parameter                  :: nparams = 2
   double precision                    :: simp
@@ -55,22 +49,11 @@ program npopCI
   double precision                    :: params(nparams)
   double precision                    :: step(nparams)
   double precision                    :: var(nparams)
-  double precision                    :: omega
-  double precision                    :: omegarange(2)
-  double precision                    :: sigma  
-  double precision                    :: sigmarange(2)
-  double precision                    :: xn
-  double precision                    :: xnrange(2)
-  real                                :: probthreshold
-  ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: whichavg
-  real    :: crit(1000)
-  common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
+  type(acinas_data)                   :: acinas
+  type(number_increments)             :: numincs
+  type(parameters_data)               :: bottom
+  type(parameters_data)               :: top
+  type(parameters_data)               :: parameters
   ! Nelder Mead function.
   procedure(nelmeadFunction), pointer :: functn
   functn => fredprogram
@@ -105,9 +88,7 @@ program npopCI
     stop
   end if
   ! Read in the input file.
-  call readinput (trim (inputFile), omegarange, sigmarange, npoprange, &
-    xnrange, numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
+  call readinput (trim (inputFile), acinas, bottom, top, numincs)
   ! Open the output file.
   open(unit = outputUnit, file = trim (outputFile), access = 'sequential', form = 'formatted')
   ! Set max. no. of function evaluations = MAXF, print every IPRINT.
@@ -124,25 +105,25 @@ program npopCI
   ! should be accurate to about 15 decimals.   If we set simp = 1.d-6,
   ! we should get about 9 dec. digits accuracy in fitting the surface.
   simp = 1.0d-6
-  xn = xnRange(1)
-  omega = omegaRange(1)
-  sigma = sigmaRange(1)
-  do indexnpop = npopRange(1), npopRange(2), numincsnpop
-    npop = indexnpop
+  parameters%xn =bottom%xn
+  parameters%omega = bottom%omega
+  parameters%sigma = bottom%sigma
+  do indexnpop = bottom%npop, top%npop, numincs%npop
+    parameters%npop = indexnpop
     ! Note, for npop values besides the original one, 
     ! we will start with the omega and sigma values
     ! calculated for the previous npop value. 
-    params(1) = log (omega)
-    params(2) = log (sigma)
-    step(1) = log (omega) / 2.0d0
-    step(2) = log (sigma) / 2.0d0
-    if (log (omega) .lt. 0.3d0 .and. log (omega) .gt. -0.3d0) step(1) = 0.15d0
-    if (log (sigma) .lt. 0.3d0 .and. log (sigma) .gt. -0.3d0) step(2) = 0.15d0
+    params(1) = log (parameters%omega)
+    params(2) = log (parameters%sigma)
+    step(1) = log (parameters%omega) / 2.0d0
+    step(2) = log (parameters%sigma) / 2.0d0
+    if (log (parameters%omega) .lt. 0.3d0 .and. log (parameters%omega) .gt. -0.3d0) step(1) = 0.15d0
+    if (log (parameters%sigma) .lt. 0.3d0 .and. log (parameters%sigma) .gt. -0.3d0) step(2) = 0.15d0
     yvalue = 0.0d0
     call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-     outputUnit, probthreshold)
-    write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
-    if (-yvalue .lt. probthreshold) exit
+     outputUnit, acinas%probthreshold)
+    write (unit = outputUnit, fmt = *) parameters%omega, parameters%sigma, parameters%npop, parameters%xn, yvalue
+    if (-yvalue .lt. acinas%probthreshold) exit
   end do
   ! Close the random number generator.
   call randomClose ()
@@ -158,35 +139,21 @@ program npopCI
     double precision, intent(inout) :: params(nparams)
     double precision, intent(out)   :: yvalue
     ! Local variables
-    integer          :: npop
-    double precision :: omega
-    double precision :: sigma
-    double precision :: xn
     real             :: avgsuccess(6)
-    ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: whichavg
-    real    :: crit(1000)
-    common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
-    omega = exp (params(1))
-    sigma = exp (params(2))
-    if (omega .lt. 1.0d-7) omega = 1.0d-7
-    if (sigma .lt. 1.0d-7) sigma = 1.0d-7
+    parameters%omega = exp (params(1))
+    parameters%sigma = exp (params(2))
+    if (parameters%omega .lt. 1.0d-7) parameters%omega = 1.0d-7
+    if (parameters%sigma .lt. 1.0d-7) parameters%sigma = 1.0d-7
     if (debug) then
-      write (unit = *, fmt = *) 'omega= ', omega
-      write (unit = *, fmt = *) 'sigma= ', sigma
-      write (unit = *, fmt = *) 'npop= ', npop
-      write (unit = *, fmt = *) 'xn= ', xn
+      write (unit = *, fmt = *) 'omega= ', parameters%omega
+      write (unit = *, fmt = *) 'sigma= ', parameters%sigma
+      write (unit = *, fmt = *) 'npop= ', parameters%npop
+      write (unit = *, fmt = *) 'xn= ', parameters%xn
     end if
     ! avgsuccess is a count of the number of results that are within X% tolerance
     ! for a particular set of parameter values.
-    call runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-      lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0d0 * avgsuccess(whichavg)
+    call simulation (acinas, parameters, avgsuccess)
+    yvalue = -1.0d0 * avgsuccess(acinas%whichavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
       write (unit = *, fmt = *)

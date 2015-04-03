@@ -42,12 +42,6 @@ program driftCI
   integer                             :: nloop
   integer                             :: indexxn
   integer                             :: xincs
-  integer                             :: npop
-  integer                             :: npoprange(2)
-  integer                             :: numincsomega
-  integer                             :: numincssigma
-  integer                             :: numincsnpop
-  integer                             :: numincsxn
   integer, parameter                  :: nparams = 3
   integer, parameter                  :: outputUnit = 2
   double precision                    :: simp
@@ -56,23 +50,12 @@ program driftCI
   double precision                    :: params(nparams)
   double precision                    :: step(nparams)
   double precision                    :: var(nparams)
-  double precision                    :: omega
-  double precision                    :: omegarange(2)
-  double precision                    :: sigma  
-  double precision                    :: sigmarange(2)
-  double precision                    :: xn
-  double precision                    :: xnrange(2)
   double precision                    :: diffxn
-  real                                :: probthreshold
-  ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: whichavg
-  real    :: crit(1000)
-  common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
+  type(acinas_data)                   :: acinas
+  type(number_increments)             :: numincs
+  type(parameters_data)               :: bottom
+  type(parameters_data)               :: top
+  type(parameters_data)               :: parameters
   ! Nelder Mead function.
   procedure(nelmeadFunction), pointer :: functn
   functn => fredprogram
@@ -107,9 +90,7 @@ program driftCI
     stop
   end if
   ! Read in the input file.
-  call readinput (trim (inputFile), omegarange, sigmarange, npoprange, &
-    xnrange, numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
+  call readinput (trim (inputFile), acinas, bottom, top, numincs)
   ! Open the output file.
   open(unit = outputUnit, file = trim (outputFile), access = 'sequential', form = 'formatted')
   ! Set max. no. of function evaluations = MAXF, print every IPRINT.
@@ -127,36 +108,36 @@ program driftCI
   ! we should get about 9 dec. digits accuracy in fitting the surface.
   simp = 1.0d-6
   ! Fixed factor for drift:
-  xn = xnRange(1)
+  parameters%xn = bottom%xn
   ! Starting values for omega, sigma, and npop:
-  omega = omegaRange(1)
-  sigma = sigmaRange(1)
-  npop = npopRange(1)
+  parameters%omega = bottom%omega
+  parameters%sigma = bottom%sigma
+  parameters%npop = bottom%npop
   ! if xincs=0, it means that only one set of omega values will be used
   xincs = 1
-  diffxn = log (xnRange(2)) - log (xnRange(1))
-  if (numincsxn .eq. 0) then
-    xnRange(2) = xnRange(1) * 10.0d0
-    diffxn = log (xnRange(2)) - log (xnRange(1))
-    numincsxn = 1
+  diffxn = log (top%xn) - log (bottom%xn)
+  if (numincs%xn .eq. 0) then
+    top%xn = bottom%xn * 10.0d0
+    diffxn = log (top%xn) - log (bottom%xn)
+    numincs%xn = 1
     xincs = 0
   endif
-  do indexxn = 0, numincsxn
-    xn = exp (log (xnRange(1)) + indexxn * (diffxn / numincsxn) * 0.999d0)
-    params(1) = log (omega)
-    params(2) = log (sigma)
-    params(3) = npop
-    step(1) = log (omega) / 2.0d0
-    step(2) = log (sigma) / 2.0d0
-    step(3) = npop / 2.0
-    if (log (omega) .lt. 0.30d0 .and. log (omega) .gt. -0.30d0) step(1) = 0.15d0
-    if (log (sigma) .lt. 0.30d0 .and. log (sigma) .gt. -0.30d0) step(2) = 0.15d0
+  do indexxn = 0, numincs%xn
+    parameters%xn = exp (log (bottom%xn) + indexxn * (diffxn / numincs%xn) * 0.999d0)
+    params(1) = log (parameters%omega)
+    params(2) = log (parameters%sigma)
+    params(3) = parameters%npop
+    step(1) = log (parameters%omega) / 2.0d0
+    step(2) = log (parameters%sigma) / 2.0d0
+    step(3) = parameters%npop / 2.0
+    if (log (parameters%omega) .lt. 0.30d0 .and. log (parameters%omega) .gt. -0.30d0) step(1) = 0.15d0
+    if (log (parameters%sigma) .lt. 0.30d0 .and. log (parameters%sigma) .gt. -0.30d0) step(2) = 0.15d0
     yvalue = 0.0
     ! yvalue is the negative of the likelihood
     call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-     outputUnit, probthreshold)
-    write (unit = outputUnit, fmt = *) omega, sigma, npop, xn, yvalue
-    if (-yvalue .lt. probthreshold .or. xincs .eq. 0) exit
+     outputUnit, acinas%probthreshold)
+    write (unit = outputUnit, fmt = *) parameters%omega, parameters%sigma, parameters%npop, parameters%xn, yvalue
+    if (-yvalue .lt. acinas%probthreshold .or. xincs .eq. 0) exit
   end do
   ! Close the random number generator.
   call randomClose ()
@@ -172,38 +153,24 @@ program driftCI
     double precision, intent(inout) :: params(nparams)
     double precision, intent(out)   :: yvalue
     ! Local variables
-    integer          :: npop
-    double precision :: omega
-    double precision :: sigma
-    double precision :: xn
     real             :: avgsuccess(6)
-    ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: whichavg
-    real    :: crit(1000)
-    common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
-    omega = exp (params(1))
-    sigma = exp (params(2))
-    npop = nint (params(3))
-    if (omega .lt. 1.0d-7) omega = 1.0d-7
-    if (sigma .lt. 1.0d-7) sigma = 1.0d-7
-    if (npop .lt. 1) npop = 1
-    if (npop .gt. nu) npop = nu
+    parameters%omega = exp (params(1))
+    parameters%sigma = exp (params(2))
+    parameters%npop = nint (params(3))
+    if (parameters%omega .lt. 1.0d-7) parameters%omega = 1.0d-7
+    if (parameters%sigma .lt. 1.0d-7) parameters%sigma = 1.0d-7
+    if (parameters%npop .lt. 1) parameters%npop = 1
+    if (parameters%npop .gt. acinas%nu) parameters%npop = acinas%nu
     if (debug) then
-      write (unit = *, fmt = *) 'omega= ', omega
-      write (unit = *, fmt = *) 'sigma= ', sigma
-      write (unit = *, fmt = *) 'npop= ', npop
-      write (unit = *, fmt = *) 'xn= ', xn
+      write (unit = *, fmt = *) 'omega= ', parameters%omega
+      write (unit = *, fmt = *) 'sigma= ', parameters%sigma
+      write (unit = *, fmt = *) 'npop= ', parameters%npop
+      write (unit = *, fmt = *) 'xn= ', parameters%xn
     end if
     ! avgsuccess is a count of the number of results that are within X% tolerance
     ! for a particular set of parameter values.
-    call runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-      lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0d0 * avgsuccess(whichavg)
+    call simulation (acinas, parameters, avgsuccess)
+    yvalue = -1.0d0 * avgsuccess(acinas%whichavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
       write (unit = *, fmt = *)

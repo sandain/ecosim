@@ -56,26 +56,8 @@ program bruteforce
   integer                             :: indexsigma
   integer                             :: indexomega
   integer                             :: indexnpop
-  integer                             :: lengthseq
-  integer                             :: npop
-  integer                             :: npoprange(2)
-  integer                             :: nrep
-  integer                             :: nu
-  integer                             :: numcrit
-  integer                             :: numincsomega
-  integer                             :: numincssigma
-  integer                             :: numincsnpop
-  integer                             :: numincsxn
-  integer                             :: whichavg
-  integer                             :: realdata(1000)
   integer, parameter                  :: outputUnit = 2
   integer, parameter                  :: timeUnit = 4
-  double precision                    :: omega
-  double precision                    :: omegarange(2)
-  double precision                    :: sigma  
-  double precision                    :: sigmarange(2)
-  double precision                    :: xn
-  double precision                    :: xnrange(2)
   double precision                    :: diffomega
   double precision                    :: diffsigma
   double precision                    :: diffnpop
@@ -83,9 +65,12 @@ program bruteforce
   real                                :: time1
   real                                :: time2
   real                                :: delta
-  real                                :: probthreshold
   real                                :: avgsuccess(6)
-  real                                :: crit(1000)
+  type(acinas_data)                   :: acinas
+  type(number_increments)             :: numincs
+  type(parameters_data)               :: bottom
+  type(parameters_data)               :: top
+  type(parameters_data)               :: parameters
   ! Provide default file names to use.
   inputFile = 'bruteforceIn.dat'
   outputFile = 'bruteforceOut.dat'
@@ -120,63 +105,60 @@ program bruteforce
     stop
   end if
   ! Read in the input file.
-  call readinput (trim (inputFile), omegarange, sigmarange, npoprange, &
-    xnrange, numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
+  call readinput (trim (inputFile), acinas, bottom, top, numincs)
   ! Open the output files.
   open (unit = outputUnit, file = trim (outputFile), access = 'sequential', form = 'formatted')
   open (unit = timeUnit, file = trim (timeFile), access = 'sequential', form = 'formatted')
   call cpu_time (time1)
-  diffomega = log10 (omegarange(2)) - log10 (omegarange(1))
-  diffsigma = log10 (sigmarange(2)) - log10 (sigmarange(1))
-  diffnpop = log10 (real (npoprange(2))) - log10 (real (npoprange(1)))
-  diffxn = log10 (xnrange(2)) - log10 (xnrange(1))
-  if (numincsomega .eq. 0) then
-    omegarange(2) = omegarange(1) + 1.0
-    diffomega = 2.0 * (log10 (omegarange(2)) - log10 (omegarange(1)))
-    numincsomega = 1
+  diffomega = log10 (top%omega) - log10 (bottom%omega)
+  diffsigma = log10 (top%sigma) - log10 (bottom%sigma)
+  diffnpop = log10 (real (top%npop)) - log10 (real (bottom%npop))
+  diffxn = log10 (top%xn) - log10 (bottom%xn)
+  if (numincs%omega .eq. 0) then
+    top%omega = bottom%omega + 1.0
+    diffomega = 2.0 * (log10 (top%omega) - log10 (bottom%omega))
+    numincs%omega = 1
   endif
-  if (numincssigma .eq. 0) then
-    sigmarange(2) = sigmarange(1) + 1.0
-    diffsigma = 2.0 * (log10 (sigmarange(2)) - log10 (sigmarange(1)))
-    numincssigma = 1
+  if (numincs%sigma .eq. 0) then
+    top%sigma = bottom%sigma + 1.0
+    diffsigma = 2.0 * (log10 (top%sigma) - log10 (bottom%sigma))
+    numincs%sigma = 1
   endif
-  if (numincsnpop .eq. 0) then
-    npoprange(2) = npoprange(1) + 1
-    diffnpop = 2.0 * (log10 (real (npoprange(2))) - log10 (real (npoprange(1))))
-    numincsnpop = 1
+  if (numincs%npop .eq. 0) then
+    top%npop = bottom%npop + 1
+    diffnpop = 2.0 * (log10 (real (top%npop)) - log10 (real (bottom%npop)))
+    numincs%npop = 1
   endif
-  if (numincsxn .eq. 0) then
-    xnrange(2) = xnrange(1) + 1.0
-    diffxn = 2.0 * (log10 (xnrange(2)) - log10 (xnrange(1)))
-    numincsxn = 1
+  if (numincs%xn .eq. 0) then
+    top%xn = bottom%xn + 1.0
+    diffxn = 2.0 * (log10 (top%xn) - log10 (bottom%xn))
+    numincs%xn = 1
   endif
   indexomega = 0
-  do while (indexomega .lt. numincsomega)
-    omega = 10.0 ** (log10 (omegarange(1)) + indexomega * (diffomega / numincsomega) * 0.999)
+  do while (indexomega .lt. numincs%omega)
+    parameters%omega = 10.0 ** (log10 (bottom%omega) + indexomega * (diffomega / numincs%omega) * 0.999)
     indexsigma = 0
-    do while (indexsigma .lt. numincssigma)
-      sigma = 10.0 ** (log10 (sigmarange(1)) + indexsigma * (diffsigma / numincssigma) * 0.999)
+    do while (indexsigma .lt. numincs%sigma)
+      parameters%sigma = 10.0 ** (log10 (bottom%sigma) + indexsigma * (diffsigma / numincs%sigma) * 0.999)
       indexnpop = 0
-      do while (indexnpop .lt. numincsnpop)
-        npop = nint (10.0 ** (log10 (real (npoprange(1))) + indexnpop * (diffnpop / numincsnpop) * 0.999))
-        if (npop .gt. nu) npop = nu
+      do while (indexnpop .lt. numincs%npop)
+        parameters%npop = nint (10.0 ** (log10 (real (bottom%npop)) + indexnpop * (diffnpop / numincs%npop) * 0.999))
+        if (parameters%npop .gt. acinas%nu) parameters%npop = acinas%nu
         indexxn = 0
-        do while (indexxn .lt. numincsxn)
-          xn = 10.0 ** (log10 (xnrange(1)) + indexxn * (diffxn / numincsxn) * 0.999)
+        do while (indexxn .lt. numincs%xn)
+          parameters%xn = 10.0 ** (log10 (bottom%xn) + indexxn * (diffxn / numincs%xn) * 0.999)
           if (debug) then
-            write (unit = *, fmt = *) 'omega= ', omega
-            write (unit = *, fmt = *) 'sigma= ', sigma
-            write (unit = *, fmt = *) 'npop= ', npop
-            write (unit = *, fmt = *) 'xn= ', xn
+            write (unit = *, fmt = *) 'omega= ', parameters%omega
+            write (unit = *, fmt = *) 'sigma= ', parameters%sigma
+            write (unit = *, fmt = *) 'npop= ', parameters%npop
+            write (unit = *, fmt = *) 'xn= ', parameters%xn
           end if
           ! avgsuccess is a count of the number of results that are within
           ! X% tolerance for a particular set of parameter values.
-          call runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-            lengthseq, realdata, crit, avgsuccess)
+          call simulation (acinas, parameters, avgsuccess)
           if (avgsuccess(1) .gt. 0.0) then
             write (unit = outputUnit, fmt = outputFormat) &
-              omega, sigma, npop, xn, (avgsuccess(i), i = 1, 6)
+              parameters%omega, parameters%sigma, parameters%npop, parameters%xn, (avgsuccess(i), i = 1, 6)
           end if
           if (debug) then
             write (unit = *, fmt = *) 'avgsuccess= ', (avgsuccess(i), i = 1, 6)

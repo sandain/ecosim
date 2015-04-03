@@ -47,11 +47,6 @@ program hillclimb
   integer                             :: iquad
   integer                             :: maxf
   integer                             :: nloop
-  integer                             :: npoprange(2)
-  integer                             :: numincsomega
-  integer                             :: numincssigma
-  integer                             :: numincsnpop
-  integer                             :: numincsxn
   integer, parameter                  :: nparams = 4
   integer, parameter                  :: outputUnit = 3
   double precision                    :: simp
@@ -60,19 +55,10 @@ program hillclimb
   double precision                    :: var(nparams)
   double precision                    :: params(nparams)
   double precision                    :: yvalue
-  double precision                    :: omegarange(2)
-  double precision                    :: sigmarange(2)
-  double precision                    :: xnrange(2)
-  real                                :: probthreshold
-  ! bldanny common block
-  integer :: numcrit
-  integer :: nu
-  integer :: nrep
-  integer :: lengthseq
-  integer :: realdata(1000)
-  integer :: whichavg
-  real    :: crit(1000)
-  common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
+  type(acinas_data)                   :: acinas
+  type(number_increments)             :: numincs
+  type(parameters_data)               :: bottom
+  type(parameters_data)               :: top
   ! Nelder Mead function.
   procedure(nelmeadFunction), pointer :: functn
   functn => fredprogram
@@ -107,9 +93,7 @@ program hillclimb
     stop
   end if
   ! Read in the input file.
-  call readinput (trim (inputFile), omegarange, sigmarange, npoprange, &
-    xnrange, numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
+  call readinput (trim (inputFile), acinas, bottom, top, numincs)
   ! Open the output file.
   open (unit = outputUnit, file = trim (outputFile), access = 'sequential', form = 'formatted')
   ! Set max. no. of function evaluations = MAXF, print every IPRINT.
@@ -126,21 +110,21 @@ program hillclimb
   ! should be accurate to about 15 decimals.   If we set simp = 1.d-6,
   ! we should get about 9 dec. digits accuracy in fitting the surface.
   simp = 1.0d-6
-  params(1) = log (omegaRange(1))
-  params(2) = log (sigmaRange(1))
-  params(3) = npopRange(1)
-  params(4) = log (xnRange(1))
-  step(1) = log (omegaRange(1)) / 2.0d0
-  step(2) = log (sigmaRange(1)) / 2.0d0
-  step(3) = npopRange(1) / 2.0d0
-  step(4) = log (xnRange(1)) / 2.0d0
+  params(1) = log (bottom%omega)
+  params(2) = log (bottom%sigma)
+  params(3) = bottom%npop
+  params(4) = log (bottom%xn)
+  step(1) = log (bottom%omega) / 2.0d0
+  step(2) = log (bottom%sigma) / 2.0d0
+  step(3) = bottom%npop / 2.0d0
+  step(4) = log (bottom%xn) / 2.0d0
   yvalue = 0.0
   ! Danny, yvalue is just a dummy variable that gets passed to my
   ! program in the CALL statement, but the meaningful passing of 
   ! variables occurs through the COMMON block
   ! yvalue is the value returned for success level determined by jwhichxavg
   call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, nloop, iquad, simp, var, functn, ier, &
-    outputUnit, probthreshold)
+    outputUnit, acinas%probthreshold)
   ! Close the random number generator.
   call randomClose ()
   ! Close the output file.
@@ -155,38 +139,25 @@ program hillclimb
     double precision, intent(inout) :: params(nparams)
     double precision, intent(out)   :: yvalue
     ! Local variables
-    integer          :: npop
-    double precision :: omega
-    double precision :: sigma
-    double precision :: xn
-    real             :: avgsuccess(6)
-    ! bldanny common block
-    integer :: numcrit
-    integer :: nu
-    integer :: nrep
-    integer :: lengthseq
-    integer :: realdata(1000)
-    integer :: whichavg
-    real    :: crit(1000)
-    common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,whichavg
+    real                  :: avgsuccess(6)
+    type(parameters_data) :: parameters
     ! Make sure that npop is in the right range.
     if (params(3) .lt. 2) params(3) = 2
-    if (params(3) .gt. nu) params(3) = nu
-    omega = exp (params(1))
-    sigma = exp (params(2))
-    npop = nint (params(3))
-    xn = exp (params(4))
+    if (params(3) .gt. acinas%nu) params(3) = acinas%nu
+    parameters%omega = exp (params(1))
+    parameters%sigma = exp (params(2))
+    parameters%npop = nint (params(3))
+    parameters%xn = exp (params(4))
     if (debug) then
-      write (unit = *, fmt = *) 'omega= ', omega
-      write (unit = *, fmt = *) 'sigma= ', sigma
-      write (unit = *, fmt = *) 'npop= ', npop
-      write (unit = *, fmt = *) 'xn= ', xn
+      write (unit = *, fmt = *) 'omega= ', parameters%omega
+      write (unit = *, fmt = *) 'sigma= ', parameters%sigma
+      write (unit = *, fmt = *) 'npop= ', parameters%npop
+      write (unit = *, fmt = *) 'xn= ', parameters%xn
     end if
     ! avgsuccess is a count of the number of results that are within X% tolerance
     ! for a particular set of parameter values.
-    call runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-      lengthseq, realdata, crit, avgsuccess)
-    yvalue = -1.0d0 * avgsuccess(whichavg)
+    call simulation (acinas, parameters, avgsuccess)
+    yvalue = -1.0d0 * avgsuccess(acinas%whichavg)
     if (debug) then
       write (unit = *, fmt = *) 'yvalue= ', yvalue
       write (unit = *, fmt = *)

@@ -37,6 +37,34 @@ module methods
 
   private
 
+  ! Acinas data type.
+  type acinas_data
+    integer              :: numcrit
+    integer              :: nu
+    integer              :: nrep
+    integer              :: lengthseq
+    integer              :: whichavg
+    integer, allocatable :: realdata(:)
+    real                 :: probthreshold
+    real, allocatable    :: crit(:)
+  end type acinas_data
+
+  ! Number of increments data type.
+  type number_increments
+    integer :: npop
+    integer :: omega
+    integer :: sigma
+    integer :: xn
+  end type number_increments
+
+  ! Parameters data type.
+  type parameters_data
+    integer          :: npop
+    double precision :: omega
+    double precision :: sigma
+    double precision :: xn
+  end type parameters_data
+
   ! Declare public methods.
   public :: diverge
   public :: getArgument
@@ -44,7 +72,12 @@ module methods
   public :: randomInitialize
   public :: randomNumber
   public :: readinput
-  public :: runProgram
+  public :: simulation
+
+  ! Declare public types.
+  public :: acinas_data
+  public :: number_increments
+  public :: parameters_data
 
   ! Declare public variables.
   logical, public :: debug = .false.       !< Display debug information.
@@ -931,27 +964,14 @@ module methods
   !    top     : Top parameter values.
   !    numincs : Number of increments for the parameters.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  subroutine readinput (fname, omegarange, sigmarange, npoprange, xnrange, &
-    numincsomega, numincssigma, numincsnpop, numincsxn, &
-    numcrit, nu, nrep, lengthseq, realdata, crit, whichavg, probthreshold)
-    character(len = *), intent(in)    :: fname
-    double precision, intent(out)     :: omegarange(2)
-    double precision, intent(out)     :: sigmarange(2)
-    double precision, intent(out)     :: xnrange(2)
-    integer, intent(out)              :: npoprange(2)
-    integer, intent(out)              :: numincsomega
-    integer, intent(out)              :: numincssigma
-    integer, intent(out)              :: numincsnpop
-    integer, intent(out)              :: numincsxn
-    integer, intent(out)              :: numcrit
-    integer, intent(out)              :: nu
-    integer, intent(out)              :: nrep
-    integer, intent(out)              :: lengthseq
-    integer, intent(out)              :: realdata(1000)
-    integer, intent(out)              :: whichavg
-    real, intent(out)                 :: crit(1000)
-    real, intent(out)                 :: probthreshold
+  subroutine readinput (fname, acinas, bottom, top, numincs)
+    character(len = *), intent(in)       :: fname
+    type(acinas_data), intent(out)       :: acinas
+    type(parameters_data), intent(out)   :: bottom
+    type(parameters_data), intent(out)   :: top
+    type(number_increments), intent(out) :: numincs
     ! Local variables.
+    integer            :: allocate_status
     integer            :: iii
     integer            :: jcrit
     integer            :: io_status
@@ -959,43 +979,52 @@ module methods
     ! Open the file
     open (unit = io_unit, file = fname, action = 'read', access = 'sequential', form = 'formatted')
     ! numcrit is the number of criteria for making cluster bins
-    read (unit = io_unit, fmt = *) numcrit
-    do jcrit = 1, numcrit
+    read (unit = io_unit, fmt = *) acinas%numcrit
+    ! Allocate variables.
+    allocate (acinas%crit(acinas%numcrit), stat = allocate_status)
+    if (allocate_status .gt. 0) then
+      write (unit = *, fmt = *) "Failed to allocate memory!", allocate_status
+    end if
+    allocate (acinas%realdata(acinas%numcrit), stat = allocate_status)
+    if (allocate_status .gt. 0) then
+      write (unit = *, fmt = *) "Failed to allocate memory!", allocate_status
+    end if
+    do jcrit = 1, acinas%numcrit
       ! realdata(jcrit) is the number of bins in the real data at criterion jcrit / 1000.0
-      read (unit = io_unit, fmt = *) realdata(jcrit)
+      read (unit = io_unit, fmt = *) acinas%realdata(jcrit)
     end do
     ! realdata(jcrit) is the actual number of bins for the jcrit th criterion
     ! crit(jcrit) is the jcrit th criterion value
-    do jcrit = 1, numcrit
-      read (unit = io_unit, fmt = *) crit(jcrit)
+    do jcrit = 1, acinas%numcrit
+      read (unit = io_unit, fmt = *) acinas%crit(jcrit)
     end do
     ! omega is the rate of niche invasion per eligible parental population
     ! measured as niche invasions per nucleotide substitution in a given gene
     ! omegabot and omegatop are the range
-    read (unit = io_unit, fmt = *) omegarange(1), omegarange(2)
+    read (unit = io_unit, fmt = *) bottom%omega, top%omega
     ! sigma is the rate of periodic selection per eligible population,
     ! measured as periodic selection events per population per nucleotide substitution in
     ! a given gene
-    read (unit = io_unit, fmt = *) sigmarange(1), sigmarange(2)
+    read (unit = io_unit, fmt = *) bottom%sigma, top%sigma
     ! npop is the number of ecotypes assumed to be in the environmental DNA sample
-    read (unit = io_unit, fmt = *) npoprange(1), npoprange(2)
+    read (unit = io_unit, fmt = *) bottom%npop, top%npop
     ! note that omega, sigma, and npop are the three parameters we will estimate by
     ! maximum likelihood
     ! xn is the actual population size in nature
-    read (unit = io_unit, fmt = *) xnrange(1), xnrange(2)
+    read (unit = io_unit, fmt = *) bottom%xn, top%xn
     ! numincs values are the numbers of increments to be investigated
-    read (unit = io_unit, fmt = *) numincsomega, numincssigma, numincsnpop, numincsxn
+    read (unit = io_unit, fmt = *) numincs%omega, numincs%sigma, numincs%npop, numincs%xn
     ! nu is the number of homologous gene sequences in the environmental sample
     ! following Acinas et al., this should be in the thousands.  The program is
     ! currently written to allow 10000 samples
-    read (unit = io_unit, fmt = *) nu
+    read (unit = io_unit, fmt = *) acinas%nu
     ! nrep is the number of replicate simulations for a given set of sigma, omega, and npop
-    read (unit = io_unit, fmt = *) nrep
+    read (unit = io_unit, fmt = *) acinas%nrep
     ! iii is the odd random number seed (up to nine digits)
     read (unit = io_unit, fmt = *) iii
     call randomInitialize (iii)
     ! lengthseq is the length in nucleotides of the sequence analyzed
-    read (unit = io_unit, fmt = *) lengthseq
+    read (unit = io_unit, fmt = *) acinas%lengthseq
     ! jwhichxavg indicates success level considered:
     !   1 represents 5.00 times
     !   2 represents 2.00 times
@@ -1003,14 +1032,14 @@ module methods
     !   4 represents 1.25 times
     !   5 represents 1.10 times
     !   6 represents 1.05 times
-    read (unit = io_unit, fmt = *, iostat = io_status) whichavg
+    read (unit = io_unit, fmt = *, iostat = io_status) acinas%whichavg
     if (io_status .ne. 0) then
-      whichavg = 1
+      acinas%whichavg = 1
     end if
     ! get the number of individuals in each ecotype
-    read (unit = io_unit, fmt = *, iostat = io_status) probthreshold
+    read (unit = io_unit, fmt = *, iostat = io_status) acinas%probthreshold
     if (io_status .ne. 0) then
-      probthreshold = 1.0
+      acinas%probthreshold = 1.0
     end if
     ! Close the file
     close (unit = io_unit)
@@ -1026,63 +1055,55 @@ module methods
   !    parameters : The parameters for this simulation (omega, sigma, npop, xn).
   !    avgsuccess : The average success for this run.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  subroutine runProgram (omega, sigma, npop, xn, numcrit, nu, nrep, &
-    lengthseq, realdata, crit, avgsuccess)
-    double precision, intent(in)      :: omega
-    double precision, intent(in)      :: sigma
-    double precision, intent(in)      :: xn
-    integer, intent(in)               :: npop
-    integer, intent(in)               :: numcrit
-    integer, intent(in)               :: nu
-    integer, intent(in)               :: nrep
-    integer, intent(in)               :: lengthseq
-    integer, intent(in)               :: realdata(:)
+  subroutine simulation (acinas, parameters, avgsuccess)
+    type(acinas_data), intent(in)     :: acinas
+    type(parameters_data), intent(in) :: parameters
     real, intent(out)                 :: avgsuccess(6)
-    real, intent(in)                  :: crit(:)
     ! Local variables.
     integer             :: i
     integer             :: irep
-    logical             :: success(6, nrep)
+    logical             :: success(6, acinas%nrep)
     ! Initialize the avgsuccess array with values of 0.
     avgsuccess = (/ (0.0, i = 1, 6) /)
     ! Make sure that omega has valid values.
-    if (isnan (omega)) return ! XXX Should use ieee_is_nan when supported.
-    if (omega .lt. epsilon (0.0)) return
-    if (omega .gt. huge (0.0) - 1.0) return
+    if (isnan (parameters%omega)) return ! XXX Should use ieee_is_nan when supported.
+    if (parameters%omega .lt. epsilon (0.0)) return
+    if (parameters%omega .gt. huge (0.0) - 1.0) return
     ! Make sure that sigma has valid values.
-    if (isnan (sigma)) return ! XXX Should use ieee_is_nan when supported.
-    if (sigma .lt. epsilon (0.0)) return
-    if (sigma .gt. huge (0.0) - 1.0) return
+    if (isnan (parameters%sigma)) return ! XXX Should use ieee_is_nan when supported.
+    if (parameters%sigma .lt. epsilon (0.0)) return
+    if (parameters%sigma .gt. huge (0.0) - 1.0) return
     ! Make sure that drift has valid values.
-    if (isnan (xn)) return ! XXX Should use ieee_is_nan when supported.
-    if (xn .lt. epsilon (0.0)) return
-    if (xn .gt. huge (0.0) - 1.0) return
+    if (isnan (parameters%xn)) return ! XXX Should use ieee_is_nan when supported.
+    if (parameters%xn .lt. epsilon (0.0)) return
+    if (parameters%xn .gt. huge (0.0) - 1.0) return
     ! Make sure that npop does not exceed the number of homologous gene
     ! sequences in the environmental sample, and is greater than zero.
-    if (npop .gt. nu .or. npop .le. 0) return
+    if (parameters%npop .gt. acinas%nu .or. parameters%npop .le. 0) return
 #ifdef _OPENMP
     call omp_set_num_threads (numberThreads)
     !$OMP PARALLEL DEFAULT(shared) PRIVATE(irep)
     !$OMP DO
 #endif
     ! Run the simulation nrep number of times.
-    do irep = 1, nrep
-      call simulation (omega, sigma, xn, npop, numcrit, nu, lengthseq, &
-        realdata, crit, success(:, irep))
+    do irep = 1, acinas%nrep
+      call fredMethod (parameters%omega, parameters%sigma, parameters%xn, &
+        parameters%npop, acinas%numcrit, acinas%nu, acinas%lengthseq, &
+        acinas%realdata, acinas%crit, success(:, irep))
     end do
 #ifdef _OPENMP
     !$OMP END DO NOWAIT
     !$OMP END PARALLEL
 #endif
     ! Calculate the average success level for each tolerance range.
-    do irep = 1, nrep
+    do irep = 1, acinas%nrep
       do i = 1, 6
         if (success(i, irep)) avgsuccess(i) = avgsuccess(i) + 1.0
       end do
     end do
-    avgsuccess = (/ (avgsuccess(i) / real (nrep), i = 1, 6) /)
+    avgsuccess = (/ (avgsuccess(i) / real (acinas%nrep), i = 1, 6) /)
     return
-  end subroutine runProgram
+  end subroutine simulation
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !  Perform the fred method for the given values.
@@ -1098,7 +1119,7 @@ module methods
   !    crit       :
   !    success    :
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  subroutine simulation (omega, sigma, xn, npop, numcrit, nu, lengthseq, &
+  subroutine fredMethod (omega, sigma, xn, npop, numcrit, nu, lengthseq, &
     realdata, crit, success)
     double precision, intent(in)      :: omega
     double precision, intent(in)      :: sigma
@@ -1175,7 +1196,7 @@ module methods
     ! 1.10, 1.05) for all bins
     call testForSuccessFit (nclustersarray, numcrit, realdata, success)
     return
-  end subroutine simulation
+  end subroutine fredMethod
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Start the population simulation.
