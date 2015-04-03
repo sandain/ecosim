@@ -98,7 +98,7 @@ public class ConfidenceInterval extends Thread {
         else {
             driftRange = masterVariables.getDriftRange();
         }
-        if (type.equals("npop") || type.equals("demarcations")) {
+        if (type.equals("npop") || type.equals("demarcation")) {
             npopRange = new int[2];
             npopRange[0] = (int)range[0];
             npopRange[1] = (int)range[1];
