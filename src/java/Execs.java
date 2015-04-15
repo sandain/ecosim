@@ -62,18 +62,7 @@ public class Execs {
             binaryExtension = ".exe";
         }
         else if (osName.contains ("linux")) {
-            if (osArch.contains ("i386")) {
-                binaryExtension = ".i386";
-            }
-            else if (osArch.contains ("amd64")) {
-                binaryExtension = ".amd64";
-            }
-            else {
-                log.append (
-                    "Unsupported architecture, contact the developers.\n" +
-                    "Architecture detected: " + osArch + "\n"
-                );
-            }
+            binaryExtension = "";
         }
         else if (osName.contains ("mac")) {
             binaryExtension = ".app";

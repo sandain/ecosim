@@ -19,11 +19,7 @@ OS := $(shell uname -s)
 # Set operating system specific variables.
 ifeq ($(OS), Linux)
   MKDIR_P := mkdir -p
-  ifeq ($(shell getconf LONG_BIT), 64)
-    BINARY_EXT := .amd64
-  else
-    BINARY_EXT := .i386
-  endif
+  BINARY_EXT :=
   DIRECTORY_SEPARATOR := /
 else ifeq ($(OS), Darwin)
   MKDIR_P := mkdir -p
