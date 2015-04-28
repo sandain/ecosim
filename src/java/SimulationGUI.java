@@ -393,7 +393,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to save a project file.
      */
     private void saveProjectFileActionPerformed () {
-        if (binning == null || ! binning.hasRun ()) {
+        if (binning == null) {
             log.append (
                 "Please run at least binning before saving to a file.\n"
             );
@@ -452,7 +452,7 @@ public class SimulationGUI extends Simulation {
                 tree.save (treeFile);
                 execs.openTree (treeFile);
             }
-            if (binning != null && binning.hasRun ()) {
+            if (binning != null) {
                 log.append ("Binning result:\n");
                 ArrayList<BinLevel> bins = binning.getBins ();
                 for (int i = 0; i < bins.size (); i ++) {
@@ -545,7 +545,7 @@ public class SimulationGUI extends Simulation {
      *  programs, or the demarcation program.
      */
     private void runBruteforceActionPerformed () {
-        if (binning == null || ! binning.hasRun ()) {
+        if (binning == null) {
             log.append ("Please open a valid fasta file first.\n");
             return;
         }
@@ -648,8 +648,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the omega confidence interval program.
      */
     private void omegaConfActionPerformed () {
-        if (binning == null || ! binning.hasRun () ||
-            hillclimb == null || ! hillclimb.hasRun ()) {
+        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -671,8 +670,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the sigma confidence interval program.
      */
     private void sigmaConfActionPerformed () {
-        if (binning == null || ! binning.hasRun () ||
-            hillclimb == null || ! hillclimb.hasRun ()) {
+        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -694,8 +692,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the npop confidence interval program.
      */
     private void npopConfActionPerformed () {
-        if (binning == null || ! binning.hasRun () ||
-            hillclimb == null || ! hillclimb.hasRun ()) {
+        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -717,8 +714,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the demarcation program.
      */
     private void runDemarcationActionPerformed () {
-        if (binning == null || ! binning.hasRun () ||
-            hillclimb == null || ! hillclimb.hasRun ()) {
+        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }

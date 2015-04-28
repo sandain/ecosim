@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class Binning implements Runnable {
+public class Binning {
 
     /**
      *  Object to estimate the number of bins in a provided tree.
@@ -43,29 +43,11 @@ public class Binning implements Runnable {
         this.masterVariables = masterVariables;
         this.tree = tree;
         bins = new ArrayList<BinLevel> ();
-        hasRun = false;
-    }
-
-    /**
-     *  Run complete-linkage binning on the provided tree.
-     */
-    public void run () {
         // Get the number of bins for each crit level.
         for (double crit: binLevels) {
             int level = getNumberBins (crit, tree.getRoot ());
             bins.add (new BinLevel (crit, level));
         }
-        // Set the flag stating that the binning programs have been run.
-        hasRun = true;
-    }
-
-    /**
-     *  Returns true if binning has been run, false otherwise.
-     *
-     *  @return True if binning has been run, false otherwise.
-     */
-    public boolean hasRun () {
-        return hasRun;
     }
 
     /**
@@ -75,15 +57,6 @@ public class Binning implements Runnable {
      */
     public ArrayList<BinLevel> getBins () {
         return bins;
-    }
-
-    /**
-     *  Changes the value of hasRun.
-     *
-     *  @param hasRun The new value of hasRun.
-     */
-    public void setHasRun (boolean hasRun) {
-        this.hasRun = hasRun;
     }
 
     /**
@@ -161,8 +134,6 @@ public class Binning implements Runnable {
     private NewickTree tree;
 
     private ArrayList<BinLevel> bins;
-
-    private boolean hasRun;
 
     /**
      *  The default bin levels.

@@ -149,7 +149,7 @@ public class ProjectFileIO {
                 );
             }
             // Output the binning data.
-            if (binning != null && binning.hasRun ()) {
+            if (binning != null) {
                 ArrayList<BinLevel> bins = binning.getBins ();
                 out.write ("  <binning>\n");
                 out.write ("    <bins size=\"" + bins.size () + "\">\n");
@@ -611,10 +611,6 @@ public class ProjectFileIO {
                 // Look for the end of the ecosim save file.
                 if (localName.equals ("ecosim")) {
                     isProjectFile = false;
-                }
-                // Look for the end of the binning element.
-                if (localName.equals ("binning")) {
-                    binning.setHasRun (true);
                 }
                 // Look for the end of the bruteforce element.
                 if (localName.equals ("bruteforce")) {

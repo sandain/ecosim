@@ -167,12 +167,6 @@ public class Simulation {
     protected void runBinning () {
         log.appendln ("Starting binning...");
         binning = new Binning (masterVariables, tree);
-        binning.run ();
-        // Verify that binning program ran correctly.
-        if (! binning.hasRun ()) {
-            log.appendln ("  Error running the binning program!");
-            return;
-        }
         // Output the results from binning.
         log.appendln ("The result from binning:");
         ArrayList<BinLevel> bins = binning.getBins ();
