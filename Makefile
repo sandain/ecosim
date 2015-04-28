@@ -17,28 +17,28 @@ DOXYGEN := doxygen
 OS := $(shell uname -s)
 
 # Set operating system specific variables.
-ifeq ($(OS), Linux)
+ifneq (,$(filter mingw, $(CC)))
+  # Cross-compile for Windows.
+  CFLAGS := $(CFLAGS) -static -lpthread
   MKDIR_P := mkdir -p
-  ifeq ($(shell getconf LONG_BIT), 64)
-    BINARY_EXT := .amd64
-  else
-    BINARY_EXT := .i386
-  endif
+  BINARY_EXT := .exe
   DIRECTORY_SEPARATOR := /
-else ifeq ($(OS), Darwin)
+else ifneq (,$(filter CYGWIN windows, $(OS)))
+  # CygWin and GnuWin.
+  CFLAGS := $(CFLAGS) -static -lpthread
+  MKDIR_P := mkdir
+  BINARY_EXT := .exe
+  DIRECTORY_SEPARATOR := \\
+else ifneq (,$(filter Linux, $(OS)))
+  # Linux.
+  MKDIR_P := mkdir -p
+  BINARY_EXT :=
+  DIRECTORY_SEPARATOR := /
+else ifneq (,$(filter Darwin, $(OS)))
+  # OS X and Darwin.
   MKDIR_P := mkdir -p
   BINARY_EXT := .app
   DIRECTORY_SEPARATOR := /
-else ifneq (,$(findstring windows, $(OS)))
-  CFLAGS := $(CFLAGS) -static -lpthread
-  MKDIR_P := mkdir
-  BINARY_EXT := .exe
-  DIRECTORY_SEPARATOR := \\
-else ifneq (,$(findstring CYGWIN, $(OS)))
-  CFLAGS := $(CFLAGS) -static -lpthread
-  MKDIR_P := mkdir
-  BINARY_EXT := .exe
-  DIRECTORY_SEPARATOR := \\
 endif
 
 BUILD_DIR := build$(DIRECTORY_SEPARATOR)
