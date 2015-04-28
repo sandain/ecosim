@@ -106,7 +106,7 @@ public class NpopConfidenceInterval {
      *
      *  @return The result.
      */
-    public int [] getResult () {
+    public Long [] getResult () {
         return result;
     }
 
@@ -116,7 +116,7 @@ public class NpopConfidenceInterval {
      *
      *  @return The likelihood.
      */
-    public double [] getLikelihood () {
+    public Double [] getLikelihood () {
         return likelihood;
     }
 
@@ -138,7 +138,7 @@ public class NpopConfidenceInterval {
      *  @param result The new result to store.
      *  @param likelihood The likelihood of the result.
      */
-    public void setLowerResult (int result, double likelihood) {
+    public void setLowerResult (Long result, Double likelihood) {
         this.result[0] = result;
         this.likelihood[0] = likelihood;
     }
@@ -149,7 +149,7 @@ public class NpopConfidenceInterval {
      *  @param result The new result to store.
      *  @param likelihood The likelihood of the result.
      */
-    public void setUpperResult (int result, double likelihood) {
+    public void setUpperResult (Long result, Double likelihood) {
         this.result[1] = result;
         this.likelihood[1] = likelihood;
     }
@@ -268,11 +268,9 @@ public class NpopConfidenceInterval {
                                   );
                                   return;
                 }
-                result[index] = new Integer (st.nextToken ()).intValue ();
+                result[index] = new Long (st.nextToken ());
                 st.nextToken (); // "likelihood".
-                likelihood[index] = new Double (
-                    st.nextToken ()
-                ).doubleValue ();
+                likelihood[index] = new Double (st.nextToken ());
                 nextLine = reader.readLine ();
             }
         }
@@ -302,8 +300,8 @@ public class NpopConfidenceInterval {
 
     private int nrep = 1000;
     private int step = 3;
-    private int [] result = { 0, 0 };
-    private double [] likelihood = { 0.0, 0.0 };
+    private Long [] result = { 0L, 0L };
+    private Double [] likelihood = { 0.0d, 0.0d };
 
     private boolean hasRun;
 

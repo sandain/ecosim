@@ -235,8 +235,8 @@ public class ProjectFileIO {
             }
             // Output the NpopCI data.
             if (npopCI != null && npopCI.hasRun ()) {
-                int[] result = npopCI.getResult ();
-                double[] likelihood = npopCI.getLikelihood ();
+                Long [] result = npopCI.getResult ();
+                Double [] likelihood = npopCI.getLikelihood ();
                 out.write ("  <npopCI>\n");
                 out.write (String.format (
                     "    <lower value=\"%d\" likelihood=\"%.5g\"/>\n",
@@ -498,7 +498,7 @@ public class ProjectFileIO {
                         bruteforce.addResult (new ParameterSet<Likelihood> (
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
-                            new Integer (attrs.getValue (uri, "npop")),
+                            new Long (attrs.getValue (uri, "npop")),
                             new Likelihood (
                                 masterVariables,
                                 attrs.getValue (uri, "likelihood")
@@ -512,7 +512,7 @@ public class ProjectFileIO {
                         hillclimb.setResult (new ParameterSet<Double> (
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
-                            new Integer (attrs.getValue (uri, "npop")),
+                            new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "likelihood"))
                         ));
                     }
@@ -520,10 +520,10 @@ public class ProjectFileIO {
                 // Look for elements within omegaCI.
                 if (activeElement.equals ("omegaCI")) {
                     if (localName.equals ("lower")) {
-                        double value = new Double (
+                        Double value = new Double (
                             attrs.getValue (uri, "value")
-                        ).doubleValue ();
-                        double likelihood = new Double (
+                        );
+                        Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
                         ).doubleValue ();
                         omegaCI.setLowerResult (value, likelihood);
@@ -541,61 +541,57 @@ public class ProjectFileIO {
                 // Look for elements within sigmaCI.
                 if (activeElement.equals ("sigmaCI")) {
                     if (localName.equals ("lower")) {
-                        double value = new Double (
+                        Double value = new Double (
                             attrs.getValue (uri, "value")
-                        ).doubleValue ();
-                        double likelihood = new Double (
+                        );
+                        Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        );
                         sigmaCI.setLowerResult (value, likelihood);
                     }
                     if (localName.equals ("upper")) {
-                        double value = new Double (
+                        Double value = new Double (
                             attrs.getValue (uri, "value")
-                        ).doubleValue ();
-                        double likelihood = new Double (
+                        );
+                        Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        );
                         sigmaCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within npopCI.
                 if (activeElement.equals ("npopCI")) {
                     if (localName.equals ("lower")) {
-                        int value = new Integer (
+                        Long value = new Long (
                             attrs.getValue (uri, "value")
-                        ).intValue ();
-                        double likelihood = new Double (
+                        );
+                        Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        );
                         npopCI.setLowerResult (value, likelihood);
                     }
                     if (localName.equals ("upper")) {
-                        int value = new Integer (
-                            attrs.getValue (uri, "value")
-                        ).intValue ();
-                        double likelihood = new Double (
-                            attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        Long value = new Long (attrs.getValue (uri, "value"));
+                        Double likelihood = new Double (attrs.getValue (uri, "likelihood"));
                         npopCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within demarcation.
                 if (activeElement.equals ("demarcation")) {
                     if (localName.equals ("ecotypes")) {
-                        int size = new Integer (
+                        Integer size = new Integer (
                             attrs.getValue (uri, "size")
-                        ).intValue ();
+                        );
                         ecotypes = new ArrayList<ArrayList<String>> (size);
                     }
                     if (localName.equals ("ecotype")) {
-                        int size = new Integer (
+                        Integer size = new Integer (
                             attrs.getValue (uri, "size")
-                        ).intValue ();
+                        );
                         ecotypes.add (new ArrayList<String> (size));
                         ecotypeNumber = new Integer (
                             attrs.getValue (uri, "number")
-                        ).intValue ();
+                        );
                     }
                     if (localName.equals ("member") && ecotypes != null) {
                         ecotypes.get (ecotypeNumber - 1).add (
@@ -654,7 +650,7 @@ public class ProjectFileIO {
 
         private String activeElement;
 
-        private int ecotypeNumber;
+        private Integer ecotypeNumber;
         private ArrayList<ArrayList<String>> ecotypes;
 
         private boolean isProjectFile;

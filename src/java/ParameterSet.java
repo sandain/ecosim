@@ -39,7 +39,7 @@ public class ParameterSet<V extends Comparable<V>>
      *  @param npop The value of npop.
      *  @param value Likelihood of the (npop, omega, sigma) parameter set.
      */
-    public ParameterSet (Double omega, Double sigma, Integer npop, V value) {
+    public ParameterSet (Double omega, Double sigma, Long npop, V value) {
         this.omega = omega;
         this.sigma = sigma;
         this.npop = npop;
@@ -79,9 +79,9 @@ public class ParameterSet<V extends Comparable<V>>
     /**
      *  Get npop.
      *
-     *  @return An Integer containing the value of npop.
+     *  @return A Long containing the value of npop.
      */
-    public Integer getNpop () {
+    public Long getNpop () {
         return npop;
     }
 
@@ -112,7 +112,7 @@ public class ParameterSet<V extends Comparable<V>>
 
     private Double omega;
     private Double sigma;
-    private Integer npop;
+    private Long npop;
     private V value;
 
 }

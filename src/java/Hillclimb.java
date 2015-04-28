@@ -75,7 +75,7 @@ public class Hillclimb implements Runnable {
         // Get the output provided by the hillclimb program.
         readOutputFile (outputFile);
         // Set the flag stating that the hillclimb program has been run.
-        if (result.getNpop () > 0) {
+        if (result.getNpop () > 0L) {
             hasRun = true;
         }
     }
@@ -213,7 +213,7 @@ public class Hillclimb implements Runnable {
                 // npop, and the likelihood of that result.
                 Double omega = new Double (st.nextToken ());
                 Double sigma = new Double (st.nextToken ());
-                Integer npop = new Integer (st.nextToken ());
+                Long npop = new Long (st.nextToken ());
                 Double likelihood = new Double (st.nextToken ());
                 result = new ParameterSet<Double> (
                     omega, sigma, npop, likelihood

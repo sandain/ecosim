@@ -114,9 +114,9 @@ public class Bruteforce implements Runnable {
             result = results.get (0);
         }
         else {
-            Double likelihood[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+            Double likelihood[] = { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
             result = new ParameterSet<Likelihood> (
-                0.0, 0.0, 0, new Likelihood (masterVariables, likelihood)
+                0.0d, 0.0d, 0L, new Likelihood (masterVariables, likelihood)
             );
         }
         return result;
@@ -177,7 +177,7 @@ public class Bruteforce implements Runnable {
                 StringTokenizer st = new StringTokenizer (nextLine);
                 Double omega = new Double (st.nextToken ());
                 Double sigma = new Double (st.nextToken ());
-                Integer npop = new Integer (st.nextToken ());
+                Long npop = new Long (st.nextToken ());
                 Double [] p = new Double[6];
                 for (int i = 0; i < 6; i ++) {
                     p[i] = new Double (st.nextToken ());

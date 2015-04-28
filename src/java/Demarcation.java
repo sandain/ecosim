@@ -178,9 +178,9 @@ public class Demarcation implements Runnable {
             // Estimate the value of npop by multiplying the npop value found
             // in hillclimbing by the ratio of the sample size to the total
             // number of environmental sequences.
-            Integer npop = hclimbResult.getNpop () * sampleNu / nu;
-            if (npop < 1) {
-                npop = 1;
+            Long npop = hclimbResult.getNpop () * sampleNu / nu;
+            if (npop < 1L) {
+                npop = 1L;
             }
             Double likelihood = hclimbResult.getValue ();
             // Increment the iteration variable used in the file names.
@@ -199,10 +199,10 @@ public class Demarcation implements Runnable {
             Execs execs = masterVariables.getExecs ();
             execs.runDemarcation (inputFile, outputFile);
             // Get the output provided by the demarcation program.
-            Integer result = readOutputFile (outputFile);
+            Long result = readOutputFile (outputFile);
             // If 1 is the most likely npop value, add the list of sequences
             // to the list of ecotypes
-            if (result == 1) {
+            if (result == 1L) {
                 ecotypes.add (sample);
             }
             else {
@@ -226,7 +226,7 @@ public class Demarcation implements Runnable {
      *  @param likelihood The likelihood of the omega, sigma, npop estimates.
      */
     private void writeInputFile (File inputFile, Binning binning,
-        Integer sampleNu, Double omega, Double sigma, Integer npop,
+        Integer sampleNu, Double omega, Double sigma, Long npop,
         Double likelihood) {
         ArrayList<BinLevel> bins = binning.getBins ();
         BufferedWriter writer = null;
@@ -298,9 +298,9 @@ public class Demarcation implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private Integer readOutputFile (File outputFile) {
+    private Long readOutputFile (File outputFile) {
         BufferedReader reader = null;
-        Integer result = 0;
+        Long result = 0L;
         Double likelihood = 0.0d;
         try {
             reader = new BufferedReader (new FileReader (outputFile));
@@ -310,7 +310,7 @@ public class Demarcation implements Runnable {
                 // The output contains the most likely npop and the likelihood
                 // for that value.
                 st.nextToken (); // "npop".
-                result = new Integer (st.nextToken ());
+                result = new Long (st.nextToken ());
                 st.nextToken (); // "likelihood".
                 likelihood = new Double (st.nextToken ());
                 nextLine = reader.readLine ();
