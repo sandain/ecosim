@@ -95,7 +95,7 @@ program hillclimb
   ! Verify that the input file exists.
   inquire (file = trim (inputFile), exist = fileExists)
   if (fileExists .neqv. .true.) then
-    write (unit = *, fmt = *) "The hclimbIn.dat file was not found at: ", &
+    write (unit = *, fmt = *) "The hillclimb input file was not found at: ", &
       trim (inputFile)
     ! Error, exit the program.
     stop
