@@ -36,7 +36,7 @@ public class BinLevel {
      *  @param crit The crit level.
      *  @param level The number of clusters.
      */
-    public BinLevel (double crit, int level) {
+    public BinLevel (Double crit, Integer level) {
         this.crit = crit;
         this.level = level;
     }
@@ -46,7 +46,7 @@ public class BinLevel {
      *
      *  @return The crit value.
      */
-    public double getCrit () {
+    public Double getCrit () {
         return crit;
     }
 
@@ -55,7 +55,7 @@ public class BinLevel {
      *
      *  @return The number of clusters.
      */
-    public int getLevel () {
+    public Integer getLevel () {
         return level;
     }
 
@@ -68,6 +68,6 @@ public class BinLevel {
         return String.format ("%5.3f: %d", crit, level);
     }
 
-    private double crit;
-    private int level;
+    private Double crit;
+    private Integer level;
 }
