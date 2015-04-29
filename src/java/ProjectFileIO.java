@@ -487,7 +487,7 @@ public class ProjectFileIO {
                 if (activeElement.equals ("binning")) {
                     if (localName.equals ("bin")) {
                         binning.addBinLevel (new BinLevel (
-                            new Float (attrs.getValue (uri, "crit")),
+                            new Double (attrs.getValue (uri, "crit")),
                             new Integer (attrs.getValue (uri, "value"))
                         ));
                     }
