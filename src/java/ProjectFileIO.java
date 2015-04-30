@@ -571,8 +571,12 @@ public class ProjectFileIO {
                         npopCI.setLowerResult (value, likelihood);
                     }
                     if (localName.equals ("upper")) {
-                        Long value = new Long (attrs.getValue (uri, "value"));
-                        Double likelihood = new Double (attrs.getValue (uri, "likelihood"));
+                        Long value = new Long (
+                            attrs.getValue (uri, "value")
+                        );
+                        Double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        );
                         npopCI.setUpperResult (value, likelihood);
                     }
                 }
