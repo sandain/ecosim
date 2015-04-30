@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2013  Jason M. Wood, Montana State University
+ *    Copyright (C) 2013-2015  Jason M. Wood, Montana State University
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public class ParameterSet<V extends Comparable<V>>
     /**
      *  Get npop.
      *
-     *  @return A Long containing the value of npop.
+     *  @return The value of npop.
      */
     public Long getNpop () {
         return npop;
