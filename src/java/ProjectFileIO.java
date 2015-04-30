@@ -525,16 +525,16 @@ public class ProjectFileIO {
                         );
                         Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        );
                         omegaCI.setLowerResult (value, likelihood);
                     }
                     if (localName.equals ("upper")) {
-                        double value = new Double (
+                        Double value = new Double (
                             attrs.getValue (uri, "value")
-                        ).doubleValue ();
-                        double likelihood = new Double (
+                        );
+                        Double likelihood = new Double (
                             attrs.getValue (uri, "likelihood")
-                        ).doubleValue ();
+                        );
                         omegaCI.setUpperResult (value, likelihood);
                     }
                 }
