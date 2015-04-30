@@ -76,7 +76,7 @@ public class NpopConfidenceInterval {
         // Get the output provided by the npopCI program.
         readOutputFile (outputFile);
         // Set the flag stating that the confidence interval program has run.
-        if (result[0] > 0 && result[1] > 0) {
+        if (result[0] > 0L && result[1] > 0L) {
             hasRun = true;
         }
     }
