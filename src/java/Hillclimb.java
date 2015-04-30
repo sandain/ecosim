@@ -75,7 +75,7 @@ public class Hillclimb implements Runnable {
         // Get the output provided by the hillclimb program.
         readOutputFile (outputFile);
         // Set the flag stating that the hillclimb program has been run.
-        if (result.getNpop () > 0L) {
+        if (result.getNpop () > 0) {
             hasRun = true;
         }
     }
