@@ -30,14 +30,6 @@ EcoSim directory.  You can download it here:
 http://pbil.univ-lyon1.fr/software/njplot.html
 
 
-### PHYLIP
-
-The PHYLIP executable must be in your system's PATH, or in the EcoSim
-directory.  You can download it here:
-
-http://www.phylip.com/
-
-
 ## REQUIREMENTS - COMPILATION
 
 To compile the Fortran programs, you will need to have a Fortran compiler
