@@ -176,6 +176,15 @@ public class Simulation {
         log.appendln ();
     }
 
+    protected void runParameterEstimate () {
+        log.appendln ("Estimating parameters...");
+        estimate = new ParameterEstimate (length, binning);
+        // Output the parameter estimate.
+        log.appendln ("The estimated parameters:");
+        log.appendln (estimate.toString ());
+        log.appendln ();
+    }
+
     /**
      *  Run the bruteforce program.
      */
@@ -333,6 +342,7 @@ public class Simulation {
     protected String outgroup;
     protected NewickTree tree;
     protected Binning binning;
+    protected ParameterEstimate estimate;
     protected Bruteforce bruteforce;
     protected Hillclimb hillclimb;
     protected OmegaConfidenceInterval omegaCI;
