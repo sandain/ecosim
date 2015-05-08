@@ -41,7 +41,6 @@ public class Binning {
      */
     public Binning (MasterVariables masterVariables, NewickTree tree) {
         this.masterVariables = masterVariables;
-        this.tree = tree;
         bins = new ArrayList<BinLevel> ();
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
@@ -131,8 +130,6 @@ public class Binning {
     }
 
     private MasterVariables masterVariables;
-
-    private NewickTree tree;
 
     private ArrayList<BinLevel> bins;
 
