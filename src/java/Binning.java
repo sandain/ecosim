@@ -44,8 +44,8 @@ public class Binning {
         bins = new ArrayList<BinLevel> ();
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
-        for (double crit: binLevels) {
-            int level = getNumberBins (crit, tree.getRoot ());
+        for (Double crit: binLevels) {
+            Integer level = getNumberBins (crit, tree.getRoot ());
             bins.add (new BinLevel (crit, level));
         }
     }
@@ -101,7 +101,7 @@ public class Binning {
      *  @param node The current node in the tree to examine.
      *  @return The number of bins.
      */
-    private Integer getNumberBins (double crit, NewickTreeNode node) {
+    private Integer getNumberBins (Double crit, NewickTreeNode node) {
         Integer num = 0;
         // Return zero bins if the node is the outgroup.
         if (node.isOutgroup ()) return 0;
