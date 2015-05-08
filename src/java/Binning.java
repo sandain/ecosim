@@ -43,7 +43,8 @@ public class Binning {
         this.masterVariables = masterVariables;
         this.tree = tree;
         bins = new ArrayList<BinLevel> ();
-        // Get the number of bins for each crit level.
+        // Run complete-linkage binning on the provided tree for each
+        // sequence criterion level.
         for (double crit: binLevels) {
             int level = getNumberBins (crit, tree.getRoot ());
             bins.add (new BinLevel (crit, level));
