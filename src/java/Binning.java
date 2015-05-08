@@ -101,8 +101,8 @@ public class Binning {
      *  @param node The current node in the tree to examine.
      *  @return The number of bins.
      */
-    private int getNumberBins (double crit, NewickTreeNode node) {
-        int num = 0;
+    private Integer getNumberBins (double crit, NewickTreeNode node) {
+        Integer num = 0;
         // Return zero bins if the node is the outgroup.
         if (node.isOutgroup ()) return 0;
         // Return one bin if the node is a leaf node.
@@ -113,7 +113,7 @@ public class Binning {
         NewickTreeNode b = children.get (1);
         // Calculate the maximum distance between the leaf node ancestors
         // of the two child nodes.
-        double distance = 0.0d;
+        Double distance = 0.0d;
         distance += a.maximumDistanceFromLeafNode () + a.getDistance ();
         distance += b.maximumDistanceFromLeafNode () + b.getDistance ();
         // Recurse on the child nodes if the maximum distance exceeds the
@@ -136,8 +136,8 @@ public class Binning {
     /**
      *  The default bin levels.
      */
-    private double[] binLevels = {
-        0.800, 0.850, 0.900, 0.950, 0.960, 0.970, 0.980, 0.990, 0.995, 1.000
+    private Double[] binLevels = {
+        0.800d, 0.850d, 0.900d, 0.950d, 0.960d, 0.970d, 0.980d, 0.990d, 0.995d, 1.000d
     };
 
 }
