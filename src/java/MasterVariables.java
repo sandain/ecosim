@@ -199,51 +199,6 @@ public class MasterVariables {
     }
 
     /**
-     *  Returns the location of the NJPlot program.
-     *
-     *  @return String containing the location of the program.
-     */
-    public String getProgramNJPlot () {
-        return programNJPlot;
-    }
-
-    /**
-     *  Returns the location of the Phylip DNAPars program.
-     *
-     *  @return String containing the location of the program.
-     */
-    public String getProgramDNAPars () {
-        return programDNAPars;
-    }
-
-    /**
-     *  Returns the location of the Phylip DNADist program.
-     *
-     *  @return String containing the location of the program.
-     */
-    public String getProgramDNADist () {
-        return programDNADist;
-    }
-
-    /**
-     *  Returns the location of the Phylip Neighbor program.
-     *
-     *  @return String containing the location of the program.
-     */
-    public String getProgramNeighbor () {
-        return programNeighbor;
-    }
-
-    /**
-     *  Returns the location of the Phylip Retree program.
-     *
-     *  @return String containing the location of the program.
-     */
-    public String getProgramRetree () {
-        return programRetree;
-    }
-
-    /**
      *  Returns the number of threads to use.
      *
      *  @return The number of threads to use.
@@ -322,31 +277,6 @@ public class MasterVariables {
      */
     private String version =
         Package.getPackage ("ecosim").getImplementationVersion ();
-
-    /**
-     *  The command name of the NJPlot program.
-     */
-    private String programNJPlot = "njplot";
-
-    /**
-     *  The command name of the Phylip DNAPars program.
-     */
-    private String programDNAPars = "dnapars";
-
-    /**
-     *  The command name of the Phylip DNADist program.
-     */
-    private String programDNADist = "dnadist";
-
-    /**
-     *  The command name of the Phylip Neighbor program.
-     */
-    private String programNeighbor = "neighbor";
-
-    /**
-     *  The command name of the Phylip Retree program.
-     */
-    private String programRetree = "retree";
 
     /**
      *  The location of the binary directory.
