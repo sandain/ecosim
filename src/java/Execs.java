@@ -148,7 +148,7 @@ public class Execs {
      */
     public int openTree (File treeFile) {
         String[] command = {
-            masterVariables.getProgramNJPlot (),
+            "njplot",
             treeFile.getPath ()
         };
         return runApplication (
