@@ -127,24 +127,6 @@ public class MasterVariables {
     }
 
     /**
-     *  Get the current PCR error value.
-     *
-     *  @return The current PCR error value.
-     */
-    public double getPCRError () {
-        return pcrerror;
-    }
-
-    /**
-     *  Set the PCR error value.
-     *
-     *  @param pcrerror The new PCR error value.
-     */
-    public void setPCRError (double pcrerror) {
-        this.pcrerror = pcrerror;
-    }
-
-    /**
      *  Return the default log.
      *
      *  @return The default log.
@@ -259,13 +241,6 @@ public class MasterVariables {
     private String[] criterionLabels = new String[] {
         "5.00x", "2.00x", "1.50x", "1.25x", "1.10x", "1.05x"
     };
-
-    /**
-     *  The default PCR error.
-     *
-     *  According to Akmaev and Wang, it is 1.37e-4, or 1/7300
-     */
-    private double pcrerror = 8.33e-6;
 
     /**
      *  The default number of threads is equal to the system maximum.
