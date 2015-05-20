@@ -224,11 +224,6 @@ public class MasterVariables {
     public static final double EPSILON = 1.0e-6;
 
     /**
-     *  The optimal number of successes that we want in bruteforce.
-     */
-    public static final int NUM_SUCCESSES = 50;
-
-    /**
      *  The default criterion value for when auto is selected.
      *
      *  (1: 500%, 2: 200%, 3: 150%, 4: 125%, 5: 110%, 6: 105%)
