@@ -113,7 +113,7 @@ public class MasterVariables {
      *  @param crit The criterion value of interest.
      *  @return The level for the criterion value of interest.
      */
-    public String getCriterionLabel (int crit) {
+    public String getCriterionLabel (Integer crit) {
        return criterionLabels[crit - 1];
     }
 
@@ -185,7 +185,7 @@ public class MasterVariables {
      *
      *  @return The number of threads to use.
      */
-    public int getNumberThreads () {
+    public Integer getNumberThreads () {
         return numThreads;
     }
 
@@ -194,7 +194,7 @@ public class MasterVariables {
      *
      *  @return The current debug status.
      */
-    public boolean getDebug () {
+    public Boolean getDebug () {
         return debug;
     }
 
@@ -203,7 +203,7 @@ public class MasterVariables {
      *
      *  @param numThreads The new number of threads to use.
      */
-    public void setNumberThreads (int numThreads) {
+    public void setNumberThreads (Integer numThreads) {
         this.numThreads = numThreads;
     }
 
@@ -212,7 +212,7 @@ public class MasterVariables {
      *
      *  @param debug The new debug status.
      */
-    public void setDebug (boolean debug) {
+    public void setDebug (Boolean debug) {
         this.debug = debug;
     }
 
@@ -221,14 +221,14 @@ public class MasterVariables {
      *
      *  ie: "a == 100.0" --> "a >= 100.0 - EPSILON"
      */
-    public static final double EPSILON = 1.0e-6;
+    public static final Double EPSILON = 1.0e-6;
 
     /**
      *  The default criterion value for when auto is selected.
      *
      *  (1: 500%, 2: 200%, 3: 150%, 4: 125%, 5: 110%, 6: 105%)
      */
-    private int criterion = 3;
+    private Integer criterion = 3;
 
     /**
      *  The criterion value labels.
@@ -240,7 +240,7 @@ public class MasterVariables {
     /**
      *  The default number of threads is equal to the system maximum.
      */
-    private int numThreads = Runtime.getRuntime ().availableProcessors ();
+    private Integer numThreads = Runtime.getRuntime ().availableProcessors ();
 
     /**
      *  The Ecotype Simulation version number.
@@ -271,7 +271,7 @@ public class MasterVariables {
     /**
      *  Display the debug information if true.
      */
-    private boolean debug;
+    private Boolean debug;
 
     /**
      *  The Logger object.
