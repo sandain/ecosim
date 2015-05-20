@@ -176,6 +176,9 @@ public class Simulation {
         log.appendln ();
     }
 
+    /**
+     *  Run the parameter estimate program.
+     */
     protected void runParameterEstimate () {
         log.appendln ("Estimating parameters...");
         estimate = new ParameterEstimate (length, binning);
