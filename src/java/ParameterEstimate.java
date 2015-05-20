@@ -64,12 +64,19 @@ public class ParameterEstimate {
     }
 
     /**
-     *  Return the parameter estimate.
+     *  Return the parameter estimate result.
      *
-     *  @return The parameter estimate.
+     *  @return The parameter estimate result.
      */
-    public ParameterSet<Double> getEstimate () {
+    public ParameterSet<Double> getResult () {
         return estimate;
+    }
+
+    /**
+     *  Set the parameter estimate.
+     */
+    public void setResult (ParameterSet<Double> result) {
+        estimate = result;
     }
 
     /**
