@@ -239,9 +239,8 @@ public class Simulation {
             return;
         }
         // Output the hillclimbing result.
-        ParameterSet hClimbResult = hillclimb.getResult ();
         log.appendln ("The result from hillclimb:");
-        log.appendln (hClimbResult.toString ());
+        log.appendln (hillclimb.toString ());
         log.appendln ();
     }
 
