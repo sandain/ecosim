@@ -246,7 +246,7 @@ public class Hillclimb implements Runnable {
     private ParameterSet parameterSet;
     private ParameterSet<Double> result;
 
-    private int nrep = 1000;
+    private Integer nrep = 10000;
 
     private boolean hasRun;
 
