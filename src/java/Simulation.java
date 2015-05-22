@@ -165,7 +165,7 @@ public class Simulation {
      *  Run the binning program.
      */
     protected void runBinning () {
-        log.appendln ("Starting binning...");
+        log.appendln ("Running binning...");
         binning = new Binning (masterVariables, tree);
         // Output the results from binning.
         log.appendln ("The result from binning:");
@@ -192,7 +192,7 @@ public class Simulation {
      *  Run the bruteforce program.
      */
     protected void runBruteforce () {
-        log.appendln ("Starting bruteforce search...");
+        log.appendln ("Running bruteforce search...");
         bruteforce = new Bruteforce (masterVariables, nu, length, binning);
         while (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
             bruteforce.run ();
@@ -231,7 +231,7 @@ public class Simulation {
      *  Run the hillclimbing program.
      */
     protected void runHillclimbing () {
-        log.appendln ("Starting hillclimbing...");
+        log.appendln ("Running hillclimbing...");
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, bruteforce.getBestResult ()
         );
@@ -251,7 +251,7 @@ public class Simulation {
      *  Run the omega confidence interval program.
      */
     protected void runOmegaConfidenceInterval () {
-        log.appendln ("Starting omega confidence interval...");
+        log.appendln ("Running omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
@@ -273,7 +273,7 @@ public class Simulation {
      *  Run the sigma confidence interval program.
      */
     protected void runSigmaConfidenceInterval () {
-        log.appendln ("Starting sigma confidence interval...");
+        log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
@@ -295,7 +295,7 @@ public class Simulation {
      *  Run the npop confidence interval program.
      */
     protected void runNpopConfidenceInterval () {
-        log.appendln ("Starting npop confidence interval...");
+        log.appendln ("Running npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
@@ -317,7 +317,7 @@ public class Simulation {
      *  Run the demarcation program.
      */
     protected void runDemarcation () {
-        log.appendln ("Starting demarcation...");
+        log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
             masterVariables, nu, length, outgroup, tree,
             hillclimb.getResult ()
