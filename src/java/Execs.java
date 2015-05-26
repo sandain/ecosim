@@ -75,39 +75,6 @@ public class Execs {
     }
 
     /**
-     *  Runs the initial Fred method to find a good value with which to do
-     *  hillclimbing.
-     *
-     *  @param input The bruteforce input file.
-     *  @param output The bruteforce output file.
-     *  @return The exit value, -1 if there was an error.
-     */
-    public int runBruteforce (File input, File output) {
-        String[] command = {
-            binaryDirectory + "bruteforce" + binaryExtension,
-            input.getAbsolutePath (),
-            output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
-        };
-        PrintStream errorStream = null;
-        PrintStream outputStream = null;
-        // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
-            errorStream = System.err;
-            outputStream = System.out;
-        }
-        return runApplication (
-            command,
-            errorStream,
-            "ERROR (Brute Force Search)>",
-            outputStream,
-            "Brute Force Search>",
-            true
-        );
-    }
-
-    /**
      *  Runs the hillclimb program.
      *
      *  @param input The hillclimb input file.
