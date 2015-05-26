@@ -52,7 +52,7 @@ C_BUILD_DIR := $(BUILD_DIR)c$(DIRECTORY_SEPARATOR)
 C_SOURCE_DIR := $(SOURCE_DIR)c$(DIRECTORY_SEPARATOR)
 
 # Fortran configuration.
-FORTRAN_SOURCE_FILES := bruteforce.f90 hillclimb.f90 npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
+FORTRAN_SOURCE_FILES := hillclimb.f90 npopCI.f90 omegaCI.f90 sigmaCI.f90 demarcation.f90
 FORTRAN_INCLUDE_FILES := darray.f90 ziggurat.f90 methods.f90 simplexmethod.f90
 FORTRAN_BUILD_DIR := $(BUILD_DIR)fortran$(DIRECTORY_SEPARATOR)
 FORTRAN_SOURCE_DIR := $(SOURCE_DIR)fortran$(DIRECTORY_SEPARATOR)
