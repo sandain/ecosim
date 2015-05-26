@@ -49,7 +49,7 @@ public class SigmaConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public SigmaConfidenceInterval (MasterVariables masterVariables, int nu,
-        int length, Binning binning, ParameterSet<Double> hillclimbResult) {
+        int length, Binning binning, ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -130,10 +130,10 @@ public class SigmaConfidenceInterval {
             high = ">100";
         }
         else {
-            high = String.format ("%.5g", result[1]);
+            high = String.format ("%.4g", result[1]);
         }
         return String.format (
-            "%.5g to %s (%.5g, %.5g)",
+            "%.4g to %s (%.4g, %.4g)",
             result[0], high, likelihood[0], likelihood[1]
         );
     }
@@ -222,7 +222,7 @@ public class SigmaConfidenceInterval {
             writer.write (
                 String.format (
                     "%-20.5f likelihoodsolution\n",
-                    hillclimbResult.getValue ()
+                    hillclimbResult.getLikelihood ()
                 )
             );
         }
@@ -302,7 +302,7 @@ public class SigmaConfidenceInterval {
     private int nu;
     private int length;
     private Binning binning;
-    private ParameterSet<Double> hillclimbResult;
+    private ParameterSet hillclimbResult;
 
     private int nrep = 1000;
     private int step = 3;

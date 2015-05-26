@@ -49,7 +49,7 @@ public class OmegaConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public OmegaConfidenceInterval (MasterVariables masterVariables, int nu,
-        int length, Binning binning, ParameterSet<Double> hillclimbResult) {
+        int length, Binning binning, ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -126,7 +126,7 @@ public class OmegaConfidenceInterval {
      */
     public String toString () {
         return String.format (
-            "%.5g to %.5g (%.5g, %.5g)",
+            "%.4g to %.4g (%.4g, %.4g)",
             result[0], result[1], likelihood[0], likelihood[1]
         );
     }
@@ -215,7 +215,7 @@ public class OmegaConfidenceInterval {
             writer.write (
                 String.format (
                     "%-20.5f likelihoodsolution\n",
-                    hillclimbResult.getValue ()
+                    hillclimbResult.getLikelihood ()
                 )
             );
         }
@@ -295,7 +295,7 @@ public class OmegaConfidenceInterval {
     private int nu;
     private int length;
     private Binning binning;
-    private ParameterSet<Double> hillclimbResult;
+    private ParameterSet hillclimbResult;
 
     private int nrep = 1000;
     private int step = 3;

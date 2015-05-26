@@ -58,7 +58,7 @@ public class ParameterEstimate {
             2, omega.m * (sigma.b - omega.b) / (omega.m - sigma.m) + omega.b
         ));
         // Store the estimated parameter values.
-        estimate = new ParameterSet<Double> (
+        estimate = new ParameterSet (
             omegaEstimate, sigmaEstimate, npopEstimate, 0.0d
         );
     }
@@ -68,14 +68,14 @@ public class ParameterEstimate {
      *
      *  @return The parameter estimate result.
      */
-    public ParameterSet<Double> getResult () {
+    public ParameterSet getResult () {
         return estimate;
     }
 
     /**
      *  Set the parameter estimate.
      */
-    public void setResult (ParameterSet<Double> result) {
+    public void setResult (ParameterSet result) {
         estimate = result;
     }
 
@@ -163,7 +163,7 @@ public class ParameterEstimate {
     /**
      * The estimate for the parameter values.
      */
-    private ParameterSet<Double> estimate;
+    private ParameterSet estimate;
 
     /**
      *  A private class to calculate the best fit line from from a selection

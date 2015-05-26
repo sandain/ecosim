@@ -28,8 +28,7 @@ package ecosim;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class ParameterSet<V extends Comparable<V>>
-    implements Comparable<ParameterSet<V>> {
+public class ParameterSet implements Comparable<ParameterSet> {
 
     /**
      *  ParameterSet
@@ -37,13 +36,13 @@ public class ParameterSet<V extends Comparable<V>>
      *  @param omega The value of omega.
      *  @param sigma The value of sigma.
      *  @param npop The value of npop.
-     *  @param value Likelihood of the (npop, omega, sigma) parameter set.
+     *  @param likelihood Likelihood of the (npop, omega, sigma) parameter set.
      */
-    public ParameterSet (Double omega, Double sigma, Long npop, V value) {
+    public ParameterSet (Double omega, Double sigma, Long npop, Double likelihood) {
         this.omega = omega;
         this.sigma = sigma;
         this.npop = npop;
-        this.value = value;
+        this.likelihood = likelihood;
     }
 
     /**
@@ -54,8 +53,8 @@ public class ParameterSet<V extends Comparable<V>>
      *  being equal to the other parameter set's value. -1 if the
      *  the value is less.  1 if the value is more.
      */
-    public int compareTo (ParameterSet<V> other) {
-        return value.compareTo (other.getValue ());
+    public int compareTo (ParameterSet other) {
+        return likelihood.compareTo (other.getLikelihood ());
     }
 
     /**
@@ -86,12 +85,12 @@ public class ParameterSet<V extends Comparable<V>>
     }
 
     /**
-     *  Get the value.
+     *  Get the likelihood.
      *
-     *  @return The value.
+     *  @return The likelihood.
      */
-    public V getValue () {
-        return value;
+    public Double getLikelihood () {
+        return likelihood;
     }
 
     /**
@@ -103,16 +102,16 @@ public class ParameterSet<V extends Comparable<V>>
      */
     public String toString () {
         return String.format (
-            "  omega:       %.5g\n" +
-            "  sigma:       %.5g\n" +
+            "  omega:       %.4g\n" +
+            "  sigma:       %.4g\n" +
             "  npop:        %d\n" +
-            "  likelihood:  %s", omega, sigma, npop, value.toString ()
+            "  likelihood:  %.4g", omega, sigma, npop, likelihood
         );
     }
 
     private Double omega;
     private Double sigma;
     private Long npop;
-    private V value;
+    private Double likelihood;
 
 }

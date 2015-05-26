@@ -54,7 +54,7 @@ public class Demarcation implements Runnable {
      */
     public Demarcation (MasterVariables masterVariables, Integer nu,
         Integer length, String outgroup, NewickTree tree,
-        ParameterSet<Double> hclimbResult) {
+        ParameterSet hclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -181,7 +181,7 @@ public class Demarcation implements Runnable {
             if (npop < 1L) {
                 npop = 1L;
             }
-            Double likelihood = hclimbResult.getValue ();
+            Double likelihood = hclimbResult.getLikelihood ();
             // Increment the iteration variable used in the file names.
             iteration ++;
             File inputFile = new File (
@@ -340,7 +340,7 @@ public class Demarcation implements Runnable {
     private Integer length;
     private Integer nu;
     private NewickTree tree;
-    private ParameterSet<Double> hclimbResult;
+    private ParameterSet hclimbResult;
 
     private Integer nrep = 1000;
     private Integer step = 1;

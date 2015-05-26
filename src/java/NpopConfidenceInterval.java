@@ -50,7 +50,7 @@ public class NpopConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public NpopConfidenceInterval (MasterVariables masterVariables, int nu,
-        int length, Binning binning, ParameterSet<Double> hillclimbResult) {
+        int length, Binning binning, ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -127,7 +127,7 @@ public class NpopConfidenceInterval {
      */
     public String toString () {
         return String.format (
-            "%d to %d (%.5g, %.5g)",
+            "%d to %d (%.4g, %.4g)",
             result[0], result[1], likelihood[0], likelihood[1]
         );
     }
@@ -218,7 +218,7 @@ public class NpopConfidenceInterval {
             writer.write (
                 String.format (
                     "%-20.5f likelihoodsolution\n",
-                    hillclimbResult.getValue ()
+                    hillclimbResult.getLikelihood ()
                 )
             );
         }
@@ -296,7 +296,7 @@ public class NpopConfidenceInterval {
     private int nu;
     private int length;
     private Binning binning;
-    private ParameterSet<Double> hillclimbResult;
+    private ParameterSet hillclimbResult;
 
     private int nrep = 1000;
     private int step = 3;

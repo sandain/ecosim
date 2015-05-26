@@ -94,7 +94,7 @@ public class Hillclimb implements Runnable {
      *
      *  @return The result.
      */
-    public ParameterSet<Double> getResult () {
+    public ParameterSet getResult () {
         return result;
     }
 
@@ -112,7 +112,7 @@ public class Hillclimb implements Runnable {
      *
      *  @param result The new result to store.
      */
-    public void setResult (ParameterSet<Double> result) {
+    public void setResult (ParameterSet result) {
         this.result = result;
     }
 
@@ -215,9 +215,7 @@ public class Hillclimb implements Runnable {
                 Double sigma = new Double (st.nextToken ());
                 Long npop = new Long (st.nextToken ());
                 Double likelihood = new Double (st.nextToken ());
-                result = new ParameterSet<Double> (
-                    omega, sigma, npop, likelihood
-                );
+                result = new ParameterSet (omega, sigma, npop, likelihood);
                 nextLine = reader.readLine ();
             }
         }
@@ -244,7 +242,7 @@ public class Hillclimb implements Runnable {
     private int length;
     private Binning binning;
     private ParameterSet parameterSet;
-    private ParameterSet<Double> result;
+    private ParameterSet result;
 
     private Integer nrep = 10000;
 
