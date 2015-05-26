@@ -160,7 +160,7 @@ public class EcotypeSimulation implements Runnable {
         // If the runAll flag has been set, run the simulation.
         if (runAll) {
             simulation.runBinning ();
-            simulation.runBruteforce ();
+            simulation.runParameterEstimate ();
             simulation.runHillclimbing ();
             simulation.runNpopConfidenceInterval ();
             simulation.runOmegaConfidenceInterval ();
