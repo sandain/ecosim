@@ -70,7 +70,7 @@ public class Simulation {
         outgroup = projectFileIO.getOutgroup ();
         tree = projectFileIO.getTree ();
         binning = projectFileIO.getBinning ();
-        bruteforce = projectFileIO.getBruteforce ();
+        estimate = projectFileIO.getEstimate ();
         hillclimb = projectFileIO.getHillclimb ();
         omegaCI = projectFileIO.getOmegaCI ();
         sigmaCI = projectFileIO.getSigmaCI ();
@@ -85,7 +85,7 @@ public class Simulation {
      */
     public void saveProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, nu, length, outgroup, tree, binning, bruteforce,
+            masterVariables, nu, length, outgroup, tree, binning, estimate,
             hillclimb, omegaCI, sigmaCI, npopCI, demarcation
         );
         projectFileIO.save (file);
@@ -189,57 +189,39 @@ public class Simulation {
     }
 
     /**
-     *  Run the bruteforce program.
-     */
-    protected void runBruteforce () {
-        log.appendln ("Running bruteforce search...");
-        bruteforce = new Bruteforce (masterVariables, nu, length, binning);
-        while (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
-            bruteforce.run ();
-            // Verify that bruteforce ran correctly.
-            if (! bruteforce.hasRun ()) {
-                log.appendln ("Error running the bruteforce search program!");
-                return;
-            }
-            // Verify that there are enough bruteforce results.
-            if (bruteforce.getNumResults () < masterVariables.NUM_SUCCESSES) {
-                int criterion = masterVariables.getCriterion ();
-                log.append (
-                    "  Not enough results at the current criterion (" +
-                    masterVariables.getCriterionLabel (criterion) + ")"
-                );
-                if (criterion > 2) {
-                    log.appendln (", lowering the value.");
-                    criterion --;
-                    masterVariables.setCriterion (criterion);
-                }
-                else {
-                    log.appendln (", aborting.");
-                    bruteforce.setHasRun (false);
-                    return;
-                }
-            }
-        }
-        // Output the best bruteforce result.
-        ParameterSet bestBruteforceResult = bruteforce.getBestResult ();
-        log.appendln ("The best result from bruteforce:");
-        log.appendln (bestBruteforceResult.toString ());
-        log.appendln ();
-    }
-
-    /**
      *  Run the hillclimbing program.
      */
     protected void runHillclimbing () {
+        Integer crit = masterVariables.getCriterion ();
+        Double likelihood = 0.0d;
         log.appendln ("Running hillclimbing...");
-        hillclimb = new Hillclimb (
-            masterVariables, nu, length, binning, bruteforce.getBestResult ()
+        log.appendln (
+            "Starting with precision: " + masterVariables.getCriterionLabel (crit)
         );
-        hillclimb.run ();
-        // Verify that hillclimbing ran correctly.
-        if (! hillclimb.hasRun ()) {
-            log.appendln ("  Error running the hillclimbing program!");
-            return;
+        hillclimb = new Hillclimb (
+            masterVariables, nu, length, binning, estimate.getResult ()
+        );
+        while (likelihood < masterVariables.EPSILON)  {
+            // Run hillclimbing using the current criterion.
+            hillclimb.run ();
+            // Verify that hillclimbing ran correctly.
+            if (! hillclimb.hasRun ()) {
+                log.appendln ("  Error running the hillclimbing program!");
+                return;
+            }
+            likelihood = hillclimb.getResult ().getLikelihood ();
+            // Break out of the loop if likelihood > zero.
+            if (likelihood > masterVariables.EPSILON) break;
+            log.appendln ("Hillclimbing result has zero likelihood.");
+            // Check to see if the precision can be reduced.
+            if (crit == 0) {
+                log.appendln ("  Error, the precision can not be reduced.");
+                break;
+            }
+            crit --;
+            String critLabel = masterVariables.getCriterionLabel (crit);
+            log.appendln ("Reducing the precision to " + critLabel + ".");
+            masterVariables.setCriterion (crit);
         }
         // Output the hillclimbing result.
         log.appendln ("The result from hillclimb:");
@@ -345,7 +327,6 @@ public class Simulation {
     protected NewickTree tree;
     protected Binning binning;
     protected ParameterEstimate estimate;
-    protected Bruteforce bruteforce;
     protected Hillclimb hillclimb;
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;

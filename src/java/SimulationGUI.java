@@ -210,15 +210,8 @@ public class SimulationGUI extends Simulation {
      */
     private JComponent makeSimulationButtonPane () {
         JPanel pane = new JPanel ();
-        pane.setLayout (new GridLayout (5,1,15,15));
+        pane.setLayout (new GridLayout (4,1,15,15));
         // Create Buttons.
-        JButton runBruteforce = new JButton ();
-        runBruteforce.setText ("Run Bruteforce Search");
-        runBruteforce.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                runBruteforceActionPerformed ();
-            }
-        });
         JButton runHillclimbing = new JButton ();
         runHillclimbing.setText ("Run Hillclimbing");
         runHillclimbing.addActionListener (new ActionListener () {
@@ -241,7 +234,6 @@ public class SimulationGUI extends Simulation {
             }
         });
         // Add everything to the pane.
-        pane.add (runBruteforce);
         pane.add (runHillclimbing);
         pane.add (runAll);
         pane.add (runAllDemarcation);
@@ -253,7 +245,7 @@ public class SimulationGUI extends Simulation {
      */
     private JComponent makeConfidenceIntervalButtonPane () {
         JPanel pane = new JPanel ();
-        pane.setLayout (new GridLayout (5,1,15,15));
+        pane.setLayout (new GridLayout (4,1,15,15));
         // Create Buttons.
         JButton omegaConfButton = new JButton ();
         omegaConfButton.setText ("Run Omega Confidence Interval");
@@ -283,31 +275,11 @@ public class SimulationGUI extends Simulation {
                 runDemarcationActionPerformed ();
             }
         });
-        // Create the criterion selector.
-        critSelector = new JComboBox<String> ();
-        critSelector.setModel (new DefaultComboBoxModel<String> (
-            masterVariables.getCriterionLabels ()
-        ));
-        critSelector.setSelectedIndex (masterVariables.getCriterion () - 1);
-        critSelector.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                critSelectorActionPerformed (
-                    critSelector.getSelectedIndex () + 1
-                );
-            }
-        });
-        JLabel critJLabel = new JLabel (
-            "Select Criterion: ", JLabel.TRAILING
-        );
-        JPanel crit = new JPanel ();
-        crit.add (critJLabel);
-        crit.add (critSelector);
         // Add the Buttons to the Pane.
         pane.add (omegaConfButton);
         pane.add (sigmaConfButton);
         pane.add (npopConfButton);
         pane.add (demarcationButton);
-        pane.add (crit);
         return pane;
     }
 
@@ -344,49 +316,6 @@ public class SimulationGUI extends Simulation {
      */
     private void exitProgramActionPerformed () {
         System.exit (0);
-    }
-
-    /**
-     *  The user has asked to change the criterion value.
-     *
-     *  @param criterion The new criterion value.
-     */
-    private void critSelectorActionPerformed (int criterion) {
-        if (criterion != masterVariables.getCriterion ()) {
-            // Update the criterion value.
-            masterVariables.setCriterion (criterion);
-            log.append (
-                "Criterion set to: " +
-                masterVariables.getCriterionLabel (criterion) + "\n"
-            );
-            if (bruteforce != null && bruteforce.hasRun ()) {
-                log.append (
-                    "The best bruteforce result using the new criterion " +
-                    "value:\n"
-                );
-                log.append (bruteforce.getBestResult () + "\n");
-            }
-            // Update the hasRun variables if needed.
-            if (hillclimb != null && hillclimb.hasRun ()) {
-                log.append (
-                    "You will need to rerun hillclimbing for the new " +
-                    "criterion value.\n"
-                );
-                hillclimb.setHasRun (false);
-                if (omegaCI != null) {
-                    omegaCI.setHasRun (false);
-                }
-                if (sigmaCI != null) {
-                    sigmaCI.setHasRun (false);
-                }
-                if (npopCI != null) {
-                    npopCI.setHasRun (false);
-                }
-                if (demarcation != null) {
-                    demarcation.setHasRun (false);
-                }
-            }
-        }
     }
 
     /**
@@ -430,10 +359,6 @@ public class SimulationGUI extends Simulation {
             }
             // Load the project file.
             loadProjectFile (userFile);
-            // Update the crit selector.
-            critSelector.setSelectedIndex (
-                masterVariables.getCriterion () - 1
-            );
             // Output the values stored in the project file.
             if (nu > 0) {
                 log.append ("Phylogeny results:\n");
@@ -460,9 +385,9 @@ public class SimulationGUI extends Simulation {
                 }
                 log.append ("\n");
             }
-            if (bruteforce != null && bruteforce.hasRun ()) {
-                log.append ("Bruteforce result:\n");
-                log.append (bruteforce.toString () + "\n\n");
+            if (estimate != null) {
+                log.append ("Parameter estimate:\n");
+                log.append (estimate.toString () + "\n\n");
             }
             if (hillclimb != null && hillclimb.hasRun ()) {
                 log.append ("Hillclimbing result:\n");
@@ -535,32 +460,6 @@ public class SimulationGUI extends Simulation {
         // Launch NJPlot to view the tree.
         log.append ("Displaying the tree with NJplot.\n\n");
         execs.openTree (newickFile);
-        // Run binning on the tree.
-        runBinning ();
-    }
-
-    /**
-     *  The user has asked to run the bruteforce program,
-     *  but not the hillclimb, omega, sigma, or npop confidence interval
-     *  programs, or the demarcation program.
-     */
-    private void runBruteforceActionPerformed () {
-        if (binning == null) {
-            log.append ("Please open a valid fasta file first.\n");
-            return;
-        }
-        Thread thread = new Thread () {
-            public void run () {
-                if (running) {
-                    log.append ("Already running...\n");
-                    return;
-                }
-                running = true;
-                runBruteforce ();
-                running = false;
-            }
-        };
-        thread.start ();
     }
 
     /**
@@ -569,8 +468,8 @@ public class SimulationGUI extends Simulation {
      *  program.
      */
     private void runHillclimbingActionPerformed () {
-        if (bruteforce == null || ! bruteforce.hasRun ()) {
-            log.append ("Please run through bruteforce first.\n");
+        if (tree == null || ! tree.isValid ()) {
+            log.append ("Please load a valid Newick formatted phylogeny first.\n");
             return;
         }
         Thread thread = new Thread () {
@@ -580,6 +479,8 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
+                runBinning ();
+                runParameterEstimate ();
                 runHillclimbing ();
                 running = false;
             }
@@ -588,9 +489,9 @@ public class SimulationGUI extends Simulation {
     }
 
     /**
-     *  The user has asked to run the binning, bruteforce, hillclimb, and the
-     *  omega, sigma, and npop confidence interval programs, but not the
-     *  demarcation program.
+     *  The user has asked to run the binning, parameter estimate, hillclimb,
+     *  and the omega, sigma, and npop confidence interval programs, but not
+     *  the demarcation program.
      */
     private void runAllActionPerformed () {
         if (nu == 0) {
@@ -604,7 +505,8 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runBruteforce ();
+                runBinning ();
+                runParameterEstimate ();
                 runHillclimbing ();
                 runOmegaConfidenceInterval ();
                 runSigmaConfidenceInterval ();
@@ -616,8 +518,8 @@ public class SimulationGUI extends Simulation {
     }
 
     /**
-     *  The user has asked to run the binning, bruteforce, hillclimb, the
-     *  omega, sigma, and npop confidence interval programs, and the
+     *  The user has asked to run the binning, parameter estimate, hillclimb,
+     *  the omega, sigma, and npop confidence interval programs, and the
      *  demarcation program.
      */
     private void runAllDemarcationActionPerformed () {
@@ -632,7 +534,8 @@ public class SimulationGUI extends Simulation {
                     return;
                 }
                 running = true;
-                runBruteforce ();
+                runBinning ();
+                runParameterEstimate ();
                 runHillclimbing ();
                 runOmegaConfidenceInterval ();
                 runSigmaConfidenceInterval ();
@@ -733,7 +636,6 @@ public class SimulationGUI extends Simulation {
     }
 
     private JFrame gui;
-    private JComboBox<String> critSelector;
 
     private Execs execs;
     private HelpAboutWindow helpAbout;
