@@ -648,7 +648,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the omega confidence interval program.
      */
     private void omegaConfActionPerformed () {
-        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
+        if (hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -670,7 +670,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the sigma confidence interval program.
      */
     private void sigmaConfActionPerformed () {
-        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
+        if (hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -692,7 +692,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the npop confidence interval program.
      */
     private void npopConfActionPerformed () {
-        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
+        if (hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
@@ -714,7 +714,7 @@ public class SimulationGUI extends Simulation {
      *  The user has asked to run just the demarcation program.
      */
     private void runDemarcationActionPerformed () {
-        if (binning == null || hillclimb == null || ! hillclimb.hasRun ()) {
+        if (hillclimb == null || ! hillclimb.hasRun ()) {
             log.append ("Please run through hillclimbing first.\n");
             return;
         }
