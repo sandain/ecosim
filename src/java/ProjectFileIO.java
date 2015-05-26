@@ -56,11 +56,9 @@ public class ProjectFileIO {
         length = 0;
         outgroup = "";
         binning = new Binning (masterVariables, tree);
-        bruteforce = new Bruteforce (
-            masterVariables, nu, length, binning
-        );
+        estimate = new ParameterEstimate (length, binning);
         hillclimb = new Hillclimb (
-            masterVariables, nu, length, binning, bruteforce.getBestResult ()
+            masterVariables, nu, length, binning, estimate.getResult ()
         );
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
@@ -86,7 +84,7 @@ public class ProjectFileIO {
      *  @param outgroup The identifier of the outgroup sequence.
      *  @param tree The NewickTree object.
      *  @param binning The Binning object.
-     *  @param bruteforce The Bruteforce object.
+     *  @param estimate The ParameterEstimate object.
      *  @param hillclimb The Hillclimb object.
      *  @param omegaCI The OmegaConfidenceInterval object.
      *  @param sigmaCI The SigmaConfidenceInterval object.
@@ -95,7 +93,7 @@ public class ProjectFileIO {
      */
     public ProjectFileIO (MasterVariables masterVariables, Integer nu,
         Integer length, String outgroup, NewickTree tree, Binning binning,
-        Bruteforce bruteforce, Hillclimb hillclimb,
+        ParameterEstimate estimate, Hillclimb hillclimb,
         OmegaConfidenceInterval omegaCI, SigmaConfidenceInterval sigmaCI,
         NpopConfidenceInterval npopCI, Demarcation demarcation) {
         this.masterVariables = masterVariables;
@@ -104,7 +102,7 @@ public class ProjectFileIO {
         this.outgroup = outgroup;
         this.tree = tree;
         this.binning = binning;
-        this.bruteforce = bruteforce;
+        this.estimate = estimate;
         this.hillclimb = hillclimb;
         this.omegaCI = omegaCI;
         this.sigmaCI = sigmaCI;
@@ -164,26 +162,19 @@ public class ProjectFileIO {
                 out.write ("    </bins>\n");
                 out.write ("  </binning>\n");
             }
-            // Output the bruteforce data.
-            if (bruteforce != null && bruteforce.hasRun ()) {
-                ArrayList<ParameterSet<Likelihood>> results =
-                    bruteforce.getResults ();
-                out.write ("  <bruteforce>\n");
+            // Output the parameter estimate data.
+            if (estimate != null) {
+                ParameterSet result = estimate.getResult ();
+                out.write ("  <estimate>\n");
                 out.write (String.format (
-                    "    <results size=\"%d\">\n", results.size ()
+                    "    <result omega=\"%.5f\" sigma=\"%.5f\" " +
+                    "npop=\"%d\" likelihood=\"%.5g\"/>\n",
+                    result.getOmega (),
+                    result.getSigma (),
+                    result.getNpop (),
+                    result.getLikelihood ()
                 ));
-                for (int i = 0; i < results.size (); i ++) {
-                    out.write (String.format (
-                        "      <result omega=\"%.5f\" sigma=\"%.5f\" " +
-                        "npop=\"%d\" likelihood=\"%s\"/>\n",
-                        results.get (i).getOmega (),
-                        results.get (i).getSigma (),
-                        results.get (i).getNpop (),
-                        results.get (i).getValue ().toString ()
-                    ));
-                }
-                out.write ("    </results>\n");
-                out.write ("  </bruteforce>\n");
+                out.write ("  </estimate>\n");
             }
             // Output the hillclimb data.
             if (hillclimb != null && hillclimb.hasRun ()) {
@@ -195,7 +186,7 @@ public class ProjectFileIO {
                     result.getOmega (),
                     result.getSigma (),
                     result.getNpop (),
-                    result.getValue ()
+                    result.getLikelihood ()
                 ));
                 out.write ("  </hillclimb>\n");
             }
@@ -348,12 +339,12 @@ public class ProjectFileIO {
     }
 
     /**
-     *  Get the Bruteforce object.
+     *  Get the ParamterEstimate object.
      *
-     *  @return The Bruteforce object.
+     *  @return The ParamterEstimate object.
      */
-    public Bruteforce getBruteforce () {
-        return bruteforce;
+    public ParameterEstimate getEstimate () {
+        return estimate;
     }
 
     /**
@@ -407,7 +398,7 @@ public class ProjectFileIO {
     private String outgroup;
     private NewickTree tree;
     private Binning binning;
-    private Bruteforce bruteforce;
+    private ParameterEstimate estimate;
     private Hillclimb hillclimb;
     private OmegaConfidenceInterval omegaCI;
     private SigmaConfidenceInterval sigmaCI;
@@ -426,7 +417,7 @@ public class ProjectFileIO {
             elements = new ArrayList<String> ();
             elements.add ("phylogeny");
             elements.add ("binning");
-            elements.add ("bruteforce");
+            elements.add ("estimate");
             elements.add ("hillclimb");
             elements.add ("omegaCI");
             elements.add ("sigmaCI");
@@ -492,24 +483,21 @@ public class ProjectFileIO {
                         ));
                     }
                 }
-                // Look for elements within bruteforce.
-                if (activeElement.equals ("bruteforce")) {
+                // Look for elements within estimate.
+                if (activeElement.equals ("estimate")) {
                     if (localName.equals ("result")) {
-                        bruteforce.addResult (new ParameterSet<Likelihood> (
+                        estimate.setResult (new ParameterSet (
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
                             new Long (attrs.getValue (uri, "npop")),
-                            new Likelihood (
-                                masterVariables,
-                                attrs.getValue (uri, "likelihood")
-                            )
+                            new Double (attrs.getValue (uri, "likelihood"))
                         ));
                     }
                 }
                 // Look for elements within hillclimb.
                 if (activeElement.equals ("hillclimb")) {
                     if (localName.equals ("result")) {
-                        hillclimb.setResult (new ParameterSet<Double> (
+                        hillclimb.setResult (new ParameterSet (
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
                             new Long (attrs.getValue (uri, "npop")),
@@ -615,10 +603,6 @@ public class ProjectFileIO {
                 // Look for the end of the ecosim save file.
                 if (localName.equals ("ecosim")) {
                     isProjectFile = false;
-                }
-                // Look for the end of the bruteforce element.
-                if (localName.equals ("bruteforce")) {
-                    bruteforce.setHasRun (true);
                 }
                 // Look for the end of the hillclimb element.
                 if (localName.equals ("hillclimb")) {
