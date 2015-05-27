@@ -167,9 +167,7 @@ public class Demarcation implements Runnable {
                 System.err.println ("Error creating subtree.");
             }
             // Run the binning program on the sample tree.
-            Binning sampleBinning = new Binning (
-                masterVariables, sampleTree
-            );
+            Binning sampleBinning = new Binning (sampleTree);
             Integer sampleNu = sample.size ();
             // Use the omega and sigma values from hillclimbing.
             Double omega = hclimbResult.getOmega ();

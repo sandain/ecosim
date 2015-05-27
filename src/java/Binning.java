@@ -36,11 +36,9 @@ public class Binning {
     /**
      *  Object to estimate the number of bins in a provided tree.
      *
-     *  @param masterVariables The MasterVariables object.
      *  @param tree The NewickTree object.
      */
-    public Binning (MasterVariables masterVariables, NewickTree tree) {
-        this.masterVariables = masterVariables;
+    public Binning (NewickTree tree) {
         bins = new ArrayList<BinLevel> ();
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
@@ -118,7 +116,7 @@ public class Binning {
         distance += b.maximumDistanceFromLeafNode () + b.getDistance ();
         // Recurse on the child nodes if the maximum distance exceeds the
         // crit value, otherwise colapse this branch into one bin.
-        if (distance > 1.000d - crit - masterVariables.EPSILON) {
+        if (distance > 1.000d - crit - MasterVariables.EPSILON) {
             for (NewickTreeNode child: children) {
                 num += getNumberBins (crit, child);
             }
@@ -128,8 +126,6 @@ public class Binning {
         }
         return num;
     }
-
-    private MasterVariables masterVariables;
 
     private ArrayList<BinLevel> bins;
 
