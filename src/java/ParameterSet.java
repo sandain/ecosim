@@ -102,10 +102,10 @@ public class ParameterSet implements Comparable<ParameterSet> {
      */
     public String toString () {
         return String.format (
-            "  omega:       %.4g\n" +
-            "  sigma:       %.4g\n" +
+            "  omega:       %.4f\n" +
+            "  sigma:       %.4f\n" +
             "  npop:        %d\n" +
-            "  likelihood:  %.4g", omega, sigma, npop, likelihood
+            "  likelihood:  %.4f", omega, sigma, npop, likelihood
         );
     }
 
