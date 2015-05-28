@@ -119,6 +119,15 @@ public class NewickTree implements Comparable<NewickTree> {
     }
 
     /**
+     *  Returns an array of nodes that are descendants of the root node.
+     *
+     *  @return The descendants of the root node.
+     */
+    public ArrayList<NewickTreeNode> getDescendants () {
+        return root.getDescendants ();
+    }
+
+    /**
      *  Reroot the tree so that the outgroup descendant is next to the root.
      *
      *  @param name The name of the outgroup descendant.
