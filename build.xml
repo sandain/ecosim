@@ -16,7 +16,11 @@
   <property name="main-class" value="ecosim.EcotypeSimulation"/>
 
   <!-- Load the version information. -->
-  <loadfile property="version" srcFile="VERSION"/>
+  <loadfile property="version" srcFile="VERSION">
+    <filterchain>
+      <striplinebreaks/>
+    </filterchain>
+  </loadfile>
 
   <!-- The main target for this build. -->
   <target name="dist" description="Build the Java source files, and generate the jar file." >
