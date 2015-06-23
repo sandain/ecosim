@@ -18,7 +18,7 @@
   <!-- Store path information for the check target. -->
   <path id="check.classpath">
     <pathelement location="${lib.dir}/junit4.jar"/>
-    <pathelement location="${lib.dir}/hamcrest-core.jar"/>
+    <pathelement location="${lib.dir}/hamcrest-core-1.3.jar"/>
     <pathelement location="${build.dir}/${jarfile}"/>
     <pathelement path="${build.dir}/tests/java"/>
   </path>
