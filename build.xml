@@ -15,6 +15,14 @@
   <property name="jarfile" value="EcoSim.jar"/>
   <property name="main-class" value="ecosim.EcotypeSimulation"/>
 
+  <!-- Store path information for the check target. -->
+  <path id="check.classpath">
+    <pathelement location="${lib.dir}/junit4.jar"/>
+    <pathelement location="${lib.dir}/hamcrest-core.jar"/>
+    <pathelement location="${build.dir}/${jarfile}"/>
+    <pathelement path="${build.dir}/tests/java"/>
+  </path>
+
   <!-- Load the version information. -->
   <loadfile property="version" srcFile="VERSION">
     <filterchain>
@@ -59,14 +67,6 @@
   <target name="uninstall">
     <delete file="${bin.dir}/${jarfile}"/>
   </target>
-
-  <!-- Store path information for the check target. -->
-  <path id="check.classpath">
-    <pathelement location="${lib.dir}/junit4.jar"/>
-    <pathelement location="${lib.dir}/hamcrest-core.jar"/>
-    <pathelement location="${build.dir}/${jarfile}"/>
-    <pathelement path="${build.dir}/tests/java"/>
-  </path>
 
   <!-- The check target. -->
   <target name="check" depends="dist">
