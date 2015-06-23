@@ -23,7 +23,7 @@
   </loadfile>
 
   <!-- The main target for this build. -->
-  <target name="dist" description="Build the Java source files, and generate the jar file." >
+  <target name="dist">
     <!-- Create the necessary directory structure. -->
     <mkdir dir="${build.dir}/java"/>
     <!-- Create the time stamp. -->
@@ -42,20 +42,20 @@
   </target>
 
   <!-- The target for cleaning up from a previous build. -->
-  <target name="clean" description="Clean up." >
+  <target name="clean">
     <!-- Delete the ${build.dir} directory tree. -->
     <delete dir="${build.dir}"/>
   </target>
 
   <!-- The install target. -->
-  <target name="install" depends="dist" description="Copy the jar file to the installation folder.">
+  <target name="install" depends="dist">
     <mkdir dir="${bin.dir}"/>
     <!-- Copy the jar file to the installation directory. -->
     <copy file="${build.dir}/${jarfile}" todir="${bin.dir}"/>
   </target>
 
   <!-- The uninstall target. -->
-  <target name="uninstall" description="Remove the jar file from the installation folder.">
+  <target name="uninstall">
     <delete file="${bin.dir}/${jarfile}"/>
   </target>
 
@@ -68,7 +68,7 @@
   </path>
 
   <!-- The check target. -->
-  <target name="check" depends="dist" description="Run the unit tests.">
+  <target name="check" depends="dist">
     <mkdir dir="${build.dir}/tests/java"/>
     <!-- Copy the assets to the test build directory. -->
     <copy todir="${build.dir}/tests/java/assets">
