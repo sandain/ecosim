@@ -60,7 +60,7 @@
   </target>
 
   <!-- Store path information for the check target. -->
-  <path id="check.path">
+  <path id="check.classpath">
     <pathelement location="${lib.dir}/junit4.jar"/>
     <pathelement location="${lib.dir}/hamcrest-core.jar"/>
     <pathelement location="${build.dir}/${jarfile}"/>
@@ -77,12 +77,12 @@
     <!-- Compile the tests in the test build directory. -->
     <javac srcdir="${tests.dir}" destdir="${build.dir}/tests/java" includeantruntime="false">
       <compilerarg value="-Xlint:unchecked,deprecation"/>
-      <classpath refid="check.path"/>
+      <classpath refid="check.classpath"/>
     </javac>
     <!-- Run the tests. -->
     <junit printsummary="on" fork="true" haltonfailure="yes">
       <formatter type="plain"/>
-      <classpath refid="check.path"/>
+      <classpath refid="check.classpath"/>
       <batchtest fork="yes" todir="${build.dir}/tests">
         <fileset dir="${tests.dir}">
           <include name="Test*.java"/>
