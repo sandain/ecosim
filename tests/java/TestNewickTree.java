@@ -35,14 +35,14 @@ public class TestNewickTree {
     public void testToString () {
         assertEquals (
             "Tree mismatch.",
-            "(((A:0.10000,B:0.20000):0.10000,(C:0.10000,D:0.10000):0.20000):0.30000,E:0.50000):0.00000;",
+            testNewickTree,
             tree.toString ()
         );
     }
 
     @Test
     public void testCompareTo () throws InvalidNewickException {
-        NewickTree a = new NewickTree (tree);
+        NewickTree a = new NewickTree (testNewickTree);
         assertEquals (
             "Tree mismatch.",
             0,
@@ -52,7 +52,7 @@ public class TestNewickTree {
 
     @Test
     public void testReroot () throws InvalidNewickException {
-        NewickTree a = new NewickTree (tree);
+        NewickTree a = new NewickTree (testNewickTree);
         NewickTree b = new NewickTree (
             "(B:0.1,(A:0.1,((C:0.1,D:0.1):0.2,E:0.8):0.1):0.1):0.0;"
         );
@@ -90,5 +90,17 @@ public class TestNewickTree {
     }
 
     private NewickTree tree;
+
+    //       ┌─ A
+    //     ┌─┤
+    //     │ └── B
+    // ┌───┤
+    // │   │  ┌─ C
+    // │   └──┤
+    // │      └─ D
+    // │
+    // └───── E
+    private final String testNewickTree =
+        "(((A:0.10000,B:0.20000):0.10000,(C:0.10000,D:0.10000):0.20000):0.30000,E:0.50000):0.00000;";
 
 }
