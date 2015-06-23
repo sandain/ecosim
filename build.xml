@@ -29,7 +29,8 @@
     <!-- Create the time stamp. -->
     <tstamp/>
     <!-- Compile the java code. -->
-    <javac srcdir="${src.dir}" destdir="${build.dir}/java" includeantruntime="false" debug="true">
+    <javac destdir="${build.dir}/java" includeantruntime="false" debug="true">
+      <src="${src.dir}"/>
       <compilerarg value="-Xlint:unchecked,deprecation"/>
     </javac>
     <!-- Create the jar file. -->
@@ -75,7 +76,8 @@
       <fileset dir="${tests.dir}/assets"/>
     </copy>
     <!-- Compile the tests in the test build directory. -->
-    <javac srcdir="${tests.dir}" destdir="${build.dir}/tests/java" includeantruntime="false">
+    <javac destdir="${build.dir}/tests/java" includeantruntime="false">
+      <src="${tests.dir}"/>
       <compilerarg value="-Xlint:unchecked,deprecation"/>
       <classpath refid="check.classpath"/>
     </javac>
