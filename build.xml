@@ -38,7 +38,7 @@
     <tstamp/>
     <!-- Compile the java code. -->
     <javac destdir="${build.dir}/java" includeantruntime="false" debug="true">
-      <src="${src.dir}"/>
+      <src path="${src.dir}"/>
       <compilerarg value="-Xlint:unchecked,deprecation"/>
     </javac>
     <!-- Create the jar file. -->
@@ -76,7 +76,7 @@
     </copy>
     <!-- Compile the tests in the test build directory. -->
     <javac destdir="${build.dir}/tests/java" includeantruntime="false">
-      <src="${tests.dir}"/>
+      <src path="${tests.dir}"/>
       <compilerarg value="-Xlint:unchecked,deprecation"/>
       <classpath refid="check.classpath"/>
     </javac>
