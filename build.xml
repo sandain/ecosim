@@ -7,7 +7,7 @@
   </description>
 
   <!-- Set global properties for this build. -->
-  <property name="bin.dir" value="bin"/>
+  <property name="bin.dir" value="."/>
   <property name="build.dir" value="build"/>
   <property name="lib.dir" value="lib"/>
   <property name="src.dir" value="src/java"/>
@@ -58,7 +58,6 @@
 
   <!-- The install target. -->
   <target name="install" depends="dist">
-    <mkdir dir="${bin.dir}"/>
     <!-- Copy the jar file to the installation directory. -->
     <copy file="${build.dir}/${jarfile}" todir="${bin.dir}"/>
   </target>
