@@ -23,6 +23,15 @@
     <pathelement path="${build.dir}/tests/java"/>
   </path>
 
+  <!-- Store path information for the dist target. -->
+  <path id="dist.classpath">
+    <pathelement location="${lib.dir}/jcommon-1.0.23.jar"/>
+    <pathelement location="${lib.dir}/jfreechart-1.0.19.jar"/>
+  </path>
+  <manifestclasspath property="dist.manifest.classpath" jarfile="${lib.dir}">
+    <classpath refid="dist.classpath" />
+  </manifestclasspath>
+
   <!-- Load the version information. -->
   <loadfile property="version" srcFile="VERSION">
     <filterchain>
@@ -40,12 +49,14 @@
     <javac destdir="${build.dir}/java" includeantruntime="false" debug="true">
       <src path="${src.dir}"/>
       <compilerarg value="-Xlint:unchecked,deprecation"/>
+      <classpath refid="dist.classpath"/>
     </javac>
     <!-- Create the jar file. -->
     <jar jarfile="${build.dir}/${jarfile}" basedir="${build.dir}/java">
       <manifest>
         <attribute name="Main-Class" value="${main-class}"/>
         <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Class-Path" value="${dist.manifest.classpath}"/>
       </manifest>
     </jar>
   </target>
