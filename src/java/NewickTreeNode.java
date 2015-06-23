@@ -89,13 +89,18 @@ public class NewickTreeNode implements Comparable<NewickTreeNode> {
                 for (NewickTreeNode child: otherParent.getChildren ()) {
                     b += child.getDistance ();
                 }
-                c = b.compareTo (a);
+                c = 0;
+                if (b > a + MasterVariables.EPSILON) c = -1;
+                if (a > b + MasterVariables.EPSILON) c = 1;
                 if (c != 0) return c;
             }
             else {
                 // When the parent is not the root node, compare just the
                 // distances.
-                c = other.getDistance ().compareTo (distance);
+                Double otherDist = other.getDistance ();
+                c = 0;
+                if (distance > otherDist + MasterVariables.EPSILON) c = -1;
+                if (otherDist > distance + MasterVariables.EPSILON) c = 1;
                 if (c != 0) return c;
             }
         }
