@@ -19,13 +19,13 @@ OS := $(shell uname -s)
 # Set operating system specific variables.
 ifneq (,$(filter mingw, $(CC)))
   # Cross-compile for Windows.
-  CFLAGS := $(CFLAGS) -static -lpthread
+  FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir -p
   BINARY_EXT := .exe
   DIRECTORY_SEPARATOR := /
 else ifneq (,$(filter CYGWIN windows, $(OS)))
   # CygWin and GnuWin.
-  CFLAGS := $(CFLAGS) -static -lpthread
+  FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir
   BINARY_EXT := .exe
   DIRECTORY_SEPARATOR := \\
