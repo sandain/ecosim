@@ -42,7 +42,7 @@ module methods
   public :: randomClose
   public :: randomInitialize
   public :: randomNumber
-  public :: runProgram
+  public :: runFredProgram
 
   ! Declare public variables.
   logical, public :: debug = .false.       !< Display debug information.
@@ -570,7 +570,7 @@ module methods
   !>                                5: 110% tolerance.
   !>                                6: 105% tolerance.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  subroutine runProgram (omega, sigma, npop, numcrit, nu, nrep, &
+  subroutine runFredProgram (omega, sigma, npop, numcrit, nu, nrep, &
     lengthseq, realdata, crit, avgsuccess)
     real(kind = real64), intent(in)      :: omega
     real(kind = real64), intent(in)      :: sigma
@@ -622,7 +622,7 @@ module methods
     end do
     avgsuccess = (/ (avgsuccess(i) / real (nrep, kind = real64), i = 1, 6) /)
     return
-  end subroutine runProgram
+  end subroutine runFredProgram
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Run the population simulation.

@@ -240,7 +240,7 @@ program npopCI
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> This subroutine is called by the Nelder-Mead simplex method, using the
-  !> runprogram subroutine to calculate the yvalue.
+  !> runFredProgram subroutine to calculate the yvalue.
   !>
   !> @param[in]     nparams       The number of parameters.
   !> @param[in,out] params        The parameters (omega, sigma, npop).
@@ -276,7 +276,7 @@ program npopCI
       write (unit = *, fmt = *) 'sigma= ', sigma
       write (unit = *, fmt = *) 'npop= ', npop
     end if
-    call runprogram (omega, sigma, npop, numcrit, nu, nrep, &
+    call runFredProgram (omega, sigma, npop, numcrit, nu, nrep, &
       lengthseq, realdata, crit, avgsuccess)
     yvalue = -1.0d0 * avgsuccess(jwhichxavg)
     if (debug) then
