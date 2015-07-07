@@ -107,8 +107,15 @@ public class Simulation {
             length = fasta.length ();
             outgroup = fasta.getIdentifier (0);
             // Output the number of sequences loaded.
-            log.appendln (String.format ("  %d environmental sequences.", nu));
-            log.appendln (String.format ("  %s is the outgroup.", outgroup));
+            log.appendln (String.format (
+                "  %d environmental sequences.", nu
+            ));
+            log.appendln (String.format (
+                "  sequence length: %d.", length
+            ));
+            log.appendln (String.format (
+                "  %s is the outgroup.", outgroup
+            ));
         }
         catch (InvalidFastaException e) {
             System.out.println ("Error loading sequence file.");
