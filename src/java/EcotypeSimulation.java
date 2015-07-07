@@ -162,9 +162,7 @@ public class EcotypeSimulation implements Runnable {
             simulation.runBinning ();
             simulation.runParameterEstimate ();
             simulation.runHillclimbing ();
-            simulation.runNpopConfidenceInterval ();
-            simulation.runOmegaConfidenceInterval ();
-            simulation.runSigmaConfidenceInterval ();
+            simulation.runConfidenceIntervals ();
             simulation.runDemarcation ();
             if (outputFile != null) {
                 simulation.saveProjectFile (outputFile);
