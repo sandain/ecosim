@@ -296,6 +296,15 @@ public class Simulation {
     }
 
     /**
+     *  Run the omega, sigma, and npop confidence interval programs.
+     */
+    protected void runConfidenceIntervals () {
+        runOmegaConfidenceInterval ();
+        runSigmaConfidenceInterval ();
+        runNpopConfidenceInterval ();
+    }
+
+    /**
      *  Run the demarcation program.
      */
     protected void runDemarcation () {
