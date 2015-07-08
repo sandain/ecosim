@@ -3,7 +3,7 @@
 !    as the evolutionary result of net ecotype formation and periodic
 !    selection, yielding a certain number of ecotypes.
 !
-!    Copyright (C) 2009-2014  Fred Cohan, Wesleyan University
+!    Copyright (C) 2009-2015  Fred Cohan, Wesleyan University
 !                             Danny Krizanc, Wesleyan University
 !                             Jason M. Wood, Montana State University
 !
@@ -41,32 +41,19 @@ program demarcation
   character(len = 256)             :: inputFile
   character(len = 256)             :: outputFile
   logical                          :: fileExists
-  logical                          :: testednpopequalsone
   integer(kind = int32)            :: npop
+  integer(kind = int32)            :: bestnpop
+  integer(kind = int32)            :: testednpop
   integer(kind = int32)            :: i
-  integer(kind = int32)            :: ier
-  integer(kind = int32)            :: iprint
-  integer(kind = int32)            :: iquad
-  integer(kind = int32)            :: lout
-  integer(kind = int32)            :: maxf
-  integer(kind = int32)            :: nloop
   integer(kind = int32)            :: istep
-  integer(kind = int32)            :: ilowerbound
-  integer(kind = int32)            :: npopsolution
-  integer(kind = int32), parameter :: nparams = 2
   integer(kind = int32), parameter :: outputUnit = 4
   real(kind = real64)              :: xlikelihoodsolution
   real(kind = real64)              :: ratio
-  real(kind = real64)              :: xlikelihood
-  real(kind = real64)              :: xlowerlikelihood
+  real(kind = real64)              :: likelihood
+  real(kind = real64)              :: likelihoodone
+  real(kind = real64)              :: bestlikelihood
   real(kind = real64)              :: omega
   real(kind = real64)              :: sigma
-  real(kind = real64)              :: simp
-  real(kind = real64)              :: step(nparams)
-  real(kind = real64)              :: stopcr
-  real(kind = real64)              :: var(nparams)
-  real(kind = real64)              :: params(nparams)
-  real(kind = real64)              :: yvalue
   ! bldanny common block
   integer(kind = int32) :: numcrit
   integer(kind = int32) :: nu
@@ -76,12 +63,6 @@ program demarcation
   integer(kind = int32) :: jwhichxavg
   real(kind = real32)   :: crit(1000)
   common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
-  ! parameters common block
-  integer(kind = int32) :: npopfornelmead
-  common/parameters/npopfornelmead
-  ! The function to be used by the Nelder-Mead minimization function.
-  procedure(nelmeadFunction), pointer :: functn
-  functn => callfredprogram
   ! Provide default file names to use.
   inputFile = 'demarcationIn.dat'
   outputFile = 'demarcationOut.dat'
@@ -119,67 +100,36 @@ program demarcation
   ! Open the output file.
   open (unit = outputUnit, file = trim (outputFile), &
     access = 'sequential', form = 'formatted')
-  npopsolution = npop
-  ! Set max. no. of function evaluations = maxf, print every iprint.
-  maxf = 100
-  if (debug) then
-    iprint = 1
-  else
-    iprint = -1
-  end if
-  ! Send output to stdout (usually unit 6)
-  lout = 6
-  ! Set value for stopping criterion.  Stopping occurs when the
-  ! standard deviation of the values of the objective function at
-  ! the points of the current simplex < stopcr.
-  stopcr = 1.0d-1
-  nloop = 8
-  ! Fit a quadratic surface to be sure a minimum has been found.
-  iquad = 0
-  ! As function value is being evaluated in double precision, it
-  ! should be accurate to about 15 decimals.  If we set simp = 1.0d-6,
-  ! we should get about 9 dec. digits accuracy in fitting the surface.
-  simp = 1.0d-6
-  ilowerbound = npopsolution
-  xlowerlikelihood = xlikelihoodsolution
-  do
-    npop = npop - istep
-    if (npop .lt. 1 .and. testednpopequalsone) exit
-    if (npop .lt. 1) npop = 1
-    if (npop .eq. 1) testednpopequalsone = .true.
-    ! Return value starts off at zero.
-    yvalue = 0.0
-    ! Make sure omega and sigma are greater than zero.
-    if (omega .gt. 0.0 .and. sigma .gt. 0.0) then
-      ! Setup the parameters for Nelder-Mead.
-      params(1) = log (omega)
-      step(1) = log (omega) / 2.0
-      if (log (omega) .lt. 0.3 .and. log (omega) .gt. -0.3) then
-        step(1) = 0.15
-      end if
-      params(2) = log (sigma)
-      step(2) = log (sigma) / 2.0
-      if (log (sigma) .lt. 0.3 .and. log (sigma) .gt. -0.3) then
-        step(2) = 0.15
-      end if
-      npopfornelmead = npop
-      call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
-        nloop, iquad, simp, var, functn, ier, lout)
-      omega = exp (params(1))
-      sigma = exp (params(2))
+  ! Start off with the best npop value equal to the predicted value.
+  bestnpop = npop
+  bestlikelihood = 0.0d0
+  likelihoodone = 0.0d0
+  ! Make sure omega and sigma are greater than zero.
+  if (omega .gt. 0.0d0 .and. sigma .gt. 0.0d0) then
+    ! Test npop value = 1.
+    call runNelderMead (omega, sigma, 1, likelihood)
+    if (likelihood .gt. 1.0d-6) then
+      bestnpop = 1
+      bestlikelihood = likelihood
+      likelihoodone = likelihood
+      ! Test npop values from istep + 1 to the npop estimate.
+      do testednpop = istep + 1, npop, istep
+        call runNelderMead (omega, sigma, testednpop, likelihood)
+        if (likelihood .lt. 1.0d-6) cycle
+        ! Do the likelihood ratio test.
+        ratio = -2.0 * log (bestlikelihood / likelihood)
+        if (likelihood .gt. bestlikelihood .and. ratio .gt. 3.84) then
+          bestnpop = testednpop
+          bestlikelihood = likelihood
+        end if
+      end do
     end if
-    xlikelihood = -1.0d0 * yvalue
-    ! avoid dividing by zero
-    if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
-    ! now do likelihood ratio test
-    ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
-    if (ratio .gt. 3.84) exit
-    ilowerbound = npop
-    xlowerlikelihood = xlikelihood
-  end do
+  end if
   ! Output the answer.
-  write (unit = outputUnit, fmt = *) 'npop ', ilowerbound, &
-     ' likelihood ', xlowerlikelihood
+  write (unit = outputUnit, fmt = *) &
+    'npop ', 1, ' likelihood ', likelihoodone
+  write (unit = outputUnit, fmt = *) &
+    'npop ', bestnpop, ' likelihood ', bestlikelihood
   ! Close the random number generator.
   call randomClose ()
   ! Close the output file.
@@ -188,6 +138,82 @@ program demarcation
   stop
 
   contains
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !> A helper method for running the Nelder-Mead simplex method on a given
+  !> set of values.
+  !>
+  !> @param[in]     omega         The omega value to be tested.
+  !> @param[in]     sigma         The sigma value to be tested.
+  !> @param[in]     npop          The npop value to be tested.
+  !> @param[out]    likelihood    The resulting likelihood of the function.
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  subroutine runNelderMead (omega, sigma, npop, likelihood)
+    integer(kind = int32), intent(in)    :: npop
+    real(kind = real64), intent(in)      :: omega
+    real(kind = real64), intent(in)      :: sigma
+    real(kind = real64), intent(out)     :: likelihood
+    ! Local variables
+    integer(kind = int32), parameter :: nparams = 2
+    integer(kind = int32)            :: ier
+    integer(kind = int32)            :: iprint
+    integer(kind = int32)            :: iquad
+    integer(kind = int32)            :: lout
+    integer(kind = int32)            :: maxf
+    integer(kind = int32)            :: nloop
+    real(kind = real64)              :: params(nparams)
+    real(kind = real64)              :: simp
+    real(kind = real64)              :: step(nparams)
+    real(kind = real64)              :: stopcr
+    real(kind = real64)              :: var(nparams)
+    real(kind = real64)              :: yvalue
+    ! parameters common block
+    integer(kind = int32) :: npopfornelmead
+    common/parameters/npopfornelmead
+    ! The function to be used by the Nelder-Mead minimization function.
+    procedure(nelmeadFunction), pointer :: functn
+    functn => callfredprogram
+    ! Return value starts off at zero.
+    yvalue = 0.0
+    ! Setup the parameters for Nelder-Mead.
+    params(1) = log (omega)
+    step(1) = log (omega) / 2.0
+    if (log (omega) .lt. 0.3 .and. log (omega) .gt. -0.3) then
+      step(1) = 0.15
+    end if
+    params(2) = log (sigma)
+    step(2) = log (sigma) / 2.0
+    if (log (sigma) .lt. 0.3 .and. log (sigma) .gt. -0.3) then
+      step(2) = 0.15
+    end if
+    npopfornelmead = npop
+    ! Set max. no. of function evaluations = maxf, print every iprint.
+    maxf = 100
+    if (debug) then
+      iprint = 1
+    else
+      iprint = -1
+    end if
+    ! Send output to stdout (usually unit 6)
+    lout = 6
+    ! Set value for stopping criterion.  Stopping occurs when the
+    ! standard deviation of the values of the objective function at
+    ! the points of the current simplex < stopcr.
+    stopcr = 1.0d-1
+    nloop = 8
+    ! Fit a quadratic surface to be sure a minimum has been found.
+    iquad = 0
+    ! As function value is being evaluated in double precision, it
+    ! should be accurate to about 15 decimals.  If we set simp = 1.0d-6,
+    ! we should get about 9 dec. digits accuracy in fitting the surface.
+    simp = 1.0d-6
+    ! Call the Nelder-Mead simplex function
+    call nelmead (params, step, nparams, yvalue, maxf, iprint, stopcr, &
+      nloop, iquad, simp, var, functn, ier, lout)
+    likelihood = -1.0d0 * yvalue
+    return
+  end subroutine runNelderMead
+
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> This subroutine is called by the Nelder-Mead simplex method, using the

@@ -205,10 +205,10 @@ public class Demarcation implements Runnable {
             Execs execs = masterVariables.getExecs ();
             execs.runDemarcation (inputFile, outputFile);
             // Get the output provided by the demarcation program.
-            Long result = readOutputFile (outputFile);
+            NpopValue[] result = readOutputFile (outputFile);
             // If 1 is the most likely npop value, add the list of sequences
             // to the list of ecotypes
-            if (result == 1L) {
+            if (result[1].npop == 1L && result[1].likelihood > 1.0d-6) {
                 ecotypes.add (sample);
             }
             else {
@@ -303,23 +303,27 @@ public class Demarcation implements Runnable {
      *  Private method to read the output file from the demarcation program.
      *
      *  @param outputFile The file to read from.
+     *  @return The npop values tested and their likelihood.
      */
-    private Long readOutputFile (File outputFile) {
+    private NpopValue[] readOutputFile (File outputFile) {
         BufferedReader reader = null;
-        Long result = 0L;
-        Double likelihood = 0.0d;
+        NpopValue result[] = {
+            new NpopValue (0L, 0.0d),
+            new NpopValue (0L, 0.0d)
+        };
         try {
             reader = new BufferedReader (new FileReader (outputFile));
             String nextLine = reader.readLine ();
+            Integer i = 0;
             while (nextLine != null) {
                 StringTokenizer st = new StringTokenizer (nextLine);
-                // The output contains the most likely npop and the likelihood
-                // for that value.
+                // The output contains the tested npop value its likelihood.
                 st.nextToken (); // "npop".
-                result = new Long (st.nextToken ());
+                result[i].npop = new Long (st.nextToken ());
                 st.nextToken (); // "likelihood".
-                likelihood = new Double (st.nextToken ());
+                result[i].likelihood = new Double (st.nextToken ());
                 nextLine = reader.readLine ();
+                i ++;
             }
         }
         catch (IOException e) {
@@ -336,6 +340,18 @@ public class Demarcation implements Runnable {
             }
         }
         return result;
+    }
+
+    /**
+     *  A private class to store a npop value and its likelihood.
+     */
+    private class NpopValue {
+        public NpopValue (Long npop, Double likelihood) {
+            this.npop = npop;
+            this.likelihood = likelihood;
+        }
+        public Long npop;
+        public Double likelihood;
     }
 
     private boolean hasRun;
