@@ -73,7 +73,7 @@ public class Demarcation implements Runnable {
     public void run () {
         iteration = 0;
         // Find the ecotypes.
-        findEcotypes (tree.getRoot ());
+        findMonophylyEcotypes (tree);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -131,13 +131,22 @@ public class Demarcation implements Runnable {
     }
 
     /**
+     *  Find ecotypes using the provided phylogeny data.
+     *
+     *  @param tree The phylogeny data.
+     */
+    private void findMonophylyEcotypes (NewickTree tree) {
+        findMonophylyEcotypes (tree.getRoot ());
+    }
+
+    /**
      *  Find the ecotypes using a recursive algorithm.  If the subclade of
      *  the tree represented by node has an optimal npop value of 1, demarcate
      *  the subclade as an ecotype. Otherwise, recurse on the node's children.
      *
      *  @param node The current node representing the subclade.
      */
-    private void findEcotypes (NewickTreeNode node) {
+    private void findMonophylyEcotypes (NewickTreeNode node) {
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
@@ -205,7 +214,7 @@ public class Demarcation implements Runnable {
             else {
                 ArrayList<NewickTreeNode> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
-                    findEcotypes (children.get (i));
+                    findMonophylyEcotypes (children.get (i));
                 }
             }
         }
