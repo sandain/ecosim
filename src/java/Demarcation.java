@@ -166,46 +166,8 @@ public class Demarcation implements Runnable {
             if (sample.size () == 0) {
                 return;
             }
-            // Create a new NewickTree containing just the sequences to
-            // be tested.
-            NewickTree sampleTree = new NewickTree ();
-            try {
-                sampleTree = new NewickTree (node.toString ());
-            }
-            catch (InvalidNewickException e) {
-                System.err.println ("Error creating subtree.");
-            }
-            // Run the binning program on the sample tree.
-            Binning sampleBinning = new Binning (sampleTree);
-            Integer sampleNu = sample.size ();
-            // Use the omega and sigma values from hillclimbing.
-            Double omega = hclimbResult.getOmega ();
-            Double sigma = hclimbResult.getSigma ();
-            // Estimate the value of npop by multiplying the npop value found
-            // in hillclimbing by the ratio of the sample size to the total
-            // number of environmental sequences.
-            Long npop = hclimbResult.getNpop () * sampleNu / nu;
-            if (npop < 1L) {
-                npop = 1L;
-            }
-            Double likelihood = hclimbResult.getLikelihood ();
-            // Increment the iteration variable used in the file names.
-            iteration ++;
-            File inputFile = new File (
-                workingDirectory + "demarcationIn-" + iteration + ".dat"
-            );
-            File outputFile = new File (
-                workingDirectory + "demarcationOut-" + iteration + ".dat"
-            );
-            // Write the input values for the demarcation program.
-            writeInputFile (
-                inputFile, sampleBinning, sampleNu, omega, sigma, npop, likelihood
-            );
-            // Run the demarcation program.
-            Execs execs = masterVariables.getExecs ();
-            execs.runDemarcation (inputFile, outputFile);
-            // Get the output provided by the demarcation program.
-            NpopValue[] result = readOutputFile (outputFile);
+            // Predict the npop value for the sample.
+            NpopValue[] result = runSample (node);
             // If 1 is the most likely npop value, add the list of sequences
             // to the list of ecotypes
             if (result[1].npop == 1L && result[1].likelihood > 1.0d-6) {
@@ -218,6 +180,60 @@ public class Demarcation implements Runnable {
                 }
             }
         }
+    }
+
+   /**
+    *  A private helper method to run a sample through the demarcation
+    *  program.
+    *
+    *  @param The NewickTreeNode describing the sample to run.
+    *  @return The npop values tested and their likelihood
+    */
+   private NpopValue[] runSample (NewickTreeNode node) {
+        // Increment the iteration variable used in the file names.
+        iteration ++;
+        File inputFile = new File (
+            workingDirectory + "demarcationIn-" + iteration + ".dat"
+        );
+        File outputFile = new File (
+            workingDirectory + "demarcationOut-" + iteration + ".dat"
+        );
+        File newickFile = new File (
+            workingDirectory + "demarcationTree-" + iteration + ".dat"
+        );
+        // Create a new NewickTree containing just the sequences to
+        // be tested.
+        NewickTree sampleTree = new NewickTree ();
+        try {
+            sampleTree = new NewickTree (node.toString ());
+        }
+        catch (InvalidNewickException e) {
+            System.err.println ("Error creating sample tree.");
+        }
+        sampleTree.save (newickFile);
+        Integer sampleNu = node.numberOfDescendants ();
+        // Run the binning program on the sample tree.
+        Binning sampleBinning = new Binning (sampleTree);
+        // Use the omega and sigma values from hillclimbing.
+        Double omega = hclimbResult.getOmega ();
+        Double sigma = hclimbResult.getSigma ();
+        // Estimate the value of npop by multiplying the npop value found
+        // in hillclimbing by the ratio of the sample size to the total
+        // number of environmental sequences.
+        Long npop = hclimbResult.getNpop () * sampleNu / nu;
+        if (npop < 1L) {
+            npop = 1L;
+        }
+        Double likelihood = hclimbResult.getLikelihood ();
+        // Write the input values for the demarcation program.
+        writeInputFile (
+            inputFile, sampleBinning, sampleNu, omega, sigma, npop, likelihood
+        );
+        // Run the demarcation program.
+        Execs execs = masterVariables.getExecs ();
+        execs.runDemarcation (inputFile, outputFile);
+        // Get the output provided by the demarcation program.
+        return readOutputFile (outputFile);
     }
 
     /**
