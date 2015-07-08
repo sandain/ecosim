@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**
@@ -128,6 +129,82 @@ public class Demarcation implements Runnable {
      */
     public void setHasRun (boolean hasRun) {
         this.hasRun = hasRun;
+    }
+
+    /**
+     *  Find ecotypes using the provided phylogeny data.
+     *
+     *  @param tree The phylogeny data.
+     */
+    private void findPolyphylyEcotypes (NewickTree tree) {
+        // Make a copy of the tree to avoid destroying it.
+        NewickTree sampleTree;
+        try {
+            sampleTree = new NewickTree (tree);
+        }
+        catch (InvalidNewickException e) {
+            System.err.println ("Error creating subtree.");
+            return;
+        }
+        // Make a list of leaf node descendants.
+        ArrayList<NewickTreeNode> leaves = sampleTree.getDescendants ();
+        // Sort the leaves by their distance.
+        Heapsorter<NewickTreeNode> sorter = new Heapsorter<NewickTreeNode> (
+            new Comparator<NewickTreeNode> () {
+                public int compare (
+                    NewickTreeNode nodeA, NewickTreeNode nodeB
+                ) {
+                    Double a = nodeA.getDistance ();
+                    Double b = nodeB.getDistance ();
+                    return a.compareTo (b);
+                }
+            }
+        );
+        sorter.sort (leaves);
+        // Find the ecotypes.
+        while (leaves.size () > 0) {
+            // Get the first leaf on the list.
+            NewickTreeNode leaf = leaves.get (0);
+            // Skip the outgroup.
+            if (outgroup.equals (leaf.getName ())) {
+                leaves.remove (0);
+                continue;
+            }
+            // Find the ancestor node of the leaf node whose descendants make
+            // up a single ecotype.
+            NewickTreeNode node = leaf;
+            while (true) {
+                NewickTreeNode parent = node.getParent ();
+                // Exit the loop if the parent node is the root node.
+                if (parent.isRootNode ()) break;
+                // Predict the number of ecotypes using the parent node and
+                // exit the loop if the result is greater than one.
+                NpopValue[] result = runSample (parent);
+                if (result[1].npop > 1L) break;
+                // Move the node pointer to the parent node.
+                node = parent;
+            }
+            // Demarcate the ecotype.
+            ArrayList<String> ecotype = new ArrayList<String> ();
+            if (node.isLeafNode ()) {
+                // Demarcate a singleton ecotype.
+                ecotype.add (node.getName ());
+                // Remove the node from the tree.
+                leaves.remove (node);
+                sampleTree.removeDescendant (node);
+            }
+            else {
+                // Demarcate an ecotype with multiple representatives.
+                for (NewickTreeNode descendant: node.getDescendants ()) {
+                    // Add the descendant to the ecotype.
+                    ecotype.add (descendant.getName ());
+                    // Remove the descendant from the tree.
+                    leaves.remove (descendant);
+                    sampleTree.removeDescendant (descendant);
+                }
+            }
+            ecotypes.add (ecotype);
+        }
     }
 
     /**
