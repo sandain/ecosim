@@ -408,9 +408,10 @@ public class Demarcation implements Runnable {
             reader = new BufferedReader (new FileReader (outputFile));
             String nextLine = reader.readLine ();
             Integer i = 0;
+            // Each line of the output contains the tested npop value and
+            // its likelihood.
             while (nextLine != null) {
                 StringTokenizer st = new StringTokenizer (nextLine);
-                // The output contains the tested npop value its likelihood.
                 st.nextToken (); // "npop".
                 result[i].npop = new Long (st.nextToken ());
                 st.nextToken (); // "likelihood".
