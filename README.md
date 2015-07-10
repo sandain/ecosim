@@ -15,9 +15,9 @@ Create a Desktop shortcut to the shell script for your platform.
 
 ## REQUIREMENTS - EXECUTION
 
-### Java 7 JRE
+### Java 8 JRE
 
-A Java 7 Runtime Environment (JRE) is required to execute this program.  You
+A Java 8 Runtime Environment (JRE) is required to execute this program.  You
 can download it here:
 
 http://java.sun.com/javase/downloads/index.jsp
@@ -76,15 +76,7 @@ http://sourceware.org/pthreads-win32/
 
 To build the binary files, and create the jar, issue the command:
 
-        make
-
-To build just the Fortran source files, issue the command:
-
-        make fortran
-
-To build just the Java source files, issue the command:
-
-        make java
+        make install
 
 To clean the directory, issue the command:
 
