@@ -132,7 +132,7 @@ public class Binning {
     /**
      *  The default bin levels.
      */
-    private Double[] binLevels = {
+    public static Double[] binLevels = {
         0.600d, 0.650d, 0.700d, 0.750d, 0.800d,
         0.810d, 0.820d, 0.830d, 0.840d, 0.850d,
         0.860d, 0.870d, 0.880d, 0.890d, 0.900d,
