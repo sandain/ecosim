@@ -192,8 +192,8 @@ public class ProjectFileIO {
             }
             // Output the OmegaCI data.
             if (omegaCI != null && omegaCI.hasRun ()) {
-                double[] result = omegaCI.getResult ();
-                double[] likelihood = omegaCI.getLikelihood ();
+                Double[] result = omegaCI.getResult ();
+                Double[] likelihood = omegaCI.getLikelihood ();
                 out.write ("  <omegaCI>\n");
                 out.write (String.format (
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
@@ -209,8 +209,8 @@ public class ProjectFileIO {
             }
             // Output the SigmaCI data.
             if (sigmaCI != null && sigmaCI.hasRun ()) {
-                double[] result = sigmaCI.getResult ();
-                double[] likelihood = sigmaCI.getLikelihood ();
+                Double[] result = sigmaCI.getResult ();
+                Double[] likelihood = sigmaCI.getLikelihood ();
                 out.write ("  <sigmaCI>\n");
                 out.write (String.format (
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
