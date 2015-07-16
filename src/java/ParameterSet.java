@@ -58,44 +58,79 @@ public class ParameterSet implements Comparable<ParameterSet> {
     }
 
     /**
-     *  Get omega.
+     *  Get the npop value.
      *
-     *  @return A Double containing the value of omega.
-     */
-    public Double getOmega () {
-        return omega;
-    }
-
-    /**
-     *  Get sigma.
-     *
-     *  @return A Double containing the value of sigma.
-     */
-    public Double getSigma () {
-        return sigma;
-    }
-
-    /**
-     *  Get npop.
-     *
-     *  @return The value of npop.
+     *  @return The npop value.
      */
     public Long getNpop () {
         return npop;
     }
 
     /**
-     *  Get the likelihood.
+     *  Get the omega value.
      *
-     *  @return The likelihood.
+     *  @return The omega value.
+     */
+    public Double getOmega () {
+        return omega;
+    }
+
+    /**
+     *  Get the sigma value.
+     *
+     *  @return The sigma value.
+     */
+    public Double getSigma () {
+        return sigma;
+    }
+
+    /**
+     *  Get the likelihood value.
+     *
+     *  @return The likelihood value.
      */
     public Double getLikelihood () {
         return likelihood;
     }
 
     /**
-     *  Returns the parameter set as a string, in the form:
-     *  omega, sigma, npop, value
+     *  Set the npop value.
+     *
+     *  @param npop The npop value.
+     */
+    public void setNpop (Long npop) {
+        this.npop = npop;
+    }
+
+    /**
+     *  Set the omega value.
+     *
+     *  @param omega The omega value.
+     */
+    public void setOmega (Double omega) {
+        this.omega = omega;
+    }
+
+    /**
+     *  Set the sigma value.
+     *
+     *  @param sigma The sigma value.
+     */
+    public void setSigma (Double sigma) {
+        this.sigma = sigma;
+    }
+
+    /**
+     *  Set the likelihood value.
+     *
+     *  @param likelihood The likelihood value.
+     */
+    public void setLikelihood (Double likelihood) {
+        this.likelihood = likelihood;
+    }
+
+    /**
+     *  Returns the parameter set as a string.
      *
      *  @return String containing the values of omega, sigma, and npop, and
      *  the likelihood of those values.
@@ -109,9 +144,9 @@ public class ParameterSet implements Comparable<ParameterSet> {
         );
     }
 
+    private Long npop;
     private Double omega;
     private Double sigma;
-    private Long npop;
     private Double likelihood;
 
 }
