@@ -105,7 +105,7 @@ public class OmegaConfidenceInterval {
      *
      *  @return The result.
      */
-    public double [] getResult () {
+    public Double [] getResult () {
         return result;
     }
 
@@ -115,7 +115,7 @@ public class OmegaConfidenceInterval {
      *
      *  @return The likelihood.
      */
-    public double [] getLikelihood () {
+    public Double [] getLikelihood () {
         return likelihood;
     }
 
@@ -299,8 +299,8 @@ public class OmegaConfidenceInterval {
 
     private int nrep = 1000;
     private int step = 3;
-    private double [] result = { 0.0, 0.0 };
-    private double [] likelihood = { 0.0, 0.0 };
+    private Double [] result = { 0.0, 0.0 };
+    private Double [] likelihood = { 0.0, 0.0 };
 
     private boolean hasRun;
 
