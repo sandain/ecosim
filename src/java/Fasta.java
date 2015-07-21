@@ -90,29 +90,6 @@ public class Fasta {
     }
 
     /**
-     *  Constructor for a Fasta object using pre-defined values.
-     *
-     *  @param file A RandomAccessFile containing Fasta formated data.
-     *  @param ids
-     *  @param lengths
-     *  @param offsets
-     */
-    public Fasta (RandomAccessFile file, ArrayList<String> ids,
-        HashMap<String, Integer> lengths, HashMap<String, Long> offsets) {
-        this.file = file;
-        this.ids = ids;
-        sequenceLengths = lengths;
-        sequenceOffsets = offsets;
-        current = 0;
-        length = 0;
-        size = ids.size ();
-        for (String id: ids) {
-            int len = lengths.get (id);
-            if (len > length) length = len;
-        }
-    }
-
-    /**
      *  Close this Fasta.
      */
     public void close () throws InvalidFastaException {
@@ -327,32 +304,6 @@ public class Fasta {
      */
     public int size () {
         return size;
-    }
-
-    /**
-     *  Create a new Fasta object containing a random subset of the
-     *  sequences contained in this Fasta object.
-     *
-     *  @param number The number of sequences to select.
-     *  @return The random subset of the sequences.
-     */
-    public Fasta randomSubset (int number) {
-        ArrayList<String> oldIds = getIdentifiers ();
-        Random random = new Random ();
-        ArrayList<String> newIds = new ArrayList<String> ();
-        HashMap<String, Integer> newLengths = new HashMap<String, Integer> ();
-        HashMap<String, Long> newOffsets = new HashMap<String, Long> ();
-        for (int i = 0; i < number; i ++) {
-            // Choose a random sequence to add to the random fasta.
-            int rand = random.nextInt (oldIds.size ());
-            String id = oldIds.get (rand);
-            newIds.add (id);
-            newLengths.put (id, sequenceLengths.get (id));
-            newOffsets.put (id, sequenceOffsets.get (id));
-            // Remove that sequence from being picked again.
-            oldIds.remove (id);
-        }
-        return new Fasta (file, newIds, newLengths, newOffsets);
     }
 
     /**
