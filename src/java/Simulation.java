@@ -72,9 +72,9 @@ public class Simulation {
         binning = projectFileIO.getBinning ();
         estimate = projectFileIO.getEstimate ();
         hillclimb = projectFileIO.getHillclimb ();
+        npopCI = projectFileIO.getNpopCI ();
         omegaCI = projectFileIO.getOmegaCI ();
         sigmaCI = projectFileIO.getSigmaCI ();
-        npopCI = projectFileIO.getNpopCI ();
         demarcation = projectFileIO.getDemarcation ();
     }
 
@@ -237,6 +237,28 @@ public class Simulation {
     }
 
     /**
+     *  Run the npop confidence interval program.
+     */
+    protected void runNpopConfidenceInterval () {
+        log.appendln ("Running npop confidence interval...");
+        npopCI = new NpopConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb.getResult ()
+        );
+        npopCI.run ();
+        // Verify that npopCI ran correctly.
+        if (! npopCI.hasRun ()) {
+            log.appendln (
+                "  Error running the npop confidence interval program!"
+            );
+            return;
+        }
+        // Output the npopCI result.
+        log.appendln ("The result from npopCI:");
+        log.appendln ("  " + npopCI.toString ());
+        log.appendln ();
+    }
+
+    /**
      *  Run the omega confidence interval program.
      */
     protected void runOmegaConfidenceInterval () {
@@ -281,34 +303,12 @@ public class Simulation {
     }
 
     /**
-     *  Run the npop confidence interval program.
-     */
-    protected void runNpopConfidenceInterval () {
-        log.appendln ("Running npop confidence interval...");
-        npopCI = new NpopConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
-        );
-        npopCI.run ();
-        // Verify that npopCI ran correctly.
-        if (! npopCI.hasRun ()) {
-            log.appendln (
-                "  Error running the npop confidence interval program!"
-            );
-            return;
-        }
-        // Output the npopCI result.
-        log.appendln ("The result from npopCI:");
-        log.appendln ("  " + npopCI.toString ());
-        log.appendln ();
-    }
-
-    /**
      *  Run the omega, sigma, and npop confidence interval programs.
      */
     protected void runConfidenceIntervals () {
+        runNpopConfidenceInterval ();
         runOmegaConfidenceInterval ();
         runSigmaConfidenceInterval ();
-        runNpopConfidenceInterval ();
     }
 
     /**
@@ -344,8 +344,8 @@ public class Simulation {
     protected Binning binning;
     protected ParameterEstimate estimate;
     protected Hillclimb hillclimb;
+    protected NpopConfidenceInterval npopCI;
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;
-    protected NpopConfidenceInterval npopCI;
     protected Demarcation demarcation;
 }
