@@ -166,9 +166,11 @@ public class ProjectFileIO {
             if (estimate != null) {
                 ParameterSet result = estimate.getResult ();
                 out.write ("  <estimate>\n");
-                out.write (String.format (
-                    "    <result omega=\"%.5f\" sigma=\"%.5f\" " +
-                    "npop=\"%d\" likelihood=\"%.5g\"/>\n",
+                out.write (String.format ("    <result " +
+                    "npop=\"%d\" " +
+                    "omega=\"%.5f\" " +
+                    "sigma=\"%.5f\" " +
+                    "likelihood=\"%.5g\"/>\n",
                     result.getOmega (),
                     result.getSigma (),
                     result.getNpop (),
@@ -180,15 +182,34 @@ public class ProjectFileIO {
             if (hillclimb != null && hillclimb.hasRun ()) {
                 ParameterSet result = hillclimb.getResult ();
                 out.write ("  <hillclimb>\n");
-                out.write (String.format (
-                    "    <result omega=\"%.5f\" sigma=\"%.5f\" " +
-                    "npop=\"%d\" likelihood=\"%.5g\"/>\n",
+                out.write (String.format ("    <result " +
+                    "npop=\"%d\" " +
+                    "omega=\"%.5f\" " +
+                    "sigma=\"%.5f\" " +
+                    "likelihood=\"%.5g\"/>\n",
                     result.getOmega (),
                     result.getSigma (),
                     result.getNpop (),
                     result.getLikelihood ()
                 ));
                 out.write ("  </hillclimb>\n");
+            }
+            // Output the NpopCI data.
+            if (npopCI != null && npopCI.hasRun ()) {
+                Long [] result = npopCI.getResult ();
+                Double [] likelihood = npopCI.getLikelihood ();
+                out.write ("  <npopCI>\n");
+                out.write (String.format (
+                    "    <lower value=\"%d\" likelihood=\"%.5g\"/>\n",
+                    result[0],
+                    likelihood[0]
+                ));
+                out.write (String.format (
+                    "    <upper value=\"%d\" likelihood=\"%.5g\"/>\n",
+                    result[1],
+                    likelihood[1]
+                ));
+                out.write ("  </npopCI>\n");
             }
             // Output the OmegaCI data.
             if (omegaCI != null && omegaCI.hasRun ()) {
@@ -223,23 +244,6 @@ public class ProjectFileIO {
                     likelihood[1]
                 ));
                 out.write ("  </sigmaCI>\n");
-            }
-            // Output the NpopCI data.
-            if (npopCI != null && npopCI.hasRun ()) {
-                Long [] result = npopCI.getResult ();
-                Double [] likelihood = npopCI.getLikelihood ();
-                out.write ("  <npopCI>\n");
-                out.write (String.format (
-                    "    <lower value=\"%d\" likelihood=\"%.5g\"/>\n",
-                    result[0],
-                    likelihood[0]
-                ));
-                out.write (String.format (
-                    "    <upper value=\"%d\" likelihood=\"%.5g\"/>\n",
-                    result[1],
-                    likelihood[1]
-                ));
-                out.write ("  </npopCI>\n");
             }
             // Output the Demarcation data.
             if (demarcation != null && demarcation.hasRun ()) {
@@ -357,6 +361,15 @@ public class ProjectFileIO {
     }
 
     /**
+     *  Get the NpopConfidenceInterval object.
+     *
+     *  @return The NpopConfidenceInterval object.
+     */
+    public NpopConfidenceInterval getNpopCI () {
+        return npopCI;
+    }
+
+    /**
      *  Get the OmegaConfidenceInterval object.
      *
      *  @return The OmegaConfidenceInterval object.
@@ -372,15 +385,6 @@ public class ProjectFileIO {
      */
     public SigmaConfidenceInterval getSigmaCI () {
         return sigmaCI;
-    }
-
-    /**
-     *  Get the NpopConfidenceInterval object.
-     *
-     *  @return The NpopConfidenceInterval object.
-     */
-    public NpopConfidenceInterval getNpopCI () {
-        return npopCI;
     }
 
     /**
@@ -400,9 +404,9 @@ public class ProjectFileIO {
     private Binning binning;
     private ParameterEstimate estimate;
     private Hillclimb hillclimb;
+    private NpopConfidenceInterval npopCI;
     private OmegaConfidenceInterval omegaCI;
     private SigmaConfidenceInterval sigmaCI;
-    private NpopConfidenceInterval npopCI;
     private Demarcation demarcation;
 
     /**
@@ -419,9 +423,9 @@ public class ProjectFileIO {
             elements.add ("binning");
             elements.add ("estimate");
             elements.add ("hillclimb");
+            elements.add ("npopCI");
             elements.add ("omegaCI");
             elements.add ("sigmaCI");
-            elements.add ("npopCI");
             elements.add ("demarcation");
             activeElement = "none";
             isProjectFile = false;
@@ -487,9 +491,9 @@ public class ProjectFileIO {
                 if (activeElement.equals ("estimate")) {
                     if (localName.equals ("result")) {
                         estimate.setResult (new ParameterSet (
+                            new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
-                            new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "likelihood"))
                         ));
                     }
@@ -498,11 +502,32 @@ public class ProjectFileIO {
                 if (activeElement.equals ("hillclimb")) {
                     if (localName.equals ("result")) {
                         hillclimb.setResult (new ParameterSet (
+                            new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
-                            new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "likelihood"))
                         ));
+                    }
+                }
+                // Look for elements within npopCI.
+                if (activeElement.equals ("npopCI")) {
+                    if (localName.equals ("lower")) {
+                        Long value = new Long (
+                            attrs.getValue (uri, "value")
+                        );
+                        Double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        );
+                        npopCI.setLowerResult (value, likelihood);
+                    }
+                    if (localName.equals ("upper")) {
+                        Long value = new Long (
+                            attrs.getValue (uri, "value")
+                        );
+                        Double likelihood = new Double (
+                            attrs.getValue (uri, "likelihood")
+                        );
+                        npopCI.setUpperResult (value, likelihood);
                     }
                 }
                 // Look for elements within omegaCI.
@@ -547,27 +572,6 @@ public class ProjectFileIO {
                         sigmaCI.setUpperResult (value, likelihood);
                     }
                 }
-                // Look for elements within npopCI.
-                if (activeElement.equals ("npopCI")) {
-                    if (localName.equals ("lower")) {
-                        Long value = new Long (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = new Double (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        npopCI.setLowerResult (value, likelihood);
-                    }
-                    if (localName.equals ("upper")) {
-                        Long value = new Long (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = new Double (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        npopCI.setUpperResult (value, likelihood);
-                    }
-                }
                 // Look for elements within demarcation.
                 if (activeElement.equals ("demarcation")) {
                     if (localName.equals ("ecotypes")) {
@@ -608,6 +612,10 @@ public class ProjectFileIO {
                 if (localName.equals ("hillclimb")) {
                     hillclimb.setHasRun (true);
                 }
+                // Look for the end of the npopCI element.
+                if (localName.equals ("npopCI")) {
+                    npopCI.setHasRun (true);
+                }
                 // Look for the end of the omegaCI element.
                 if (localName.equals ("omegaCI")) {
                     omegaCI.setHasRun (true);
@@ -615,10 +623,6 @@ public class ProjectFileIO {
                 // Look for the end of the sigmaCI element.
                 if (localName.equals ("sigmaCI")) {
                     sigmaCI.setHasRun (true);
-                }
-                // Look for the end of the npopCI element.
-                if (localName.equals ("npopCI")) {
-                    npopCI.setHasRun (true);
                 }
                 // Look for the end of the demarcation element.
                 if (localName.equals ("demarcation")) {
