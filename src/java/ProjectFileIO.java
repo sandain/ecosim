@@ -60,13 +60,13 @@ public class ProjectFileIO {
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, estimate.getResult ()
         );
+        npopCI = new NpopConfidenceInterval (
+            masterVariables, nu, length, binning, hillclimb.getResult ()
+        );
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
-        );
-        npopCI = new NpopConfidenceInterval (
             masterVariables, nu, length, binning, hillclimb.getResult ()
         );
         demarcation = new Demarcation (
@@ -86,16 +86,16 @@ public class ProjectFileIO {
      *  @param binning The Binning object.
      *  @param estimate The ParameterEstimate object.
      *  @param hillclimb The Hillclimb object.
+     *  @param npopCI The NpopConfidenceInterval object.
      *  @param omegaCI The OmegaConfidenceInterval object.
      *  @param sigmaCI The SigmaConfidenceInterval object.
-     *  @param npopCI The NpopConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
     public ProjectFileIO (MasterVariables masterVariables, Integer nu,
         Integer length, String outgroup, NewickTree tree, Binning binning,
         ParameterEstimate estimate, Hillclimb hillclimb,
-        OmegaConfidenceInterval omegaCI, SigmaConfidenceInterval sigmaCI,
-        NpopConfidenceInterval npopCI, Demarcation demarcation) {
+        NpopConfidenceInterval npopCI, OmegaConfidenceInterval omegaCI,
+        SigmaConfidenceInterval sigmaCI, Demarcation demarcation) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -104,9 +104,9 @@ public class ProjectFileIO {
         this.binning = binning;
         this.estimate = estimate;
         this.hillclimb = hillclimb;
+        this.npopCI = npopCI;
         this.omegaCI = omegaCI;
         this.sigmaCI = sigmaCI;
-        this.npopCI = npopCI;
         this.demarcation = demarcation;
     }
 

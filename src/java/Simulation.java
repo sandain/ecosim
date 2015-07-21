@@ -86,7 +86,7 @@ public class Simulation {
     public void saveProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
             masterVariables, nu, length, outgroup, tree, binning, estimate,
-            hillclimb, omegaCI, sigmaCI, npopCI, demarcation
+            hillclimb, npopCI, omegaCI, sigmaCI, demarcation
         );
         projectFileIO.save (file);
     }
