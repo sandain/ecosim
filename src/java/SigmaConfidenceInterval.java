@@ -48,8 +48,9 @@ public class SigmaConfidenceInterval {
      *  @param binning The Binning object.
      *  @param hillclimbResult The result from hillclimbing.
      */
-    public SigmaConfidenceInterval (MasterVariables masterVariables, int nu,
-        int length, Binning binning, ParameterSet hillclimbResult) {
+    public SigmaConfidenceInterval (MasterVariables masterVariables,
+        Integer nu, Integer length, Binning binning,
+        ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -299,8 +300,8 @@ public class SigmaConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private int nu;
-    private int length;
+    private Integer nu;
+    private Integer length;
     private Binning binning;
     private ParameterSet hillclimbResult;
 
