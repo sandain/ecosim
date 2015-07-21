@@ -48,8 +48,9 @@ public class OmegaConfidenceInterval {
      *  @param binning The Binning object.
      *  @param hillclimbResult The result from hillclimbing.
      */
-    public OmegaConfidenceInterval (MasterVariables masterVariables, int nu,
-        int length, Binning binning, ParameterSet hillclimbResult) {
+    public OmegaConfidenceInterval (MasterVariables masterVariables,
+        Integer nu, Integer length, Binning binning,
+        ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -292,13 +293,13 @@ public class OmegaConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private int nu;
-    private int length;
+    private Integer nu;
+    private Integer length;
     private Binning binning;
     private ParameterSet hillclimbResult;
 
-    private int nrep = 1000;
-    private int step = 3;
+    private Integer nrep = 1000;
+    private Integer step = 3;
     private Double [] result = { 0.0, 0.0 };
     private Double [] likelihood = { 0.0, 0.0 };
 
