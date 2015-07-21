@@ -46,6 +46,9 @@ public class Simulation {
         this.masterVariables = masterVariables;
         this.fastaFile = fastaFile;
         this.newickFile = newickFile;
+        // Set default demarcation method and precision.
+        demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
+        demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         log = masterVariables.getLog ();
         if (fastaFile != null && fastaFile.exists ()) {
             loadSequenceFile ();
@@ -321,7 +324,7 @@ public class Simulation {
         log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
             masterVariables, nu, length, outgroup, tree,
-            hillclimb.getResult ()
+            hillclimb.getResult (), demarcationMethod, demarcationPrecision
         );
         demarcation.run ();
         // Verify that demarcation ran correctly.
@@ -351,4 +354,7 @@ public class Simulation {
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;
     protected Demarcation demarcation;
+    protected Integer demarcationMethod;
+    protected Integer demarcationPrecision;
+
 }

@@ -43,6 +43,12 @@ import java.util.StringTokenizer;
  */
 public class Demarcation implements Runnable {
 
+    public static final int DEMARCATION_METHOD_MONOPHYLY = 2001;
+    public static final int DEMARCATION_METHOD_POLYPHYLY = 2002;
+
+    public static final int DEMARCATION_PRECISION_COARSE_SCALE = 2501;
+    public static final int DEMARCATION_PRECISION_FINE_SCALE = 2502;
+
     /**
      *  Creates new form Demarcations
      *
@@ -52,16 +58,20 @@ public class Demarcation implements Runnable {
      *  @param outgroup The name of the outgroup.
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
+     *  @param precision The precision to use for demarcation.
+     *  @param method The method to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Integer nu,
         Integer length, String outgroup, NewickTree tree,
-        ParameterSet hclimbResult) {
+        ParameterSet hclimbResult, int method, int precision) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
         this.outgroup = outgroup;
         this.tree = tree;
         this.hclimbResult = hclimbResult;
+        this.precision = precision;
+        this.method = method;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
@@ -73,8 +83,17 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         iteration = 0;
-        // Find the ecotypes.
-        findMonophylyEcotypes (tree);
+        // Find the ecotypes using the specified method.
+        switch (method) {
+            case DEMARCATION_METHOD_MONOPHYLY:
+                findMonophylyEcotypes (tree);
+                break;
+            case DEMARCATION_METHOD_POLYPHYLY:
+                findPolyphylyEcotypes (tree);
+                break;
+            default:
+                System.err.println ("Unknown demarcation method: " + method);
+        }
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -179,8 +198,8 @@ public class Demarcation implements Runnable {
                 if (parent.isRootNode ()) break;
                 // Predict the number of ecotypes using the parent node and
                 // exit the loop if the result is greater than one.
-                NpopValue[] result = runSample (parent);
-                if (result[1].npop > 1L) break;
+                NpopValue result = runSample (parent);
+                if (result.npop > 1L) break;
                 // Move the node pointer to the parent node.
                 node = parent;
             }
@@ -244,13 +263,13 @@ public class Demarcation implements Runnable {
                 return;
             }
             // Predict the npop value for the sample.
-            NpopValue[] result = runSample (node);
-            // If 1 is the most likely npop value, add the list of sequences
-            // to the list of ecotypes
-            if (result[1].npop == 1L && result[1].likelihood > 1.0d-6) {
+            NpopValue result = runSample (node);
+            // If npop = 1, demarcate the list of sequences as a new ecotype.
+            if (result.npop == 1L) {
                 ecotypes.add (sample);
             }
             else {
+                // Npop > 1, recurse on children nodes.
                 ArrayList<NewickTreeNode> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
                     findMonophylyEcotypes (children.get (i));
@@ -264,9 +283,9 @@ public class Demarcation implements Runnable {
     *  program.
     *
     *  @param The NewickTreeNode describing the sample to run.
-    *  @return The npop values tested and their likelihood
+    *  @return The npop value tested and its likelihood
     */
-   private NpopValue[] runSample (NewickTreeNode node) {
+   private NpopValue runSample (NewickTreeNode node) {
         // Increment the iteration variable used in the file names.
         iteration ++;
         File inputFile = new File (
@@ -301,16 +320,39 @@ public class Demarcation implements Runnable {
         if (npop < 1L) {
             npop = 1L;
         }
-        Double likelihood = hclimbResult.getLikelihood ();
         // Write the input values for the demarcation program.
         writeInputFile (
-            inputFile, sampleBinning, sampleNu, omega, sigma, npop, likelihood
+            inputFile, sampleBinning, sampleNu, omega, sigma, npop,
+            hclimbResult.getLikelihood ()
         );
         // Run the demarcation program.
         Execs execs = masterVariables.getExecs ();
         execs.runDemarcation (inputFile, outputFile);
         // Get the output provided by the demarcation program.
-        return readOutputFile (outputFile);
+        // [0] npop=1
+        // [1] most likely npop
+        NpopValue[] results = readOutputFile (outputFile);
+        NpopValue result = new NpopValue (0L, 0.0D);
+        // Determine which result to return.
+        switch (precision) {
+            case DEMARCATION_PRECISION_FINE_SCALE:
+                // Fine scale uses the most likely result.
+                result = results[1];
+                break;
+            case DEMARCATION_PRECISION_COARSE_SCALE:
+                // Coarse scale uses the result of npop=1 if likelihood > 0.
+                Double likelihood = results[0].likelihood;
+                if (likelihood.compareTo (MasterVariables.EPSILON) > 0) {
+                    result = results[0];
+                }
+                else {
+                    result = results[1];
+                }
+                break;
+            default:
+                System.err.println ("Error, unknown precision level.");
+        }
+        return result;
     }
 
     /**
@@ -458,6 +500,9 @@ public class Demarcation implements Runnable {
     private Integer nu;
     private NewickTree tree;
     private ParameterSet hclimbResult;
+
+    private Integer precision;
+    private Integer method;
 
     private Integer nrep = 1000;
     private Integer step = 1;

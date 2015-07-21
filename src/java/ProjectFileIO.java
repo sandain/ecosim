@@ -73,7 +73,9 @@ public class ProjectFileIO {
         );
         demarcation = new Demarcation (
             masterVariables, nu, length, outgroup, tree,
-            hillclimb.getResult ()
+            hillclimb.getResult (),
+            Demarcation.DEMARCATION_METHOD_MONOPHYLY,
+            Demarcation.DEMARCATION_PRECISION_FINE_SCALE
         );
     }
 
