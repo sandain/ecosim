@@ -48,8 +48,8 @@ public class Hillclimb implements Runnable {
      *  @param binning The Binning object.
      *  @param parameterSet The set of parameters to optimize.
      */
-    public Hillclimb (MasterVariables masterVariables, int nu, int length,
-        Binning binning, ParameterSet parameterSet) {
+    public Hillclimb (MasterVariables masterVariables, Integer nu,
+        Integer length, Binning binning, ParameterSet parameterSet) {
         this.masterVariables = masterVariables;
         this.nu = nu;
         this.length = length;
@@ -238,8 +238,8 @@ public class Hillclimb implements Runnable {
     private String outputFileName;
 
     private MasterVariables masterVariables;
-    private int nu;
-    private int length;
+    private Integer nu;
+    private Integer length;
     private Binning binning;
     private ParameterSet parameterSet;
     private ParameterSet result;
