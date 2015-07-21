@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2013-2014  Jason M. Wood, Montana State University
+ *    Copyright (C) 2013-2015  Jason M. Wood, Montana State University
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,6 +32,18 @@ import java.util.ArrayList;
  *  @copyright GNU General Public License
  */
 public class Binning {
+
+    /**
+     *  A default constructor for Binning objects.  All crit levels
+     *  will be initialized with zeros.
+     */
+    public Binning () {
+        bins = new ArrayList<BinLevel> ();
+        // Fill the bins array with zeros.
+        for (Double crit: binLevels) {
+            bins.add (new BinLevel (crit, 0));
+        }
+    }
 
     /**
      *  Object to estimate the number of bins in a provided tree.
