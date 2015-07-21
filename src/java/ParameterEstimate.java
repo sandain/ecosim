@@ -32,22 +32,42 @@ import java.util.Collections;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class ParameterEstimate {
+public class ParameterEstimate implements Runnable {
 
-    public ParameterEstimate (Integer length, Binning binning) {
+
+    /**
+     *  Run the parameter estimate program.
+     *
+     *  @param masterVariables The MasterVariables object.
+     *  @param nu The number of environmental sequences.
+     *  @param length The length of the sequences being analyzed.
+     *  @param binning The Binning object.
+     */
+    public ParameterEstimate (MasterVariables masterVariables,
+        Integer nu, Integer length, Binning binning) {
+        this.masterVariables = masterVariables;
+        this.nu = nu;
+        this.length = length;
+        this.binning = binning;
+        estimate = new ParameterSet ();
+        omega = new Line (new ArrayList<Point> ());
+        sigma = new Line (new ArrayList<Point> ());
+        hasRun = false;
+    }
+
+    /**
+     *  Run the parameter estimate program.
+     */
+    public void run () {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length, binning);
         // Fit the sigma line to the points.
         Integer [] sigmaBounds = fitLinePoints (points, 1);
-        Line sigma = new Line (points.subList (
-            sigmaBounds[0], sigmaBounds[1]
-        ));
+        sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
         // Fit the omega line to the points.
         Integer [] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
-        Line omega = new Line (points.subList (
-            omegaBounds[0], omegaBounds[1]
-        ));
+        omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
         // Sigma is estimated from the slope of the sigma line.
@@ -61,6 +81,24 @@ public class ParameterEstimate {
         estimate = new ParameterSet (
             npopEstimate, omegaEstimate, sigmaEstimate, 0.0d
         );
+        // Setup the fredmethod.
+        FredMethod fredmethod = new FredMethod (
+            masterVariables, nu, length, binning, estimate
+        );
+        fredmethod.run ();
+        estimate.setLikelihood (fredmethod.getResult ().getLikelihood ());
+        // Set the flag stating that the parameter estimate program has
+        // been run.
+        hasRun = true;
+    }
+
+    /**
+     *  Returns true if parameter estimate has been run, false otherwise.
+     *
+     *  @return True if parameter estimate has been run, false otherwise.
+     */
+    public boolean hasRun () {
+        return hasRun;
     }
 
     /**
@@ -70,6 +108,15 @@ public class ParameterEstimate {
      */
     public ParameterSet getResult () {
         return estimate;
+    }
+
+    /**
+     *  Changes the value of hasRun.
+     *
+     *  @param hasRun The new value of hasRun.
+     */
+    public void setHasRun (boolean hasRun) {
+        this.hasRun = hasRun;
     }
 
     /**
@@ -86,6 +133,24 @@ public class ParameterEstimate {
      */
     public String toString () {
         return estimate.toString ();
+    }
+
+    /**
+     *  Return the slope and y-intercept calulated for omega.
+     *
+     *  @return An array of form [slope, intercept].
+     */
+    public double[] getOmega () {
+        return new double[] { -1.0d * omega.m, omega.b };
+    }
+
+    /**
+     *  Return the slope and y-intercept calulated for sigma.
+     *
+     *  @return An array of form [slope, intercept].
+     */
+    public double[] getSigma () {
+        return new double[] { -1.0d * sigma.m, sigma.b };
     }
 
     /**
@@ -160,10 +225,20 @@ public class ParameterEstimate {
         return points;
     }
 
+    private MasterVariables masterVariables;
+    private Integer nu;
+    private Integer length;
+    private Binning binning;
+
+    private Line omega;
+    private Line sigma;
+
     /**
      * The estimate for the parameter values.
      */
     private ParameterSet estimate;
+
+    private boolean hasRun;
 
     /**
      *  A private class to calculate the best fit line from from a selection

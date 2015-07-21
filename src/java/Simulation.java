@@ -188,7 +188,10 @@ public class Simulation {
      */
     protected void runParameterEstimate () {
         log.appendln ("Running parameter estimate...");
-        estimate = new ParameterEstimate (length, binning);
+        estimate = new ParameterEstimate (
+            masterVariables, nu, length, binning
+        );
+        estimate.run ();
         // Output the parameter estimate.
         log.appendln ("The estimated parameters:");
         log.appendln (estimate.toString ());

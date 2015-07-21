@@ -56,7 +56,9 @@ public class ProjectFileIO {
         length = 0;
         outgroup = "";
         binning = new Binning (tree);
-        estimate = new ParameterEstimate (length, binning);
+        estimate = new ParameterEstimate (
+            masterVariables, nu, length, binning
+        );
         hillclimb = new Hillclimb (
             masterVariables, nu, length, binning, estimate.getResult ()
         );
@@ -163,7 +165,7 @@ public class ProjectFileIO {
                 out.write ("  </binning>\n");
             }
             // Output the parameter estimate data.
-            if (estimate != null) {
+            if (estimate != null && estimate.hasRun ()) {
                 ParameterSet result = estimate.getResult ();
                 out.write ("  <estimate>\n");
                 out.write (String.format ("    <result " +
@@ -607,6 +609,10 @@ public class ProjectFileIO {
                 // Look for the end of the ecosim save file.
                 if (localName.equals ("ecosim")) {
                     isProjectFile = false;
+                }
+                // Look for the end of the estimate element.
+                if (localName.equals ("estimate")) {
+                    estimate.setHasRun (true);
                 }
                 // Look for the end of the hillclimb element.
                 if (localName.equals ("hillclimb")) {
