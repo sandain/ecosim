@@ -31,7 +31,15 @@ package ecosim;
 public class ParameterSet implements Comparable<ParameterSet> {
 
     /**
-     *  ParameterSet
+     *  A basic ParameterSet with all values set to zero.
+     */
+    public ParameterSet () {
+        this (0L, 0.0D, 0.0D, 0.0D);
+    }
+
+    /**
+     *  ParameterSet stores npop, omega, and sigma values, plus their
+     *  likelihood.
      *
      *  @param omega The value of omega.
      *  @param sigma The value of sigma.
