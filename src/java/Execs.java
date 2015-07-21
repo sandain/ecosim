@@ -75,6 +75,38 @@ public class Execs {
     }
 
     /**
+     *  Runs the fredmethod program.
+     *
+     *  @param input The fredmethod input file.
+     *  @param output The fredmethod output file.
+     *  @return The exit value.
+     */
+    public int runFredMethod (File input, File output) {
+        String[] command = {
+            binaryDirectory + "fredmethod" + binaryExtension,
+            input.getAbsolutePath (),
+            output.getAbsolutePath (),
+            Integer.toString (masterVariables.getNumberThreads ()),
+            Boolean.toString (masterVariables.getDebug ())
+        };
+        PrintStream errorStream = null;
+        PrintStream outputStream = null;
+        // Catch program output if debugging is enabled.
+        if (masterVariables.getDebug ()) {
+            errorStream = System.err;
+            outputStream = System.out;
+        }
+        return runApplication (
+            command,
+            errorStream,
+            "ERROR (Fred Method)>",
+            outputStream,
+            "Fred Method>",
+            true
+        );
+    }
+
+    /**
      *  Runs the hillclimb program.
      *
      *  @param input The hillclimb input file.
