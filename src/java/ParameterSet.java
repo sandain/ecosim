@@ -41,15 +41,15 @@ public class ParameterSet implements Comparable<ParameterSet> {
      *  ParameterSet stores npop, omega, and sigma values, plus their
      *  likelihood.
      *
+     *  @param npop The value of npop.
      *  @param omega The value of omega.
      *  @param sigma The value of sigma.
-     *  @param npop The value of npop.
      *  @param likelihood Likelihood of the (npop, omega, sigma) parameter set.
      */
-    public ParameterSet (Double omega, Double sigma, Long npop, Double likelihood) {
+    public ParameterSet (Long npop, Double omega, Double sigma, Double likelihood) {
+        this.npop = npop;
         this.omega = omega;
         this.sigma = sigma;
-        this.npop = npop;
         this.likelihood = likelihood;
     }
 
@@ -145,10 +145,10 @@ public class ParameterSet implements Comparable<ParameterSet> {
      */
     public String toString () {
         return String.format (
+            "  npop:        %d\n" +
             "  omega:       %.4f\n" +
             "  sigma:       %.4f\n" +
-            "  npop:        %d\n" +
-            "  likelihood:  %.4f", omega, sigma, npop, likelihood
+            "  likelihood:  %.4f", npop, omega, sigma, likelihood
         );
     }
 

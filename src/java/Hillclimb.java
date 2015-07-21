@@ -215,7 +215,7 @@ public class Hillclimb implements Runnable {
                 Double sigma = new Double (st.nextToken ());
                 Long npop = new Long (st.nextToken ());
                 Double likelihood = new Double (st.nextToken ());
-                result = new ParameterSet (omega, sigma, npop, likelihood);
+                result = new ParameterSet (npop, omega, sigma, likelihood);
                 nextLine = reader.readLine ();
             }
         }

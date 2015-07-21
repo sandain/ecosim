@@ -59,7 +59,7 @@ public class ParameterEstimate {
         ));
         // Store the estimated parameter values.
         estimate = new ParameterSet (
-            omegaEstimate, sigmaEstimate, npopEstimate, 0.0d
+            npopEstimate, omegaEstimate, sigmaEstimate, 0.0d
         );
     }
 
