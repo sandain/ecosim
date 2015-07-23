@@ -221,6 +221,16 @@ public class NewickTree implements Comparable<NewickTree> {
         root = newRoot;
     }
 
+
+    /**
+     *  Return the number of living descendants of the root node.
+     *
+     *  @return The number of descendants.
+     */
+    public int size () {
+        return root.numberOfDescendants ();
+    }
+
     /**
      *  Returns this tree as a Newick formatted String.
      *
