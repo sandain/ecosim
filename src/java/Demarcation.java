@@ -75,7 +75,6 @@ public class Demarcation implements Runnable {
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
-        log = masterVariables.getLog ();
     }
 
     /**
@@ -282,7 +281,7 @@ public class Demarcation implements Runnable {
     *  A private helper method to run a sample through the demarcation
     *  program.
     *
-    *  @param The NewickTreeNode describing the sample to run.
+    *  @param node The NewickTreeNode describing the sample to run.
     *  @return The npop value tested and its likelihood
     */
    private NpopValue runSample (NewickTreeNode node) {
@@ -494,7 +493,6 @@ public class Demarcation implements Runnable {
     private String workingDirectory;
     private ArrayList<ArrayList<String>> ecotypes;
     private MasterVariables masterVariables;
-    private Logger log;
     private String outgroup;
     private Integer length;
     private Integer nu;
