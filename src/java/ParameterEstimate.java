@@ -63,10 +63,14 @@ public class ParameterEstimate implements Runnable {
         // be fitted to.
         List<Point> points = getPoints (length, binning);
         // Fit the sigma line to the points.
-        Integer [] sigmaBounds = fitLinePoints (points, 1);
+        Integer [] sigmaBounds = fitLinePoints (
+            points, 1, sigmaThreshold
+        );
         sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
         // Fit the omega line to the points.
-        Integer [] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
+        Integer [] omegaBounds = fitLinePoints (
+            points, sigmaBounds[1] + 1, omegaThreshold
+        );
         omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
@@ -141,7 +145,7 @@ public class ParameterEstimate implements Runnable {
      *  @return An array of form [slope, intercept].
      */
     public double[] getOmega () {
-        return new double[] { -1.0d * omega.m, omega.b };
+        return new double[] { omega.m, omega.b };
     }
 
     /**
@@ -150,15 +154,20 @@ public class ParameterEstimate implements Runnable {
      *  @return An array of form [slope, intercept].
      */
     public double[] getSigma () {
-        return new double[] { -1.0d * sigma.m, sigma.b };
+        return new double[] { sigma.m, sigma.b };
     }
 
     /**
      *  Find all of the points that can fit a line.
      *
+     *  @param points All of the points.
+     *  @param start The index of points to start the line calculation.
+     *  @param threshold The error threshold allowed for the line calculation.
      *  @return The bounds of the points array that fit a line.
      */
-    private Integer [] fitLinePoints (List<Point> points, Integer start) {
+    private Integer [] fitLinePoints (
+        List<Point> points, Integer start, Double threshold
+    ) {
         Integer [] bounds = { start, start + 2 };
         // Catch errors before they happen.
         if (bounds[0] > points.size () || bounds[1] > points.size ()) {
@@ -173,7 +182,7 @@ public class ParameterEstimate implements Runnable {
         // Slurp up any points that are close to the line.
         for (int i = bounds[1]; i < points.size (); i ++) {
             Double error = squaredError (points.get (i), line);
-            if (error > 0.1) break;
+            if (error > threshold) break;
             bounds[1] = i;
         }
         return bounds;
@@ -182,7 +191,7 @@ public class ParameterEstimate implements Runnable {
     /**
      *  Calculate the squared error of the point compared to the line.
      *
-     *  @param points The point.
+     *  @param point The point.
      *  @param line The line.
      *  @return The squared error of the point compared to the line.
      */
@@ -232,6 +241,9 @@ public class ParameterEstimate implements Runnable {
 
     private Line omega;
     private Line sigma;
+
+    private Double omegaThreshold = 100.0d;
+    private Double sigmaThreshold = 0.1d;
 
     /**
      * The estimate for the parameter values.
