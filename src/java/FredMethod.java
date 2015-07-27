@@ -48,9 +48,11 @@ public class FredMethod implements Runnable {
      *  @param binning The Binning object.
      *  @param parameterSet The set of parameters to optimize.
      */
-    public FredMethod (MasterVariables masterVariables, Integer nu,
-        Integer length, Binning binning, ParameterSet parameterSet) {
+    public FredMethod (MasterVariables masterVariables, Execs execs,
+        Integer nu, Integer length, Binning binning,
+        ParameterSet parameterSet) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -65,7 +67,6 @@ public class FredMethod implements Runnable {
      *  Run the fredmethod program.
      */
     public void run () {
-        Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
         // Write the input values for the program to the hclimbIn.dat file.
@@ -236,6 +237,7 @@ public class FredMethod implements Runnable {
     private String outputFileName;
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;

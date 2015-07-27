@@ -87,7 +87,7 @@ public class ParameterEstimate implements Runnable {
         );
         // Setup the fredmethod.
         FredMethod fredmethod = new FredMethod (
-            masterVariables, nu, length, binning, estimate
+            masterVariables, execs, nu, length, binning, estimate
         );
         fredmethod.run ();
         estimate.setLikelihood (fredmethod.getResult ().getLikelihood ());
