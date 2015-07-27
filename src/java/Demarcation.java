@@ -53,6 +53,7 @@ public class Demarcation implements Runnable {
      *  Creates new form Demarcations
      *
      *  @param masterVariables The MasterVariables.
+     *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length The length of the environmental sequences.
      *  @param outgroup The name of the outgroup.
@@ -61,10 +62,11 @@ public class Demarcation implements Runnable {
      *  @param precision The precision to use for demarcation.
      *  @param method The method to use for demarcation.
      */
-    public Demarcation (MasterVariables masterVariables, Integer nu,
-        Integer length, String outgroup, NewickTree tree,
+    public Demarcation (MasterVariables masterVariables, Execs execs,
+        Integer nu, Integer length, String outgroup, NewickTree tree,
         ParameterSet hclimbResult, int method, int precision) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.outgroup = outgroup;
@@ -325,7 +327,6 @@ public class Demarcation implements Runnable {
             hclimbResult.getLikelihood ()
         );
         // Run the demarcation program.
-        Execs execs = masterVariables.getExecs ();
         execs.runDemarcation (inputFile, outputFile);
         // Get the output provided by the demarcation program.
         // [0] npop=1
@@ -493,6 +494,7 @@ public class Demarcation implements Runnable {
     private String workingDirectory;
     private ArrayList<ArrayList<String>> ecotypes;
     private MasterVariables masterVariables;
+    private Execs execs;
     private String outgroup;
     private Integer length;
     private Integer nu;

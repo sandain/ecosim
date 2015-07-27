@@ -323,7 +323,7 @@ public class Simulation {
     protected void runDemarcation () {
         log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
-            masterVariables, nu, length, outgroup, tree,
+            masterVariables, execs, nu, length, outgroup, tree,
             hillclimb.getResult (), demarcationMethod, demarcationPrecision
         );
         demarcation.run ();
