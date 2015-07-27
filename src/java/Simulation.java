@@ -44,6 +44,7 @@ public class Simulation {
     public Simulation (MasterVariables masterVariables, File fastaFile,
         File newickFile) {
         this.masterVariables = masterVariables;
+        this.execs = masterVariables.getExecs ();
         this.fastaFile = fastaFile;
         this.newickFile = newickFile;
         // Set default demarcation method and precision.
@@ -159,7 +160,6 @@ public class Simulation {
             masterVariables.getWorkingDirectory () + "outtree"
         );
         // Reroot the tree using the outgroup.
-        Execs execs = masterVariables.getExecs ();
         execs.runFastTree (fastaFile, newickFile);
         try {
             tree = new NewickTree (newickFile);
@@ -339,6 +339,7 @@ public class Simulation {
     }
 
     protected MasterVariables masterVariables;
+    protected Execs execs;
     protected File fastaFile;
     protected File newickFile;
     protected Logger log;
