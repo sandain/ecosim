@@ -49,9 +49,10 @@ public class SigmaConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public SigmaConfidenceInterval (MasterVariables masterVariables,
-        Integer nu, Integer length, Binning binning,
+        Execs execs, Integer nu, Integer length, Binning binning,
         ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -66,7 +67,6 @@ public class SigmaConfidenceInterval {
      *  Run the sigma confidence interval program.
      */
     public void run () {
-        Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
         // Write the input values for the program to the sigmaIn.dat file.
@@ -300,6 +300,7 @@ public class SigmaConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;

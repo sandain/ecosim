@@ -292,7 +292,7 @@ public class Simulation {
     protected void runSigmaConfidenceInterval () {
         log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
         );
         sigmaCI.run ();
         // Verify that sigmaCI ran correctly.
