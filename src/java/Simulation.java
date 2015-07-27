@@ -212,7 +212,7 @@ public class Simulation {
             "Starting with precision: " + masterVariables.getCriterionLabel (crit)
         );
         hillclimb = new Hillclimb (
-            masterVariables, nu, length, binning, estimate.getResult ()
+            masterVariables, execs, nu, length, binning, estimate.getResult ()
         );
         while (likelihood < masterVariables.EPSILON)  {
             // Run hillclimbing using the current criterion.
