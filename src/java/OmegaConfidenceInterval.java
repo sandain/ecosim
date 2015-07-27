@@ -49,9 +49,10 @@ public class OmegaConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public OmegaConfidenceInterval (MasterVariables masterVariables,
-        Integer nu, Integer length, Binning binning,
+        Execs execs, Integer nu, Integer length, Binning binning,
         ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -66,7 +67,6 @@ public class OmegaConfidenceInterval {
      *  Run the omega confidence interval program.
      */
     public void run () {
-        Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
         // Write the input values for the program to the omegaIn.dat file.
@@ -293,6 +293,7 @@ public class OmegaConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;
