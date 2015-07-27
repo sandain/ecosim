@@ -199,7 +199,7 @@ public class Simulation {
     protected void runParameterEstimate () {
         log.appendln ("Running parameter estimate...");
         estimate = new ParameterEstimate (
-            masterVariables, nu, length, binning
+            masterVariables, execs, nu, length, binning
         );
         estimate.run ();
         // Output the parameter estimate.

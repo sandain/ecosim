@@ -34,7 +34,6 @@ import java.util.Collections;
  */
 public class ParameterEstimate implements Runnable {
 
-
     /**
      *  Run the parameter estimate program.
      *
@@ -44,8 +43,9 @@ public class ParameterEstimate implements Runnable {
      *  @param binning The Binning object.
      */
     public ParameterEstimate (MasterVariables masterVariables,
-        Integer nu, Integer length, Binning binning) {
+        Execs execs, Integer nu, Integer length, Binning binning) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -235,6 +235,7 @@ public class ParameterEstimate implements Runnable {
     }
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;
