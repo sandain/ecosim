@@ -46,7 +46,8 @@ public class Execs {
      *
      *  @param masterVariables The MasterVariables.
      */
-    public Execs (MasterVariables masterVariables) {
+    public Execs (Logger log, MasterVariables masterVariables) {
+        this.log = log;
         this.masterVariables = masterVariables;
         // Grab the running environment.
         String osName = System.getProperty ("os.name").toLowerCase ();
@@ -56,7 +57,6 @@ public class Execs {
         binaryDirectory = masterVariables.getBinaryDirectory ();
         scriptDirectory = masterVariables.getScriptDirectory ();
         workingDirectory = masterVariables.getWorkingDirectory ();
-        log = masterVariables.getLog ();
         // Check which OS we are running on.
         if (osName.contains ("windows")) {
             binaryExtension = ".exe";

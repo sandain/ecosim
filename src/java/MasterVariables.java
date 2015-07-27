@@ -67,8 +67,8 @@ public class MasterVariables {
             System.getProperty ("file.separator");
 
         // Initialize various objects.
-        execs = new Execs (this);
         log = new Logger ();
+        execs = new Execs (this);
     }
 
     /**
