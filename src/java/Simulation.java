@@ -185,7 +185,7 @@ public class Simulation {
     /**
      *  Run the binning program.
      */
-    protected void runBinning () {
+    public void runBinning () {
         log.appendln ("Running binning...");
         binning = new Binning (tree);
         // Output the results from binning.
@@ -200,7 +200,7 @@ public class Simulation {
     /**
      *  Run the parameter estimate program.
      */
-    protected void runParameterEstimate () {
+    public void runParameterEstimate () {
         log.appendln ("Running parameter estimate...");
         estimate = new ParameterEstimate (
             masterVariables, execs, nu, length, binning
@@ -215,7 +215,7 @@ public class Simulation {
     /**
      *  Run the hillclimbing program.
      */
-    protected void runHillclimbing () {
+    public void runHillclimbing () {
         Integer crit = masterVariables.getCriterion ();
         Double likelihood = 0.0d;
         log.appendln ("Running hillclimbing...");
@@ -256,7 +256,7 @@ public class Simulation {
     /**
      *  Run the npop confidence interval program.
      */
-    protected void runNpopConfidenceInterval () {
+    public void runNpopConfidenceInterval () {
         log.appendln ("Running npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -278,7 +278,7 @@ public class Simulation {
     /**
      *  Run the omega confidence interval program.
      */
-    protected void runOmegaConfidenceInterval () {
+    public void runOmegaConfidenceInterval () {
         log.appendln ("Running omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -300,7 +300,7 @@ public class Simulation {
     /**
      *  Run the sigma confidence interval program.
      */
-    protected void runSigmaConfidenceInterval () {
+    public void runSigmaConfidenceInterval () {
         log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -322,7 +322,7 @@ public class Simulation {
     /**
      *  Run the omega, sigma, and npop confidence interval programs.
      */
-    protected void runConfidenceIntervals () {
+    public void runConfidenceIntervals () {
         runNpopConfidenceInterval ();
         runOmegaConfidenceInterval ();
         runSigmaConfidenceInterval ();
@@ -331,7 +331,7 @@ public class Simulation {
     /**
      *  Run the demarcation program.
      */
-    protected void runDemarcation () {
+    public void runDemarcation () {
         log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
             masterVariables, execs, nu, length, outgroup, tree,
