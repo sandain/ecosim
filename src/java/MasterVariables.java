@@ -65,10 +65,6 @@ public class MasterVariables {
         scriptDirectory = System.getProperty ("user.dir") +
             System.getProperty ("file.separator") + "scripts" +
             System.getProperty ("file.separator");
-
-        // Initialize various objects.
-        log = new Logger ();
-        execs = new Execs (this);
     }
 
     /**
@@ -124,24 +120,6 @@ public class MasterVariables {
      */
     public String[] getCriterionLabels () {
         return criterionLabels;
-    }
-
-    /**
-     *  Return the default log.
-     *
-     *  @return The default log.
-     */
-    public Logger getLog () {
-        return log;
-    }
-
-    /**
-     *  Returns the Execs object.
-     *
-     *  @return The default Execs.
-     */
-    public Execs getExecs () {
-        return execs;
     }
 
     /**
@@ -272,15 +250,5 @@ public class MasterVariables {
      *  Display the debug information if true.
      */
     private Boolean debug;
-
-    /**
-     *  The Logger object.
-     */
-    private Logger log;
-
-    /**
-     *  The Execs object.
-     */
-    private Execs execs;
 
 }
