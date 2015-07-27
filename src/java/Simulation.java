@@ -59,6 +59,8 @@ public class Simulation {
         if (newickFile != null && newickFile.exists ()) {
             loadTreeFile (newickFile);
         }
+        // None of the programs are currently running.
+        running = false;
     }
 
     /**
@@ -183,9 +185,20 @@ public class Simulation {
     }
 
     /**
+     *  Check whether the simulation is running.
+     *
+     *  @return True if the simulation is running, otherwise False.
+     */
+    public boolean isRunning () {
+        return running;
+    }
+
+    /**
      *  Run the binning program.
      */
     public void runBinning () {
+        // Start running binning.
+        running = true;
         log.appendln ("Running binning...");
         binning = new Binning (tree);
         // Output the results from binning.
@@ -195,12 +208,16 @@ public class Simulation {
             log.appendln ("  " + bins.get (i).toString ());
         }
         log.appendln ();
+        // Done running binning.
+        running = false;
     }
 
     /**
      *  Run the parameter estimate program.
      */
     public void runParameterEstimate () {
+        // Start running the parameter estimate.
+        running = true;
         log.appendln ("Running parameter estimate...");
         estimate = new ParameterEstimate (
             masterVariables, execs, nu, length, binning
@@ -210,12 +227,16 @@ public class Simulation {
         log.appendln ("The estimated parameters:");
         log.appendln (estimate.toString ());
         log.appendln ();
+        // Done running the parameter estimate.
+        running = false;
     }
 
     /**
      *  Run the hillclimbing program.
      */
     public void runHillclimbing () {
+        // Start running hillclimbing.
+        running = true;
         Integer crit = masterVariables.getCriterion ();
         Double likelihood = 0.0d;
         log.appendln ("Running hillclimbing...");
@@ -251,12 +272,16 @@ public class Simulation {
         log.appendln ("The result from hillclimb:");
         log.appendln (hillclimb.toString ());
         log.appendln ();
+        // Done running hillclimbing.
+        running = false;
     }
 
     /**
      *  Run the npop confidence interval program.
      */
     public void runNpopConfidenceInterval () {
+        // Start running the confidence interval.
+        running = true;
         log.appendln ("Running npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -273,12 +298,16 @@ public class Simulation {
         log.appendln ("The result from npopCI:");
         log.appendln ("  " + npopCI.toString ());
         log.appendln ();
+        // Done running the confidence interval.
+        running = false;
     }
 
     /**
      *  Run the omega confidence interval program.
      */
     public void runOmegaConfidenceInterval () {
+        // Start running the confidence interval.
+        running = true;
         log.appendln ("Running omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -295,12 +324,16 @@ public class Simulation {
         log.appendln ("The result from omegaCI:");
         log.appendln ("  " + omegaCI.toString ());
         log.appendln ();
+        // Done running the confidence interval.
+        running = false;
     }
 
     /**
      *  Run the sigma confidence interval program.
      */
     public void runSigmaConfidenceInterval () {
+        // Start running the confidence interval.
+        running = true;
         log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
             masterVariables, execs, nu, length, binning, hillclimb.getResult ()
@@ -317,6 +350,8 @@ public class Simulation {
         log.appendln ("The result from sigmaCI:");
         log.appendln ("  " + sigmaCI.toString ());
         log.appendln ();
+        // Done running the confidence interval.
+        running = false;
     }
 
     /**
@@ -332,6 +367,8 @@ public class Simulation {
      *  Run the demarcation program.
      */
     public void runDemarcation () {
+        // Start running demarcation.
+        running = true;
         log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
             masterVariables, execs, nu, length, outgroup, tree,
@@ -347,6 +384,8 @@ public class Simulation {
         log.appendln ("The result from demarcation:");
         log.appendln (demarcation.toString ());
         log.appendln ();
+        // Done running demarcation.
+        running = false;
     }
 
     protected Logger log;
@@ -368,5 +407,6 @@ public class Simulation {
     protected Demarcation demarcation;
     protected Integer demarcationMethod;
     protected Integer demarcationPrecision;
+    protected boolean running;
 
 }
