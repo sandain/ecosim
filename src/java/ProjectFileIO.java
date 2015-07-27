@@ -175,9 +175,9 @@ public class ProjectFileIO {
                     "omega=\"%.5f\" " +
                     "sigma=\"%.5f\" " +
                     "likelihood=\"%.5g\"/>\n",
+                    result.getNpop (),
                     result.getOmega (),
                     result.getSigma (),
-                    result.getNpop (),
                     result.getLikelihood ()
                 ));
                 out.write ("  </estimate>\n");
@@ -191,9 +191,9 @@ public class ProjectFileIO {
                     "omega=\"%.5f\" " +
                     "sigma=\"%.5f\" " +
                     "likelihood=\"%.5g\"/>\n",
+                    result.getNpop (),
                     result.getOmega (),
                     result.getSigma (),
-                    result.getNpop (),
                     result.getLikelihood ()
                 ));
                 out.write ("  </hillclimb>\n");
