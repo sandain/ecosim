@@ -50,9 +50,10 @@ public class NpopConfidenceInterval {
      *  @param hillclimbResult The result from hillclimbing.
      */
     public NpopConfidenceInterval (MasterVariables masterVariables,
-        Integer nu, Integer length, Binning binning,
+        Execs execs, Integer nu, Integer length, Binning binning,
         ParameterSet hillclimbResult) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -67,7 +68,6 @@ public class NpopConfidenceInterval {
      *  Run the npop confidence interval program.
      */
     public void run () {
-        Execs execs = masterVariables.getExecs ();
         File inputFile = new File (inputFileName);
         File outputFile = new File (outputFileName);
         // Write the input values for the program to the npopIn.dat file.
@@ -294,6 +294,7 @@ public class NpopConfidenceInterval {
     private String outputFileName;
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;
