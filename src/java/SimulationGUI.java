@@ -64,14 +64,15 @@ public class SimulationGUI extends Simulation {
      *  SimulationGUI constructor.  Used for the graphical user
      *  interface of Ecotype Simulation.
      *
+     *  @param log The Logger object.
      *  @param masterVariables The MasterVariables object.
+     *  @param execs The Execs object.
      *  @param fastaFile The fasta formated sequence file.
      *  @param newickFile The newick formated tree file.
      */
-    public SimulationGUI (MasterVariables masterVariables,
-        File fastaFile, File newickFile) {
-        super (masterVariables, fastaFile, newickFile);
-        execs = masterVariables.getExecs ();
+    public SimulationGUI (Logger log, MasterVariables masterVariables,
+        Execs execs, File fastaFile, File newickFile) {
+        super (log, masterVariables, execs, fastaFile, newickFile);
         // Display the Ecotype Simulation GUI.
         makeGUI ();
         // None of the programs are currently running.
@@ -637,7 +638,6 @@ public class SimulationGUI extends Simulation {
 
     private JFrame gui;
 
-    private Execs execs;
     private HelpAboutWindow helpAbout;
 
     private boolean running;

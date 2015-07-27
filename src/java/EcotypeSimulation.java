@@ -123,10 +123,10 @@ public class EcotypeSimulation implements Runnable {
      *  @param args The command line arguments.
      */
     public EcotypeSimulation (String[] args) {
-        // Initialize the master variables.
+        // Initialize the variables.
+        log = new Logger ();
         masterVariables = new MasterVariables ();
-        execs = masterVariables.getExecs ();
-        log = masterVariables.getLog ();
+        execs = new Execs (log, masterVariables);
         // Initialize variables.
         noGUI = false;
         runAll = false;
@@ -143,13 +143,13 @@ public class EcotypeSimulation implements Runnable {
         if (noGUI) {
             // Start the command line interface (CLI).
             simulation = new SimulationCLI (
-                masterVariables, fastaFile, newickFile
+                log, masterVariables, execs, fastaFile, newickFile
             );
         }
         else {
             // Start the graphical user interface (GUI).
             simulation = new SimulationGUI (
-                masterVariables, fastaFile, newickFile
+                log, masterVariables, execs, fastaFile, newickFile
             );
         }
         // Launch NJPlot to view the tree.
@@ -328,9 +328,9 @@ public class EcotypeSimulation implements Runnable {
 
     private boolean noGUI;
     private boolean runAll;
+    private Logger log;
     private MasterVariables masterVariables;
     private Execs execs;
-    private Logger log;
     private File fastaFile;
     private File newickFile;
     private File outputFile;
