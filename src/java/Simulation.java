@@ -52,10 +52,10 @@ public class Simulation {
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         log = masterVariables.getLog ();
         if (fastaFile != null && fastaFile.exists ()) {
-            loadSequenceFile ();
+            loadSequenceFile (fastaFile);
         }
         if (newickFile != null && newickFile.exists ()) {
-            loadTreeFile ();
+            loadTreeFile (newickFile);
         }
     }
 
@@ -97,23 +97,25 @@ public class Simulation {
 
     /**
      *  Load the fasta formated sequence file.
+     *
+     *  @param file The fasta formated sequence file to load.
      */
-    protected void loadSequenceFile () {
-        // Verify that the fasta file exists.
-        if (fastaFile == null || ! fastaFile.exists ()) {
+    public void loadSequenceFile (File file) {
+        // Verify that the sequence file exists.
+        if (file == null || ! file.exists ()) {
             log.appendln ("Error loading the Fasta file!");
             return;
         }
-        log.appendln ("Opening sequence file: " + fastaFile.getName ());
+        log.appendln ("Opening sequence file...");
         try {
-            fasta = new Fasta (fastaFile);
-            nu = fasta.size ();
-            length = fasta.length ();
-            outgroup = fasta.getIdentifier (0);
-            // Output the number of sequences loaded.
-            log.appendln (String.format (
-                "  %d environmental sequences.", nu
-            ));
+            fasta = new Fasta (file);
+            Sequence outgroupSequence = fasta.getOutgroup ();
+            length = outgroupSequence.length ();
+            outgroup = outgroupSequence.getIdentifier ();
+            // Update the summary data.
+            summary.setLength (length);
+            summary.setOutgroup (outgroup);
+            // Output the sequence data.
             log.appendln (String.format (
                 "  sequence length: %d.", length
             ));
@@ -128,22 +130,31 @@ public class Simulation {
 
     /**
      *  Load the newick formated tree file.
+     *
+     *  @param file The newick formated tree file to load.
      */
-    protected void loadTreeFile () {
+    public void loadTreeFile (File file) {
         // Verify that the tree file exists.
-        if (newickFile == null || ! newickFile.exists ()) {
+        if (file == null || ! file.exists ()) {
             log.appendln ("Error loading the Newick tree!");
             return;
         }
-        log.appendln ("Opening tree file: " + newickFile.getName ());
+        log.appendln ("Opening tree file...");
         try {
-            tree = new NewickTree (newickFile);
+            tree = new NewickTree (file);
             tree.reroot (outgroup);
             // Store the tree in file called 'outtree'.
-            newickFile = new File (
+            tree.save (new File (
                 masterVariables.getWorkingDirectory () + "outtree"
-            );
-            tree.save (newickFile);
+            ));
+            // Get the number of sequences loaded.
+            nu = tree.size ();
+            // Update the summary data.
+            summary.setNu (nu);
+            // Output the number of sequences loaded.
+            log.appendln (String.format (
+                "  %d environmental sequences.", nu
+            ));
         }
         catch (InvalidNewickException e) {
             System.out.println ("Error loading tree file.");
@@ -151,24 +162,20 @@ public class Simulation {
     }
 
     /**
-     *  Generate a tree using FastTree.
+     *  Generate a tree using FastTree and the given sequence file.
+     *
+     *  @param file The fasta formated sequence file.
      */
-    protected void generateTree () {
+    public void generateTree (File file) {
         log.appendln ("Generating a tree using FastTree...");
-        // Store the tree in file called 'outtree'.
-        newickFile = new File (
-            masterVariables.getWorkingDirectory () + "outtree"
+        // Store the tree in file called 'fasttree'.
+        File newickFile = new File (
+            masterVariables.getWorkingDirectory () + "fasttree"
         );
-        // Reroot the tree using the outgroup.
-        execs.runFastTree (fastaFile, newickFile);
-        try {
-            tree = new NewickTree (newickFile);
-            tree.reroot (outgroup);
-            tree.save (newickFile);
-        }
-        catch (InvalidNewickException e) {
-            System.out.println ("Error loading tree file.");
-        }
+        // Generate a tree using FastTree.
+        execs.runFastTree (file, newickFile);
+        // Load the tree.
+        loadTreeFile (newickFile);
     }
 
     /**
