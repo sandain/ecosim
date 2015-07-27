@@ -152,12 +152,21 @@ public class EcotypeSimulation implements Runnable {
                 log, masterVariables, execs, fastaFile, newickFile
             );
         }
-        // Launch NJPlot to view the tree.
-        if (! noGUI && newickFile != null && newickFile.exists ()) {
-            log.append ("Displaying the tree with NJplot.\n\n");
-            execs.openTree (newickFile);
+        // Generate the tree if the fasta file was provided with a tree.
+        if (fastaFile != null && fastaFile.exists () &&
+            (newickFile == null || ! newickFile.exists ())
+        ) {
+            simulation.generateTree (fastaFile);
+        }
+        // Run the binning and parameter estimate programs.
+        if (newickFile != null && newickFile.exists ()) {
             simulation.runBinning ();
             simulation.runParameterEstimate ();
+            // Launch NJPlot to view the tree if the GUI is in use.
+            if (! noGUI) {
+                log.append ("Displaying the tree with NJplot.\n\n");
+                execs.openTree (newickFile);
+            }
         }
         // If the runAll flag has been set, run the simulation.
         if (runAll) {
