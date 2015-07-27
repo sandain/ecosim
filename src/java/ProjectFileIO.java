@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2013-2014  Jason M. Wood, Montana State University
+ *    Copyright (C) 2013-2015  Jason M. Wood, Montana State University
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -47,8 +47,10 @@ public class ProjectFileIO {
      *
      *  @param masterVariables The master variables.
      */
-    public ProjectFileIO (MasterVariables masterVariables) {
+    public ProjectFileIO (MasterVariables masterVariables,
+        Execs execs) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
         tree = new NewickTree ();
@@ -57,22 +59,22 @@ public class ProjectFileIO {
         outgroup = "";
         binning = new Binning (tree);
         estimate = new ParameterEstimate (
-            masterVariables, nu, length, binning
+            masterVariables, execs, nu, length, binning
         );
         hillclimb = new Hillclimb (
-            masterVariables, nu, length, binning, estimate.getResult ()
+            masterVariables, execs, nu, length, binning, estimate.getResult ()
         );
         npopCI = new NpopConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
         );
         omegaCI = new OmegaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
         );
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
         );
         demarcation = new Demarcation (
-            masterVariables, nu, length, outgroup, tree,
+            masterVariables, execs, nu, length, outgroup, tree,
             hillclimb.getResult (),
             Demarcation.DEMARCATION_METHOD_MONOPHYLY,
             Demarcation.DEMARCATION_PRECISION_FINE_SCALE
@@ -95,12 +97,13 @@ public class ProjectFileIO {
      *  @param sigmaCI The SigmaConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO (MasterVariables masterVariables, Integer nu,
-        Integer length, String outgroup, NewickTree tree, Binning binning,
-        ParameterEstimate estimate, Hillclimb hillclimb,
+    public ProjectFileIO (MasterVariables masterVariables, Execs execs,
+        Integer nu, Integer length, String outgroup, NewickTree tree,
+        Binning binning, ParameterEstimate estimate, Hillclimb hillclimb,
         NpopConfidenceInterval npopCI, OmegaConfidenceInterval omegaCI,
         SigmaConfidenceInterval sigmaCI, Demarcation demarcation) {
         this.masterVariables = masterVariables;
+        this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.outgroup = outgroup;
@@ -401,6 +404,7 @@ public class ProjectFileIO {
     }
 
     private MasterVariables masterVariables;
+    private Execs execs;
     private Integer nu;
     private Integer length;
     private String outgroup;

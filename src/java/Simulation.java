@@ -67,7 +67,9 @@ public class Simulation {
      *  @param file The file to load the project from.
      */
     public void loadProjectFile (File file) {
-        ProjectFileIO projectFileIO = new ProjectFileIO (masterVariables);
+        ProjectFileIO projectFileIO = new ProjectFileIO (
+            masterVariables, execs
+        );
         // Load the project file.
         projectFileIO.load (file);
         // Grab the loaded variables.
@@ -91,8 +93,8 @@ public class Simulation {
      */
     public void saveProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, nu, length, outgroup, tree, binning, estimate,
-            hillclimb, npopCI, omegaCI, sigmaCI, demarcation
+            masterVariables, execs, nu, length, outgroup, tree, binning,
+            estimate, hillclimb, npopCI, omegaCI, sigmaCI, demarcation
         );
         projectFileIO.save (file);
     }
