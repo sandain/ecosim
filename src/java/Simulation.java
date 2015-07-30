@@ -46,7 +46,6 @@ public class Simulation {
         File fastaFile, File newickFile) {
         this.log = log;
         this.masterVariables = masterVariables;
-        this.execs = execs;
         this.fastaFile = fastaFile;
         this.newickFile = newickFile;
         // Set default demarcation method and precision.
