@@ -289,6 +289,14 @@ public class EcotypeSimulation implements Runnable {
                     noGUI = true;
                     break;
                 default:
+                    // Look for unrecognized options.
+                    if (key.startsWith ("-")) {
+                        System.out.println (String.format (
+                            "Syntax error: Option %s not recognized.\n%s",
+                            key, usage
+                        ));
+                        System.exit (1);
+                    }
                     // Look for file name arguments.
                     File arg = new File (key);
                     // Expect the fasta file first.
