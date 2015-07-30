@@ -162,11 +162,6 @@ public class EcotypeSimulation implements Runnable {
         if (newickFile != null && newickFile.exists ()) {
             simulation.runBinning ();
             simulation.runParameterEstimate ();
-            // Launch NJPlot to view the tree if the GUI is in use.
-            if (! noGUI) {
-                log.append ("Displaying the tree with NJplot.\n\n");
-                execs.openTree (newickFile);
-            }
         }
         // If the runAll flag has been set, run the simulation.
         if (runAll) {
