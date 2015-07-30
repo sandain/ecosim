@@ -62,9 +62,6 @@ public class MasterVariables {
             System.getProperty ("file.separator") +"help" +
             System.getProperty ("file.separator");
 
-        scriptDirectory = System.getProperty ("user.dir") +
-            System.getProperty ("file.separator") + "scripts" +
-            System.getProperty ("file.separator");
     }
 
     /**
@@ -129,15 +126,6 @@ public class MasterVariables {
      */
     public String getBinaryDirectory () {
         return binaryDirectory;
-    }
-
-    /**
-     *  Returns the script directory.
-     *
-     *  @return String containing the script directory.
-     */
-    public String getScriptDirectory () {
-        return scriptDirectory;
     }
 
     /**
@@ -235,11 +223,6 @@ public class MasterVariables {
      *  The location of the help directory.
      */
     private String helpDirectory;
-
-    /**
-     *  The location of the script directory.
-     */
-    private String scriptDirectory;
 
     /**
      *  The location of the working directory.
