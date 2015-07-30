@@ -177,6 +177,8 @@ public class EcotypeSimulation implements Runnable {
                 simulation.saveProjectFile (outputFile);
             }
         }
+        // Exit the simulation if the GUI wasn't started.
+        if (noGUI) simulation.exit ();
     }
 
     /**
