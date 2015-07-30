@@ -39,12 +39,11 @@ public class Simulation {
      *
      *  @param log The Logger object.
      *  @param masterVariables The MasterVariables object.
-     *  @param execs The Execs object.
      *  @param fastaFile The fasta formated sequence file.
      *  @param newickFile The newick formated tree file.
      */
     public Simulation (Logger log, MasterVariables masterVariables,
-        Execs execs, File fastaFile, File newickFile) {
+        File fastaFile, File newickFile) {
         this.log = log;
         this.masterVariables = masterVariables;
         this.execs = execs;
@@ -53,6 +52,7 @@ public class Simulation {
         // Set default demarcation method and precision.
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
+        execs = new Execs (log, masterVariables);
         if (fastaFile != null && fastaFile.exists ()) {
             loadSequenceFile (fastaFile);
         }

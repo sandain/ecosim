@@ -40,13 +40,12 @@ public class SimulationCLI extends Simulation {
      *
      *  @param log The Logger object.
      *  @param masterVariables The MasterVariables object.
-     *  @param execs The Execs object.
      *  @param fastaFile The fasta formated sequence file.
      *  @param newickFile The newick formated tree file.
      */
     public SimulationCLI (Logger log, MasterVariables masterVariables,
-        Execs execs, File fastaFile, File newickFile) {
-        super (log, masterVariables, execs, fastaFile, newickFile);
+        File fastaFile, File newickFile) {
+        super (log, masterVariables, fastaFile, newickFile);
         // Display the program name and version.
         System.out.print (String.format (
             "Ecotype Simulation %s\n\n", masterVariables.getVersion ()
