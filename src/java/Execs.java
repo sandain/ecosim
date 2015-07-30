@@ -55,8 +55,6 @@ public class Execs {
         String osVersion = System.getProperty ("os.version");
         // Setup the rest of the variables.
         binaryDirectory = masterVariables.getBinaryDirectory ();
-        scriptDirectory = masterVariables.getScriptDirectory ();
-        workingDirectory = masterVariables.getWorkingDirectory ();
         // Check which OS we are running on.
         if (osName.contains ("windows")) {
             binaryExtension = ".exe";
@@ -398,7 +396,5 @@ public class Execs {
     private Logger log;
     private String binaryExtension;
     private String binaryDirectory;
-    private String scriptDirectory;
-    private String workingDirectory;
 
 }
