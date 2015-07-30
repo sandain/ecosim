@@ -64,6 +64,13 @@ public class Simulation {
     }
 
     /**
+     *  Exit the simulation.
+     */
+    public void exit () {
+        System.exit (0);
+    }
+
+    /**
      *  Load the project from a XML formated file.
      *
      *  @param file The file to load the project from.
