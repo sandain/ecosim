@@ -22,7 +22,11 @@
 
 package ecosim;
 
+import ecosim.gui.MainWindow;
+
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @mainpage Ecotype %Simulation
@@ -126,31 +130,26 @@ public class EcotypeSimulation implements Runnable {
         // Initialize the variables.
         log = new Logger ();
         masterVariables = new MasterVariables ();
-        // Initialize variables.
         noGUI = false;
         runAll = false;
         // Check for command line arguments.
         checkArguments (args);
+        // Create the Simulation.
+        simulation = new Simulation (
+            log, masterVariables, fastaFile, newickFile
+        );
     }
 
     /**
      *  Run Ecotype Simulation.
      */
     public void run () {
-        // Start one of the Ecotype Simulation interfaces.
-        Simulation simulation;
-        if (noGUI) {
-            // Start the command line interface (CLI).
-            simulation = new SimulationCLI (
-                log, masterVariables, fastaFile, newickFile
-            );
-        }
-        else {
-            // Start the graphical user interface (GUI).
-            simulation = new SimulationGUI (
-                log, masterVariables, fastaFile, newickFile
-            );
-        }
+        // Display the program name and version.
+        System.out.print (String.format (
+            "Ecotype Simulation %s\n\n", masterVariables.getVersion ()
+        ));
+        // Startup the CLI or the GUI.
+        setupInterface ();
         // Generate the tree if the fasta file was provided with a tree.
         if (fastaFile != null && fastaFile.exists () &&
             (newickFile == null || ! newickFile.exists ())
@@ -339,10 +338,34 @@ public class EcotypeSimulation implements Runnable {
         }
     }
 
+    /**
+     *  Startup either the command line interface (CLI) or the graphical
+     *  user interface (GUI) depending on the noGUI flag.
+     */
+    private void setupInterface () {
+        if (noGUI) {
+            // The CLI only requires adding an observer to the log.  When
+            // the log changes, the new text is printed to the terminal.
+            log.addObserver (new Observer () {
+                public void update (Observable o, Object str) {
+                    System.out.print ((String) str);
+                }
+            });
+        }
+        else {
+            // Start the main window of the GUI.
+            MainWindow gui = new MainWindow (
+                log, masterVariables, simulation
+            );
+            gui.setVisible (true);
+        }
+    }
+
     private boolean noGUI;
     private boolean runAll;
     private Logger log;
     private MasterVariables masterVariables;
+    private Simulation simulation;
     private File fastaFile;
     private File newickFile;
     private File outputFile;
