@@ -71,6 +71,42 @@ public class Simulation {
     }
 
     /**
+     *  Get the method used for demarcation.
+     *
+     *  @return The demarcation method.
+     */
+    public int getDemarcationMethod () {
+        return demarcationMethod;
+    }
+
+    /**
+     *  Get the precision used for demarcation.
+     *
+     *  @return The demarcation precision.
+     */
+    public int getDemarcationPrecision () {
+        return demarcationPrecision;
+    }
+
+    /**
+     *  Set the method used for demarcation.
+     *
+     *  @param demarcationMethod The demarcation method.
+     */
+    public void setDemarcationMethod (int demarcationMethod) {
+        this.demarcationMethod = demarcationMethod;
+    }
+
+    /**
+     *  Set the precision used for demarcation.
+     *
+     *  @param demarcationPrecision The demarcation precision.
+     */
+    public void setDemarcationPrecision (int demarcationPrecision) {
+        this.demarcationPrecision = demarcationPrecision;
+    }
+
+    /**
      *  Load the project from a XML formated file.
      *
      *  @param file The file to load the project from.
