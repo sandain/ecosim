@@ -115,6 +115,7 @@ public class Simulation {
         ProjectFileIO projectFileIO = new ProjectFileIO (
             masterVariables, execs
         );
+        log.append ("Opening: " + file.getPath () + "\n\n");
         // Load the project file.
         projectFileIO.load (file);
         // Grab the loaded variables.
@@ -129,6 +130,47 @@ public class Simulation {
         omegaCI = projectFileIO.getOmegaCI ();
         sigmaCI = projectFileIO.getSigmaCI ();
         demarcation = projectFileIO.getDemarcation ();
+        // Output the values stored in the project file to the log.
+        if (nu > 0) {
+            log.append ("Phylogeny results:\n");
+            log.append (String.format (
+                "  %s environmental sequences.\n" +
+                "  %s is the outgroup.\n\n",
+                nu, outgroup
+            ));
+        }
+        if (binning != null) {
+            log.append ("Binning result:\n");
+            ArrayList<BinLevel> bins = binning.getBins ();
+            for (int i = 0; i < bins.size (); i ++) {
+                log.append ("  " + bins.get (i).toString () + "\n");
+            }
+            log.append ("\n");
+        }
+        if (estimate != null) {
+            log.append ("Parameter estimate:\n");
+            log.append (estimate.toString () + "\n\n");
+        }
+        if (hillclimb != null && hillclimb.hasRun ()) {
+            log.append ("Hillclimbing result:\n");
+            log.append (hillclimb.toString () + "\n\n");
+        }
+        if (npopCI != null && npopCI.hasRun ()) {
+            log.append ("Npop confidence interval result:\n");
+            log.append ("  " + npopCI.toString () + "\n\n");
+        }
+        if (omegaCI != null && omegaCI.hasRun ()) {
+            log.append ("Omega confidence interval result:\n");
+            log.append ("  " + omegaCI.toString () + "\n\n");
+        }
+        if (sigmaCI != null && sigmaCI.hasRun ()) {
+            log.append ("Sigma confidence interval result:\n");
+            log.append ("  " + sigmaCI.toString () + "\n\n");
+        }
+        if (demarcation != null && demarcation.hasRun ()) {
+            log.append ("Demarcation result:\n");
+            log.append (demarcation.toString () + "\n\n");
+        }
     }
 
     /**
@@ -141,6 +183,7 @@ public class Simulation {
             masterVariables, execs, nu, length, outgroup, tree, binning,
             estimate, hillclimb, npopCI, omegaCI, sigmaCI, demarcation
         );
+        log.append ("Saving to: " + file.getName () + "\n");
         projectFileIO.save (file);
     }
 
