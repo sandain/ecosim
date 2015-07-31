@@ -23,8 +23,11 @@ public class TestFasta {
     }
 
     @Test
-    public void testSize () {
-        assertEquals ("Size mismatch.", 3, fasta.size ());
+    public void testOutgroup () throws InvalidFastaException {
+        Sequence outgroup = fasta.getOutgroup ();
+        assertEquals ("Identifier mismatch.", "test_sequence", outgroup.getIdentifier ());
+        assertEquals ("Description mismatch.", "Test description", outgroup.getDescription ());
+        assertEquals ("Sequence mismatch.", "acgttgca", outgroup.getSequence ());
     }
 
     @Test
@@ -32,13 +35,8 @@ public class TestFasta {
         Sequence seq;
         // Check the first sequence.
         seq = fasta.nextSequence ();
-        assertEquals ("Identifier mismatch.", "test_sequence", seq.getIdentifier ());
-        assertEquals ("Description mismatch.", "Test description", seq.getDescription ());
-        assertEquals ("Sequence mismatch.", "acgttgca", seq.getSequence ());
-        // Check the second sequence.
-        seq = fasta.nextSequence ();
         assertEquals ("Identifier mismatch.", "gb|CP000239.1|:2536947-2539214", seq.getIdentifier ());
-        // Check the third sequence.
+        // Check the second sequence.
         seq = fasta.nextSequence ();
         assertEquals ("Identifier mismatch.", "gb|CP000240.1|:c28351-26084", seq.getIdentifier ());
     }
