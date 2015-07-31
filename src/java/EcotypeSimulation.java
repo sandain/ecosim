@@ -69,7 +69,7 @@ import java.util.Observer;
  *
  * @section fortran Fortran
  * @subsection fortran-programs Programs
- * @li @b ::bruteforce - Brute force search of the omega/sigma/npop space.
+ * @li @b ::fredmethod - Test the omega/sigma/npop space.
  * @li @b ::hillclimb - Performs a hillclimbing on the bruteforce result.
  * @li @b ::omegaci - Calculates the confidence interval of the omega value.
  * @li @b ::sigmaci - Calculates the confidence interval of the sigma value.
@@ -85,31 +85,35 @@ import java.util.Observer;
  * @section java Java
  * @li @b EcotypeSimulation - The main object of the Ecotype %Simulation.
  * @li @b BinLevel - Stores the bin levels for the Binning object.
- * @li @b Binning - Object to interact with the binning programs.
- * @li @b Bruteforce - Object to interact with the bruteforce search program.
+ * @li @b Binning - Object to run the binning algorithm.
  * @li @b Demarcation - Demarcates ecotypes based on the hillclimbing values
- *        and the phylogeny of the sequences.
- * @li @b Execs - Holds the executable methods for the cohan program.
+ *        and the phylogeny of the sequences using the ::demarcation program.
+ * @li @b Execs - Holds the executable methods for the various programs.
  * @li @b Fasta - Handles the input and output of fasta formatted text files.
- * @li @b FileChooser - Defines a custom file chooser.
+ * @li @b FredMethod - Object to interact with the ::fredmethod program.
  * @li @b Heapsorter - Runs the heapsort on a given set of data.
- * @li @b HelpAboutWindow - Displays a Help/About GUI window.
- * @li @b Hillclimb - Object to interact with the hillclimbing program.
+ * @li @b Hillclimb - Object to interact with the ::hillclimb program.
+ * @li @b InvalidFastaException - Report a malformed Fasta file.
  * @li @b InvalidNewickException - Report a malformed Newick tree.
- * @li @b Likelihood - Stores likelihood values.
  * @li @b Logger - Display text to the user.
  * @li @b MasterVariables - Common variables used through the program.
  * @li @b NewickTree - Interact with newick phylogenetic trees.
  * @li @b NewickTreeNode - A node of a newick phylogenetic tree.
- * @li @b NpopConfidenceInterval - Run the npop confidence interval program.
- * @li @b OmegaConfidenceInterval - Run the omega confidence interval program.
+ * @li @b NpopConfidenceInterval - Run the ::npopci program.
+ * @li @b OmegaConfidenceInterval - Run the ::omegaci program.
+ * @li @b ParameterEstimate - An object to estimate the parameter values.
  * @li @b ParameterSet - An object to store the parameter values.
  * @li @b ProjectFileIO - Perform IO operations for the XML project file.
- * @li @b SigmaConfidenceInterval - Run the sigma confidence interval program.
+ * @li @b SigmaConfidenceInterval - Run the ::sigmaci program.
  * @li @b Simulation - The shared methods of the simulation.
- * @li @b SimulationCLI - The Ecotype %Simulation CLI.
- * @li @b SimulationGUI - The Ecotype %Simulation GUI.
  * @li @b StreamGobbler - Captures output from the Fortran programs.
+ * @li @b gui.ButtonPane - Defines the main button panel for the GUI.
+ * @li @b gui.FileChooser - Defines a custom file chooser for the GUI.
+ * @li @b gui.HelpAboutWindow - Displays a Help/About GUI window.
+ * @li @b gui.LoggerPane - Defines a custom panel to display the Logger.
+ * @li @b gui.MainWindow - Defines the main GUI window.
+ * @li @b gui.MenuBar - Defines a custom menu bar for the GUI.
+ * @li @b gui.OptionsPane - Defines a custom panel to display the options.
  */
 
 /**
