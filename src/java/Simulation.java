@@ -327,7 +327,8 @@ public class Simulation {
         Double likelihood = 0.0d;
         log.appendln ("Running hillclimbing...");
         log.appendln (
-            "Starting with precision: " + masterVariables.getCriterionLabel (crit)
+            "Starting with precision: " +
+            masterVariables.getCriterionLabel (crit)
         );
         hillclimb = new Hillclimb (
             masterVariables, execs, nu, length, binning, estimate.getResult ()
@@ -370,7 +371,8 @@ public class Simulation {
         running = true;
         log.appendln ("Running npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning,
+            hillclimb.getResult ()
         );
         npopCI.run ();
         // Verify that npopCI ran correctly.
@@ -396,7 +398,8 @@ public class Simulation {
         running = true;
         log.appendln ("Running omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning,
+            hillclimb.getResult ()
         );
         omegaCI.run ();
         // Verify that omegaCI ran correctly.
@@ -422,7 +425,8 @@ public class Simulation {
         running = true;
         log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
+            masterVariables, execs, nu, length, binning,
+            hillclimb.getResult ()
         );
         sigmaCI.run ();
         // Verify that sigmaCI ran correctly.
