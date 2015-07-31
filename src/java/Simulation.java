@@ -66,6 +66,7 @@ public class Simulation {
      *  Exit the simulation.
      */
     public void exit () {
+        masterVariables.exit ();
         System.exit (0);
     }
 
