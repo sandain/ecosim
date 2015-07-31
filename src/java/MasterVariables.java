@@ -45,12 +45,15 @@ public class MasterVariables {
         debug = false;
         // Create a temporary directory to serve as the working directory.
         try {
-            Path tempDirectory = Files.createTempDirectory ("es2-");
+            tempDirectory = Files.createTempDirectory ("es2-");
             workingDirectory = tempDirectory.toString () +
                 System.getProperty ("file.separator");
         }
         catch (IOException e) {
-            e.printStackTrace ();
+            System.err.println (
+                "Error creating the temporary directory: " + e
+            );
+            System.exit (1);
         }
         // Assume the the bin, help, and scripts directories are in the
         // current working directory.
@@ -183,6 +186,27 @@ public class MasterVariables {
     }
 
     /**
+     *  Delete the temporary directory and its contents.
+     */
+    public void exit () {
+        try {
+            if (! debug) {
+                // Delete all of the files in the temporary directory.
+                for (Path file: Files.newDirectoryStream (tempDirectory)) {
+                    Files.delete (file);
+                }
+                // Delete the temporary directory.
+                Files.delete (tempDirectory);
+            }
+        }
+        catch (IOException e) {
+            System.err.println (
+                "Error deleting the temporary directory: " + e
+            );
+        }
+    }
+
+    /**
      *  Used for equality tests for floating point values.
      *
      *  ie: "a == 100.0" --> "a >= 100.0 - EPSILON"
@@ -213,6 +237,11 @@ public class MasterVariables {
      */
     private String version =
         Package.getPackage ("ecosim").getImplementationVersion ();
+
+    /**
+     *  The location of the temporary directory.
+     */
+    private Path tempDirectory;
 
     /**
      *  The location of the binary directory.
