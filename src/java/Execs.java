@@ -137,28 +137,6 @@ public class Execs {
     }
 
     /**
-     *  Opens the tree using NJPlot so that the user can see it to start
-     *  analysis.
-     *
-     *  @param treeFile The tree file to open in NJPlot.
-     *  @return The exit value.
-     */
-    public int openTree (File treeFile) {
-        String[] command = {
-            "njplot",
-            treeFile.getPath ()
-        };
-        return runApplication (
-            command,
-            System.err,
-            "ERROR (NJPlot)>",
-            System.out,
-            "NJPlot>",
-            false
-        );
-    }
-
-    /**
      *  Runs the Npop Confidence Interval application.
      *
      *  @param input The npopCI input file.
