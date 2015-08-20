@@ -22,6 +22,9 @@
 
 package ecosim;
 
+import ecosim.tree.Node;
+import ecosim.tree.Tree;
+
 import java.util.ArrayList;
 
 /**
@@ -48,9 +51,9 @@ public class Binning {
     /**
      *  Object to estimate the number of bins in a provided tree.
      *
-     *  @param tree The NewickTree object.
+     *  @param tree The Tree object.
      */
-    public Binning (NewickTree tree) {
+    public Binning (Tree tree) {
         bins = new ArrayList<BinLevel> ();
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
@@ -111,16 +114,16 @@ public class Binning {
      *  @param node The current node in the tree to examine.
      *  @return The number of bins.
      */
-    private Integer getNumberBins (Double crit, NewickTreeNode node) {
+    private Integer getNumberBins (Double crit, Node node) {
         Integer num = 0;
         // Return zero bins if the node is the outgroup.
         if (node.isOutgroup ()) return 0;
         // Return one bin if the node is a leaf node.
         if (node.isLeafNode ()) return 1;
         // There can only be two children.
-        ArrayList<NewickTreeNode> children = node.getChildren ();
-        NewickTreeNode a = children.get (0);
-        NewickTreeNode b = children.get (1);
+        ArrayList<Node> children = node.getChildren ();
+        Node a = children.get (0);
+        Node b = children.get (1);
         // Calculate the maximum distance between the leaf node ancestors
         // of the two child nodes.
         Double distance = 0.0d;
@@ -129,7 +132,7 @@ public class Binning {
         // Recurse on the child nodes if the maximum distance exceeds the
         // crit value, otherwise colapse this branch into one bin.
         if (distance > 1.000d - crit - MasterVariables.EPSILON) {
-            for (NewickTreeNode child: children) {
+            for (Node child: children) {
                 num += getNumberBins (crit, child);
             }
         }
