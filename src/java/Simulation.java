@@ -22,6 +22,9 @@
 
 package ecosim;
 
+import ecosim.tree.InvalidTreeException;
+import ecosim.tree.Tree;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -230,10 +233,10 @@ public class Simulation {
         }
         log.appendln ("Opening tree file...");
         try {
-            tree = new NewickTree (file);
-            tree.reroot (outgroup);
+            tree = new Tree (file);
+            tree.reroot (tree.getDescendant (outgroup));
             // Store the tree in file called 'outtree'.
-            tree.save (new File (
+            tree.toNewick (new File (
                 masterVariables.getWorkingDirectory () + "outtree"
             ));
             // Get the number of sequences loaded.
@@ -243,7 +246,7 @@ public class Simulation {
                 "  %d environmental sequences.", nu
             ));
         }
-        catch (InvalidNewickException e) {
+        catch (InvalidTreeException e) {
             System.out.println ("Error loading tree file.");
         }
     }
@@ -482,7 +485,7 @@ public class Simulation {
     protected Integer nu;
     protected Integer length;
     protected String outgroup;
-    protected NewickTree tree;
+    protected Tree tree;
     protected Binning binning;
     protected ParameterEstimate estimate;
     protected Hillclimb hillclimb;
