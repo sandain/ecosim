@@ -94,11 +94,8 @@ import java.util.Observer;
  * @li @b Heapsorter - Runs the heapsort on a given set of data.
  * @li @b Hillclimb - Object to interact with the ::hillclimb program.
  * @li @b InvalidFastaException - Report a malformed Fasta file.
- * @li @b InvalidNewickException - Report a malformed Newick tree.
  * @li @b Logger - Display text to the user.
  * @li @b MasterVariables - Common variables used through the program.
- * @li @b NewickTree - Interact with newick phylogenetic trees.
- * @li @b NewickTreeNode - A node of a newick phylogenetic tree.
  * @li @b NpopConfidenceInterval - Run the ::npopci program.
  * @li @b OmegaConfidenceInterval - Run the ::omegaci program.
  * @li @b ParameterEstimate - An object to estimate the parameter values.
@@ -114,6 +111,11 @@ import java.util.Observer;
  * @li @b gui.MainWindow - Defines the main GUI window.
  * @li @b gui.MenuBar - Defines a custom menu bar for the GUI.
  * @li @b gui.OptionsPane - Defines a custom panel to display the options.
+ * @li @b tree.InvalidTreeException - Report a malformed tree.
+ * @li @b tree.NewickReader - Read a Newick formatted tree.
+ * @li @b tree.NewickWrite - Write a Newick formatted tree.
+ * @li @b tree.Node - A node of a phylogenetic tree.
+ * @li @b tree.Tree - Interact with phylogenetic trees.
  */
 
 /**
