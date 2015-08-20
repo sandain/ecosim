@@ -204,9 +204,6 @@ public class Simulation {
             Sequence outgroupSequence = fasta.getOutgroup ();
             length = outgroupSequence.length ();
             outgroup = outgroupSequence.getIdentifier ();
-            // Update the summary data.
-            summary.setLength (length);
-            summary.setOutgroup (outgroup);
             // Output the sequence data.
             log.appendln (String.format (
                 "  sequence length: %d.", length
@@ -241,8 +238,6 @@ public class Simulation {
             ));
             // Get the number of sequences loaded.
             nu = tree.size ();
-            // Update the summary data.
-            summary.setNu (nu);
             // Output the number of sequences loaded.
             log.appendln (String.format (
                 "  %d environmental sequences.", nu
