@@ -23,6 +23,10 @@
 
 package ecosim;
 
+import ecosim.tree.Node;
+import ecosim.tree.InvalidTreeException;
+import ecosim.tree.Tree;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -63,7 +67,7 @@ public class Demarcation implements Runnable {
      *  @param method The method to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
-        Integer nu, Integer length, String outgroup, NewickTree tree,
+        Integer nu, Integer length, String outgroup, Tree tree,
         ParameterSet hclimbResult, int method, int precision) {
         this.masterVariables = masterVariables;
         this.execs = execs;
@@ -156,35 +160,32 @@ public class Demarcation implements Runnable {
      *
      *  @param tree The phylogeny data.
      */
-    private void findPolyphylyEcotypes (NewickTree tree) {
+    private void findPolyphylyEcotypes (Tree tree) {
         // Make a copy of the tree to avoid destroying it.
-        NewickTree sampleTree;
+        Tree sampleTree;
         try {
-            sampleTree = new NewickTree (tree);
+            sampleTree = new Tree (tree);
         }
-        catch (InvalidNewickException e) {
+        catch (InvalidTreeException e) {
             System.err.println ("Error creating subtree.");
             return;
         }
         // Make a list of leaf node descendants.
-        ArrayList<NewickTreeNode> leaves = sampleTree.getDescendants ();
-        // Sort the leaves by their distance.
-        Heapsorter<NewickTreeNode> sorter = new Heapsorter<NewickTreeNode> (
-            new Comparator<NewickTreeNode> () {
-                public int compare (
-                    NewickTreeNode nodeA, NewickTreeNode nodeB
-                ) {
-                    Double a = nodeA.getDistance ();
-                    Double b = nodeB.getDistance ();
-                    return a.compareTo (b);
-                }
+        ArrayList<Node> leaves = sampleTree.getDescendants ();
+        // Sort the leaves by their distance using a custom Comparator.
+        Comparator<Node> comparator = new Comparator<Node> () {
+            public int compare (Node nodeA, Node nodeB) {
+                Double a = nodeA.getDistance ();
+                Double b = nodeB.getDistance ();
+                return a.compareTo (b);
             }
-        );
+        };
+        Heapsorter<Node> sorter = new Heapsorter<Node> (comparator);
         sorter.sort (leaves);
         // Find the ecotypes.
         while (leaves.size () > 0) {
             // Get the first leaf on the list.
-            NewickTreeNode leaf = leaves.get (0);
+            Node leaf = leaves.get (0);
             // Skip the outgroup.
             if (outgroup.equals (leaf.getName ())) {
                 leaves.remove (0);
@@ -192,9 +193,9 @@ public class Demarcation implements Runnable {
             }
             // Find the ancestor node of the leaf node whose descendants make
             // up a single ecotype.
-            NewickTreeNode node = leaf;
+            Node node = leaf;
             while (true) {
-                NewickTreeNode parent = node.getParent ();
+                Node parent = node.getParent ();
                 // Exit the loop if the parent node is the root node.
                 if (parent.isRootNode ()) break;
                 // Predict the number of ecotypes using the parent node and
@@ -215,7 +216,7 @@ public class Demarcation implements Runnable {
             }
             else {
                 // Demarcate an ecotype with multiple representatives.
-                for (NewickTreeNode descendant: node.getDescendants ()) {
+                for (Node descendant: node.getDescendants ()) {
                     // Add the descendant to the ecotype.
                     ecotype.add (descendant.getName ());
                     // Remove the descendant from the tree.
@@ -232,7 +233,7 @@ public class Demarcation implements Runnable {
      *
      *  @param tree The phylogeny data.
      */
-    private void findMonophylyEcotypes (NewickTree tree) {
+    private void findMonophylyEcotypes (Tree tree) {
         findMonophylyEcotypes (tree.getRoot ());
     }
 
@@ -243,7 +244,7 @@ public class Demarcation implements Runnable {
      *
      *  @param node The current node representing the subclade.
      */
-    private void findMonophylyEcotypes (NewickTreeNode node) {
+    private void findMonophylyEcotypes (Node node) {
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
@@ -253,7 +254,7 @@ public class Demarcation implements Runnable {
             }
         }
         else {
-            ArrayList<NewickTreeNode> leaves = node.getDescendants ();
+            ArrayList<Node> leaves = node.getDescendants ();
             for (int i = 0; i < leaves.size (); i ++) {
                 String name = leaves.get (i).getName ();
                 if (! name.equals (outgroup)) {
@@ -271,7 +272,7 @@ public class Demarcation implements Runnable {
             }
             else {
                 // Npop > 1, recurse on children nodes.
-                ArrayList<NewickTreeNode> children = node.getChildren ();
+                ArrayList<Node> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
                     findMonophylyEcotypes (children.get (i));
                 }
@@ -283,10 +284,10 @@ public class Demarcation implements Runnable {
     *  A private helper method to run a sample through the demarcation
     *  program.
     *
-    *  @param node The NewickTreeNode describing the sample to run.
+    *  @param node The Node describing the sample to run.
     *  @return The npop value tested and its likelihood
     */
-   private NpopValue runSample (NewickTreeNode node) {
+   private NpopValue runSample (Node node) {
         // Increment the iteration variable used in the file names.
         iteration ++;
         File inputFile = new File (
@@ -298,16 +299,16 @@ public class Demarcation implements Runnable {
         File newickFile = new File (
             workingDirectory + "demarcationTree-" + iteration + ".dat"
         );
-        // Create a new NewickTree containing just the sequences to
+        // Create a new Tree containing just the sequences to
         // be tested.
-        NewickTree sampleTree = new NewickTree ();
+        Tree sampleTree = new Tree ();
         try {
-            sampleTree = new NewickTree (node.toString ());
+            sampleTree = new Tree (node.toString ());
         }
-        catch (InvalidNewickException e) {
+        catch (InvalidTreeException e) {
             System.err.println ("Error creating sample tree.");
         }
-        sampleTree.save (newickFile);
+        sampleTree.toNewick (newickFile);
         Integer sampleNu = node.numberOfDescendants ();
         // Run the binning program on the sample tree.
         Binning sampleBinning = new Binning (sampleTree);
@@ -498,7 +499,7 @@ public class Demarcation implements Runnable {
     private String outgroup;
     private Integer length;
     private Integer nu;
-    private NewickTree tree;
+    private Tree tree;
     private ParameterSet hclimbResult;
 
     private Integer precision;
