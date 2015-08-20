@@ -22,6 +22,9 @@
 
 package ecosim;
 
+import ecosim.tree.InvalidTreeException;
+import ecosim.tree.Tree;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -53,7 +56,7 @@ public class ProjectFileIO {
         this.execs = execs;
         Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
-        tree = new NewickTree ();
+        tree = new Tree ();
         nu = 0;
         length = 0;
         outgroup = "";
@@ -88,7 +91,7 @@ public class ProjectFileIO {
      *  @param nu The number of environmental sequences.
      *  @param length the length of the environmental sequences.
      *  @param outgroup The identifier of the outgroup sequence.
-     *  @param tree The NewickTree object.
+     *  @param tree The Tree object.
      *  @param binning The Binning object.
      *  @param estimate The ParameterEstimate object.
      *  @param hillclimb The Hillclimb object.
@@ -98,7 +101,7 @@ public class ProjectFileIO {
      *  @param demarcation The Demarcation object.
      */
     public ProjectFileIO (MasterVariables masterVariables, Execs execs,
-        Integer nu, Integer length, String outgroup, NewickTree tree,
+        Integer nu, Integer length, String outgroup, Tree tree,
         Binning binning, ParameterEstimate estimate, Hillclimb hillclimb,
         NpopConfidenceInterval npopCI, OmegaConfidenceInterval omegaCI,
         SigmaConfidenceInterval sigmaCI, Demarcation demarcation) {
@@ -332,11 +335,11 @@ public class ProjectFileIO {
     }
 
     /**
-     *  Get the NewickTree object.
+     *  Get the Tree object.
      *
-     *  @return The NewickTree object.
+     *  @return The Tree object.
      */
-    public NewickTree getTree () {
+    public Tree getTree () {
         return tree;
     }
 
@@ -408,7 +411,7 @@ public class ProjectFileIO {
     private Integer nu;
     private Integer length;
     private String outgroup;
-    private NewickTree tree;
+    private Tree tree;
     private Binning binning;
     private ParameterEstimate estimate;
     private Hillclimb hillclimb;
@@ -475,11 +478,11 @@ public class ProjectFileIO {
                     // Look for the tree element.
                     if (localName.equals ("tree")) {
                         try {
-                            tree = new NewickTree (
+                            tree = new Tree (
                                 attrs.getValue (uri, "value")
                             );
                         }
-                        catch (InvalidNewickException e) {
+                        catch (InvalidTreeException e) {
                             System.err.println (
                                 "Invalid Newick formatted tree found."
                             );
