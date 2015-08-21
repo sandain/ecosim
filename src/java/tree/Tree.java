@@ -26,7 +26,9 @@ package ecosim.tree;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
 import java.util.ArrayList;
@@ -53,20 +55,7 @@ public class Tree {
      *  @param tree String containing a Newick formated tree to read.
      */
     public Tree (String tree) throws InvalidTreeException {
-        try {
-            NewickReader reader = new NewickReader (new StringReader (tree));
-            root = reader.readTree ();
-            reader.close ();
-        }
-        catch (IOException e) {
-            throw new InvalidTreeException ("IO error.");
-        }
-        // Make sure that we actually have a tree.
-        if (root.getChildren ().size () <= 1) {
-            throw new InvalidTreeException (
-                "Malformed Newick tree, not enough leaves found."
-            );
-        }
+        readTree (new StringReader (tree));
     }
 
     /**
@@ -75,14 +64,12 @@ public class Tree {
      *  @param file File containing a Newick formated tree to read.
      */
     public Tree (File file) throws InvalidTreeException {
-        // Load the file containing the newick formated tree.
-        NewickReader reader = null;
+        FileReader reader = null;
         try {
-            // Read in the tree file.
-            reader = new NewickReader (new FileReader (file));
-            root = reader.readTree ();
+            reader = new FileReader (file);
+            readTree (reader);
         }
-        catch (java.io.FileNotFoundException e) {
+        catch (FileNotFoundException e) {
             throw new InvalidTreeException ("File not found.");
         }
         finally {
@@ -93,12 +80,6 @@ public class Tree {
                 throw new InvalidTreeException ("IO error.");
             }
         }
-        // Make sure that we actually have a tree.
-        if (root.getChildren ().size () <= 1) {
-            throw new InvalidTreeException (
-                "Malformed Newick tree, not enough leaves found."
-            );
-        }
     }
 
     /**
@@ -107,7 +88,7 @@ public class Tree {
      *  @param tree Tree to use.
      */
     public Tree (Tree tree) throws InvalidTreeException {
-        this (tree.toString ());
+        readTree (new StringReader (tree.toString ()));
     }
 
     /**
@@ -287,6 +268,23 @@ public class Tree {
             valid = true;
         }
         return valid;
+    }
+
+    /**
+     *  Read a Newick formatted tree.
+     *
+     *  @param tree Reader to use.
+     */
+    private void readTree (Reader reader) throws InvalidTreeException {
+        // Read in the tree file.
+        NewickReader newick = new NewickReader (reader);
+        root = newick.readTree ();
+        // Make sure that we actually have a tree.
+        if (root.getChildren ().size () <= 1) {
+            throw new InvalidTreeException (
+                "Malformed Newick tree, not enough leaves found."
+            );
+        }
     }
 
     private Node root;
