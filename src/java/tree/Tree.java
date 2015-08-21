@@ -101,6 +101,16 @@ public class Tree {
     }
 
     /**
+     *  Returns the maximum width of the tree from root node to the most
+     *  divergent leaf node.
+     *
+     *  @return Node maximum width of the tree.
+     */
+    public Double maximumWidth () {
+        return root.maximumDistanceFromLeafNode ();
+    }
+
+    /**
      *  Returns the descendant with the given name.
      *
      *  @param name The name of the descendant.
