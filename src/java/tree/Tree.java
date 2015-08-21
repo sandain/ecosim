@@ -285,8 +285,50 @@ public class Tree {
                 "Malformed Newick tree, not enough leaves found."
             );
         }
+        // Calculate the XY location of all nodes.
+        calculateNodeXY (root, 0);
+    }
+
+    /**
+     *  Private recursive method to calculate the XY location of the node
+     *  and all of its descendants.
+     *
+     *  @param node The current Node.
+     *  @param height The current height.
+     */
+    private void calculateNodeXY (Node node, int height) {
+        Node parent = node.getParent ();
+        // The X coordinate is based on the node's distance from its parent.
+        int x = Math.round (nodeWidth * node.getDistance ().floatValue ());
+        if (parent != null) x += parent.getX ();
+        node.setX (x);
+        // The Y coordinate is calculated differently for leaf and internal
+        // nodes.
+        if (node.isLeafNode ()) {
+            node.setY (height);
+        }
+        else {
+            int minY = Integer.MAX_VALUE;
+            int maxY = 0;
+            int h = height;
+            for (Node child: node.getChildren ()) {
+                calculateNodeXY (child, h);
+                int numLeaf = 1;
+                if (! child.isLeafNode ()) {
+                    numLeaf = child.numberOfDescendants ();
+                }
+                h += nodeHeight * numLeaf;
+                int childY = child.getY ();
+                if (childY < minY) minY = childY;
+                if (childY > maxY) maxY = childY;
+            }
+            node.setY ((minY + maxY) / 2);
+        }
     }
 
     private Node root;
+
+    private int nodeHeight = 12;
+    private int nodeWidth = 1000;
 
 }
