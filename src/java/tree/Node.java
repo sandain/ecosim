@@ -273,7 +273,6 @@ public class Node implements Comparable<Node> {
         return distanceFromRoot;
     }
 
-
     /**
      *  Returns the maximum distance of this node from a leaf node.
      *
