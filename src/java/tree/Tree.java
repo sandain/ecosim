@@ -259,7 +259,7 @@ public class Tree {
         NewickWriter out = null;
         try {
             out = new NewickWriter (new FileWriter (file));
-            out.write (root);
+            out.write (this);
         }
         catch (IOException e) {
             System.out.println ("Error writing to output file.");

@@ -44,8 +44,8 @@ public class NewickWriter extends BufferedWriter {
      *
      *  @param node The Node to write.
      */
-    public void write (Node node) throws IOException {
-        write (node.toString () + System.getProperty ("line.separator"));
+    public void write (Tree tree) throws IOException {
+        write (tree.toString () + System.getProperty ("line.separator"));
     }
 
 }
