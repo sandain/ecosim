@@ -111,6 +111,31 @@ public class Tree {
     }
 
     /**
+     *  Returns the maximum X value of the tree.
+     *
+     *  The maximum X value is the distance from the root node to the most
+     *  divergent leaf node multiplied by xModifier.
+     *
+     *  @return Node maximum X value of the tree.
+     */
+    public int maximumX () {
+        Double dist = root.maximumDistanceFromLeafNode ();
+        return Math.round (xModifier * dist.floatValue ());
+    }
+
+    /**
+     *  Returns the maximum Y value of the tree.
+     *
+     *  The maximum Y value is the distance from the root node to the most
+     *  divergent leaf node multiplied by xModifier.
+     *
+     *  @return Node maximum Y value of the tree.
+     */
+    public int maximumY () {
+        return yModifier * root.numberOfDescendants ();
+    }
+
+    /**
      *  Returns the descendant with the given name.
      *
      *  @param name The name of the descendant.
@@ -220,7 +245,6 @@ public class Tree {
         root = newRoot;
     }
 
-
     /**
      *  Return the number of living descendants of the root node.
      *
@@ -309,7 +333,7 @@ public class Tree {
     private void calculateNodeXY (Node node, int height) {
         Node parent = node.getParent ();
         // The X coordinate is based on the node's distance from its parent.
-        int x = Math.round (nodeWidth * node.getDistance ().floatValue ());
+        int x = Math.round (xModifier * node.getDistance ().floatValue ());
         if (parent != null) x += parent.getX ();
         node.setX (x);
         // The Y coordinate is calculated differently for leaf and internal
@@ -327,7 +351,7 @@ public class Tree {
                 if (! child.isLeafNode ()) {
                     numLeaf = child.numberOfDescendants ();
                 }
-                h += nodeHeight * numLeaf;
+                h += yModifier * numLeaf;
                 int childY = child.getY ();
                 if (childY < minY) minY = childY;
                 if (childY > maxY) maxY = childY;
@@ -338,7 +362,7 @@ public class Tree {
 
     private Node root;
 
-    private int nodeHeight = 12;
-    private int nodeWidth = 1000;
+    private int yModifier = 1;
+    private int xModifier = 1000;
 
 }
