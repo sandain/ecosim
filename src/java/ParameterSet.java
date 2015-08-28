@@ -31,10 +31,9 @@ package ecosim;
 public class ParameterSet implements Comparable<ParameterSet> {
 
     /**
-     *  A basic ParameterSet with all values set to zero.
+     *  A basic ParameterSet with empty values.
      */
     public ParameterSet () {
-        this (0L, 0.0D, 0.0D, 0.0D);
     }
 
     /**
