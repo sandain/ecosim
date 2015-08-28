@@ -140,7 +140,7 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
-     *  Return the slope and y-intercept calulated for omega.
+     *  Return the slope and y-intercept calculated for omega.
      *
      *  @return An array of form [slope, intercept].
      */
@@ -149,7 +149,7 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
-     *  Return the slope and y-intercept calulated for sigma.
+     *  Return the slope and y-intercept calculated for sigma.
      *
      *  @return An array of form [slope, intercept].
      */
