@@ -89,6 +89,7 @@ public class MainWindow extends JFrame {
      */
     private JTabbedPane makeBottomPane () {
         JTabbedPane pane = new JTabbedPane ();
+        pane.addTab ("Summary", new SummaryPane (simulation.getSummary ()));
         pane.addTab ("Log", new LoggerPane (log));
         return pane;
     }
