@@ -104,6 +104,7 @@ import java.util.Observer;
  * @li @b SigmaConfidenceInterval - Run the ::sigmaci program.
  * @li @b Simulation - The shared methods of the simulation.
  * @li @b StreamGobbler - Captures output from the Fortran programs.
+ * @li @b Summary - An object to hold summary data.
  * @li @b gui.ButtonPane - Defines the main button panel for the GUI.
  * @li @b gui.FileChooser - Defines a custom file chooser for the GUI.
  * @li @b gui.HelpAboutWindow - Displays a Help/About GUI window.
@@ -111,16 +112,16 @@ import java.util.Observer;
  * @li @b gui.MainWindow - Defines the main GUI window.
  * @li @b gui.MenuBar - Defines a custom menu bar for the GUI.
  * @li @b gui.OptionsPane - Defines a custom panel to display the options.
+ * @li @b gui.SummaryPane - Defines a custom panel to display the summary.
  * @li @b tree.InvalidTreeException - Report a malformed tree.
  * @li @b tree.NewickReader - Read a Newick formatted tree.
- * @li @b tree.NewickWrite - Write a Newick formatted tree.
+ * @li @b tree.NewickWriter - Write the tree in Newick format.
  * @li @b tree.Node - A node of a phylogenetic tree.
  * @li @b tree.Tree - Interact with phylogenetic trees.
  */
 
 /**
- *  The main class for instantiating one of the Ecotype %Simulation
- *  interfaces provided by SimulationCLI and SimulationGUI.
+ *  The main class for instantiating Ecotype %Simulation.
  *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
