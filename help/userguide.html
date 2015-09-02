@@ -36,24 +36,17 @@
       In the first step (<a href="#usage">Part 1, the Ecotype
       Simulation</a>), the observed sequence diversity for the clade
       of interest is quantified as the "clade sequence diversity
-      curve." Then, using a brute-force method, Ecotype Simulation
-      looks over a very broad space of parameters (including
-      thousands of combinations omega, sigma, d, npop, over many
-      orders of magnitude) for the most promising region of the
-      space to yield the observed clade sequence diversity pattern
-      with maximum likelihood. Next, the downhill simplex method
-      (termed here "hillclimbing") is used to more precisely
-      identify the solution. In this first step, Ecotype Simulation
-      also determines the 95% confidence interval of the parameter
+      curve."  Then, the parameters omega, sigma, and npop are estimated by
+      fitting lines to the observed clade sequence diversity pattern.  Next,
+      the downhill simplex method (termed here "hillclimbing") is used to
+      more precisely identify the solution. In this first step, Ecotype
+      Simulation also determines the 95% confidence interval of the parameter
       solutions.
     </p>
     <p>
       In the second step (<a href="#manual_demarcations">Part 2, the Demarcation</a>), Ecotype
       Simulation demarcates the individual sequences belonging to
       each ecotype.
-    </p>
-    <p>
-      <b>The program can accommodate at most 2000 sequences and 3000 nucleotides.</b>
     </p>
     <h3>
       <a name="requirements"></a>
@@ -70,10 +63,6 @@
       You MUST also download NJPlot&#x2122; from the <a href="http://pbil.univ-lyon1.fr/software/njplot.html">NJPlot website</a>.
       Download the appropriate version for your operating system, and install it into a location that is accessible via
       your system's PATH or in the EcoSim directory.
-    </p>
-    <p>
-      You MUST also download PHYLIP&#x2122; from the <a href="http://www.phylip.com/">PHYLIP website</a>.  Download the appropriate version
-      for your operating system, and install it into a location that is accessible via your system's PATH or in the EcoSim directory.
     </p>
     <div class="figure">
       <img src="images/figure_1.png" alt="Folder Ecotype Simulation" title="Folder Ecotype Simulation" width="624" height="337"/>
@@ -94,7 +83,7 @@
     <ul class="disc">
       <li>
         To run the Ecotype Simulation, first open up a fasta file
-        in the JAVA Window by going to File-&gt;Open Fasta File.
+        in the Java Window by going to File-&gt;Open Fasta File.
         The fasta file must be formatted such that lines alternate
         with &gt;gene name and then the entire gene sequence on the
         next line. If the sequence for each gene is not on a single
@@ -105,19 +94,6 @@
       </li>
     </ul>
     <ul class="circle">
-      <li>
-        It is highly recommended not to run more than 200 sequences at a time 
-        through this simulation. If you have more than 200 sequences, you may 
-        consider randomly sampling from your sequences until you get down to under 
-        200 sequences. Another possibility is to divide your clades into smaller 
-        subclades that each contain 200 or fewer sequences, and then analyze each 
-        subclade separately.&#160; <b>2000 sequences is the maximum, regardless of 
-        the amount of time you're able to invest in analysis.</b>
-        <br/>
-        Depending on the speed of your computer, running 200
-        sequences may take a week or more.
-        <b>At present, each sequence can be as long as 3000 nucleotides.</b>
-      </li>
       <li>
         Note that the fasta input file must contain an outgroup, and
         that <strong>the outgroup must be the first sequence in the
@@ -131,10 +107,8 @@
     </ul>
     <ul class="disc">
       <li>
-        To automatically get parameter values for omega, sigma,
-        npop, and drift, click "Run through hillclimbing." Be advised
-        that this may take a long time, up to several days depending
-        on the number of sequences and the speed of your computer.
+        To automatically get parameter values for omega, sigma, and
+        npop, click "Run hillclimbing."
       </li>
       <li>
         Many combinations of parameter values are evaluated for the
@@ -170,23 +144,23 @@
     <ul class="disc">
       <li>
         Once you have parameter values for a set of sequences, you
-        can save a progress file by going to File-&gt;Save Current
-        Project. The results will be saved in a *.cpm file.
+        can save a progress file by going to File-&gt;Save Project File.
+        The results will be saved in a *.xml file.
       </li>
       <li>
-        Next, you can run confidence intervals to find the  95% confidence 
+        Next, you can run confidence intervals to find the 95% confidence 
         interval for the parameter estimate.
       </li>
     </ul>
     <ul class="circle">
       <li>
         You can choose to run confidence intervals on none, any, or all of the 
-        following parameters:&#160; omega, sigma, npop, or drift.
+        following parameters:&#160; omega, sigma, or npop.
       </li>
     </ul>
     <ul class="disc">
       <li>
-        Alternatively, if you click on "Run Everything (no demarcations)" the program
+        Alternatively, if you click on "Run Everything (no demarcation)" the program
         will calculate both parameter values and confidence intervals
         for all parameters.
       </li>
