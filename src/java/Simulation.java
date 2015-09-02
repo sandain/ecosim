@@ -74,6 +74,24 @@ public class Simulation {
     }
 
     /**
+     *  Get the Summary object.
+     *
+     *  @return The Summary object.
+     */
+    public Summary getSummary () {
+        return summary;
+    }
+
+    /**
+     *  Get the Tree object.
+     *
+     *  @return The Tree object.
+     */
+    public Tree getTree () {
+        return tree;
+    }
+
+    /**
      *  Get the method used for demarcation.
      *
      *  @return The demarcation method.
@@ -275,6 +293,24 @@ public class Simulation {
      */
     public boolean isRunning () {
         return running;
+    }
+
+    /**
+     *  Check whether the tree has been loaded.
+     *
+     *  @return True if the tree has been loaded, otherwise False.
+     */
+    public boolean treeLoaded () {
+        return tree != null && tree.isValid ();
+    }
+
+    /**
+     *  Check whether hillclimbing has been run.
+     *
+     *  @return True if the hillclimbing has been run, otherwise False.
+     */
+    public boolean hillclimbHasRun () {
+        return hillclimb != null && hillclimb.hasRun ();
     }
 
     /**
@@ -481,6 +517,7 @@ public class Simulation {
     protected Execs execs;
     protected File fastaFile;
     protected File newickFile;
+    protected Summary summary;
     protected Fasta fasta;
     protected Integer nu;
     protected Integer length;
