@@ -55,6 +55,7 @@ public class Simulation {
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         execs = new Execs (log, masterVariables);
+        summary = new Summary (masterVariables, execs);
         if (fastaFile != null && fastaFile.exists ()) {
             loadSequenceFile (fastaFile);
         }
@@ -136,6 +137,9 @@ public class Simulation {
         ProjectFileIO projectFileIO = new ProjectFileIO (
             masterVariables, execs
         );
+        ParameterSet[] confidenceInterval = new ParameterSet[] {
+            new ParameterSet (), new ParameterSet ()
+        };
         log.append ("Opening: " + file.getPath () + "\n\n");
         // Load the project file.
         projectFileIO.load (file);
@@ -151,7 +155,8 @@ public class Simulation {
         omegaCI = projectFileIO.getOmegaCI ();
         sigmaCI = projectFileIO.getSigmaCI ();
         demarcation = projectFileIO.getDemarcation ();
-        // Output the values stored in the project file to the log.
+        // Update the summary data and output the values stored in the project
+        // file to the log.
         if (nu > 0) {
             log.append ("Phylogeny results:\n");
             log.append (String.format (
@@ -159,6 +164,7 @@ public class Simulation {
                 "  %s is the outgroup.\n\n",
                 nu, outgroup
             ));
+            summary.setNu (nu);
         }
         if (binning != null) {
             log.append ("Binning result:\n");
@@ -167,30 +173,43 @@ public class Simulation {
                 log.append ("  " + bins.get (i).toString () + "\n");
             }
             log.append ("\n");
+            summary.setBins (bins);
         }
         if (estimate != null) {
             log.append ("Parameter estimate:\n");
             log.append (estimate.toString () + "\n\n");
+            summary.setEstimate (estimate);
         }
         if (hillclimb != null && hillclimb.hasRun ()) {
             log.append ("Hillclimbing result:\n");
             log.append (hillclimb.toString () + "\n\n");
+            summary.setHillclimbing (hillclimb.getResult ());
         }
         if (npopCI != null && npopCI.hasRun ()) {
             log.append ("Npop confidence interval result:\n");
             log.append ("  " + npopCI.toString () + "\n\n");
+            Long[] npop = npopCI.getResult ();
+            confidenceInterval[0].setNpop (npop[0]);
+            confidenceInterval[1].setNpop (npop[1]);
         }
         if (omegaCI != null && omegaCI.hasRun ()) {
             log.append ("Omega confidence interval result:\n");
             log.append ("  " + omegaCI.toString () + "\n\n");
+            Double[] omega = omegaCI.getResult ();
+            confidenceInterval[0].setOmega (omega[0]);
+            confidenceInterval[1].setOmega (omega[1]);
         }
         if (sigmaCI != null && sigmaCI.hasRun ()) {
             log.append ("Sigma confidence interval result:\n");
             log.append ("  " + sigmaCI.toString () + "\n\n");
+            Double[] sigma = sigmaCI.getResult ();
+            confidenceInterval[0].setSigma (sigma[0]);
+            confidenceInterval[1].setSigma (sigma[1]);
         }
         if (demarcation != null && demarcation.hasRun ()) {
             log.append ("Demarcation result:\n");
             log.append (demarcation.toString () + "\n\n");
+            summary.addDemarcation (demarcation);
         }
     }
 
@@ -225,6 +244,9 @@ public class Simulation {
             Sequence outgroupSequence = fasta.getOutgroup ();
             length = outgroupSequence.length ();
             outgroup = outgroupSequence.getIdentifier ();
+            // Update the summary data.
+            summary.setLength (length);
+            summary.setOutgroup (outgroup);
             // Output the sequence data.
             log.appendln (String.format (
                 "  sequence length: %d.", length
@@ -253,12 +275,14 @@ public class Simulation {
         try {
             tree = new Tree (file);
             tree.reroot (tree.getDescendant (outgroup));
-            // Store the tree in file called 'outtree'.
+            // Store the tree in Newick format in a file called 'outtree'.
             tree.toNewick (new File (
                 masterVariables.getWorkingDirectory () + "outtree"
             ));
             // Get the number of sequences loaded.
             nu = tree.size ();
+            // Update the summary data.
+            summary.setNu (nu);
             // Output the number of sequences loaded.
             log.appendln (String.format (
                 "  %d environmental sequences.", nu
@@ -266,6 +290,7 @@ public class Simulation {
         }
         catch (InvalidTreeException e) {
             System.out.println ("Error loading tree file.");
+            e.printStackTrace ();
         }
     }
 
@@ -321,9 +346,11 @@ public class Simulation {
         running = true;
         log.appendln ("Running binning...");
         binning = new Binning (tree);
+        ArrayList<BinLevel> bins = binning.getBins ();
+        // Update the summary data.
+        summary.setBins (bins);
         // Output the results from binning.
         log.appendln ("The result from binning:");
-        ArrayList<BinLevel> bins = binning.getBins ();
         for (int i = 0; i < bins.size (); i ++) {
             log.appendln ("  " + bins.get (i).toString ());
         }
@@ -343,6 +370,8 @@ public class Simulation {
             masterVariables, execs, nu, length, binning
         );
         estimate.run ();
+        // Update the summary data.
+        summary.setEstimate (estimate);
         // Output the parameter estimate.
         log.appendln ("The estimated parameters:");
         log.appendln (estimate.toString ());
@@ -389,6 +418,8 @@ public class Simulation {
             log.appendln ("Reducing the precision to " + critLabel + ".");
             masterVariables.setCriterion (crit);
         }
+        // Update the summary data.
+        summary.setHillclimbing (hillclimb.getResult ());
         // Output the hillclimbing result.
         log.appendln ("The result from hillclimb:");
         log.appendln (hillclimb.toString ());
@@ -482,9 +513,44 @@ public class Simulation {
      *  Run the omega, sigma, and npop confidence interval programs.
      */
     public void runConfidenceIntervals () {
+        // Initialize the confidence interval.
+        confidenceInterval = new ParameterSet[] {
+            new ParameterSet (), new ParameterSet ()
+        };
+        // Run the npop confidence interval.
         runNpopConfidenceInterval ();
+        Long[] npop = npopCI.getResult ();
+        confidenceInterval[0].setNpop (npop[0]);
+        confidenceInterval[1].setNpop (npop[1]);
+        summary.setConfidenceInterval (confidenceInterval);
+        // Run the omega confidence interval.
         runOmegaConfidenceInterval ();
+        Double[] omega = omegaCI.getResult ();
+        confidenceInterval[0].setOmega (omega[0]);
+        confidenceInterval[1].setOmega (omega[1]);
+        summary.setConfidenceInterval (confidenceInterval);
+        // Run the sigma confidence interval.
         runSigmaConfidenceInterval ();
+        Double[] sigma = sigmaCI.getResult ();
+        confidenceInterval[0].setSigma (sigma[0]);
+        confidenceInterval[1].setSigma (sigma[1]);
+        summary.setConfidenceInterval (confidenceInterval);
+        // Calculate the likelihood of the low end of the interval.
+        FredMethod low = new FredMethod (
+            masterVariables, execs, nu, length, binning,
+            new ParameterSet (npop[0], omega[0], sigma[0], 0.0D)
+        );
+        low.run ();
+        confidenceInterval[0] = low.getResult ();
+        summary.setConfidenceInterval (confidenceInterval);
+        // Calculate the likelihood of the high end of the interval.
+        FredMethod high = new FredMethod (
+            masterVariables, execs, nu, length, binning,
+            new ParameterSet (npop[1], omega[1], sigma[1], 0.0D)
+        );
+        high.run ();
+        confidenceInterval[1] = high.getResult ();
+        summary.setConfidenceInterval (confidenceInterval);
     }
 
     /**
@@ -504,6 +570,8 @@ public class Simulation {
             log.appendln ("  Error running the demarcation program!");
             return;
         }
+        // Update the summary data.
+        summary.addDemarcation (demarcation);
         // Output the demarcation result.
         log.appendln ("The result from demarcation:");
         log.appendln (demarcation.toString ());
@@ -526,6 +594,7 @@ public class Simulation {
     protected Binning binning;
     protected ParameterEstimate estimate;
     protected Hillclimb hillclimb;
+    protected ParameterSet[] confidenceInterval;
     protected NpopConfidenceInterval npopCI;
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;
