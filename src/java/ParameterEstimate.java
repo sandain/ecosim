@@ -208,22 +208,17 @@ public class ParameterEstimate implements Runnable {
      */
     private List<Point> getPoints (Integer length, Binning binning) {
         List<Point> points = new ArrayList<Point> ();
-        Integer previous = -1;
         for (BinLevel bin: binning.getBins ()) {
             Double crit = bin.getCrit ();
             Integer level = bin.getLevel ();
             // Don't include binning results == 1.
             if (level == 1) continue;
-            // Don't include duplicate levels.
-            if (level == previous) continue;
             // Transform the sequence criterion value into the number of SNPs.
             Double x = (1.0d - crit) * length;
             // Transform the number of sequence clusters (bins) into log base 2 scale.
-            Double y = Math.log (level) / Math.log (2);
+            Double y = Math.log (level) / logTwo;
             // Add the XY point to the list.
             points.add (new Point (x, y));
-            // Save the level in previous.
-            previous = level;
         }
         // Return the points in reverse order.
         Collections.reverse (points);
