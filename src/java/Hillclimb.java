@@ -74,7 +74,14 @@ public class Hillclimb implements Runnable {
         // Run the hillclimb program.
         execs.runHillclimb (inputFile, outputFile);
         // Get the output provided by the hillclimb program.
-        readOutputFile (outputFile);
+        result = readOutputFile (outputFile);
+        // Run the hillclimbing result through the fredmethod.
+        FredMethod fredmethod = new FredMethod (
+            masterVariables, execs, nu, length, binning, result
+        );
+        fredmethod.run ();
+        // Store the fredmethod likelihood in the result.
+        result.setLikelihood (fredmethod.getResult ().getLikelihood ());
         // Set the flag stating that the hillclimb program has been run.
         if (result.getNpop () > 0) {
             hasRun = true;
@@ -203,7 +210,8 @@ public class Hillclimb implements Runnable {
      *
      *  @param outputFile The file to read from.
      */
-    private void readOutputFile (File outputFile) {
+    private ParameterSet readOutputFile (File outputFile) {
+        ParameterSet result = new ParameterSet ();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader (new FileReader (outputFile));
@@ -233,6 +241,7 @@ public class Hillclimb implements Runnable {
                 }
             }
         }
+        return result;
     }
 
     private String inputFileName;
