@@ -50,8 +50,8 @@ public class ParameterEstimate implements Runnable {
         this.length = length;
         this.binning = binning;
         estimate = new ParameterSet ();
-        omega = new Line (new ArrayList<Point> ());
         sigma = new Line (new ArrayList<Point> ());
+        omega = new Line (new ArrayList<Point> ());
         hasRun = false;
     }
 
@@ -240,11 +240,11 @@ public class ParameterEstimate implements Runnable {
     private Integer length;
     private Binning binning;
 
-    private Line omega;
     private Line sigma;
+    private Line omega;
 
-    private Double omegaThreshold = 100.0d;
     private Double sigmaThreshold = 0.1d;
+    private Double omegaThreshold = 100.0d;
 
     /**
      * The estimate for the parameter values.
