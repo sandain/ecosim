@@ -65,12 +65,60 @@ public class ParameterEstimate implements Runnable {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length, binning);
-        // Fit the sigma line to the points.
-        Integer [] sigmaBounds = fitLinePoints (points, 1);
-        sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
-        // Fit the omega line to the points.
-        Integer [] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
-        omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
+        // Estimate the bounds of the sigma and omega lines.
+        Integer[] sigmaBounds = fitLinePoints (points, 1);
+        Integer[] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
+        // Optimize the sigma and omega lines using a custom variant of
+        // Lloyd's Algorithm.
+        Double error = 0.0D;
+        Double previousError = 0.0D;
+        Double deltaError = 1.0D;
+        while (deltaError > MasterVariables.EPSILON) {
+            // Calculate the sigma and omega lines for the current guess.
+            sigma = new Line (
+                points.subList (sigmaBounds[0], sigmaBounds[1])
+            );
+            omega = new Line (
+                points.subList (omegaBounds[0], omegaBounds[1])
+            );
+            // Save the previous error.
+            previousError = error;
+            // Calculate the current error.
+            error = 0.0D;
+            for (int i = 0; i < points.size (); i ++) {
+                Double omegaError = squaredError (points.get (i), omega);
+                Double sigmaError = squaredError (points.get (i), sigma);
+                if (omegaError < sigmaError) {
+                    //
+                    if (omegaError > threshold) continue;
+                    //
+                    if (i < omegaBounds[0]) {
+                        omegaBounds[0] = i;
+
+                    }
+                    if (i > omegaBounds[1]) {
+                        omegaBounds[1] = i;
+                    }
+                    //
+                    error += omegaError;
+                }
+                else {
+                    //
+                    if (sigmaError > threshold) continue;
+                    //
+                    if (i < sigmaBounds[0]) {
+                        sigmaBounds[0] = i;
+                    }
+                    if (i > sigmaBounds[1]) {
+                        sigmaBounds[1] = i;
+                    }
+                    //
+                    error += sigmaError;
+                }
+            }
+            // Caluclate the delta error.
+            deltaError = Math.abs (error - previousError);
+        }
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
         // Sigma is estimated from the slope of the sigma line.
