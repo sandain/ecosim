@@ -52,6 +52,9 @@ public class ParameterEstimate implements Runnable {
         estimate = new ParameterSet ();
         sigma = new Line (new ArrayList<Point> ());
         omega = new Line (new ArrayList<Point> ());
+        // The threshold needs to be modified by the number of environmental
+        // sequences.
+        threshold *= Math.log (nu) / logTwo;
         hasRun = false;
     }
 
@@ -63,14 +66,10 @@ public class ParameterEstimate implements Runnable {
         // be fitted to.
         List<Point> points = getPoints (length, binning);
         // Fit the sigma line to the points.
-        Integer [] sigmaBounds = fitLinePoints (
-            points, 1, sigmaThreshold
-        );
+        Integer [] sigmaBounds = fitLinePoints (points, 1);
         sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
         // Fit the omega line to the points.
-        Integer [] omegaBounds = fitLinePoints (
-            points, sigmaBounds[1] + 1, omegaThreshold
-        );
+        Integer [] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
         omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
@@ -162,12 +161,9 @@ public class ParameterEstimate implements Runnable {
      *
      *  @param points All of the points.
      *  @param start The index of points to start the line calculation.
-     *  @param threshold The error threshold allowed for the line calculation.
      *  @return The bounds of the points array that fit a line.
      */
-    private Integer [] fitLinePoints (
-        List<Point> points, Integer start, Double threshold
-    ) {
+    private Integer [] fitLinePoints (List<Point> points, Integer start) {
         Integer [] bounds = { start, start + 2 };
         // Catch errors before they happen.
         if (bounds[0] > points.size () || bounds[1] > points.size ()) {
@@ -243,8 +239,9 @@ public class ParameterEstimate implements Runnable {
     private Line sigma;
     private Line omega;
 
-    private Double sigmaThreshold = 0.1d;
-    private Double omegaThreshold = 100.0d;
+    private Double threshold = 0.1d;
+
+    private final Double logTwo = Math.log (2);
 
     /**
      * The estimate for the parameter values.
