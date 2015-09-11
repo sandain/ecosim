@@ -168,7 +168,7 @@ public class ParameterEstimate implements Runnable {
         // Catch errors before they happen.
         if (bounds[0] > points.size () || bounds[1] > points.size ()) {
             throw new ArrayIndexOutOfBoundsException (
-                "Bounds exceed the size of the points list while fitting the line."
+                "Error fitting line to points, bounds exceeded."
             );
         }
         // Calculate the line using the current set of points.
@@ -215,7 +215,8 @@ public class ParameterEstimate implements Runnable {
             if (level == 1) continue;
             // Transform the sequence criterion value into the number of SNPs.
             Double x = (1.0d - crit) * length;
-            // Transform the number of sequence clusters (bins) into log base 2 scale.
+            // Transform the number of sequence clusters (bins) into
+            // log base 2 scale.
             Double y = Math.log (level) / logTwo;
             // Add the XY point to the list.
             points.add (new Point (x, y));
