@@ -75,13 +75,6 @@ public class Hillclimb implements Runnable {
         execs.runHillclimb (inputFile, outputFile);
         // Get the output provided by the hillclimb program.
         result = readOutputFile (outputFile);
-        // Run the hillclimbing result through the fredmethod.
-        FredMethod fredmethod = new FredMethod (
-            masterVariables, execs, nu, length, binning, result
-        );
-        fredmethod.run ();
-        // Store the fredmethod likelihood in the result.
-        result.setLikelihood (fredmethod.getResult ().getLikelihood ());
         // Set the flag stating that the hillclimb program has been run.
         if (result.getNpop () > 0) {
             hasRun = true;
