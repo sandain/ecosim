@@ -75,12 +75,8 @@ public class ParameterEstimate implements Runnable {
         Double deltaError = 1.0D;
         while (deltaError > MasterVariables.EPSILON) {
             // Calculate the sigma and omega lines for the current guess.
-            sigma = new Line (
-                points.subList (sigmaBounds[0], sigmaBounds[1])
-            );
-            omega = new Line (
-                points.subList (omegaBounds[0], omegaBounds[1])
-            );
+            sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
+            omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
             // Save the previous error.
             previousError = error;
             // Calculate the current error.
