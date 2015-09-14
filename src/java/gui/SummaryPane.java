@@ -376,9 +376,9 @@ public class SummaryPane extends JPanel {
     private static final Color[] seriesColors = {
         Color.RED, Color.BLUE, Color.GREEN
     };
+
     private static final float[] seriesStroke = {
         2.0F, 1.0F, 1.0F
     };
 
 }
-
