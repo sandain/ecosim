@@ -85,30 +85,21 @@ public class ParameterEstimate implements Runnable {
                 Double omegaError = squaredError (points.get (i), omega);
                 Double sigmaError = squaredError (points.get (i), sigma);
                 if (omegaError < sigmaError) {
-                    //
+                    // Skip this point if the error exceeds the threshold.
                     if (omegaError > threshold) continue;
-                    //
-                    if (i < omegaBounds[0]) {
-                        omegaBounds[0] = i;
-
-                    }
-                    if (i > omegaBounds[1]) {
-                        omegaBounds[1] = i;
-                    }
-                    //
+                    // Save the bounds of the points for the omega line.
+                    if (i < omegaBounds[0]) omegaBounds[0] = i;
+                    if (i > omegaBounds[1]) omegaBounds[1] = i;
+                    // Add to the total error.
                     error += omegaError;
                 }
                 else {
-                    //
+                    // Skip this point if the error exceeds the threshold.
                     if (sigmaError > threshold) continue;
-                    //
-                    if (i < sigmaBounds[0]) {
-                        sigmaBounds[0] = i;
-                    }
-                    if (i > sigmaBounds[1]) {
-                        sigmaBounds[1] = i;
-                    }
-                    //
+                    // Save the bounds of the points for the sigma line.
+                    if (i < sigmaBounds[0]) sigmaBounds[0] = i;
+                    if (i > sigmaBounds[1]) sigmaBounds[1] = i;
+                    // Add to the total error.
                     error += sigmaError;
                 }
             }
