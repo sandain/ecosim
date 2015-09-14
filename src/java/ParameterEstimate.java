@@ -50,8 +50,11 @@ public class ParameterEstimate implements Runnable {
         this.length = length;
         this.binning = binning;
         estimate = new ParameterSet ();
-        omega = new Line (new ArrayList<Point> ());
         sigma = new Line (new ArrayList<Point> ());
+        omega = new Line (new ArrayList<Point> ());
+        // The threshold needs to be modified by the number of environmental
+        // sequences.
+        threshold *= Math.log (nu) / logTwo;
         hasRun = false;
     }
 
@@ -62,16 +65,60 @@ public class ParameterEstimate implements Runnable {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length, binning);
-        // Fit the sigma line to the points.
-        Integer [] sigmaBounds = fitLinePoints (
-            points, 1, sigmaThreshold
-        );
-        sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
-        // Fit the omega line to the points.
-        Integer [] omegaBounds = fitLinePoints (
-            points, sigmaBounds[1] + 1, omegaThreshold
-        );
-        omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
+        // Estimate the bounds of the sigma and omega lines.
+        Integer[] sigmaBounds = fitLinePoints (points, 1);
+        Integer[] omegaBounds = fitLinePoints (points, sigmaBounds[1] + 1);
+        // Optimize the sigma and omega lines using a custom variant of
+        // Lloyd's Algorithm.
+        Double error = 0.0D;
+        Double previousError = 0.0D;
+        Double deltaError = 1.0D;
+        while (deltaError > MasterVariables.EPSILON) {
+            // Calculate the sigma and omega lines for the current guess.
+            sigma = new Line (
+                points.subList (sigmaBounds[0], sigmaBounds[1])
+            );
+            omega = new Line (
+                points.subList (omegaBounds[0], omegaBounds[1])
+            );
+            // Save the previous error.
+            previousError = error;
+            // Calculate the current error.
+            error = 0.0D;
+            for (int i = 0; i < points.size (); i ++) {
+                Double omegaError = squaredError (points.get (i), omega);
+                Double sigmaError = squaredError (points.get (i), sigma);
+                if (omegaError < sigmaError) {
+                    //
+                    if (omegaError > threshold) continue;
+                    //
+                    if (i < omegaBounds[0]) {
+                        omegaBounds[0] = i;
+
+                    }
+                    if (i > omegaBounds[1]) {
+                        omegaBounds[1] = i;
+                    }
+                    //
+                    error += omegaError;
+                }
+                else {
+                    //
+                    if (sigmaError > threshold) continue;
+                    //
+                    if (i < sigmaBounds[0]) {
+                        sigmaBounds[0] = i;
+                    }
+                    if (i > sigmaBounds[1]) {
+                        sigmaBounds[1] = i;
+                    }
+                    //
+                    error += sigmaError;
+                }
+            }
+            // Caluclate the delta error.
+            deltaError = Math.abs (error - previousError);
+        }
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
         // Sigma is estimated from the slope of the sigma line.
@@ -162,17 +209,14 @@ public class ParameterEstimate implements Runnable {
      *
      *  @param points All of the points.
      *  @param start The index of points to start the line calculation.
-     *  @param threshold The error threshold allowed for the line calculation.
      *  @return The bounds of the points array that fit a line.
      */
-    private Integer [] fitLinePoints (
-        List<Point> points, Integer start, Double threshold
-    ) {
+    private Integer [] fitLinePoints (List<Point> points, Integer start) {
         Integer [] bounds = { start, start + 2 };
         // Catch errors before they happen.
         if (bounds[0] > points.size () || bounds[1] > points.size ()) {
             throw new ArrayIndexOutOfBoundsException (
-                "Bounds exceed the size of the points list while fitting the line."
+                "Error fitting line to points, bounds exceeded."
             );
         }
         // Calculate the line using the current set of points.
@@ -212,22 +256,18 @@ public class ParameterEstimate implements Runnable {
      */
     private List<Point> getPoints (Integer length, Binning binning) {
         List<Point> points = new ArrayList<Point> ();
-        Integer previous = -1;
         for (BinLevel bin: binning.getBins ()) {
             Double crit = bin.getCrit ();
             Integer level = bin.getLevel ();
             // Don't include binning results == 1.
             if (level == 1) continue;
-            // Don't include duplicate levels.
-            if (level == previous) continue;
             // Transform the sequence criterion value into the number of SNPs.
             Double x = (1.0d - crit) * length;
-            // Transform the number of sequence clusters (bins) into log base 2 scale.
-            Double y = Math.log (level) / Math.log (2);
+            // Transform the number of sequence clusters (bins) into
+            // log base 2 scale.
+            Double y = Math.log (level) / logTwo;
             // Add the XY point to the list.
             points.add (new Point (x, y));
-            // Save the level in previous.
-            previous = level;
         }
         // Return the points in reverse order.
         Collections.reverse (points);
@@ -240,11 +280,12 @@ public class ParameterEstimate implements Runnable {
     private Integer length;
     private Binning binning;
 
-    private Line omega;
     private Line sigma;
+    private Line omega;
 
-    private Double omegaThreshold = 100.0d;
-    private Double sigmaThreshold = 0.1d;
+    private Double threshold = 0.1d;
+
+    private final Double logTwo = Math.log (2);
 
     /**
      * The estimate for the parameter values.
