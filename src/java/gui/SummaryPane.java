@@ -361,6 +361,8 @@ public class SummaryPane extends JPanel {
                     table.setValueAt (
                         String.format ("%.4f", ci[0].getLikelihood ()), 3, 3
                     );
+                }
+                if (ci[1].getLikelihood () != null) {
                     table.setValueAt (
                         String.format ("%.4f", ci[1].getLikelihood ()), 3, 4
                     );
