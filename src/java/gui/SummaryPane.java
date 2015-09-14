@@ -116,7 +116,7 @@ public class SummaryPane extends JPanel {
      *
      *  @return A ChartPanel containing the binning chart.
      */
-    private ChartPanel makeBinningChart() {
+    private ChartPanel makeBinningChart () {
         final DefaultXYDataset binData = new DefaultXYDataset ();
         final NumberFormat nf = NumberFormat.getInstance ();
         final NumberAxis xAxis = new NumberAxis ("Sequence criterion");
@@ -125,7 +125,7 @@ public class SummaryPane extends JPanel {
         xAxis.setTickUnit (new NumberTickUnit (0.05D, nf));
         LogAxis yAxis = new LogAxis ("Number of bins");
         yAxis.setBase (2.0D);
-        yAxis.setNumberFormatOverride (NumberFormat.getInstance());
+        yAxis.setNumberFormatOverride (NumberFormat.getInstance ());
         yAxis.setTickUnit (new NumberTickUnit (2.0D));
         yAxis.setMinorTickMarksVisible (true);
         yAxis.setAutoRangeMinimumSize (4.0D);
@@ -167,9 +167,9 @@ public class SummaryPane extends JPanel {
                 int low = 0;
                 for (int i = 0; i < bins.size (); i++) {
                     BinLevel bin = bins.get (i);
-                    values[0][i] = bin.getCrit();
-                    values[1][i] = bin.getLevel();
-                    if (bin.getLevel().intValue() == 1) low = i;
+                    values[0][i] = bin.getCrit ();
+                    values[1][i] = bin.getLevel ();
+                    if (bin.getLevel ().intValue () == 1) low = i;
                     double snp = s.getLength () * (1.0D - values[0][i]);
                     omega[0][i] = values[0][i];
                     sigma[0][i] = values[0][i];
@@ -180,20 +180,20 @@ public class SummaryPane extends JPanel {
                         2.0D, snp * sigmaLine[0] + sigmaLine[1]
                     );
                 }
-                binData.addSeries("sequences", values);
+                binData.addSeries ("sequences", values);
                 if (-1.0D * omegaLine[0] > MasterVariables.EPSILON) {
-                    binData.addSeries("omega", omega);
+                    binData.addSeries ("omega", omega);
                 }
                 if (-1.0D * sigmaLine[0] > MasterVariables.EPSILON) {
-                    binData.addSeries("sigma", sigma);
+                    binData.addSeries ("sigma", sigma);
                 }
                 if (low > 0) low--;
                 if (low > 4) {
                     low = 4;
-                    xAxis.setTickUnit(new NumberTickUnit(0.025D, nf));
+                    xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
                 }
-                xAxis.setLowerBound(ecosim.Binning.binLevels[low]);
-                pane.repaint();
+                xAxis.setLowerBound (ecosim.Binning.binLevels[low]);
+                pane.repaint ();
             }
         });
         return pane;
@@ -298,19 +298,19 @@ public class SummaryPane extends JPanel {
                         String.format ("%.4f", e.getOmega ()), 1, 1
                     );
                     table.setValueAt (
-                        String.format ("%.4f", e.getSigma()), 2, 1
+                        String.format ("%.4f", e.getSigma ()), 2, 1
                     );
                     table.setValueAt (
-                        String.format ("%.4f", e.getLikelihood()), 3, 1
+                        String.format ("%.4f", e.getLikelihood ()), 3, 1
                     );
                 }
-                if (hillclimbing.getNpop() != null) {
+                if (hillclimbing.getNpop () != null) {
                     table.setValueAt (hillclimbing.getNpop (), 0, 2);
                     table.setValueAt (
-                        String.format ("%.4f", hillclimbing.getOmega()), 1, 2
+                        String.format ("%.4f", hillclimbing.getOmega ()), 1, 2
                     );
                     table.setValueAt (
-                        String.format ("%.4f", hillclimbing.getSigma()), 2, 2
+                        String.format ("%.4f", hillclimbing.getSigma ()), 2, 2
                     );
                     table.setValueAt (
                         String.format ("%.4f", hillclimbing.getLikelihood ()),
@@ -334,12 +334,12 @@ public class SummaryPane extends JPanel {
                         fmt = "%.2f";
                     }
                     table.setValueAt (
-                        String.format (fmt, ci[1].getOmega()), 1, 4
+                        String.format (fmt, ci[1].getOmega ()), 1, 4
                     );
                 }
                 if (ci[1].getSigma () != null) {
                     table.setValueAt (
-                        String.format ("%.4f", ci[0].getSigma()), 2, 3
+                        String.format ("%.4f", ci[0].getSigma ()), 2, 3
                     );
                     if (ci[1].getSigma () > 100.0D - MasterVariables.EPSILON) {
                         table.setValueAt ("≥100", 2, 4);
@@ -353,19 +353,19 @@ public class SummaryPane extends JPanel {
                             fmt = "%.2f";
                         }
                         table.setValueAt (
-                            String.format (fmt, ci[1].getSigma()), 2, 4
+                            String.format (fmt, ci[1].getSigma ()), 2, 4
                         );
                     }
                 }
                 if (ci[0].getLikelihood () != null) {
                     table.setValueAt (
-                        String.format("%.4f", ci[0].getLikelihood()), 3, 3
+                        String.format ("%.4f", ci[0].getLikelihood ()), 3, 3
                     );
                     table.setValueAt (
-                        String.format("%.4f", ci[1].getLikelihood()), 3, 4
+                        String.format ("%.4f", ci[1].getLikelihood ()), 3, 4
                     );
                 }
-                pane.repaint();
+                pane.repaint ();
             }
         });
         return pane;
