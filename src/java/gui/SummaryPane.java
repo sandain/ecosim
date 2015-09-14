@@ -164,12 +164,12 @@ public class SummaryPane extends JPanel {
                 double[][] sigma = new double[2][bins.size ()];
                 double[] omegaLine = estimate.getOmega ();
                 double[] sigmaLine = estimate.getSigma ();
-                int low = 0;
+                Double low = 1.0d;
                 for (int i = 0; i < bins.size (); i++) {
                     BinLevel bin = bins.get (i);
                     values[0][i] = bin.getCrit ();
                     values[1][i] = bin.getLevel ();
-                    if (bin.getLevel ().intValue () == 1) low = i;
+                    if (values[0][i] < low) low = values[0][i];
                     double snp = s.getLength () * (1.0D - values[0][i]);
                     omega[0][i] = values[0][i];
                     sigma[0][i] = values[0][i];
@@ -187,12 +187,10 @@ public class SummaryPane extends JPanel {
                 if (-1.0D * sigmaLine[0] > MasterVariables.EPSILON) {
                     binData.addSeries ("sigma", sigma);
                 }
-                if (low > 0) low--;
-                if (low > 4) {
-                    low = 4;
+                xAxis.setLowerBound (low);
+                if (low > 0.80d - MasterVariables.EPSILON) {
                     xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
                 }
-                xAxis.setLowerBound (ecosim.Binning.binLevels[low]);
                 pane.repaint ();
             }
         });
