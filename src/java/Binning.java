@@ -57,9 +57,20 @@ public class Binning {
         bins = new ArrayList<BinLevel> ();
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
+        Double lastOne = 0.0d;
         for (Double crit: binLevels) {
             Integer level = getNumberBins (crit, tree.getRoot ());
-            bins.add (new BinLevel (crit, level));
+            // Skip all but the last crit with a level of one.
+            if (level == 1) {
+                lastOne = crit;
+            }
+            else if (level > 1) {
+                if (lastOne > MasterVariables.EPSILON) {
+                    bins.add (new BinLevel (lastOne, 1));
+                    lastOne = 0.0d;
+                }
+                bins.add (new BinLevel (crit, level));
+            }
         }
     }
 
