@@ -131,19 +131,13 @@ public class Binning {
         if (node.isOutgroup ()) return 0;
         // Return one bin if the node is a leaf node.
         if (node.isLeafNode ()) return 1;
-        // There can only be two children.
-        ArrayList<Node> children = node.getChildren ();
-        Node a = children.get (0);
-        Node b = children.get (1);
-        // Calculate the maximum distance between the leaf node ancestors
-        // of the two child nodes.
-        Double distance = 0.0d;
-        distance += a.maximumDistanceFromLeafNode () + a.getDistance ();
-        distance += b.maximumDistanceFromLeafNode () + b.getDistance ();
+        // Calculate the maximum distance between the leaf node ancestors of
+        // the current node.
+        Double distance = node.maximumDistanceBetweenLeafNodes ();
         // Recurse on the child nodes if the maximum distance exceeds the
         // crit value, otherwise colapse this branch into one bin.
         if (distance > 1.000d - crit - MasterVariables.EPSILON) {
-            for (Node child: children) {
+            for (Node child: node.getChildren ()) {
                 num += getNumberBins (crit, child);
             }
         }
