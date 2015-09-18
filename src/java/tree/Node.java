@@ -308,6 +308,34 @@ public class Node implements Comparable<Node> {
     }
 
     /**
+     *  Calculate the maximum distance between the leaf node ancestors of
+     *  this node.
+     *
+     *  @return The maximum distance between the leaf node ancestors.
+     */
+    public Double maximumDistanceBetweenLeafNodes () {
+        ArrayList<Double> childDistance = new ArrayList<Double> ();
+        for (Node child: children) {
+            childDistance.add (
+                child.maximumDistanceFromLeafNode () + child.getDistance ()
+            );
+        }
+        Double distance = 0.0d;
+        // Sort the child distances if there are more than two children.  The
+        // two children with the maximum distance between the leaf node
+        // ancestors will be used.
+        if (childDistance.size () > 2) {
+            Heapsorter<Double> sorter = new Heapsorter<Double> ();
+            sorter.sort (childDistance);
+        }
+        // Calculate the maximum distance between the leaf node ancestors.
+        if (childDistance.size () >= 2) {
+            distance = childDistance.get (0) + childDistance.get (1);
+        }
+        return distance;
+    }
+
+    /**
      *  Returns an array of nodes that are descendants of this node.
      *
      *  @return The descendants of this node.
