@@ -49,6 +49,7 @@ public class ProjectFileIO {
      *  Load and save the current project.
      *
      *  @param masterVariables The master variables.
+     *  @param execs The Execs object.
      */
     public ProjectFileIO (MasterVariables masterVariables,
         Execs execs) {
@@ -88,6 +89,7 @@ public class ProjectFileIO {
      *  Load and save the current project.
      *
      *  @param masterVariables The master variables.
+     *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length the length of the environmental sequences.
      *  @param outgroup The identifier of the outgroup sequence.
