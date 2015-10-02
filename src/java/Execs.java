@@ -44,6 +44,7 @@ public class Execs {
      *  Detects the Operating System that this class is running on,
      *  and executes the native fortran applications.
      *
+     *  @param log The Logger object.
      *  @param masterVariables The MasterVariables.
      */
     public Execs (Logger log, MasterVariables masterVariables) {
