@@ -40,9 +40,9 @@ public class NewickWriter extends BufferedWriter {
     }
 
     /**
-     *  Write the Node data in Newick format.
+     *  Write the tree data in Newick format.
      *
-     *  @param node The Node to write.
+     *  @param tree The tree to write.
      */
     public void write (Tree tree) throws IOException {
         write (tree.toString () + System.getProperty ("line.separator"));
