@@ -307,7 +307,7 @@ public class Tree {
     /**
      *  Read a Newick formatted tree.
      *
-     *  @param tree Reader to use.
+     *  @param reader The Reader to use.
      */
     private void readTree (Reader reader) throws InvalidTreeException {
         // Read in the tree file.
