@@ -43,6 +43,7 @@ public class SigmaConfidenceInterval {
      *  Run the sigma confidence interval program.
      *
      *  @param masterVariables The MasterVariables object.
+     *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
