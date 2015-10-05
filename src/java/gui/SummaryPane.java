@@ -122,6 +122,7 @@ public class SummaryPane extends JPanel {
         final NumberAxis xAxis = new NumberAxis ("Sequence criterion");
         nf.setMinimumFractionDigits (2);
         xAxis.setLowerBound (Binning.binLevels[0]);
+        xAxis.setUpperBound (1.0D);
         xAxis.setTickUnit (new NumberTickUnit (0.05D, nf));
         LogAxis yAxis = new LogAxis ("Number of bins");
         yAxis.setBase (2.0D);
@@ -159,39 +160,41 @@ public class SummaryPane extends JPanel {
                 Summary s = (Summary)obj;
                 ParameterEstimate estimate = s.getEstimate ();
                 ArrayList<BinLevel> bins = s.getBins ();
-                double[][] values = new double[2][bins.size ()];
-                double[][] omega = new double[2][bins.size ()];
-                double[][] sigma = new double[2][bins.size ()];
-                double[] omegaLine = estimate.getOmega ();
-                double[] sigmaLine = estimate.getSigma ();
-                Double low = 1.0d;
-                for (int i = 0; i < bins.size (); i++) {
-                    BinLevel bin = bins.get (i);
-                    values[0][i] = bin.getCrit ();
-                    values[1][i] = bin.getLevel ();
-                    if (values[0][i] < low) low = values[0][i];
-                    double snp = s.getLength () * (1.0D - values[0][i]);
-                    omega[0][i] = values[0][i];
-                    sigma[0][i] = values[0][i];
-                    omega[1][i] = Math.pow (
-                        2.0D, snp * omegaLine[0] + omegaLine[1]
-                    );
-                    sigma[1][i] = Math.pow (
-                        2.0D, snp * sigmaLine[0] + sigmaLine[1]
-                    );
+                if (bins.size () > 0) {
+                    double[][] values = new double[2][bins.size ()];
+                    double[][] omega = new double[2][bins.size ()];
+                    double[][] sigma = new double[2][bins.size ()];
+                    double[] omegaLine = estimate.getOmega ();
+                    double[] sigmaLine = estimate.getSigma ();
+                    Double low = 1.0d;
+                    for (int i = 0; i < bins.size (); i++) {
+                        BinLevel bin = bins.get (i);
+                        values[0][i] = bin.getCrit ();
+                        values[1][i] = bin.getLevel ();
+                        if (values[0][i] < low) low = values[0][i];
+                        double snp = s.getLength () * (1.0D - values[0][i]);
+                        omega[0][i] = values[0][i];
+                        sigma[0][i] = values[0][i];
+                        omega[1][i] = Math.pow (
+                            2.0D, snp * omegaLine[0] + omegaLine[1]
+                        );
+                        sigma[1][i] = Math.pow (
+                            2.0D, snp * sigmaLine[0] + sigmaLine[1]
+                        );
+                    }
+                    binData.addSeries ("sequences", values);
+                    if (-1.0D * omegaLine[0] > MasterVariables.EPSILON) {
+                        binData.addSeries ("omega", omega);
+                    }
+                    if (-1.0D * sigmaLine[0] > MasterVariables.EPSILON) {
+                        binData.addSeries ("sigma", sigma);
+                    }
+                    xAxis.setLowerBound (low);
+                    if (low > 0.80d - MasterVariables.EPSILON) {
+                        xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
+                    }
+                    pane.repaint ();
                 }
-                binData.addSeries ("sequences", values);
-                if (-1.0D * omegaLine[0] > MasterVariables.EPSILON) {
-                    binData.addSeries ("omega", omega);
-                }
-                if (-1.0D * sigmaLine[0] > MasterVariables.EPSILON) {
-                    binData.addSeries ("sigma", sigma);
-                }
-                xAxis.setLowerBound (low);
-                if (low > 0.80d - MasterVariables.EPSILON) {
-                    xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
-                }
-                pane.repaint ();
             }
         });
         return pane;
