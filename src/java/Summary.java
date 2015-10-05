@@ -22,6 +22,8 @@
 
 package ecosim;
 
+import ecosim.tree.Tree;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -55,6 +57,15 @@ public class Summary extends Observable {
             new ParameterSet (), new ParameterSet ()
         };
         demarcationList = new ArrayList<Demarcation> ();
+    }
+
+    /**
+     *  Get the phylogenetic tree.
+     *
+     *  @return The tree.
+     */
+    public Tree getTree () {
+        return tree;
     }
 
     /**
@@ -139,6 +150,18 @@ public class Summary extends Observable {
             last = demarcationList.get (index);
         }
         return last;
+    }
+
+    /**
+     *  Add the phylogenetic tree to the summary.
+     *
+     *  @param tree The phylogenetic tree.
+     */
+    public void setTree (Tree tree) {
+        this.tree = tree;
+        // Notify observers of the change.
+        setChanged ();
+        notifyObservers (this);
     }
 
     /**
@@ -237,6 +260,7 @@ public class Summary extends Observable {
         notifyObservers (this);
     }
 
+    private Tree tree;
     private Integer nu;
     private Integer length;
     private String outgroup;
