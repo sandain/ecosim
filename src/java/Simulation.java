@@ -282,6 +282,7 @@ public class Simulation {
             // Get the number of sequences loaded.
             nu = tree.size ();
             // Update the summary data.
+            summary.setTree (tree);
             summary.setNu (nu);
             // Output the number of sequences loaded.
             log.appendln (String.format (
