@@ -117,6 +117,7 @@ import java.util.Observer;
  * @li @b tree.NewickReader - Read a Newick formatted tree.
  * @li @b tree.NewickWriter - Write the tree in Newick format.
  * @li @b tree.Node - A node of a phylogenetic tree.
+ * @li @b tree.SVGWriter - Write the tree in SVG format.
  * @li @b tree.Tree - Interact with phylogenetic trees.
  */
 
