@@ -292,6 +292,34 @@ public class Tree {
     }
 
     /**
+     *  Save the tree data in this object to a SVG formatted file.
+     *
+     *  @param file File to write the Newick tree to.
+     *  @return True if the save was a success, False otherwise.
+     */
+    public boolean toSVG (File file) {
+        boolean success = false;
+        SVGWriter out = null;
+        try {
+            out = new SVGWriter (new FileWriter (file));
+            out.write (this);
+        }
+        catch (IOException e) {
+            System.out.println ("Error writing to output file.");
+        }
+        finally {
+            try {
+                out.close ();
+                success = true;
+            }
+            catch (IOException e) {
+                System.out.println ("Error closing output file.");
+            }
+        }
+        return success;
+    }
+
+    /**
      *  Check if this Tree object is valid.
      *
      *  @return True if this is a valid Tree object, False if not.
