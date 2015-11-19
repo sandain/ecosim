@@ -17,14 +17,16 @@ DOXYGEN := doxygen
 OS := $(shell uname -s)
 
 # Set operating system specific variables.
-ifneq (,$(filter mingw, $(CC)))
+ifneq (,$(findstring mingw, $(FC)))
   # Cross-compile for Windows.
+  CCFLAGS := $(CCFLAGS) -static
   FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir -p
   BINARY_EXT := .exe
   DIRECTORY_SEPARATOR := /
 else ifneq (,$(filter CYGWIN windows, $(OS)))
   # CygWin and GnuWin.
+  CCFLAGS := $(CCFLAGS) -static
   FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir
   BINARY_EXT := .exe
