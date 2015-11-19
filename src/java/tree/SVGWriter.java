@@ -1,0 +1,141 @@
+/*
+ *    Ecotype Simulation models the sequence diversity within a bacterial
+ *    clade as the evolutionary result of net ecotype formation and periodic
+ *    selection, yielding a certain number of ecotypes.
+ *
+ *    Copyright (C) 2015  Jason M. Wood, Montana State University
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+package ecosim.tree;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+
+/**
+ *  Converts a Node based tree into a SVG formatted image.
+ *
+ *  @author Jason M. Wood
+ *  @copyright GNU General Public License
+ */
+
+public class SVGWriter extends BufferedWriter {
+
+    public SVGWriter (Writer writer) {
+        super (writer);
+    }
+
+    /**
+     *  Save the Node based tree data in this object to a SVG formatted file.
+     *
+     *  @param tree The tree to write.
+     *  @return True if the save was a success, False otherwise.
+     */
+    public void write (Tree tree) throws IOException {
+        Double max = tree.maximumWidth ();
+        int height = nodeHeight * tree.size () + yOffset;
+        int width = 2 * Math.round (max.floatValue ()) + xOffset;
+        // Add XML information.
+        writeln ("<?xml version=\"1.0\" standalone=\"no\"?>");
+        // Output the SVG doctype.
+        writeln (
+            "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" " +
+            "\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
+        );
+        // Start the SVG document.
+        writeln (String.format (
+            "<svg width=\"%d\" height=\"%d\" viewBox=\"%d %d %d %d\" " +
+            "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" " +
+            "xmlns:xlink=\"http://www.w3.org/1999/xlink\">",
+            width, height, 0, 0, width, height
+        ));
+        // Add some CSS style to the SVG document.
+        writeln ("<defs>");
+        writeln ("<style type=\"text/css\"><![CDATA[");
+        writeln ("  line {");
+        writeln ("    stroke: black;");
+        writeln ("    stroke-width: 1;");
+        writeln ("  }");
+        writeln ("  text {");
+        writeln ("    font-family: Arial;");
+        writeln ("    font-size: " + nodeHeight + "px;");
+        writeln ("    stroke-width: 0;");
+        writeln ("    fill: blue;");
+        writeln ("  }");
+        writeln ("]]></style>");
+        writeln ("</defs>");
+        // Add the tree to the SVG document.
+        nodeToSVG (tree.getRoot ());
+        // End the SVG document.
+        writeln ("</svg>");
+    }
+
+    /**
+     *  Private recursive method to convert a Node and all of its descendants
+     *  into a SVG representation.
+     */
+    private void nodeToSVG (Node node) throws IOException {
+        int nodeX = node.getX () + xOffset;
+        int nodeY = nodeHeight * node.getY () + yOffset;
+
+        if (node.isLeafNode ()) {
+            // Add the name of the node to the SVG as a text element.
+            String name = node.getName ();
+            writeln (String.format (
+                "<text x=\"%d\" y=\"%d\" id=\"%s\">%s</text>",
+                nodeX + labelXOffset,
+                nodeY + labelYOffset,
+                name, name
+            ));
+        }
+        else {
+            for (Node child: node.getChildren ()) {
+                int childX = child.getX () + xOffset;
+                int childY = nodeHeight * child.getY () + yOffset;
+                // Add the horizontal line.
+                writeln (String.format (
+                    "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                    nodeX, childY, childX, childY
+                ));
+                // Add the vertical line.
+                writeln (String.format (
+                    "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                    nodeX, nodeY, nodeX, childY
+                ));
+                // Add the SVG data from the child node.
+                nodeToSVG (child);
+            }
+        }
+    }
+
+    /**
+     *  Private method to write a string of text with a line separator.
+     *
+     *  @param line The line of text.
+     */
+    private void writeln (String line) throws IOException {
+        write (line + System.getProperty ("line.separator"));
+    }
+
+    private int nodeHeight = 12;
+    private int xOffset = 5;
+    private int yOffset = 5;
+    private int labelXOffset = 3;
+    private int labelYOffset = 5;
+
+}
