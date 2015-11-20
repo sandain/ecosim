@@ -132,12 +132,7 @@ public class MenuBar extends JMenuBar {
         FileChooser fc = new FileChooser ("fasta");
         int returnVal = fc.showOpenDialog (this);
         File file = fc.getSelectedFile ();
-        if (returnVal == FileChooser.APPROVE_OPTION) {
-            simulation.loadSequenceFile (file);
-        }
-        else {
-            return;
-        }
+        if (returnVal != FileChooser.APPROVE_OPTION) return;
         // Ask the user if they want to provide or generate a tree.
         String[] options = { "Generate", "Newick" };
         int type = 0; // Default to using the Parsimony method.
@@ -151,20 +146,26 @@ public class MenuBar extends JMenuBar {
             options,
             options[type]
         );
+        File treeFile;
         switch (options[type]) {
             case "Generate":
                 // Generate a tree with FastTree.
-                simulation.generateTree (file);
+                treeFile = simulation.generateTree (file);
                 break;
             case "Newick":
                 // Open the newick file chooser dialog.
                 fc = new FileChooser ("newick");
                 returnVal = fc.showOpenDialog (this);
-                if (returnVal == FileChooser.APPROVE_OPTION) {
-                    simulation.loadTreeFile (fc.getSelectedFile ());
-                }
+                if (returnVal != FileChooser.APPROVE_OPTION) return;
+                treeFile = fc.getSelectedFile ();
+                break;
+            default:
+                treeFile = null;
                 break;
         }
+        // Load the sequence and tree files.
+        simulation.loadSequenceFile (file);
+        simulation.loadTreeFile (treeFile);
         // Run binning and estimate the parameters.
         simulation.runBinning ();
         simulation.runParameterEstimate ();

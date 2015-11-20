@@ -300,7 +300,7 @@ public class Simulation {
      *
      *  @param file The fasta formated sequence file.
      */
-    public void generateTree (File file) {
+    public File generateTree (File file) {
         log.appendln ("Generating a tree using FastTree...");
         // Store the tree in file called 'fasttree'.
         File newickFile = new File (
@@ -308,8 +308,7 @@ public class Simulation {
         );
         // Generate a tree using FastTree.
         execs.runFastTree (file, newickFile);
-        // Load the tree.
-        loadTreeFile (newickFile);
+        return newickFile;
     }
 
     /**
