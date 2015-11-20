@@ -151,7 +151,7 @@ public class MenuBar extends JMenuBar {
             options,
             options[type]
         );
-        File treeFile;
+        final File treeFile;
         switch (options[type]) {
             case "Generate":
                 // Generate a tree with FastTree.
@@ -168,12 +168,20 @@ public class MenuBar extends JMenuBar {
                 treeFile = null;
                 break;
         }
-        // Load the sequence and tree files.
-        simulation.loadSequenceFile (file);
-        simulation.loadTreeFile (treeFile);
-        // Run binning and estimate the parameters.
-        simulation.runBinning ();
-        simulation.runParameterEstimate ();
+        Thread t = new Thread (
+            new Runnable () {
+                public void run () {
+                    if (treeFile == null) return;
+                    // Load the sequence and tree files.
+                    simulation.loadSequenceFile (file);
+                    simulation.loadTreeFile (treeFile);
+                    // Run binning and estimate the parameters.
+                    simulation.runBinning ();
+                    simulation.runParameterEstimate ();
+                }
+            }
+        );
+        t.start ();
     }
 
     /**
