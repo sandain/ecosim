@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class NpopConfidenceInterval {
+public class NpopConfidenceInterval implements Runnable {
 
     /**
      *  Run the npop confidence interval program.
