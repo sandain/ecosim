@@ -347,6 +347,7 @@ public class Simulation {
         running = true;
         log.appendln ("Running binning...");
         binning = new Binning (tree);
+        binning.run ();
         ArrayList<BinLevel> bins = binning.getBins ();
         // Update the summary data.
         summary.setBins (bins);

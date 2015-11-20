@@ -34,7 +34,7 @@ import java.util.ArrayList;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class Binning {
+public class Binning implements Runnable {
 
     /**
      *  A default constructor for Binning objects.  All crit levels
@@ -55,6 +55,15 @@ public class Binning {
      */
     public Binning (Tree tree) {
         bins = new ArrayList<BinLevel> ();
+        this.tree = tree;
+    }
+
+    /**
+     *  Run the binning program.
+     */
+    public void run () {
+        // Only run binning if a tree has been loaded.
+        if (tree == null) return;
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
         Double lastOne = 0.0d;
@@ -148,6 +157,7 @@ public class Binning {
     }
 
     private ArrayList<BinLevel> bins;
+    private Tree tree;
 
     /**
      *  The default bin levels.
