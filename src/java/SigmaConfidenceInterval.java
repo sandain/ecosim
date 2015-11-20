@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class SigmaConfidenceInterval {
+public class SigmaConfidenceInterval implements Runnable {
 
     /**
      *  Run the sigma confidence interval program.
