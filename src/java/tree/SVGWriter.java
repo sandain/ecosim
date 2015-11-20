@@ -47,23 +47,30 @@ public class SVGWriter extends BufferedWriter {
      *  @return True if the save was a success, False otherwise.
      */
     public void write (Tree tree) throws IOException {
-        Double max = tree.maximumWidth ();
-        int height = nodeHeight * tree.size () + yOffset;
-        int width = 2 * Math.round (max.floatValue ()) + xOffset;
-        // Add XML information.
-        writeln ("<?xml version=\"1.0\" standalone=\"no\"?>");
-        // Output the SVG doctype.
+        // Calculate the height and width.
+        int height = fontHeight * tree.size () + yOffset;
+        int max = 0;
+        for (Node node: tree.getDescendants ()) {
+            String name = node.getName ();
+            int labelWidth = (name.length () + 1) * fontWidth;
+            int x = node.getX () + labelXOffset + labelWidth;
+            if (x > max) max = x;
+        }        
+        int width = max;
+        // Add the XML information.
+        writeln (
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"  standalone=\"no\"?>"
+        );
+        // Add the SVG doctype.
         writeln (
             "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" " +
             "\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
         );
         // Start the SVG document.
-        writeln (String.format (
-            "<svg width=\"%d\" height=\"%d\" viewBox=\"%d %d %d %d\" " +
-            "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" " +
-            "xmlns:xlink=\"http://www.w3.org/1999/xlink\">",
-            width, height, 0, 0, width, height
-        ));
+        writeln (
+            "<svg width=\"" + width + "\" height=\"" + height + "\" " +
+            "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">"
+        );
         // Add some CSS style to the SVG document.
         writeln ("<defs>");
         writeln ("<style type=\"text/css\"><![CDATA[");
@@ -72,8 +79,8 @@ public class SVGWriter extends BufferedWriter {
         writeln ("    stroke-width: 1;");
         writeln ("  }");
         writeln ("  text {");
-        writeln ("    font-family: Arial;");
-        writeln ("    font-size: " + nodeHeight + "px;");
+        writeln ("    font-family: monospace;");
+        writeln ("    font-size: " + fontHeight + "px;");
         writeln ("    stroke-width: 0;");
         writeln ("    fill: blue;");
         writeln ("  }");
@@ -91,22 +98,22 @@ public class SVGWriter extends BufferedWriter {
      */
     private void nodeToSVG (Node node) throws IOException {
         int nodeX = node.getX () + xOffset;
-        int nodeY = nodeHeight * node.getY () + yOffset;
-
+        int nodeY = fontHeight * node.getY () + yOffset;
         if (node.isLeafNode ()) {
             // Add the name of the node to the SVG as a text element.
             String name = node.getName ();
             writeln (String.format (
-                "<text x=\"%d\" y=\"%d\" id=\"%s\">%s</text>",
+                "<text x=\"%d\" y=\"%d\" textLength=\"%d\">%s</text>",
                 nodeX + labelXOffset,
                 nodeY + labelYOffset,
-                name, name
+                name.length () * fontWidth,
+                name
             ));
         }
         else {
             for (Node child: node.getChildren ()) {
                 int childX = child.getX () + xOffset;
-                int childY = nodeHeight * child.getY () + yOffset;
+                int childY = fontHeight * child.getY () + yOffset;
                 // Add the horizontal line.
                 writeln (String.format (
                     "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
@@ -132,7 +139,8 @@ public class SVGWriter extends BufferedWriter {
         write (line + System.getProperty ("line.separator"));
     }
 
-    private int nodeHeight = 12;
+    private int fontHeight = 12;
+    private int fontWidth = 7;
     private int xOffset = 5;
     private int yOffset = 5;
     private int labelXOffset = 3;
