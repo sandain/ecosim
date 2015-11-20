@@ -275,10 +275,12 @@ public class Simulation {
         try {
             tree = new Tree (file);
             tree.reroot (tree.getDescendant (outgroup));
-            // Store the tree in Newick format in a file called 'outtree'.
-            tree.toNewick (new File (
-                masterVariables.getWorkingDirectory () + "outtree"
-            ));
+            // Output the tree in Newick and SVG formats if debug is enabled.
+            if (masterVariables.getDebug ()) {
+                String dir = masterVariables.getWorkingDirectory ();
+                tree.toNewick (new File (dir + "outtree.nwk"));
+                tree.toSVG (new File (dir + "outtree.svg"));
+            }
             // Get the number of sequences loaded.
             nu = tree.size ();
             // Update the summary data.
