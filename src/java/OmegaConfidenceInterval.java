@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class OmegaConfidenceInterval {
+public class OmegaConfidenceInterval implements Runnable {
 
     /**
      *  Run the omega confidence interval program.
