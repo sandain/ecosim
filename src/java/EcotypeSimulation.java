@@ -189,7 +189,8 @@ public class EcotypeSimulation implements Runnable {
      */
     public static void main (final String[] args) {
         EcotypeSimulation es = new EcotypeSimulation (args);
-        new Thread (es).start ();
+        Thread t = new Thread (es);
+        t.start ();
     }
 
     /**
@@ -365,7 +366,8 @@ public class EcotypeSimulation implements Runnable {
             MainWindow gui = new MainWindow (
                 log, masterVariables, simulation
             );
-            gui.setVisible (true);
+            Thread t = new Thread (gui);
+            t.start ();
         }
     }
 
