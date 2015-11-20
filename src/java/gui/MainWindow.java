@@ -42,7 +42,7 @@ import javax.swing.JTabbedPane;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements Runnable {
 
     public MainWindow (
         Logger log, MasterVariables masterVariables, Simulation simulation
@@ -50,6 +50,12 @@ public class MainWindow extends JFrame {
         this.log = log;
         this.masterVariables = masterVariables;
         this.simulation = simulation;
+    }
+
+    /**
+     *  Run the main GUI window of the program.
+     */
+    public void run () {
         // Start a thread for the Help/About window.
         HelpAboutWindow helpAbout = new HelpAboutWindow (masterVariables);
         new Thread (helpAbout).start ();
@@ -68,6 +74,7 @@ public class MainWindow extends JFrame {
                 simulation.exit ();
             }
         });
+        setVisible (true);
     }
 
     /**
