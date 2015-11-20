@@ -25,6 +25,7 @@ package ecosim.gui;
 import ecosim.Logger;
 import ecosim.MasterVariables;
 import ecosim.Simulation;
+import ecosim.Summary;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -95,8 +96,9 @@ public class MainWindow extends JFrame implements Runnable {
      *  Make the bottom pane.
      */
     private JTabbedPane makeBottomPane () {
+        Summary summary = simulation.getSummary ();
         JTabbedPane pane = new JTabbedPane ();
-        pane.addTab ("Summary", new SummaryPane (simulation.getSummary ()));
+        pane.addTab ("Summary", new SummaryPane (summary));
         pane.addTab ("Log", new LoggerPane (log));
         return pane;
     }
