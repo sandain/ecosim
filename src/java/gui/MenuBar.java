@@ -128,6 +128,11 @@ public class MenuBar extends JMenuBar {
     *  The user has asked to load a sequence file.
     */
     private void openSequenceFileActionPerformed () {
+        // Make sure the simulation isn't already running.
+        if (simulation.isRunning ()) {
+            log.append ("The simulation is currently running...\n");
+            return;
+        }
         // Open the fasta file chooser dialog.
         FileChooser fc = new FileChooser ("fasta");
         int returnVal = fc.showOpenDialog (this);
