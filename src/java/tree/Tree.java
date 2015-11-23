@@ -353,6 +353,14 @@ public class Tree {
     }
 
     /**
+     *  Calculate the X,Y location for all nodes in the tree.
+     */
+    public void calculateXY () {
+        // Calculate the XY location of all nodes.
+        calculateNodeXY (root, 0);
+    }
+
+    /**
      *  Read a Newick formatted tree.
      *
      *  @param reader The Reader to use.
