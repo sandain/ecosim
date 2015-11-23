@@ -47,6 +47,8 @@ public class SVGWriter extends BufferedWriter {
      *  @return True if the save was a success, False otherwise.
      */
     public void write (Tree tree) throws IOException {
+        // Calculate the X,Y location of all nodes in the tree.
+        tree.calculateXY ();
         // Calculate the height and width.
         int height = fontHeight * tree.size () + yOffset;
         int max = 0;
