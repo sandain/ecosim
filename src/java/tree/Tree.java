@@ -92,6 +92,16 @@ public class Tree {
     }
 
     /**
+     *  Compare this tree with another.
+     *
+     *  @param other The tree compare with.
+     *  @return 0 if the trees are equal, -1 or 1 otherwise.
+     */
+    public int compareTo (Tree other) {
+        return root.compareTo (other.getRoot ());
+    }
+
+    /**
      *  Returns the root node of this tree.
      *
      *  @return Node containing the root node.
