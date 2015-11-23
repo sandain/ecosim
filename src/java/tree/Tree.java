@@ -375,8 +375,6 @@ public class Tree {
                 "Malformed Newick tree, not enough leaves found."
             );
         }
-        // Calculate the XY location of all nodes.
-        calculateNodeXY (root, 0);
     }
 
     /**
