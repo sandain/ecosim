@@ -221,6 +221,16 @@ public class Tree {
     /**
      *  Reroot the tree so that the outgroup descendant is next to the root.
      *
+     *  @param name The name of the outgroup descendant.
+     */
+    public void reroot (String name) {
+        Node descendant = getDescendant (name);
+        reroot (descendant);
+    }
+
+    /**
+     *  Reroot the tree so that the outgroup descendant is next to the root.
+     *
      *  @param outgroup The outgroup descendant.
      */
     public void reroot (Node outgroup) {
