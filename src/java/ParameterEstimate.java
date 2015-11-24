@@ -120,12 +120,6 @@ public class ParameterEstimate implements Runnable {
         result = new ParameterSet (
             npopEstimate, omegaEstimate, sigmaEstimate, 0.0d
         );
-        // Setup the fredmethod.
-        FredMethod fredmethod = new FredMethod (
-            masterVariables, execs, nu, length, binning, result
-        );
-        fredmethod.run ();
-        result.setLikelihood (fredmethod.getResult ().getLikelihood ());
         // Set the flag stating that the parameter estimate program has
         // been run.
         hasRun = true;
