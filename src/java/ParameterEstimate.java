@@ -35,7 +35,14 @@ import java.util.Collections;
 public class ParameterEstimate implements Runnable {
 
     /**
-     *  Run the parameter estimate program.
+     *  The parameter estimate program.
+     */
+    public ParameterEstimate () {
+        this (0, 0, new Binning ());
+    }
+
+    /**
+     *  The parameter estimate program.
      *
      *  @param masterVariables The MasterVariables object.
      *  @param execs The Execs object.
