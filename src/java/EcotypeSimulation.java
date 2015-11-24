@@ -366,8 +366,7 @@ public class EcotypeSimulation implements Runnable {
             MainWindow gui = new MainWindow (
                 log, masterVariables, simulation
             );
-            Thread t = new Thread (gui);
-            t.start ();
+            gui.run ();
         }
     }
 
