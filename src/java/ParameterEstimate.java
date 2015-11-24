@@ -44,16 +44,11 @@ public class ParameterEstimate implements Runnable {
     /**
      *  The parameter estimate program.
      *
-     *  @param masterVariables The MasterVariables object.
-     *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      */
-    public ParameterEstimate (MasterVariables masterVariables,
-        Execs execs, Integer nu, Integer length, Binning binning) {
-        this.masterVariables = masterVariables;
-        this.execs = execs;
+    public ParameterEstimate (Integer nu, Integer length, Binning binning) {
         this.nu = nu;
         this.length = length;
         this.binning = binning;
@@ -263,8 +258,6 @@ public class ParameterEstimate implements Runnable {
         return points;
     }
 
-    private MasterVariables masterVariables;
-    private Execs execs;
     private Integer nu;
     private Integer length;
     private Binning binning;

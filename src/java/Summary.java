@@ -49,9 +49,7 @@ public class Summary extends Observable {
         length = 0;
         outgroup = "";
         binning = new Binning ();
-        estimate = new ParameterEstimate (
-            masterVariables, execs, nu, length, binning
-        );
+        estimate = new ParameterEstimate (nu, length, binning);
         hillclimbing = new ParameterSet ();
         confidenceInterval = new ParameterSet[] { 
             new ParameterSet (), new ParameterSet ()

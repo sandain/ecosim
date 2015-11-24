@@ -62,9 +62,7 @@ public class ProjectFileIO {
         length = 0;
         outgroup = "";
         binning = new Binning (tree);
-        estimate = new ParameterEstimate (
-            masterVariables, execs, nu, length, binning
-        );
+        estimate = new ParameterEstimate (nu, length, binning);
         hillclimb = new Hillclimb (
             masterVariables, execs, nu, length, binning, estimate.getResult ()
         );
