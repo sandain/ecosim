@@ -42,26 +42,15 @@ public class Simulation {
      *
      *  @param log The Logger object.
      *  @param masterVariables The MasterVariables object.
-     *  @param fastaFile The fasta formated sequence file.
-     *  @param newickFile The newick formated tree file.
      */
-    public Simulation (Logger log, MasterVariables masterVariables,
-        File fastaFile, File newickFile) {
+    public Simulation (Logger log, MasterVariables masterVariables) {
         this.log = log;
         this.masterVariables = masterVariables;
-        this.fastaFile = fastaFile;
-        this.newickFile = newickFile;
         // Set default demarcation method and precision.
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         execs = new Execs (log, masterVariables);
         summary = new Summary (masterVariables, execs);
-        if (fastaFile != null && fastaFile.exists ()) {
-            loadSequenceFile (fastaFile);
-        }
-        if (newickFile != null && newickFile.exists ()) {
-            loadTreeFile (newickFile);
-        }
         // None of the programs are currently running.
         running = false;
     }
@@ -278,7 +267,7 @@ public class Simulation {
             // Output the tree in Newick and SVG formats if debug is enabled.
             if (masterVariables.getDebug ()) {
                 String dir = masterVariables.getWorkingDirectory ();
-                tree.toNewick (new File (dir + "outtree.nwk"));
+                tree.toNewick (new File (dir + "outtree"));
                 tree.toSVG (new File (dir + "outtree.svg"));
             }
             // Get the number of sequences loaded.
@@ -306,7 +295,7 @@ public class Simulation {
         log.appendln ("Generating a tree using FastTree...");
         // Store the tree in file called 'fasttree'.
         File newickFile = new File (
-            masterVariables.getWorkingDirectory () + "fasttree"
+            masterVariables.getWorkingDirectory () + "fasttree.nwk"
         );
         // Generate a tree using FastTree.
         execs.runFastTree (file, newickFile);
@@ -586,8 +575,6 @@ public class Simulation {
     protected Logger log;
     protected MasterVariables masterVariables;
     protected Execs execs;
-    protected File fastaFile;
-    protected File newickFile;
     protected Summary summary;
     protected Fasta fasta;
     protected Integer nu;

@@ -138,14 +138,11 @@ public class EcotypeSimulation implements Runnable {
         // Initialize the variables.
         log = new Logger ();
         masterVariables = new MasterVariables ();
+        simulation = new Simulation (log, masterVariables);
         noGUI = false;
         runAll = false;
         // Check for command line arguments.
         checkArguments (args);
-        // Create the Simulation.
-        simulation = new Simulation (
-            log, masterVariables, fastaFile, newickFile
-        );
     }
 
     /**
@@ -158,17 +155,19 @@ public class EcotypeSimulation implements Runnable {
         ));
         // Startup the CLI or the GUI.
         setupInterface ();
-        // Generate the tree if the fasta file was provided with a tree.
-        if (fastaFile != null && fastaFile.exists () &&
-            (newickFile == null || ! newickFile.exists ())
-        ) {
-            simulation.generateTree (fastaFile);
+        // Don't procede any further if the fasta file doesn't exist.
+        if (fastaFile == null || !fastaFile.exists ()) return;
+        // Load the sequence file.
+        simulation.loadSequenceFile (fastaFile);
+        // Generate a tree if one wasn't provided.
+        if (newickFile == null || ! newickFile.exists ()) {
+            newickFile = simulation.generateTree (fastaFile);
         }
+        // Load the tree file.
+        simulation.loadTreeFile (newickFile);
         // Run the binning and parameter estimate programs.
-        if (newickFile != null && newickFile.exists ()) {
-            simulation.runBinning ();
-            simulation.runParameterEstimate ();
-        }
+        simulation.runBinning ();
+        simulation.runParameterEstimate ();
         // If the runAll flag has been set, run the simulation.
         if (runAll) {
             simulation.runHillclimbing ();
