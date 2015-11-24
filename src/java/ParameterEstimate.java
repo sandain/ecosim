@@ -50,7 +50,7 @@ public class ParameterEstimate implements Runnable {
         this.nu = nu;
         this.length = length;
         this.binning = binning;
-        estimate = new ParameterSet ();
+        result = new ParameterSet ();
         sigma = new Line (new ArrayList<Point> ());
         omega = new Line (new ArrayList<Point> ());
         // The threshold needs to be modified by the number of environmental
@@ -117,15 +117,15 @@ public class ParameterEstimate implements Runnable {
             2, omega.m * (sigma.b - omega.b) / (omega.m - sigma.m) + omega.b
         ));
         // Store the estimated parameter values.
-        estimate = new ParameterSet (
+        result = new ParameterSet (
             npopEstimate, omegaEstimate, sigmaEstimate, 0.0d
         );
         // Setup the fredmethod.
         FredMethod fredmethod = new FredMethod (
-            masterVariables, execs, nu, length, binning, estimate
+            masterVariables, execs, nu, length, binning, result
         );
         fredmethod.run ();
-        estimate.setLikelihood (fredmethod.getResult ().getLikelihood ());
+        result.setLikelihood (fredmethod.getResult ().getLikelihood ());
         // Set the flag stating that the parameter estimate program has
         // been run.
         hasRun = true;
@@ -146,7 +146,7 @@ public class ParameterEstimate implements Runnable {
      *  @return The parameter estimate result.
      */
     public ParameterSet getResult () {
-        return estimate;
+        return result;
     }
 
     /**
@@ -159,10 +159,10 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
-     *  Set the parameter estimate.
+     *  Set the parameter estimate result.
      */
     public void setResult (ParameterSet result) {
-        estimate = result;
+        this.result = result;
     }
 
     /**
@@ -171,7 +171,7 @@ public class ParameterEstimate implements Runnable {
      *  @return The parameter estimate as a String.
      */
     public String toString () {
-        return estimate.toString ();
+        return result.toString ();
     }
 
     /**
@@ -276,9 +276,9 @@ public class ParameterEstimate implements Runnable {
     private final Double logTwo = Math.log (2);
 
     /**
-     * The estimate for the parameter values.
+     * The resulting estimate for the parameter values.
      */
-    private ParameterSet estimate;
+    private ParameterSet result;
 
     private boolean hasRun;
 
