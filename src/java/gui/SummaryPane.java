@@ -251,8 +251,7 @@ public class SummaryPane extends JPanel {
         Object[][] rowData = {
             { "Number of putative ecotypes (npop)", null, null, null, null },
             { "Rate of ecotype formation (omega)", null, null, null, null },
-            { "Rate of periodic selection (sigma)", null, null, null, null },
-            { "Likelihood", null, null, null, null }
+            { "Rate of periodic selection (sigma)", null, null, null, null }
         };
         final JLayeredPane pane = new JLayeredPane ();
         final JTable table = new JTable (rowData, columnNames) {
@@ -301,9 +300,6 @@ public class SummaryPane extends JPanel {
                     table.setValueAt (
                         String.format ("%.4f", e.getSigma ()), 2, 1
                     );
-                    table.setValueAt (
-                        String.format ("%.4f", e.getLikelihood ()), 3, 1
-                    );
                 }
                 if (hillclimbing.getNpop () != null) {
                     table.setValueAt (hillclimbing.getNpop (), 0, 2);
@@ -312,10 +308,6 @@ public class SummaryPane extends JPanel {
                     );
                     table.setValueAt (
                         String.format ("%.4f", hillclimbing.getSigma ()), 2, 2
-                    );
-                    table.setValueAt (
-                        String.format ("%.4f", hillclimbing.getLikelihood ()),
-                        3, 2
                     );
                 }
                 if (ci[0].getNpop () != null) {
@@ -357,16 +349,6 @@ public class SummaryPane extends JPanel {
                             String.format (fmt, ci[1].getSigma ()), 2, 4
                         );
                     }
-                }
-                if (ci[0].getLikelihood () != null) {
-                    table.setValueAt (
-                        String.format ("%.4f", ci[0].getLikelihood ()), 3, 3
-                    );
-                }
-                if (ci[1].getLikelihood () != null) {
-                    table.setValueAt (
-                        String.format ("%.4f", ci[1].getLikelihood ()), 3, 4
-                    );
                 }
                 pane.repaint ();
             }
