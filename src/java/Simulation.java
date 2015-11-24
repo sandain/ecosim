@@ -267,7 +267,7 @@ public class Simulation {
             // Output the tree in Newick and SVG formats if debug is enabled.
             if (masterVariables.getDebug ()) {
                 String dir = masterVariables.getWorkingDirectory ();
-                tree.toNewick (new File (dir + "outtree"));
+                tree.toNewick (new File (dir + "outtree.nwk"));
                 tree.toSVG (new File (dir + "outtree.svg"));
             }
             // Get the number of sequences loaded.
