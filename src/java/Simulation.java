@@ -50,7 +50,7 @@ public class Simulation {
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         execs = new Execs (log, masterVariables);
-        summary = new Summary (masterVariables, execs);
+        summary = new Summary ();
         // None of the programs are currently running.
         running = false;
     }

@@ -39,16 +39,12 @@ public class Summary extends Observable {
 
     /**
      *  An object to store summary information about the simulation.
-     *
-     *  @param masterVariables The MasterVariables object.
-     *  @param execs The Execs object. 
      */
-    public Summary (MasterVariables masterVariables, Execs execs) {
+    public Summary () {
         bins = new ArrayList<BinLevel> ();
         nu = 0;
         length = 0;
         outgroup = "";
-        binning = new Binning ();
         estimate = new ParameterEstimate ();
         hillclimbing = new ParameterSet ();
         confidenceInterval = new ParameterSet[] { 
@@ -263,7 +259,6 @@ public class Summary extends Observable {
     private Integer length;
     private String outgroup;
     private ArrayList<BinLevel> bins;
-    private Binning binning;
     private ParameterEstimate estimate;
     private ParameterSet hillclimbing;
     private ParameterSet[] confidenceInterval;
