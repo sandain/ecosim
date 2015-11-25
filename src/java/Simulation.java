@@ -525,22 +525,6 @@ public class Simulation {
         confidenceInterval[0].setSigma (sigma[0]);
         confidenceInterval[1].setSigma (sigma[1]);
         summary.setConfidenceInterval (confidenceInterval);
-        // Calculate the likelihood of the low end of the interval.
-        FredMethod low = new FredMethod (
-            masterVariables, execs, nu, length, binning,
-            new ParameterSet (npop[0], omega[0], sigma[0], 0.0D)
-        );
-        low.run ();
-        confidenceInterval[0] = low.getResult ();
-        summary.setConfidenceInterval (confidenceInterval);
-        // Calculate the likelihood of the high end of the interval.
-        FredMethod high = new FredMethod (
-            masterVariables, execs, nu, length, binning,
-            new ParameterSet (npop[1], omega[1], sigma[1], 0.0D)
-        );
-        high.run ();
-        confidenceInterval[1] = high.getResult ();
-        summary.setConfidenceInterval (confidenceInterval);
     }
 
     /**
