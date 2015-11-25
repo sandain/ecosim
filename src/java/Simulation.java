@@ -358,9 +358,7 @@ public class Simulation {
         // Start running the parameter estimate.
         running = true;
         log.appendln ("Running parameter estimate...");
-        estimate = new ParameterEstimate (
-            masterVariables, execs, nu, length, binning
-        );
+        estimate = new ParameterEstimate (nu, length, binning);
         estimate.run ();
         // Update the summary data.
         summary.setEstimate (estimate);
