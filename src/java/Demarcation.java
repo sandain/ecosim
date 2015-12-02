@@ -312,6 +312,7 @@ public class Demarcation implements Runnable {
         Integer sampleNu = node.numberOfDescendants ();
         // Run the binning program on the sample tree.
         Binning sampleBinning = new Binning (sampleTree);
+        sampleBinning.run ();
         // Use the omega and sigma values from hillclimbing.
         Double omega = hclimbResult.getOmega ();
         Double sigma = hclimbResult.getSigma ();
