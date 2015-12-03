@@ -61,7 +61,7 @@ public class SVGWriter extends BufferedWriter {
         int width = max;
         // Add the XML information.
         writeln (
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"  standalone=\"no\"?>"
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
         );
         // Add the SVG doctype.
         writeln (
