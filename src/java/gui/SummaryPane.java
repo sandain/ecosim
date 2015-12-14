@@ -119,7 +119,9 @@ public class SummaryPane extends JPanel {
     private ChartPanel makeBinningChart () {
         final DefaultXYDataset binData = new DefaultXYDataset ();
         final NumberFormat nf = NumberFormat.getInstance ();
-        final NumberAxis xAxis = new NumberAxis ("Sequence criterion");
+        final NumberAxis xAxis = new NumberAxis (
+            "Sequence identity criterion"
+        );
         nf.setMinimumFractionDigits (2);
         xAxis.setLowerBound (Binning.binLevels[0]);
         xAxis.setUpperBound (1.0D);
