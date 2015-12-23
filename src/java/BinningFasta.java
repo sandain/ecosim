@@ -222,7 +222,7 @@ public class BinningFasta {
             // Now sort by that likelihood first.
             masterVariables.setSortPercentage(startPer);
             Heapsorter<FredOutVal> h = new Heapsorter<FredOutVal>();
-            h.heapSort(values);
+            h.sort (values);
             for (int j = 0; j < values.size(); j ++){
                 out.write(values.get(j).toString());
                 out.newLine();
