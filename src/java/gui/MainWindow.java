@@ -26,15 +26,19 @@ import ecosim.Logger;
 import ecosim.MasterVariables;
 import ecosim.Simulation;
 import ecosim.Summary;
+import ecosim.tree.Tree;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 /**
@@ -100,6 +104,21 @@ public class MainWindow extends JFrame implements Runnable {
         JTabbedPane pane = new JTabbedPane ();
         pane.addTab ("Summary", new SummaryPane (summary));
         pane.addTab ("Log", new LoggerPane (log));
+        // Watch for changes to the Summary object.
+        summary.addObserver (new Observer () {
+            private boolean treeDisplayed = false;
+            public void update (Observable o, Object obj) {
+                Summary s = (Summary)obj;
+                Tree t = s.getTree ();
+                if (t != null && t.isValid () && !treeDisplayed) {
+                    JScrollPane treeScroll = new JScrollPane ();
+                    treeScroll.setViewportView (new TreePane (t));
+                    pane.addTab ("Phylogeny", treeScroll);
+                    pane.repaint ();
+                    treeDisplayed = true;
+                }
+            }
+        });
         return pane;
     }
 
