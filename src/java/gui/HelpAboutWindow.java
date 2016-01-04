@@ -149,7 +149,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             }
         }
         catch (IOException e) {
-            System.out.println ("Error reading the html file.");
+            System.out.println ("Error reading the html file: " + e);
         }
         finally {
             if (reader != null) {
@@ -157,7 +157,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     reader.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the input file.");
+                    System.out.println ("Error closing the input file: " + e);
                 }
             }
             if (writer != null) {
@@ -165,7 +165,9 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                     writer.close ();
                 }
                 catch (IOException e) {
-                    System.out.println ("Error closing the output file.");
+                    System.out.println (
+                        "Error closing the output file: " + e
+                    );
                 }
             }
         }
