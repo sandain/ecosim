@@ -113,6 +113,7 @@ import java.util.Observer;
  * @li @b gui.MenuBar - Defines a custom menu bar for the GUI.
  * @li @b gui.OptionsPane - Defines a custom panel to display the options.
  * @li @b gui.SummaryPane - Defines a custom panel to display the summary.
+ * @li @b gui.TreePane - Defines a custom panel to display the tree.
  * @li @b tree.InvalidTreeException - Report a malformed tree.
  * @li @b tree.NewickReader - Read a Newick formatted tree.
  * @li @b tree.NewickWriter - Write the tree in Newick format.
