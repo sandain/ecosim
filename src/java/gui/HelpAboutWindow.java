@@ -65,7 +65,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      */
     public void run () {
         // Preprocess the help files.
-        preprocess ("stylesheet.css");
+        preprocess ("style.css");
         preprocess ("menu.html");
         preprocess ("about.html");
         preprocess ("userguide.html");
