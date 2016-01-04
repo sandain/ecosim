@@ -55,7 +55,9 @@ public class SVGWriter extends BufferedWriter {
         for (Node node: tree.getDescendants ()) {
             String name = node.getName ();
             int labelWidth = (name.length () + 1) * fontWidth;
-            int x = node.getX () + labelXOffset + labelWidth;
+            int x = labelXOffset + labelWidth + Math.round (
+                node.getX ().floatValue () * xModifier
+            );
             if (x > max) max = x;
         }        
         int width = max;
@@ -99,8 +101,12 @@ public class SVGWriter extends BufferedWriter {
      *  into a SVG representation.
      */
     private void nodeToSVG (Node node) throws IOException {
-        int nodeX = node.getX () + xOffset;
-        int nodeY = fontHeight * node.getY () + yOffset;
+        int nodeX = xOffset + Math.round (
+            node.getX ().floatValue () * xModifier
+        );
+        int nodeY = yOffset + Math.round (
+            node.getY ().floatValue () * yModifier
+        );
         if (node.isLeafNode ()) {
             // Add the name of the node to the SVG as a text element.
             String name = node.getName ();
@@ -114,8 +120,12 @@ public class SVGWriter extends BufferedWriter {
         }
         else {
             for (Node child: node.getChildren ()) {
-                int childX = child.getX () + xOffset;
-                int childY = fontHeight * child.getY () + yOffset;
+                int childX = xOffset + Math.round (
+                    child.getX ().floatValue () * xModifier
+                );
+                int childY = yOffset + Math.round (
+                    child.getY ().floatValue () * yModifier
+                );
                 // Add the horizontal line.
                 writeln (String.format (
                     "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
@@ -147,5 +157,7 @@ public class SVGWriter extends BufferedWriter {
     private int yOffset = 5;
     private int labelXOffset = 3;
     private int labelYOffset = 5;
+    private int xModifier = 1000;
+    private int yModifier = fontHeight;
 
 }

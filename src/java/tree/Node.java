@@ -54,8 +54,8 @@ public class Node implements Comparable<Node> {
         this.parent = parent;
         this.children = children;
         outgroup = false;
-        x = 0;
-        y = 0;
+        x = 0.0d;
+        y = 0.0d;
     }
 
     /**
@@ -399,19 +399,19 @@ public class Node implements Comparable<Node> {
         return newick;
     }
 
-    public int getX () {
+    public Double getX () {
         return x;
     }
 
-    public int getY () {
+    public Double getY () {
         return y;
     }
 
-    public void setX (int x) {
+    public void setX (Double x) {
         this.x = x;
     }
 
-    public void setY (int y) {
+    public void setY (Double y) {
         this.y = y;
     }
 
@@ -444,12 +444,12 @@ public class Node implements Comparable<Node> {
      *  The X coordinate of this node.  Used only when creating a graphical
      *  representation of this node.
      */
-    private int x;
+    private Double x;
 
     /**
      *  The Y coordinate of this node.  Used only when creating a graphical
      *  representation of this node.
      */
-    private int y;
+    private Double y;
 
 }

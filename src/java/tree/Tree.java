@@ -124,25 +124,24 @@ public class Tree {
      *  Returns the maximum X value of the tree.
      *
      *  The maximum X value is the distance from the root node to the most
-     *  divergent leaf node multiplied by xModifier.
+     *  divergent leaf node.
      *
      *  @return Node maximum X value of the tree.
      */
-    public int maximumX () {
-        Double dist = root.maximumDistanceFromLeafNode ();
-        return Math.round (xModifier * dist.floatValue ());
+    public Double maximumX () {
+        return root.maximumDistanceFromLeafNode ();
     }
 
     /**
      *  Returns the maximum Y value of the tree.
      *
      *  The maximum Y value is the distance from the root node to the most
-     *  divergent leaf node multiplied by xModifier.
+     *  divergent leaf node.
      *
      *  @return Node maximum Y value of the tree.
      */
-    public int maximumY () {
-        return yModifier * root.numberOfDescendants ();
+    public Double maximumY () {
+        return 1.0d * root.numberOfDescendants ();
     }
 
     /**
@@ -357,7 +356,7 @@ public class Tree {
      */
     public void calculateXY () {
         // Calculate the XY location of all nodes.
-        calculateNodeXY (root, 0);
+        calculateNodeXY (root, 0.0d);
     }
 
     /**
@@ -384,10 +383,10 @@ public class Tree {
      *  @param node The current Node.
      *  @param height The current height.
      */
-    private void calculateNodeXY (Node node, int height) {
+    private void calculateNodeXY (Node node, double height) {
         Node parent = node.getParent ();
         // The X coordinate is based on the node's distance from its parent.
-        int x = Math.round (xModifier * node.getDistance ().floatValue ());
+        double x = node.getDistance ();
         if (parent != null) x += parent.getX ();
         node.setX (x);
         // The Y coordinate is calculated differently for leaf and internal
@@ -396,17 +395,17 @@ public class Tree {
             node.setY (height);
         }
         else {
-            int minY = Integer.MAX_VALUE;
-            int maxY = 0;
-            int h = height;
+            double minY = Double.MAX_VALUE;
+            double maxY = 0.0d;
+            double h = height;
             for (Node child: node.getChildren ()) {
                 calculateNodeXY (child, h);
                 int numLeaf = 1;
                 if (! child.isLeafNode ()) {
                     numLeaf = child.numberOfDescendants ();
                 }
-                h += yModifier * numLeaf;
-                int childY = child.getY ();
+                h += numLeaf;
+                double childY = child.getY ();
                 if (childY < minY) minY = childY;
                 if (childY > maxY) maxY = childY;
             }
@@ -415,8 +414,5 @@ public class Tree {
     }
 
     private Node root;
-
-    private int yModifier = 1;
-    private int xModifier = 1000;
 
 }
