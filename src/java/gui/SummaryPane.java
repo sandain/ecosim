@@ -192,7 +192,10 @@ public class SummaryPane extends JPanel {
                         binData.addSeries ("sigma", sigma);
                     }
                     xAxis.setLowerBound (low);
-                    if (low > 0.80d - MasterVariables.EPSILON) {
+                    if (low > 0.90d - MasterVariables.EPSILON) {
+                        xAxis.setTickUnit (new NumberTickUnit (0.010D, nf));
+                    }
+                    else if (low > 0.80d - MasterVariables.EPSILON) {
                         xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
                     }
                     pane.repaint ();
