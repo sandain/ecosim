@@ -205,9 +205,7 @@ public class ParameterEstimate implements Runnable {
             );
         }
         // Calculate the line using the current set of points.
-        Line line = new Line (
-            points.subList (bounds[0], bounds[1])
-        );
+        Line line = new Line (points.subList (bounds[0], bounds[1]));
         // Slurp up any points that are close to the line.
         for (int i = bounds[1]; i < points.size (); i ++) {
             Double error = squaredError (points.get (i), line);
