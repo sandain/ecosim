@@ -1,9 +1,11 @@
 # C compiler options.
 CC := gcc
+#CC := x86_64-w64-mingw32-gcc-win32
 CCFLAGS := -DUSE_DOUBLE -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops -Wall
 
 # Fortran compiler options.
 FC := gfortran
+#FC := x86_64-w64-mingw32-gfortran-win32
 FCFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall
 FLDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -O0 -Wall
 
