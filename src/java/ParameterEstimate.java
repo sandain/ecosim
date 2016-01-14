@@ -200,7 +200,8 @@ public class ParameterEstimate implements Runnable {
         // Catch errors before they happen.
         if (bounds[0] > points.size () || bounds[1] > points.size ()) {
             throw new ArrayIndexOutOfBoundsException (
-                "Error fitting line to points, bounds exceeded."
+                "Error fitting line to points, bounds exceeded." +
+                " (" + bounds[0] + "," + bounds[1] + ") " + points.size ()
             );
         }
         // Calculate the line using the current set of points.
