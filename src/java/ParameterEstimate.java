@@ -106,7 +106,7 @@ public class ParameterEstimate implements Runnable {
                     error += sigmaError;
                 }
             }
-            // Caluclate the delta error.
+            // Calculate the delta error.
             deltaError = Math.abs (error - previousError);
         }
         // Omega is estimated from the slope of the omega line.
