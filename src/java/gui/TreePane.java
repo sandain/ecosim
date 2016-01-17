@@ -295,7 +295,7 @@ public class TreePane extends JPanel implements Scrollable {
             southX = x1;
             southY = endY;
         }
-        else if (m < MasterVariables.EPSILON) {
+        else if (Math.abs (m) < MasterVariables.EPSILON) {
             // Line is horizontal.
             westX = startX;
             westY = y1;
