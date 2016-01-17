@@ -55,8 +55,8 @@ public class MasterVariables {
             );
             System.exit (1);
         }
-        // Assume the the bin, help, and scripts directories are in the
-        // current working directory.
+        // Assume the the bin and help directories are in the current working
+        // directory.
         binaryDirectory = System.getProperty ("user.dir") +
             System.getProperty ("file.separator") + "bin" +
             System.getProperty ("file.separator");
