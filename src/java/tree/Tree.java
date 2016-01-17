@@ -415,6 +415,6 @@ public class Tree {
         }
     }
 
-    private Node root;
+    protected Node root;
 
 }
