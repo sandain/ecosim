@@ -54,6 +54,7 @@ public class Node implements Comparable<Node> {
         this.parent = parent;
         this.children = children;
         outgroup = false;
+        collapsed = false;
         x = 0.0d;
         y = 0.0d;
     }
@@ -234,6 +235,31 @@ public class Node implements Comparable<Node> {
     }
 
     /**
+     *  Collapse the children of this Node.
+     */
+    public void collapse () {
+        collapse (true);
+    }
+
+    /**
+     *  Collapse the children of this Node.
+     *
+     *  @param collapsed Whether or not this Node is collapsed.
+     */
+    public void collapse (Boolean collapsed) {
+        this.collapsed = collapsed;
+    }
+
+    /**
+     *  Return whether or not this Node is collapsed.
+     *
+     *  @return Whether or not this Node is collapsed.
+     */
+    public Boolean isCollapsed () {
+        return collapsed;
+    }
+
+    /**
      *  Returns a Boolean stating whether this Node is a leaf or not.
      *
      *  @return A Boolean stating whether this Node is a leaf or not.
@@ -361,7 +387,7 @@ public class Node implements Comparable<Node> {
     public int numberOfDescendants () {
         int descendants = 0;
         for (Node child: children) {
-            if (child.isLeafNode ()) {
+            if (child.isLeafNode () || child.isCollapsed ()) {
                 descendants ++;
             }
             else {
@@ -459,6 +485,11 @@ public class Node implements Comparable<Node> {
      *  Whether or not this Node is the outgroup.
      */
     private Boolean outgroup;
+
+    /**
+     *  Whether or not this Node is collapsed.
+     */
+    private Boolean collapsed;
 
     /**
      *  The X coordinate of this Node.  Used only when creating a graphical
