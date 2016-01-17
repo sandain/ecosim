@@ -46,8 +46,7 @@ public class Simulation {
     public Simulation (Logger log, MasterVariables masterVariables) {
         this.log = log;
         this.masterVariables = masterVariables;
-        // Set default demarcation method and precision.
-        demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
+        // Set default demarcation precision.
         demarcationPrecision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
         execs = new Execs (log, masterVariables);
         summary = new Summary ();
@@ -82,30 +81,12 @@ public class Simulation {
     }
 
     /**
-     *  Get the method used for demarcation.
-     *
-     *  @return The demarcation method.
-     */
-    public int getDemarcationMethod () {
-        return demarcationMethod;
-    }
-
-    /**
      *  Get the precision used for demarcation.
      *
      *  @return The demarcation precision.
      */
     public int getDemarcationPrecision () {
         return demarcationPrecision;
-    }
-
-    /**
-     *  Set the method used for demarcation.
-     *
-     *  @param demarcationMethod The demarcation method.
-     */
-    public void setDemarcationMethod (int demarcationMethod) {
-        this.demarcationMethod = demarcationMethod;
     }
 
     /**
@@ -536,7 +517,7 @@ public class Simulation {
         log.appendln ("Running demarcation...");
         demarcation = new Demarcation (
             masterVariables, execs, nu, length, outgroup, tree,
-            hillclimb.getResult (), demarcationMethod, demarcationPrecision
+            hillclimb.getResult (), demarcationPrecision
         );
         demarcation.run ();
         // Verify that demarcation ran correctly.
@@ -571,7 +552,6 @@ public class Simulation {
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;
     protected Demarcation demarcation;
-    protected Integer demarcationMethod;
     protected Integer demarcationPrecision;
     protected boolean running;
 

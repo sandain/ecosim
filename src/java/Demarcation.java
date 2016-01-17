@@ -47,9 +47,6 @@ import java.util.StringTokenizer;
  */
 public class Demarcation implements Runnable {
 
-    public static final int DEMARCATION_METHOD_MONOPHYLY = 2001;
-    public static final int DEMARCATION_METHOD_POLYPHYLY = 2002;
-
     public static final int DEMARCATION_PRECISION_COARSE_SCALE = 2501;
     public static final int DEMARCATION_PRECISION_FINE_SCALE = 2502;
 
@@ -64,11 +61,10 @@ public class Demarcation implements Runnable {
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
      *  @param precision The precision to use for demarcation.
-     *  @param method The method to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
-        ParameterSet hclimbResult, int method, int precision) {
+        ParameterSet hclimbResult, int precision) {
         this.masterVariables = masterVariables;
         this.execs = execs;
         this.nu = nu;
@@ -77,7 +73,6 @@ public class Demarcation implements Runnable {
         this.tree = tree;
         this.hclimbResult = hclimbResult;
         this.precision = precision;
-        this.method = method;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
@@ -88,17 +83,8 @@ public class Demarcation implements Runnable {
      */
     public void run () {
         iteration = 0;
-        // Find the ecotypes using the specified method.
-        switch (method) {
-            case DEMARCATION_METHOD_MONOPHYLY:
-                findMonophylyEcotypes (tree);
-                break;
-            case DEMARCATION_METHOD_POLYPHYLY:
-                findPolyphylyEcotypes (tree);
-                break;
-            default:
-                System.err.println ("Unknown demarcation method: " + method);
-        }
+        // Find the ecotypes.
+        findEcotypes (tree.getRoot ());
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -156,95 +142,13 @@ public class Demarcation implements Runnable {
     }
 
     /**
-     *  Find ecotypes using the provided phylogeny data.
-     *
-     *  @param tree The phylogeny data.
-     */
-    private void findPolyphylyEcotypes (Tree tree) {
-        // Make a copy of the tree to avoid destroying it.
-        Tree sampleTree;
-        try {
-            sampleTree = new Tree (tree);
-        }
-        catch (InvalidTreeException e) {
-            System.err.println ("Error creating subtree.");
-            return;
-        }
-        // Make a list of leaf node descendants.
-        ArrayList<Node> leaves = sampleTree.getDescendants ();
-        // Sort the leaves by their distance using a custom Comparator.
-        Comparator<Node> comparator = new Comparator<Node> () {
-            public int compare (Node nodeA, Node nodeB) {
-                Double a = nodeA.getDistance ();
-                Double b = nodeB.getDistance ();
-                return a.compareTo (b);
-            }
-        };
-        Heapsorter<Node> sorter = new Heapsorter<Node> (comparator);
-        sorter.sort (leaves);
-        // Find the ecotypes.
-        while (leaves.size () > 0) {
-            // Get the first leaf on the list.
-            Node leaf = leaves.get (0);
-            // Skip the outgroup.
-            if (outgroup.equals (leaf.getName ())) {
-                leaves.remove (0);
-                continue;
-            }
-            // Find the ancestor node of the leaf node whose descendants make
-            // up a single ecotype.
-            Node node = leaf;
-            while (true) {
-                Node parent = node.getParent ();
-                // Exit the loop if the parent node is the root node.
-                if (parent.isRootNode ()) break;
-                // Predict the number of ecotypes using the parent node and
-                // exit the loop if the result is greater than one.
-                NpopValue result = runSample (parent);
-                if (result.npop > 1L) break;
-                // Move the node pointer to the parent node.
-                node = parent;
-            }
-            // Demarcate the ecotype.
-            ArrayList<String> ecotype = new ArrayList<String> ();
-            if (node.isLeafNode ()) {
-                // Demarcate a singleton ecotype.
-                ecotype.add (node.getName ());
-                // Remove the node from the tree.
-                leaves.remove (node);
-                sampleTree.removeDescendant (node);
-            }
-            else {
-                // Demarcate an ecotype with multiple representatives.
-                for (Node descendant: node.getDescendants ()) {
-                    // Add the descendant to the ecotype.
-                    ecotype.add (descendant.getName ());
-                    // Remove the descendant from the tree.
-                    leaves.remove (descendant);
-                    sampleTree.removeDescendant (descendant);
-                }
-            }
-            ecotypes.add (ecotype);
-        }
-    }
-
-    /**
-     *  Find ecotypes using the provided phylogeny data.
-     *
-     *  @param tree The phylogeny data.
-     */
-    private void findMonophylyEcotypes (Tree tree) {
-        findMonophylyEcotypes (tree.getRoot ());
-    }
-
-    /**
      *  Find the ecotypes using a recursive algorithm.  If the subclade of
      *  the tree represented by node has an optimal npop value of 1, demarcate
      *  the subclade as an ecotype. Otherwise, recurse on the node's children.
      *
      *  @param node The current node representing the subclade.
      */
-    private void findMonophylyEcotypes (Node node) {
+    private void findEcotypes (Node node) {
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
@@ -274,7 +178,7 @@ public class Demarcation implements Runnable {
                 // Npop > 1, recurse on children nodes.
                 ArrayList<Node> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
-                    findMonophylyEcotypes (children.get (i));
+                    findEcotypes (children.get (i));
                 }
             }
         }
@@ -504,7 +408,6 @@ public class Demarcation implements Runnable {
     private ParameterSet hclimbResult;
 
     private Integer precision;
-    private Integer method;
 
     private Integer nrep = 1000;
     private Integer step = 1;
