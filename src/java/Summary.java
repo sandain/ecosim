@@ -50,7 +50,7 @@ public class Summary extends Observable {
         confidenceInterval = new ParameterSet[] { 
             new ParameterSet (), new ParameterSet ()
         };
-        demarcationList = new ArrayList<Demarcation> ();
+        demarcation = null;
     }
 
     /**
@@ -124,26 +124,12 @@ public class Summary extends Observable {
     }
 
     /**
-     *  Get the number of demarcation results.
+     *  Get the demarcation result.
      *
-     *  @return The number of demarcation results.
+     *  @return The demarcation result.
      */
-    public int getDemarcationCount () {
-        return demarcationList.size ();
-    }
-
-    /**
-     *  Get a specific demarcation result.
-     *
-     *  @param index The index of the demarcation result to return.
-     *  @return The demarcation result requested.
-     */
-    public Demarcation getDemarcation (int index) {
-        Demarcation last = null;
-        if (index < demarcationList.size ()) {
-            last = demarcationList.get (index);
-        }
-        return last;
+    public Demarcation getDemarcation () {
+        return demarcation;
     }
 
     /**
@@ -247,8 +233,8 @@ public class Summary extends Observable {
      *
      *  @param demarcation The demarcation result.
      */
-    public void addDemarcation (Demarcation demarcation) {
-        demarcationList.add (demarcation);
+    public void setDemarcation (Demarcation demarcation) {
+        this.demarcation = demarcation;
         // Notify observers of the change.
         setChanged ();
         notifyObservers (this);
@@ -262,6 +248,6 @@ public class Summary extends Observable {
     private ParameterEstimate estimate;
     private ParameterSet hillclimbing;
     private ParameterSet[] confidenceInterval;
-    private ArrayList<Demarcation> demarcationList;
+    private Demarcation demarcation;
 
 }

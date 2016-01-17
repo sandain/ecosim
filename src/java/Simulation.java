@@ -198,7 +198,7 @@ public class Simulation {
         if (demarcation != null && demarcation.hasRun ()) {
             log.append ("Demarcation result:\n");
             log.append (demarcation.toString () + "\n\n");
-            summary.addDemarcation (demarcation);
+            summary.setDemarcation (demarcation);
         }
     }
 
@@ -545,7 +545,7 @@ public class Simulation {
             return;
         }
         // Update the summary data.
-        summary.addDemarcation (demarcation);
+        summary.setDemarcation (demarcation);
         // Output the demarcation result.
         log.appendln ("The result from demarcation:");
         log.appendln (demarcation.toString ());
