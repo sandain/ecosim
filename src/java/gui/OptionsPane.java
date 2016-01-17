@@ -74,26 +74,6 @@ public class OptionsPane extends JPanel {
         ButtonGroup demarcationPrecision = new ButtonGroup ();
         demarcationPrecision.add (coarseScale);
         demarcationPrecision.add (fineScale);
-        // Create the demarcation method buttons.
-        JRadioButton monophyletic = new JRadioButton (
-            "Require monophyletic clades", true
-        );
-        monophyletic.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                setMonophyleticDemarcationActionPerformed ();
-            }
-        });
-        JRadioButton polyphyletic = new JRadioButton (
-            "Allow polyphyletic clades", false
-        );
-        polyphyletic.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                setPolyphyleticDemarcationActionPerformed ();
-            }
-        });
-        ButtonGroup demarcationMethod = new ButtonGroup ();
-        demarcationMethod.add (monophyletic);
-        demarcationMethod.add (polyphyletic);
         // Create the demarcation precision pane.
         JLayeredPane precisionSelector = new JLayeredPane ();
         precisionSelector.setLayout (new GridLayout (2,1,0,0));
@@ -103,18 +83,8 @@ public class OptionsPane extends JPanel {
         precision.setLayout (new BorderLayout ());
         precision.add (new JLabel ("Precision:"), BorderLayout.NORTH);
         precision.add (precisionSelector, BorderLayout.WEST);
-        // Create the demarcation method pane.
-        JLayeredPane methodSelector = new JLayeredPane ();
-        methodSelector.setLayout (new GridLayout (2,1,0,0));
-        methodSelector.add (monophyletic);
-        methodSelector.add (polyphyletic);
-        JLayeredPane method = new JLayeredPane ();
-        method.setLayout (new BorderLayout ());
-        method.add (new JLabel ("Method:"), BorderLayout.NORTH);
-        method.add (methodSelector, BorderLayout.WEST);
         // Add the precision and method panes to the top right pane.
         add (precision);
-        add (method);
     }
 
     /**
@@ -135,26 +105,6 @@ public class OptionsPane extends JPanel {
         if (simulation.getDemarcationPrecision () == precision) return;
         simulation.setDemarcationPrecision (precision);
         log.appendln ("Demarcation precision changed to: fine-scale.");
-    }
-
-    /**
-     *  The user has asked to change the method to monophyletic.
-     */
-    private void setMonophyleticDemarcationActionPerformed () {
-        int method = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
-        if (simulation.getDemarcationMethod () == method) return;
-        simulation.setDemarcationMethod (method);
-        log.appendln ("Demarcation method changed to: monophyletic.");
-    }
-
-    /**
-     *  The user has asked to change the method to polyphyletic.
-     */
-    private void setPolyphyleticDemarcationActionPerformed () {
-        int method = Demarcation.DEMARCATION_METHOD_POLYPHYLY;
-        if (simulation.getDemarcationMethod () == method) return;
-        simulation.setDemarcationMethod (method);
-        log.appendln ("Demarcation method changed to: polyphyletic.");
     }
 
     private Logger log;
