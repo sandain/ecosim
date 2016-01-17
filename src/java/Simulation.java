@@ -533,6 +533,11 @@ public class Simulation {
         }
         // Update the summary data.
         summary.setDemarcation (demarcation);
+        // Output the demarcation is SVG format if debugging is turned on.
+        if (masterVariables.getDebug ()) {
+            String dir = masterVariables.getWorkingDirectory ();
+            demarcation.toSVG (new File (dir + "demarcation.svg"));
+        }
         // Output the demarcation result.
         log.appendln ("The result from demarcation:");
         log.appendln (demarcation.toString ());
