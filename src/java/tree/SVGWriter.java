@@ -107,7 +107,7 @@ public class SVGWriter extends BufferedWriter {
         int nodeY = yOffset + Math.round (
             node.getY ().floatValue () * yModifier
         );
-        if (node.isLeafNode ()) {
+        if (node.isLeafNode () || node.isCollapsed ()) {
             // Add the name of the node to the SVG as a text element.
             String name = node.getName ();
             writeln (String.format (
@@ -126,12 +126,33 @@ public class SVGWriter extends BufferedWriter {
                 int childY = yOffset + Math.round (
                     child.getY ().floatValue () * yModifier
                 );
-                // Add the horizontal line.
-                writeln (String.format (
-                    "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
-                    nodeX, childY, childX, childY
-                ));
-                // Add the vertical line.
+                // Draw a triangle if the child node is collapsed, otherwise
+                // draw a horizontal line.
+                if (child.isCollapsed ()) {
+                    int a = childY - fontHeight / 2 + 1;
+                    int b = childY + fontHeight / 2 - 1;
+                    // Draw a triangle.
+                    writeln (String.format (
+                        "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                        nodeX, childY, childX, a
+                    ));
+                    writeln (String.format (
+                        "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                        nodeX, childY, childX, b
+                    ));
+                    writeln (String.format (
+                        "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                        childX, a, childX, b
+                    ));
+                }
+                else {
+                    // Draw a horizontal line.
+                    writeln (String.format (
+                        "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                        nodeX, childY, childX, childY
+                    ));
+                }
+                // Draw a vertical line connecting the node to it's parent.
                 writeln (String.format (
                     "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
                     nodeX, nodeY, nodeX, childY
