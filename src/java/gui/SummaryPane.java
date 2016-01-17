@@ -162,7 +162,7 @@ public class SummaryPane extends JPanel {
                 Summary s = (Summary)obj;
                 ParameterEstimate estimate = s.getEstimate ();
                 ArrayList<BinLevel> bins = s.getBins ();
-                if (bins.size () > 0) {
+                if (estimate != null && bins.size () > 0) {
                     double[][] values = new double[2][bins.size ()];
                     double[][] omega = new double[2][bins.size ()];
                     double[][] sigma = new double[2][bins.size ()];
@@ -297,10 +297,10 @@ public class SummaryPane extends JPanel {
             public void update (Observable o, Object obj) {
                 Summary s = (Summary)obj;
                 ParameterEstimate estimate = s.getEstimate ();
-                ParameterSet e = estimate.getResult ();
                 ParameterSet hillclimbing = s.getHillclimbing ();
                 ParameterSet[] ci = s.getConfidenceInterval ();
-                if (e.getNpop () != null) {
+                if (estimate != null) {
+                    ParameterSet e = estimate.getResult ();
                     table.setValueAt (e.getNpop (), 0, 1);
                     table.setValueAt (
                         String.format ("%.4f", e.getOmega ()), 1, 1
@@ -309,7 +309,7 @@ public class SummaryPane extends JPanel {
                         String.format ("%.4f", e.getSigma ()), 2, 1
                     );
                 }
-                if (hillclimbing.getNpop () != null) {
+                if (hillclimbing != null) {
                     table.setValueAt (hillclimbing.getNpop (), 0, 2);
                     table.setValueAt (
                         String.format ("%.4f", hillclimbing.getOmega ()), 1, 2
