@@ -409,7 +409,7 @@ public class TreePane extends JPanel implements Scrollable {
         int nodeY = maxAscent + Math.round (
             node.getY ().floatValue () * yModifier
         );
-        if (node.isLeafNode ()) {
+        if (node.isLeafNode () || node.isCollapsed ()) {
             // Add some space before the node's name.
             nodeX += maxAdvance;
             // Center the node's name.
@@ -432,9 +432,21 @@ public class TreePane extends JPanel implements Scrollable {
                 int childY = maxAscent + Math.round (
                     child.getY ().floatValue () * yModifier
                 );
-                // Add the horizontal line.
-                drawLine (nodeX, childY, childX, childY);
-                // Add the vertical line.
+                // Draw a triangle if the child node is collapsed, otherwise
+                // draw a horizontal line.
+                if (child.isCollapsed ()) {
+                    int a = childY - maxAscent / 2 + 1;
+                    int b = childY + maxAscent / 2 - 1;
+                    // Draw a triangle.
+                    drawLine (nodeX, childY, childX, a);
+                    drawLine (nodeX, childY, childX, b);
+                    drawLine (childX, a, childX, b);
+                }
+                else {
+                    // Draw a horizontal line.
+                    drawLine (nodeX, childY, childX, childY);
+                }
+                // Draw a vertical line connecting the node to it's parent.
                 drawLine (nodeX, nodeY, nodeX, childY);
                 // Draw the child node.
                 drawNode (child);
