@@ -151,11 +151,13 @@ public class Demarcation extends Tree {
      */
     private void findEcotypes (Node node) throws InvalidTreeException {
         ArrayList<String> sample = new ArrayList<String> ();
+        String ecotype = String.format ("Ecotype%03d", ecotypes.size ());
         if (node.isLeafNode ()) {
             String name = node.getName ();
             if (! name.equals (outgroup)) {
                 sample.add (name);
                 ecotypes.add (sample);
+                node.setName (ecotype);
             }
         }
         else {
@@ -174,6 +176,8 @@ public class Demarcation extends Tree {
             // If npop = 1, demarcate the list of sequences as a new ecotype.
             if (result.npop == 1L) {
                 ecotypes.add (sample);
+                node.collapse ();
+                node.setName (ecotype);
             }
             else {
                 // Npop > 1, recurse on children nodes.
