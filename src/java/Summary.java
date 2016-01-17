@@ -45,8 +45,8 @@ public class Summary extends Observable {
         nu = 0;
         length = 0;
         outgroup = "";
-        estimate = new ParameterEstimate ();
-        hillclimbing = new ParameterSet ();
+        estimate = null;
+        hillclimbing = null;
         confidenceInterval = new ParameterSet[] { 
             new ParameterSet (), new ParameterSet ()
         };
