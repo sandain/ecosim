@@ -458,7 +458,7 @@ public class Node implements Comparable<Node> {
     /**
      *  Whether or not this Node is the outgroup.
      */
-    private boolean outgroup;
+    private Boolean outgroup;
 
     /**
      *  The X coordinate of this Node.  Used only when creating a graphical
