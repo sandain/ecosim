@@ -388,10 +388,12 @@ public class Tree {
         // The X coordinate is based on the node's distance from its parent.
         double x = node.getDistance ();
         if (parent != null) x += parent.getX ();
+        // If the node is collapsed, add the descendants distance as well.
+        if (node.isCollapsed ()) x += node.maximumDistanceFromLeafNode ();
         node.setX (x);
         // The Y coordinate is calculated differently for leaf and internal
         // nodes.
-        if (node.isLeafNode ()) {
+        if (node.isLeafNode () || node.isCollapsed ()) {
             node.setY (height);
         }
         else {
@@ -401,7 +403,7 @@ public class Tree {
             for (Node child: node.getChildren ()) {
                 calculateNodeXY (child, h);
                 int numLeaf = 1;
-                if (! child.isLeafNode ()) {
+                if (! (child.isLeafNode () || child.isCollapsed ())) {
                     numLeaf = child.numberOfDescendants ();
                 }
                 h += numLeaf;
