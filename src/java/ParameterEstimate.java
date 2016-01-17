@@ -68,9 +68,10 @@ public class ParameterEstimate implements Runnable {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length, binning);
-        // Estimate the bounds of the sigma and omega lines.
+        // Estimate the bounds of the sigma line.
         Integer[] sigmaBounds = fitLinePoints (points, 1);
-        Integer[] omegaBounds = { sigmaBounds[1] + 1, points.size () - 1 };
+        // Estimate the bounds of the omega line.
+        Integer[] omegaBounds = { sigmaBounds[1] + 1, points.size () - 10 };
         // Optimize the sigma and omega lines using a custom variant of
         // Lloyd's Algorithm.
         Double error = 0.0D;
@@ -89,21 +90,9 @@ public class ParameterEstimate implements Runnable {
             // Calculate the current error.
             error = 0.0D;
             for (int i = 1; i < points.size (); i ++) {
-                Double omegaError = squaredError (points.get (i), omega);
                 Double sigmaError = squaredError (points.get (i), sigma);
-                if (omegaError < sigmaError) {
-                    // Save the bounds of the points for the omega line.
-                    if (i < omegaBounds[0]) {
-                        omegaBounds[0] = i;
-                        sigmaBounds[1] = i - 1;
-                    }
-                    if (i > omegaBounds[1]) {
-                        omegaBounds[1] = i;
-                    }
-                    // Add to the total error.
-                    error += omegaError;
-                }
-                else {
+                Double omegaError = squaredError (points.get (i), omega);
+                if (sigmaError < threshold && sigmaError < omegaError) {
                     // Save the bounds of the points for the sigma line.
                     if (i < sigmaBounds[0]) {
                         sigmaBounds[0] = i;
@@ -114,6 +103,18 @@ public class ParameterEstimate implements Runnable {
                     }
                     // Add to the total error.
                     error += sigmaError;
+                }
+                else if (omegaError < threshold) {
+                    // Save the bounds of the points for the omega line.
+                    if (i < omegaBounds[0]) {
+                        omegaBounds[0] = i;
+                        sigmaBounds[1] = i - 1;
+                    }
+                    if (i > omegaBounds[1]) {
+                        omegaBounds[1] = i;
+                    }
+                    // Add to the total error.
+                    error += omegaError;
                 }
             }
             // Calculate the delta error.
@@ -228,7 +229,7 @@ public class ParameterEstimate implements Runnable {
         // Calculate the line using the current set of points.
         Line line = new Line (points.subList (bounds[0], bounds[1]));
         // Slurp up any points that are close to the line.
-        for (int i = bounds[1]; i < points.size (); i ++) {
+        for (int i = bounds[1] + 1; i < points.size (); i ++) {
             Double error = squaredError (points.get (i), line);
             if (error > threshold) break;
             bounds[1] = i;
