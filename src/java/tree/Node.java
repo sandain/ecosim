@@ -29,7 +29,7 @@ import ecosim.MasterVariables;
 import java.util.ArrayList;
 
 /**
- *  A node potentially contains a name, a parent node, a distance from the
+ *  A Node potentially contains a name, a parent node, a distance from the
  *  parent node, and a list of all child nodes.
  *
  *  @author Andrew Warner
@@ -43,7 +43,7 @@ public class Node implements Comparable<Node> {
      *
      *  @param name The name of this Node.
      *  @param distance The distance from the parent node.
-     *  @param parent The parent Node of this node.
+     *  @param parent The parent Node of this Node.
      *  @param children A list of TreeNodes which are the children of this
      *  node.
      */
@@ -59,7 +59,7 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Default constructor for object of class Node.  This node
+     *  Default constructor for object of class Node.  This Node
      *  will have no name, distance, parent, or children unless defined
      *  later.
      */
@@ -123,16 +123,16 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Set the name of this node.
+     *  Set the name of this Node.
      *
-     *  @param name The name of this node.
+     *  @param name The name of this Node.
      */
      public void setName (String name) {
          this.name = name;
      }
 
     /**
-     *  Set the distance from the parent node to this node.
+     *  Set the distance from the parent Node to this Node.
      *
      *  @param distance The distance to the parent.
      */
@@ -141,25 +141,25 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Let this node know whether or not it is the outgroup.
+     *  Let this Node know whether or not it is the outgroup.
      *
-     *  @param outgroup Whether or not this node is the outgroup.
+     *  @param outgroup Whether or not this Node is the outgroup.
      */
     public void setOutgroup (Boolean outgroup) {
         this.outgroup = outgroup;
     }
 
     /**
-     *  Set the parent of this node.
+     *  Set the parent of this Node.
      *
-     *  @param parent The parent of this node.
+     *  @param parent The parent of this Node.
      */
     public void setParent (Node parent) {
         this.parent = parent;
     }
 
     /**
-     *  Add a child to this node.
+     *  Add a child to this Node.
      *
      *  @param child The child to add.
      */
@@ -169,14 +169,14 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Sort the children of this node using the default sorter.
+     *  Sort the children of this Node using the default sorter.
      */
     public void sortChildren () {
         sortChildren (new Heapsorter<Node> ());
     }
 
     /**
-     *  Sort the children of this node using the provided sorter.
+     *  Sort the children of this Node using the provided sorter.
      *
      *  @param sorter The sorter to use.
      */
@@ -188,16 +188,16 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the name of this node.
+     *  Returns the name of this Node.
      *
-     *  @return String containing the name of this node.
+     *  @return String containing the name of this Node.
      */
     public String getName () {
         return name;
     }
 
     /**
-     *  Get the distance from the parent node to this node.
+     *  Get the distance from the parent Node to this Node.
      *
      *  @return Double containing the distance to the parent.
      */
@@ -206,25 +206,25 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the parent of this node.
+     *  Returns the parent of this Node.
      *
-     *  @return Node containing the parent of this node.
+     *  @return Node containing the parent of this Node.
      */
     public Node getParent () {
         return parent;
     }
 
     /**
-     *  Returns the children of this node.
+     *  Returns the children of this Node.
      *
-     *  @return ArrayList<Node> with the children of this node.
+     *  @return ArrayList<Node> with the children of this Node.
      */
     public ArrayList<Node> getChildren () {
         return children;
     }
 
     /**
-     *  Removes a child of this node.
+     *  Removes a child of this Node.
      *
      *  @param child The child Node to remove.
      */
@@ -234,36 +234,36 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns a Boolean stating whether this node is a leaf or not.
+     *  Returns a Boolean stating whether this Node is a leaf or not.
      *
-     *  @return A Boolean stating whether this node is a leaf or not.
+     *  @return A Boolean stating whether this Node is a leaf or not.
      */
     public Boolean isLeafNode () {
         return children.isEmpty ();
     }
 
     /**
-     *  Returns a Boolean stating whether this node is the outgroup or not.
+     *  Returns a Boolean stating whether this Node is the outgroup or not.
      *
-     *  @return A Boolean stating whether this node is the outgroup or not.
+     *  @return A Boolean stating whether this Node is the outgroup or not.
      */
     public Boolean isOutgroup () {
         return outgroup;
     }
 
     /**
-     *  Returns whether this node is the root node or not.
+     *  Returns whether this Node is the root Node or not.
      *
-     *  @return True if this node is the root node.
+     *  @return True if this Node is the root node.
      */
     public Boolean isRootNode () {
         return parent == null;
     }
 
     /**
-     *  Returns the distance of this node from the root node.
+     *  Returns the distance of this Node from the root node.
      *
-     *  @return The distance of this node from the root node.
+     *  @return The distance of this Node from the root node.
      */
     public Double distanceFromRootNode () {
         Double distanceFromRoot = 0.0d;
@@ -274,9 +274,9 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the maximum distance of this node from a leaf node.
+     *  Returns the maximum distance of this Node from a leaf node.
      *
-     *  @return The maximum distance of this node from a leaf node.
+     *  @return The maximum distance of this Node from a leaf node.
      */
     public Double maximumDistanceFromLeafNode () {
         Double maximumDistance = 0.0d;
@@ -291,9 +291,9 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the minimum distance of this node from a leaf node.
+     *  Returns the minimum distance of this Node from a leaf node.
      *
-     *  @return The minimum distance of this node from a leaf node.
+     *  @return The minimum distance of this Node from a leaf node.
      */
     public Double minimumDistanceFromLeafNode () {
         Double minimumDistance = Double.MAX_VALUE;
@@ -308,10 +308,10 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Calculate the maximum distance between the leaf node ancestors of
-     *  this node.
+     *  Calculate the maximum distance between the leaf Node ancestors of
+     *  this Node.
      *
-     *  @return The maximum distance between the leaf node ancestors.
+     *  @return The maximum distance between the leaf Node ancestors.
      */
     public Double maximumDistanceBetweenLeafNodes () {
         ArrayList<Double> childDistance = new ArrayList<Double> ();
@@ -328,7 +328,7 @@ public class Node implements Comparable<Node> {
             Heapsorter<Double> sorter = new Heapsorter<Double> ();
             sorter.sort (childDistance);
         }
-        // Calculate the maximum distance between the leaf node ancestors.
+        // Calculate the maximum distance between the leaf Node ancestors.
         if (childDistance.size () >= 2) {
             distance = childDistance.get (0) + childDistance.get (1);
         }
@@ -336,9 +336,9 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns an array of nodes that are descendants of this node.
+     *  Returns an array of nodes that are descendants of this Node.
      *
-     *  @return The descendants of this node.
+     *  @return The descendants of this Node.
      */
     public ArrayList<Node> getDescendants () {
         ArrayList<Node> descendants = new ArrayList<Node> ();
@@ -354,9 +354,9 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the number of living descendants of this node.
+     *  Returns the number of living descendants of this Node.
      *
-     *  @return The number of living descendants of this node.
+     *  @return The number of living descendants of this Node.
      */
     public int numberOfDescendants () {
         int descendants = 0;
@@ -399,56 +399,76 @@ public class Node implements Comparable<Node> {
         return newick;
     }
 
+    /**
+     *  Get the X location of this Node.
+     *
+     *  @return The X location of this Node.
+     */
     public Double getX () {
         return x;
     }
 
+    /**
+     *  Get the Y location of this Node.
+     *
+     *  @return The Y location of this Node.
+     */
     public Double getY () {
         return y;
     }
 
+    /**
+     *  Set the X location of this Node.
+     *
+     *  @param x The X location of this Node.
+     */
     public void setX (Double x) {
         this.x = x;
     }
 
+    /**
+     *  Set the Y location of this Node.
+     *
+     *  @param y The Y location of this Node.
+     */
     public void setY (Double y) {
         this.y = y;
     }
 
     /**
-     *  The name of this node.
+     *  The name of this Node.
      */
     private String name;
 
     /**
-     *  The distance of this node from it's parent.
+     *  The distance of this Node from it's parent.
      */
     private Double distance;
 
     /**
-     *  The parent of this node.
+     *  The parent of this Node.
      */
     private Node parent;
 
     /**
-     *  A list of children of this node.
+     *  A list of children of this Node.
      */
     private ArrayList<Node> children;
 
     /**
-     *  Whether or not this node is the outgroup.
+     *  Whether or not this Node is the outgroup.
      */
     private boolean outgroup;
 
     /**
-     *  The X coordinate of this node.  Used only when creating a graphical
-     *  representation of this node.
+     *  The X coordinate of this Node.  Used only when creating a graphical
+     *  representation of this Node.
      */
     private Double x;
 
     /**
-     *  The Y coordinate of this node.  Used only when creating a graphical
-     *  representation of this node.
+     *  The Y coordinate of this Node.  Used only when creating a graphical
+     *  representation of this Node.
      */
     private Double y;
 
