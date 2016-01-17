@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class Demarcation implements Runnable {
+public class Demarcation extends Tree {
 
     public static final int DEMARCATION_PRECISION_COARSE_SCALE = 2501;
     public static final int DEMARCATION_PRECISION_FINE_SCALE = 2502;
@@ -64,13 +64,14 @@ public class Demarcation implements Runnable {
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
-        ParameterSet hclimbResult, int precision) {
+        ParameterSet hclimbResult, int precision)
+        throws InvalidTreeException {
+        super (tree);
         this.masterVariables = masterVariables;
         this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.outgroup = outgroup;
-        this.tree = tree;
         this.hclimbResult = hclimbResult;
         this.precision = precision;
         hasRun = false;
@@ -81,10 +82,10 @@ public class Demarcation implements Runnable {
     /**
      *  Run the demarcation program.
      */
-    public void run () {
+    public void run () throws InvalidTreeException {
         iteration = 0;
         // Find the ecotypes.
-        findEcotypes (tree.getRoot ());
+        findEcotypes (root);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -148,7 +149,7 @@ public class Demarcation implements Runnable {
      *
      *  @param node The current node representing the subclade.
      */
-    private void findEcotypes (Node node) {
+    private void findEcotypes (Node node) throws InvalidTreeException {
         ArrayList<String> sample = new ArrayList<String> ();
         if (node.isLeafNode ()) {
             String name = node.getName ();
@@ -191,7 +192,7 @@ public class Demarcation implements Runnable {
     *  @param node The Node describing the sample to run.
     *  @return The npop value tested and its likelihood
     */
-   private NpopValue runSample (Node node) {
+   private NpopValue runSample (Node node) throws InvalidTreeException {
         // Increment the iteration variable used in the file names.
         iteration ++;
         File inputFile = new File (
@@ -205,13 +206,7 @@ public class Demarcation implements Runnable {
         );
         // Create a new Tree containing just the sequences to
         // be tested.
-        Tree sampleTree = new Tree ();
-        try {
-            sampleTree = new Tree (node.toString ());
-        }
-        catch (InvalidTreeException e) {
-            System.err.println ("Error creating sample tree.");
-        }
+        Tree sampleTree = new Tree (node.toString ());
         sampleTree.toNewick (newickFile);
         Integer sampleNu = node.numberOfDescendants ();
         // Run the binning program on the sample tree.
@@ -404,7 +399,6 @@ public class Demarcation implements Runnable {
     private String outgroup;
     private Integer length;
     private Integer nu;
-    private Tree tree;
     private ParameterSet hclimbResult;
 
     private Integer precision;

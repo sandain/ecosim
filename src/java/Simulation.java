@@ -515,13 +515,19 @@ public class Simulation {
         // Start running demarcation.
         running = true;
         log.appendln ("Running demarcation...");
-        demarcation = new Demarcation (
-            masterVariables, execs, nu, length, outgroup, tree,
-            hillclimb.getResult (), demarcationPrecision
-        );
-        demarcation.run ();
-        // Verify that demarcation ran correctly.
-        if (! demarcation.hasRun ()) {
+        try {
+            demarcation = new Demarcation (
+                masterVariables, execs, nu, length, outgroup, tree,
+                hillclimb.getResult (), demarcationPrecision
+            );
+            demarcation.run ();
+            // Verify that demarcation ran correctly.
+            if (! demarcation.hasRun ()) {
+                log.appendln ("  Error running the demarcation program!");
+                return;
+            }
+        }
+        catch (InvalidTreeException e) {
             log.appendln ("  Error running the demarcation program!");
             return;
         }
