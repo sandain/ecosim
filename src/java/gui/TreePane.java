@@ -363,7 +363,10 @@ public class TreePane extends JPanel implements Scrollable {
         int y2pr = pointY - tileY * TILE_SIZE;
         Graphics2D g2 = (Graphics2D)tile.getGraphics ();
         g2.setColor (Color.BLACK);
+        // Draw each line twice, from x1pr,1ypr -> x2pr,y2pr and
+        // x2pr,y2pr -> x1pr,1ypr to work around a bug in Java.
         g2.drawLine (x1pr, y1pr, x2pr, y2pr);
+        g2.drawLine (x2pr, y2pr, x1pr, y1pr);
     }
 
     /**
