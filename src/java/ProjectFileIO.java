@@ -57,30 +57,17 @@ public class ProjectFileIO {
         this.execs = execs;
         Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
-        tree = new Tree ();
         nu = 0;
         length = 0;
         outgroup = "";
-        binning = new Binning (tree);
-        estimate = new ParameterEstimate (nu, length, binning);
-        hillclimb = new Hillclimb (
-            masterVariables, execs, nu, length, binning, estimate.getResult ()
-        );
-        npopCI = new NpopConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
-        );
-        omegaCI = new OmegaConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
-        );
-        sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, execs, nu, length, binning, hillclimb.getResult ()
-        );
-        demarcation = new Demarcation (
-            masterVariables, execs, nu, length, outgroup, tree,
-            hillclimb.getResult (),
-            Demarcation.DEMARCATION_METHOD_MONOPHYLY,
-            Demarcation.DEMARCATION_PRECISION_FINE_SCALE
-        );
+        tree = null;
+        binning = null;
+        estimate = null;
+        hillclimb = null;
+        npopCI = null;
+        omegaCI = null;
+        sigmaCI = null;
+        demarcation = null;
     }
 
     /**
@@ -490,7 +477,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within binning.
-                if (activeElement.equals ("binning")) {
+                if (activeElement.equals ("binning") && binning != null) {
                     if (localName.equals ("bin")) {
                         binning.addBinLevel (new BinLevel (
                             new Double (attrs.getValue (uri, "crit")),
@@ -499,7 +486,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within estimate.
-                if (activeElement.equals ("estimate")) {
+                if (activeElement.equals ("estimate") && estimate != null) {
                     if (localName.equals ("result")) {
                         estimate.setResult (new ParameterSet (
                             new Long (attrs.getValue (uri, "npop")),
@@ -510,7 +497,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within hillclimb.
-                if (activeElement.equals ("hillclimb")) {
+                if (activeElement.equals ("hillclimb") && hillclimb != null) {
                     if (localName.equals ("result")) {
                         hillclimb.setResult (new ParameterSet (
                             new Long (attrs.getValue (uri, "npop")),
@@ -521,7 +508,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within npopCI.
-                if (activeElement.equals ("npopCI")) {
+                if (activeElement.equals ("npopCI") && npopCI != null) {
                     if (localName.equals ("lower")) {
                         Long value = new Long (
                             attrs.getValue (uri, "value")
@@ -542,7 +529,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within omegaCI.
-                if (activeElement.equals ("omegaCI")) {
+                if (activeElement.equals ("omegaCI") && omegaCI != null) {
                     if (localName.equals ("lower")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
@@ -563,7 +550,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within sigmaCI.
-                if (activeElement.equals ("sigmaCI")) {
+                if (activeElement.equals ("sigmaCI") && sigmaCI != null) {
                     if (localName.equals ("lower")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
@@ -620,27 +607,27 @@ public class ProjectFileIO {
                     isProjectFile = false;
                 }
                 // Look for the end of the estimate element.
-                if (localName.equals ("estimate")) {
+                if (localName.equals ("estimate") && estimate != null) {
                     estimate.setHasRun (true);
                 }
                 // Look for the end of the hillclimb element.
-                if (localName.equals ("hillclimb")) {
+                if (localName.equals ("hillclimb") && hillclimb != null) {
                     hillclimb.setHasRun (true);
                 }
                 // Look for the end of the npopCI element.
-                if (localName.equals ("npopCI")) {
+                if (localName.equals ("npopCI") && npopCI != null) {
                     npopCI.setHasRun (true);
                 }
                 // Look for the end of the omegaCI element.
-                if (localName.equals ("omegaCI")) {
+                if (localName.equals ("omegaCI") && omegaCI != null) {
                     omegaCI.setHasRun (true);
                 }
                 // Look for the end of the sigmaCI element.
-                if (localName.equals ("sigmaCI")) {
+                if (localName.equals ("sigmaCI") && sigmaCI != null) {
                     sigmaCI.setHasRun (true);
                 }
                 // Look for the end of the demarcation element.
-                if (localName.equals ("demarcation")) {
+                if (localName.equals ("demarcation") && demarcation != null) {
                     demarcation.setEcotypes (ecotypes);
                     demarcation.setHasRun (true);
                 }
