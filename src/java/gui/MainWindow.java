@@ -22,6 +22,7 @@
 
 package ecosim.gui;
 
+import ecosim.Demarcation;
 import ecosim.Logger;
 import ecosim.MasterVariables;
 import ecosim.Simulation;
@@ -107,16 +108,29 @@ public class MainWindow extends JFrame implements Runnable {
         // Watch for changes to the Summary object.
         summary.addObserver (new Observer () {
             private boolean treeDisplayed = false;
+            private boolean demarcationDisplayed = false;
+            private JScrollPane treeScroll = new JScrollPane ();
+            private JScrollPane demarcationScroll = new JScrollPane ();
             public void update (Observable o, Object obj) {
                 Summary s = (Summary)obj;
+                // Upate the tree scroll pane.
                 Tree t = s.getTree ();
-                if (t != null && t.isValid () && !treeDisplayed) {
-                    JScrollPane treeScroll = new JScrollPane ();
-                    treeScroll.setViewportView (new TreePane (t));
+                if (t == null || ! t.isValid ()) return;
+                if (! treeDisplayed) {
                     pane.addTab ("Phylogeny", treeScroll);
-                    pane.repaint ();
                     treeDisplayed = true;
                 }
+                treeScroll.setViewportView (new TreePane (t));
+                // Update the demarcation scroll pane.
+                Demarcation d = s.getDemarcation ();
+                if (d == null || ! d.isValid ()) return;
+                if (! demarcationDisplayed) {
+                    pane.addTab ("Demarcation", demarcationScroll);
+                    demarcationDisplayed = true;
+                }
+                demarcationScroll.setViewportView (new TreePane (d));
+                // Repaint the pane.
+                pane.repaint ();
             }
         });
         return pane;
