@@ -9,8 +9,8 @@ Extract the contents of the archive to your hard drive:
 * POSIX (Linux, OSX, etc): ~/ecosim/
 
 Create a Desktop shortcut to the shell script for your platform.
-* Windows: C:\EcoSim\runEcoSim.bat or C:\EcoSim\runEcoSim.vbs
-* POSIX (Linux, OSX, etc): ~/ecosim/runEcoSim.sh
+* Windows: C:\EcoSim\ecosim.bat
+* POSIX (Linux, OSX, etc): ~/ecosim/ecosim.sh
 
 
 ## REQUIREMENTS - EXECUTION
@@ -21,13 +21,6 @@ A Java 8 Runtime Environment (JRE) is required to execute this program.  You
 can download it here:
 
 http://java.sun.com/javase/downloads/index.jsp
-
-### NJplot
-
-The NJplot executable must be accessible via your system's PATH, or in the
-EcoSim directory.  You can download it here:
-
-http://pbil.univ-lyon1.fr/software/njplot.html
 
 
 ## REQUIREMENTS - COMPILATION
