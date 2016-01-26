@@ -339,6 +339,7 @@ public class Tree {
         Node parent = node.getParent ();
         // The X coordinate is based on the node's distance from its parent.
         double x = node.getDistance ();
+        // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
         if (node.isCollapsed ()) {
