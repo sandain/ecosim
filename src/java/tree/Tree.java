@@ -336,7 +336,7 @@ public class Tree {
      *  @param node The current Node.
      *  @param height The current height.
      */
-    private void calculateNodeXY (Node node, double height) {
+    protected void calculateNodeXY (Node node, double height) {
         Node parent = node.getParent ();
         // The X coordinate is based on the node's distance from its parent.
         double x = node.getDistance ();
