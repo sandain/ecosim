@@ -30,6 +30,7 @@ import ecosim.Summary;
 import ecosim.tree.Tree;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -41,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JViewport;
 
 /**
  *  Create a JFrame to display the main window.
@@ -117,18 +119,32 @@ public class MainWindow extends JFrame implements Runnable {
                 Tree t = s.getTree ();
                 if (t == null || ! t.isValid ()) return;
                 if (! treeDisplayed) {
+                    JViewport viewport = treeScroll.getViewport ();
+                    viewport.setOpaque (true);
+                    viewport.setBackground (Color.WHITE);
                     pane.addTab ("Phylogeny", treeScroll);
                     treeDisplayed = true;
                 }
-                treeScroll.setViewportView (new TreePane (t));
+                // Create a TiledPainter to paint the tree with.
+                TiledPainter treePainter = new TiledPainter ();
+                // Paint the tree.
+                t.paintTree (treePainter);
+                treeScroll.setViewportView (treePainter);
                 // Update the demarcation scroll pane.
                 Demarcation d = s.getDemarcation ();
                 if (d == null || ! d.isValid ()) return;
                 if (! demarcationDisplayed) {
+                    JViewport viewport = demarcationScroll.getViewport ();
+                    viewport.setOpaque (true);
+                    viewport.setBackground (Color.WHITE);
                     pane.addTab ("Demarcation", demarcationScroll);
                     demarcationDisplayed = true;
                 }
-                demarcationScroll.setViewportView (new TreePane (d));
+                // Create a TiledPainter to paint the tree with.
+                TiledPainter demarcationPainter = new TiledPainter ();
+                // Paint the tree.
+                d.paintTree (demarcationPainter);
+                demarcationScroll.setViewportView (demarcationPainter);
                 // Repaint the pane.
                 pane.repaint ();
             }
