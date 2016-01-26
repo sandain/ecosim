@@ -214,6 +214,8 @@ public class Tree {
         }
         // Save the the new root.
         root = newRoot;
+        // Recalculate the XY location of all nodes.
+        calculateNodeXY (root, 0.0d);
     }
 
     /**
@@ -326,6 +328,8 @@ public class Tree {
                 "Malformed Newick tree, not enough leaves found."
             );
         }
+        // Calculate the XY location of all nodes.
+        calculateNodeXY (root, 0.0d);
     }
 
     /**
