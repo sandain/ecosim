@@ -23,6 +23,7 @@
 package ecosim;
 
 import ecosim.tree.InvalidTreeException;
+import ecosim.tree.SVGPainter;
 import ecosim.tree.Tree;
 
 import java.io.File;
@@ -249,7 +250,8 @@ public class Simulation {
             if (masterVariables.getDebug ()) {
                 String dir = masterVariables.getWorkingDirectory ();
                 tree.toNewick (new File (dir + "outtree.nwk"));
-                tree.toSVG (new File (dir + "outtree.svg"));
+                File svg = new File (dir + "outtree.svg");
+                tree.paintTree (new SVGPainter (svg));
             }
             // Get the number of sequences loaded.
             nu = tree.size ();
@@ -536,7 +538,8 @@ public class Simulation {
         // Output the demarcation is SVG format if debugging is turned on.
         if (masterVariables.getDebug ()) {
             String dir = masterVariables.getWorkingDirectory ();
-            demarcation.toSVG (new File (dir + "demarcation.svg"));
+            File svg = new File (dir + "demarcation.svg");
+            demarcation.paintTree (new SVGPainter (svg));
         }
         // Output the demarcation result.
         log.appendln ("The result from demarcation:");
