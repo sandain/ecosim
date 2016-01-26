@@ -23,6 +23,8 @@
 
 package ecosim.tree;
 
+import ecosim.api.Painter;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -293,6 +295,32 @@ public class Tree {
     }
 
     /**
+     *  Paint the tree using the given Painter.
+     *
+     *  @param painter The Painter to use.
+     */
+    public void paintTree (Painter painter) {
+        int fontHeight = painter.fontHeight ();
+        int fontWidth = painter.fontWidth ();
+        int xModifier = 1000;
+        int xSpacer = fontWidth / 2;
+        int height = fontHeight * (size () + 1);
+        int max = 0;
+        for (Node node: getDescendants ()) {
+            String name = node.getName ();
+            int labelWidth = (name.length () + 1) * fontWidth;
+            int x = fontWidth + labelWidth + Math.round (
+                node.getX ().floatValue () * xModifier
+            );
+            if (x > max) max = x;
+        }
+        int width = max;
+        painter.start (width, height);
+        paintNode (painter, root);
+        painter.end ();
+    }
+
+    /**
      *  Check if this Tree object is valid.
      *
      *  @return True if this is a valid Tree object, False if not.
@@ -311,6 +339,61 @@ public class Tree {
     public void calculateXY () {
         // Calculate the XY location of all nodes.
         calculateNodeXY (root, 0.0d);
+    }
+
+    /**
+     *  Recursive method to paint a node and all of its descendants.
+     *
+     *  @param painter The Painter to use.
+     *  @param node The Node to paint.
+     */
+    protected void paintNode (Painter painter, Node node) {
+        int fontHeight = painter.fontHeight ();
+        int fontWidth = painter.fontWidth ();
+        int xModifier = 1000;
+        int yModifier = fontHeight;
+        int xSpacer = (int)Math.floor (0.5d * fontWidth);
+        int ySpacer = (int)Math.floor (0.5d * fontHeight);
+        int nodeX = fontWidth + Math.round (
+            node.getX ().floatValue () * xModifier
+        );
+        int nodeY = fontHeight + Math.round (
+            node.getY ().floatValue () * yModifier
+        );
+        if (node.isLeafNode () || node.isCollapsed ()) {
+            // Paint the name of the node.
+            painter.drawString (
+                node.getName (), nodeX + xSpacer, nodeY + ySpacer - 2
+            );
+        }
+        else {
+            for (Node child: node.getChildren ()) {
+                int childX = fontWidth + Math.round (
+                    child.getX ().floatValue () * xModifier
+                );
+                int childY = fontHeight + Math.round (
+                    child.getY ().floatValue () * yModifier
+                );
+                // Paint a vertical line connecting the node to it's parent.
+                painter.drawLine (nodeX, nodeY, nodeX, childY);
+                // Paint a triangle if the child node is collapsed, otherwise
+                // draw a horizontal line.
+                if (child.isCollapsed ()) {
+                    int a = childY - ySpacer + 1;
+                    int b = childY + ySpacer - 1;
+                    // Paint a triangle.
+                    painter.drawLine (nodeX, childY, childX, a);
+                    painter.drawLine (nodeX, childY, childX, b);
+                    painter.drawLine (childX, a, childX, b);
+                }
+                else {
+                    // Paint a horizontal line.
+                    painter.drawLine (nodeX, childY, childX, childY);
+                }
+                // Paint the child node.
+                paintNode (painter, child);
+            }
+        }
     }
 
     /**
