@@ -171,53 +171,6 @@ public class Tree {
     }
 
     /**
-     *  Remove a leaf node descendant from the tree.
-     *
-     *  @param name The name of the descendant to remove.
-     */
-    public void removeDescendant (String name) {
-        Node descendant = getDescendant (name);
-        removeDescendant (descendant);
-    }
-
-    /**
-     *  Remove a leaf node descendant from the tree.
-     *
-     * Since we assume that each internal node has exactly two children,
-     * the parent node of the descendant being destroyed will also have to
-     * be destroyed.  The other child will have its grandparent become its
-     * new parent, and its distance will become the sum of its distance and
-     * its parents distance.
-     *
-     *  @param descendant The descendant to remove.
-     */
-    public void removeDescendant (Node descendant) {
-        if (! descendant.isLeafNode ()) return;
-        // Grab the parent node of the descendant.
-        Node parent = descendant.getParent ();
-        // Remove the descendant as a child of the parent node.
-        parent.removeChild (descendant);
-        // Grab the other child node of the parent.
-        Node otherChild = parent.getChildren ().get (0);
-        // Calculate a new distance for the other child node.
-        Double distance = otherChild.getDistance () + parent.getDistance ();
-        otherChild.setDistance (distance);
-        // Setup the relationships of the other child node.
-        if (parent.isRootNode ()) {
-            // The parent is the root node, the other child becomes the new 
-            // root node.
-            otherChild.setParent (null);
-            root = otherChild;
-        }
-        else {
-            // The grandparent of the child node is the new parent.
-            Node grandparent = parent.getParent ();
-            grandparent.removeChild (parent);
-            grandparent.addChild (otherChild);
-        }
-    }
-
-    /**
      *  Reroot the tree so that the outgroup descendant is next to the root.
      *
      *  @param name The name of the outgroup descendant.
