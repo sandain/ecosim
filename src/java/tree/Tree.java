@@ -341,7 +341,11 @@ public class Tree {
         double x = node.getDistance ();
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
-        if (node.isCollapsed ()) x += node.maximumDistanceFromLeafNode ();
+        if (node.isCollapsed ()) {
+            double max = node.maximumDistanceFromLeafNode ();
+            if (max < 0.01d) max = 0.01d;
+            x += max;
+        }
         node.setX (x);
         // The Y coordinate is calculated differently for leaf and internal
         // nodes.
