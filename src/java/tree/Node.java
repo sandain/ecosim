@@ -369,7 +369,7 @@ public class Node implements Comparable<Node> {
     public ArrayList<Node> getDescendants () {
         ArrayList<Node> descendants = new ArrayList<Node> ();
         for (Node child: children) {
-            if (child.isLeafNode ()) {
+            if (child.isLeafNode () || child.isCollapsed ()) {
                 descendants.add (child);
             }
             else {
@@ -413,7 +413,7 @@ public class Node implements Comparable<Node> {
         if (newick.length () > 0) {
             newick = "(" + newick + ")";
         }
-        if (isLeafNode ()) {
+        if (isLeafNode () || isCollapsed ()) {
             newick += String.format ("%s:%.5f", name, distance);
         }
         else {
