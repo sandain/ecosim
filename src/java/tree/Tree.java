@@ -267,34 +267,6 @@ public class Tree {
     }
 
     /**
-     *  Save the tree data in this object to a SVG formatted file.
-     *
-     *  @param file File to write the Newick tree to.
-     *  @return True if the save was a success, False otherwise.
-     */
-    public boolean toSVG (File file) {
-        boolean success = false;
-        SVGWriter out = null;
-        try {
-            out = new SVGWriter (new FileWriter (file));
-            out.write (this);
-        }
-        catch (IOException e) {
-            System.out.println ("Error writing to output file.");
-        }
-        finally {
-            try {
-                out.close ();
-                success = true;
-            }
-            catch (IOException e) {
-                System.out.println ("Error closing output file.");
-            }
-        }
-        return success;
-    }
-
-    /**
      *  Paint the tree using the given Painter.
      *
      *  @param painter The Painter to use.
@@ -331,14 +303,6 @@ public class Tree {
             valid = true;
         }
         return valid;
-    }
-
-    /**
-     *  Calculate the X,Y location for all nodes in the tree.
-     */
-    public void calculateXY () {
-        // Calculate the XY location of all nodes.
-        calculateNodeXY (root, 0.0d);
     }
 
     /**
