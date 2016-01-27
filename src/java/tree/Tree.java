@@ -342,7 +342,7 @@ public class Tree {
                 painter.drawLine (nodeX, nodeY, nodeX, childY);
                 // Paint a triangle if the child node is collapsed, otherwise
                 // draw a horizontal line.
-                if (child.isCollapsed ()) {
+                if (child.isCollapsed () && child.numberOfDescendants () > 1) {
                     int a = childY - ySpacer + 1;
                     int b = childY + ySpacer - 1;
                     // Paint a triangle.
@@ -393,7 +393,7 @@ public class Tree {
         // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
-        if (node.isCollapsed ()) {
+        if (node.isCollapsed () && node.numberOfDescendants () > 1) {
             double max = node.maximumDistanceFromLeafNode ();
             if (max < 0.01d) max = 0.01d;
             x += max;
