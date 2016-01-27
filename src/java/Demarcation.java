@@ -160,6 +160,8 @@ public class Demarcation extends Tree {
                 sample.add (name);
                 ecotypes.add (sample);
                 node.setName (ecotype);
+                node.addChild (new Node (name, 0.0d));
+                node.collapse ();
             }
         }
         else {
@@ -178,8 +180,8 @@ public class Demarcation extends Tree {
             // If npop = 1, demarcate the list of sequences as a new ecotype.
             if (result.npop == 1L) {
                 ecotypes.add (sample);
-                node.collapse ();
                 node.setName (ecotype);
+                node.collapse ();
             }
             else {
                 // Npop > 1, recurse on children nodes.
