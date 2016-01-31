@@ -384,6 +384,24 @@ public class Node implements Comparable<Node> {
     }
 
     /**
+     *  Returns an array of nodes that are collapsed descendants of this Node.
+     *
+     *  @return The collapsed descendants of this Node.
+     */
+    public ArrayList<Node> getCollapsed () {
+        ArrayList<Node> collapsed = new ArrayList<Node> ();
+        for (Node child: children) {
+            if (child.isCollapsed ()) {
+                collapsed.add (child);
+            }
+            else {
+                collapsed.addAll (child.getCollapsed ());
+            }
+        }
+        return collapsed;
+    }
+
+    /**
      *  Returns this Node as a Newick formatted String.
      *
      *  @return A Newick formatted String representing this Node.
