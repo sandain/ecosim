@@ -344,7 +344,7 @@ public class Tree {
      *  @param painter The Painter to use.
      *  @param node The Node to paint.
      */
-    protected void paintNode (Painter painter, Node node) {
+    private void paintNode (Painter painter, Node node) {
         int fontHeight = painter.fontHeight ();
         int fontWidth = painter.fontWidth ();
         int stroke = 1;
