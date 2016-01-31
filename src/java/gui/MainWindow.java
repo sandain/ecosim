@@ -28,18 +28,26 @@ import ecosim.MasterVariables;
 import ecosim.Simulation;
 import ecosim.Summary;
 import ecosim.tree.Tree;
+import ecosim.tree.SVGPainter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -115,7 +123,7 @@ public class MainWindow extends JFrame implements Runnable {
             private JScrollPane demarcationScroll = new JScrollPane ();
             public void update (Observable o, Object obj) {
                 Summary s = (Summary)obj;
-                // Upate the tree scroll pane.
+                // Update the tree scroll pane.
                 Tree t = s.getTree ();
                 if (t == null || ! t.isValid ()) return;
                 if (! treeDisplayed) {
@@ -130,6 +138,25 @@ public class MainWindow extends JFrame implements Runnable {
                 // Paint the tree.
                 t.paintTree (treePainter);
                 treeScroll.setViewportView (treePainter);
+                // Add a mouse listener to the treePainter.
+                treePainter.addMouseListener (new MouseAdapter () {
+                    @Override
+                    public void mousePressed (MouseEvent e) {
+                      if (e.isPopupTrigger ()) {
+                            JPopupMenu popup = new JPopupMenu ();
+                            JMenuItem menu = new JMenuItem ("Save as SVG");
+                            menu.addActionListener (new ActionListener () {
+                                public void actionPerformed (ActionEvent evt) {
+                                    saveSVGActionPerformed (t);
+                                }
+                            });
+                            popup.add (menu);
+                            popup.show (
+                                e.getComponent (), e.getX (), e.getY ()
+                            );
+                        }
+                    }
+                });
                 // Update the demarcation scroll pane.
                 Demarcation d = s.getDemarcation ();
                 if (d == null || ! d.isValid ()) return;
@@ -145,11 +172,45 @@ public class MainWindow extends JFrame implements Runnable {
                 // Paint the tree.
                 d.paintTree (demarcationPainter);
                 demarcationScroll.setViewportView (demarcationPainter);
+                // Add a mouse listener to the demarcationPainter.
+                demarcationPainter.addMouseListener (new MouseAdapter () {
+                    @Override
+                    public void mousePressed (MouseEvent e) {
+                      if (e.isPopupTrigger ()) {
+                            JPopupMenu popup = new JPopupMenu ();
+                            JMenuItem menu = new JMenuItem ("Save as SVG");
+                            menu.addActionListener (new ActionListener () {
+                                public void actionPerformed (ActionEvent evt) {
+                                    saveSVGActionPerformed (d);
+                                }
+                            });
+                            popup.add (menu);
+                            popup.show (
+                                e.getComponent (), e.getX (), e.getY ()
+                            );
+                        }
+                    }
+                });
                 // Repaint the pane.
                 pane.repaint ();
             }
         });
         return pane;
+    }
+
+    /**
+     *  Save the tree as an SVG file.
+     *
+     *  @param tree The tree to save as an SVG file.
+     */
+    private void saveSVGActionPerformed (Tree tree) {
+        FileChooser fc = new FileChooser ("svg");
+        int returnVal = fc.showSaveDialog (this);
+        File file = fc.getSelectedFile ();
+        if (returnVal != FileChooser.APPROVE_OPTION) return;
+        String fname = file.getAbsolutePath ();
+        if (! fname.endsWith (".svg")) file = new File (fname + ".svg");
+        tree.paintTree (new SVGPainter (file));
     }
 
     private Logger log;
