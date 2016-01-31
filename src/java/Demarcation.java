@@ -86,8 +86,6 @@ public class Demarcation extends Tree {
         iteration = 0;
         // Find the ecotypes.
         findEcotypes (root);
-        // Calculate the XY location of all nodes.
-        calculateNodeXY (root, 0.0d);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }

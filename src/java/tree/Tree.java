@@ -246,8 +246,6 @@ public class Tree {
         }
         // Save the the new root.
         root = newRoot;
-        // Recalculate the XY location of all nodes.
-        calculateNodeXY (root, 0.0d);
     }
 
     /**
@@ -306,6 +304,8 @@ public class Tree {
         int fontWidth = painter.fontWidth ();
         int xModifier = 1000;
         int xSpacer = fontWidth / 2;
+        // Calculate the XY location of all nodes.
+        calculateNodeXY (root, 0.0d);
         int height = fontHeight * (size () + 1);
         int max = 0;
         for (Node node: getDescendants ()) {
@@ -405,8 +405,6 @@ public class Tree {
                 "Malformed Newick tree, not enough leaves found."
             );
         }
-        // Calculate the XY location of all nodes.
-        calculateNodeXY (root, 0.0d);
     }
 
     /**
@@ -416,7 +414,7 @@ public class Tree {
      *  @param node The current Node.
      *  @param height The current height.
      */
-    protected void calculateNodeXY (Node node, double height) {
+    private void calculateNodeXY (Node node, double height) {
         Node parent = node.getParent ();
         // The X coordinate is based on the node's distance from its parent.
         double x = node.getDistance ();
