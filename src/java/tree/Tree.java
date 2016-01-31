@@ -43,6 +43,12 @@ import java.util.ArrayList;
  */
 public class Tree {
 
+    public static final int PAINT_METHOD_NORMAL     = 1010;
+    public static final int PAINT_METHOD_COLLAPSED  = 1020;
+    public static final int PAINT_METHOD_DEMARCATED = 1030;
+
+    public static int method = PAINT_METHOD_NORMAL;
+
     /**
      *  The default constructor for objects of class Tree.
      */
@@ -319,9 +325,22 @@ public class Tree {
         // Calculate the height and width needed for the tree.
         int height = fontHeight * (size () + 1);
         int width = max;
+        // Make room for the demarcation line if needed.
+        if (method == PAINT_METHOD_DEMARCATED) {
+            // Add room for the demarcation line.
+            width += 20;
+            // Add room for the label.
+            int maxLabel = 0;
+            for (Node node: getCollapsed ()) {
+                String name = node.getName ();
+                int labelWidth = (name.length () + 1) * fontWidth;
+                if (labelWidth > maxLabel) maxLabel = labelWidth;
+            }
+            width += xSpacer + maxLabel;
+        }
         // Paint the tree.
         painter.start (width, height);
-        paintNode (painter, root);
+        paintNode (painter, root, max + 10);
         painter.end ();
     }
 
@@ -344,10 +363,11 @@ public class Tree {
      *  @param painter The Painter to use.
      *  @param node The Node to paint.
      */
-    private void paintNode (Painter painter, Node node) {
+    private void paintNode (Painter painter, Node node, int maxX) {
         int fontHeight = painter.fontHeight ();
         int fontWidth = painter.fontWidth ();
         int stroke = 1;
+        int demarcationStroke = 10;
         int xModifier = 1000;
         int yModifier = fontHeight;
         int xSpacer = (int)Math.floor (0.5d * fontWidth);
@@ -358,7 +378,8 @@ public class Tree {
         int nodeY = fontHeight + Math.round (
             node.getY ().floatValue () * yModifier
         );
-        if (node.isLeafNode () || node.isCollapsed ()) {
+        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        if (node.isLeafNode () || (node.isCollapsed () && paintCollapsed)) {
             // Paint the name of the node.
             painter.drawString (
                 node.getName (), nodeX + xSpacer, nodeY + ySpacer - 2
@@ -376,7 +397,8 @@ public class Tree {
                 painter.drawLine (nodeX, nodeY, nodeX, childY, stroke);
                 // Paint a triangle if the child node is collapsed, otherwise
                 // draw a horizontal line.
-                if (child.isCollapsed () && numberOfDescendants (child) > 1) {
+                int num = numberOfDescendants (child);
+                if (child.isCollapsed () && paintCollapsed && num > 1) {
                     int a = childY - ySpacer + 1;
                     int b = childY + ySpacer - 1;
                     // Paint a triangle.
@@ -388,8 +410,26 @@ public class Tree {
                     // Paint a horizontal line.
                     painter.drawLine (nodeX, childY, childX, childY, stroke);
                 }
+                if (child.isCollapsed () && method == PAINT_METHOD_DEMARCATED) {
+                    int minY = Integer.MAX_VALUE;
+                    int maxY = 0;
+                    for (Node descendant: child.getDescendants ()) {
+                        int y = fontHeight + Math.round (
+                            descendant.getY ().floatValue () * yModifier
+                        );
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                    int a = minY - ySpacer + 2;
+                    int b = maxY + ySpacer - 2;
+                    int c = Math.round ((float)(minY + maxY) / 2) + ySpacer - 2;
+                    painter.drawLine (maxX, a, maxX, b, demarcationStroke);
+                    painter.drawString (
+                        child.getName (), maxX + fontWidth, c
+                    );
+                }
                 // Paint the child node.
-                paintNode (painter, child);
+                paintNode (painter, child, maxX);
             }
         }
     }
@@ -425,7 +465,9 @@ public class Tree {
         // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
-        if (node.isCollapsed () && numberOfDescendants (node) > 1) {
+        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        int num = numberOfDescendants (node);
+        if (node.isCollapsed () && paintCollapsed && num > 1) {
             double max = node.maximumDistanceFromLeafNode ();
             if (max < 0.01d) max = 0.01d;
             x += max;
@@ -433,7 +475,7 @@ public class Tree {
         node.setX (x);
         // The Y coordinate is calculated differently for leaf and internal
         // nodes.
-        if (node.isLeafNode () || node.isCollapsed ()) {
+        if (node.isLeafNode () || (node.isCollapsed () && paintCollapsed)) {
             node.setY (height);
         }
         else {
@@ -443,7 +485,8 @@ public class Tree {
             for (Node child: node.getChildren ()) {
                 calculateNodeXY (child, h);
                 int numLeaf = 1;
-                if (! (child.isLeafNode () || child.isCollapsed ())) {
+                if (! (child.isLeafNode () ||
+                    (child.isCollapsed () && paintCollapsed))) {
                     numLeaf = numberOfDescendants (child);
                 }
                 h += numLeaf;
