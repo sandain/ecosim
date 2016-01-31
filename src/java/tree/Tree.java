@@ -306,7 +306,7 @@ public class Tree {
         int xSpacer = fontWidth / 2;
         // Calculate the XY location of all nodes.
         calculateNodeXY (root, 0.0d);
-        int height = fontHeight * (size () + 1);
+        // Calculate the max X value.
         int max = 0;
         for (Node node: getDescendants ()) {
             String name = node.getName ();
@@ -316,7 +316,10 @@ public class Tree {
             );
             if (x > max) max = x;
         }
+        // Calculate the height and width needed for the tree.
+        int height = fontHeight * (size () + 1);
         int width = max;
+        // Paint the tree.
         painter.start (width, height);
         paintNode (painter, root);
         painter.end ();
