@@ -183,6 +183,16 @@ public class Tree {
     }
 
     /**
+     *  Returns an array of nodes that are collapsed descendants of the
+     *  root node.
+     *
+     *  @return The collapsed descendants of the root node.
+     */
+    public ArrayList<Node> getCollapsed () {
+        return root.getCollapsed ();
+    }
+
+    /**
      *  Returns an array of nodes that are descendants of the root node.
      *
      *  @return The descendants of the root node.
