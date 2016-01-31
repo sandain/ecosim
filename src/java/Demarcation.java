@@ -216,7 +216,7 @@ public class Demarcation extends Tree {
         // be tested.
         Tree sampleTree = new Tree (node.toString ());
         sampleTree.toNewick (newickFile);
-        Integer sampleNu = node.numberOfDescendants ();
+        Integer sampleNu = numberOfDescendants (node);
         // Run the binning program on the sample tree.
         Binning sampleBinning = new Binning (sampleTree);
         sampleBinning.run ();

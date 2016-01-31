@@ -384,24 +384,6 @@ public class Node implements Comparable<Node> {
     }
 
     /**
-     *  Returns the number of living descendants of this Node.
-     *
-     *  @return The number of living descendants of this Node.
-     */
-    public int numberOfDescendants () {
-        int descendants = 0;
-        for (Node child: children) {
-            if (child.isLeafNode () || child.isCollapsed ()) {
-                descendants ++;
-            }
-            else {
-                descendants += child.numberOfDescendants ();
-            }
-        }
-        return descendants;
-    }
-
-    /**
      *  Returns this Node as a Newick formatted String.
      *
      *  @return A Newick formatted String representing this Node.

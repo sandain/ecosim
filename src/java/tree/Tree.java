@@ -142,7 +142,27 @@ public class Tree {
      *  @return Node maximum Y value of the tree.
      */
     public Double maximumY () {
-        return 1.0d * root.numberOfDescendants ();
+        return 1.0d * numberOfDescendants (root);
+    }
+
+    /**
+     *  Returns the number of living descendants of the Node.
+     *
+     *  @return The number of living descendants of the Node.
+     */
+    public int numberOfDescendants (Node node) {
+        int descendants = 0;
+        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        for (Node child: node.getChildren ()) {
+            if (child.isLeafNode () ||
+                (child.isCollapsed () && paintCollapsed)) {
+                descendants ++;
+            }
+            else {
+                descendants += numberOfDescendants (child);
+            }
+        }
+        return descendants;
     }
 
     /**
@@ -226,7 +246,7 @@ public class Tree {
      *  @return The number of descendants.
      */
     public int size () {
-        return root.numberOfDescendants ();
+        return numberOfDescendants (root);
     }
 
     /**
@@ -342,7 +362,7 @@ public class Tree {
                 painter.drawLine (nodeX, nodeY, nodeX, childY);
                 // Paint a triangle if the child node is collapsed, otherwise
                 // draw a horizontal line.
-                if (child.isCollapsed () && child.numberOfDescendants () > 1) {
+                if (child.isCollapsed () && numberOfDescendants (child) > 1) {
                     int a = childY - ySpacer + 1;
                     int b = childY + ySpacer - 1;
                     // Paint a triangle.
@@ -393,7 +413,7 @@ public class Tree {
         // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
-        if (node.isCollapsed () && node.numberOfDescendants () > 1) {
+        if (node.isCollapsed () && numberOfDescendants (node) > 1) {
             double max = node.maximumDistanceFromLeafNode ();
             if (max < 0.01d) max = 0.01d;
             x += max;
@@ -412,7 +432,7 @@ public class Tree {
                 calculateNodeXY (child, h);
                 int numLeaf = 1;
                 if (! (child.isLeafNode () || child.isCollapsed ())) {
-                    numLeaf = child.numberOfDescendants ();
+                    numLeaf = numberOfDescendants (child);
                 }
                 h += numLeaf;
                 double childY = child.getY ();
