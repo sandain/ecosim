@@ -67,6 +67,11 @@ public class FileChooser extends JFileChooser {
                 description = xmlDescription;
                 mode = FILES_ONLY;
                 break;
+            case "svg":
+                valid = svgExtensions;
+                description = svgDescription;
+                mode = FILES_ONLY;
+                break;
             case "csv":
                 valid = csvExtensions;
                 description = csvDescription;
@@ -131,6 +136,10 @@ public class FileChooser extends JFileChooser {
         "xml"
     };
 
+    private static final String[] svgExtensions = {
+        "svg"
+    };
+
     private static final String[] csvExtensions = {
         "csv"
     };
@@ -146,6 +155,7 @@ public class FileChooser extends JFileChooser {
     private static final String defaultDescription = "Default";
     private static final String directoryDescription = "Directories";
     private static final String xmlDescription = "XML Project Files";
+    private static final String svgDescription = "SVG Image Files";
     private static final String csvDescription = "CSV Save Files";
     private static final String fastaDescription = "FASTA Files";
     private static final String newickDescription = "Newick Tree Files";
