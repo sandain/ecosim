@@ -44,8 +44,9 @@ public interface Painter {
      *  @param y1 The start Y location of the line to draw.
      *  @param x2 The end X location of the line to draw.
      *  @param y2 The end Y location of the line to draw.
+     *  @param stroke The stroke width of the line.
      */
-    public void drawLine (int x1, int y1, int x2, int y2);
+    public void drawLine (int x1, int y1, int x2, int y2, int stroke);
 
     /**
      *  Draw a String at the provided X,Y location.

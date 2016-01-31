@@ -25,6 +25,7 @@ package ecosim.gui;
 import ecosim.MasterVariables;
 import ecosim.api.Painter;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -172,8 +173,9 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
      *  @param y1 Y value for the first point.
      *  @param x2 X value for the second point.
      *  @param y2 Y value for the second point.
+     *  @param stroke The stroke width of the line.
      */
-    public void drawLine (int x1, int y1, int x2, int y2) {
+    public void drawLine (int x1, int y1, int x2, int y2, int stroke) {
         // Get the tile containing the first point.
         int tileX = x1 / TILE_SIZE;
         int tileY = y1 / TILE_SIZE;
@@ -261,7 +263,7 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
         // If a point was found between p1 and p2, recurse on the line
         // segment (point -> p2).
         if (pointX != x2 || pointY != y2) {
-            drawLine (pointX, pointY, x2, y2);
+            drawLine (pointX, pointY, x2, y2, stroke);
         }
         // Translate the x,y coordinates into tile space and draw the line.
         int x1pr = x1 - tileX * TILE_SIZE;
@@ -270,6 +272,7 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
         int y2pr = pointY - tileY * TILE_SIZE;
         Graphics2D g2 = (Graphics2D)tile.getGraphics ();
         g2.setColor (Color.BLACK);
+        g2.setStroke (new BasicStroke (stroke, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
         // Draw each line twice, from x1pr,1ypr -> x2pr,y2pr and
         // x2pr,y2pr -> x1pr,1ypr to work around a bug in Java.
         g2.drawLine (x1pr, y1pr, x2pr, y2pr);

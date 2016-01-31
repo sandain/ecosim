@@ -347,6 +347,7 @@ public class Tree {
     protected void paintNode (Painter painter, Node node) {
         int fontHeight = painter.fontHeight ();
         int fontWidth = painter.fontWidth ();
+        int stroke = 1;
         int xModifier = 1000;
         int yModifier = fontHeight;
         int xSpacer = (int)Math.floor (0.5d * fontWidth);
@@ -372,20 +373,20 @@ public class Tree {
                     child.getY ().floatValue () * yModifier
                 );
                 // Paint a vertical line connecting the node to it's parent.
-                painter.drawLine (nodeX, nodeY, nodeX, childY);
+                painter.drawLine (nodeX, nodeY, nodeX, childY, stroke);
                 // Paint a triangle if the child node is collapsed, otherwise
                 // draw a horizontal line.
                 if (child.isCollapsed () && numberOfDescendants (child) > 1) {
                     int a = childY - ySpacer + 1;
                     int b = childY + ySpacer - 1;
                     // Paint a triangle.
-                    painter.drawLine (nodeX, childY, childX, a);
-                    painter.drawLine (nodeX, childY, childX, b);
-                    painter.drawLine (childX, a, childX, b);
+                    painter.drawLine (nodeX, childY, childX, a, stroke);
+                    painter.drawLine (nodeX, childY, childX, b, stroke);
+                    painter.drawLine (childX, a, childX, b, stroke);
                 }
                 else {
                     // Paint a horizontal line.
-                    painter.drawLine (nodeX, childY, childX, childY);
+                    painter.drawLine (nodeX, childY, childX, childY, stroke);
                 }
                 // Paint the child node.
                 paintNode (painter, child);

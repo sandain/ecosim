@@ -76,14 +76,14 @@ public class SVGPainter implements Painter {
         writeln ("<defs>");
         writeln ("<style type=\"text/css\"><![CDATA[");
         writeln ("  line {");
-        writeln ("    stroke: black;");
-        writeln ("    stroke-width: 1;");
+        writeln ("    stroke: " + strokeColor + ";");
+        writeln ("    stroke-width: " + strokeWidth + ";");
         writeln ("  }");
         writeln ("  text {");
         writeln ("    font-family: monospace;");
         writeln ("    font-size: " + fontHeight + "px;");
         writeln ("    stroke-width: 0;");
-        writeln ("    fill: blue;");
+        writeln ("    fill: " + fontColor + ";");
         writeln ("  }");
         writeln ("]]></style>");
         writeln ("</defs>");
@@ -117,12 +117,22 @@ public class SVGPainter implements Painter {
      *  @param y1 The start Y location of the line to draw.
      *  @param x2 The end X location of the line to draw.
      *  @param y2 The end Y location of the line to draw.
+     *  @param stroke The stroke width of the line.
      */
-    public void drawLine (int x1, int y1, int x2, int y2) {
-        writeln (String.format (
-            "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
-            x1, y1, x2, y2
-        ));
+    public void drawLine (int x1, int y1, int x2, int y2, int stroke) {
+        if (stroke == strokeWidth) {
+            writeln (String.format (
+                "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
+                x1, y1, x2, y2
+            ));
+        }
+        else {
+            writeln (String.format (
+                "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" " +
+                "style=\"stroke-width:%d\"/>",
+                x1, y1, x2, y2, stroke
+            ));
+        }
     }
 
     /**
@@ -177,5 +187,8 @@ public class SVGPainter implements Painter {
 
     private int fontHeight = 12;
     private int fontWidth = 7;
+    private String fontColor = "blue";
 
+    private int strokeWidth = 1;
+    private String strokeColor = "black";
 }
