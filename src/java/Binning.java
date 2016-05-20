@@ -163,7 +163,6 @@ public class Binning implements Runnable {
      *  The default bin levels.
      */
     public static Double[] binLevels = {
-        0.6000d, 0.7000d, 0.8000d, 0.8100d, 0.8200d, 0.8300d, 0.8400d,
         0.8500d, 0.8600d, 0.8700d, 0.8800d, 0.8900d, 0.9000d, 0.9100d,
         0.9200d, 0.9300d, 0.9400d, 0.9500d, 0.9550d, 0.9600d, 0.9650d,
         0.9700d, 0.9750d, 0.9800d, 0.9810d, 0.9820d, 0.9830d, 0.9840d,
