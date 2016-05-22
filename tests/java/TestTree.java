@@ -97,7 +97,7 @@ public class TestTree {
         Tree b = new Tree (
             "(((C:0.1,D:0.1):0.2,B:0.3):0.3,E:0.5):0.0;"
         );
-        a.removeDescendant ("A" );
+        a.removeDescendant ("A");
         assertEquals (
             "Remove descendant failed:\n" +
             a.toString () + "\n" + b.toString () + "\n",
