@@ -1,10 +1,12 @@
 # C compiler options.
 CC := gcc
+#CC := i686-w64-mingw32-gcc-win32
 #CC := x86_64-w64-mingw32-gcc-win32
 CCFLAGS := -DUSE_DOUBLE -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops -Wall
 
 # Fortran compiler options.
 FC := gfortran
+#FC := i686-w64-mingw32-gfortran-win32
 #FC := x86_64-w64-mingw32-gfortran-win32
 FCFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall
 FLDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -O0 -Wall
@@ -21,14 +23,14 @@ OS := $(shell uname -s)
 # Set operating system specific variables.
 ifneq (,$(findstring mingw, $(FC)))
   # Cross-compile for Windows.
-  CCFLAGS := $(CCFLAGS) -static
+  CCFLAGS := $(CCFLAGS) -static -lpthread
   FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir -p
   BINARY_EXT := .exe
   DIRECTORY_SEPARATOR := /
 else ifneq (,$(filter CYGWIN windows, $(OS)))
   # CygWin and GnuWin.
-  CCFLAGS := $(CCFLAGS) -static
+  CCFLAGS := $(CCFLAGS) -static -lpthread
   FCFLAGS := $(FCFLAGS) -static -lpthread
   MKDIR_P := mkdir
   BINARY_EXT := .exe
