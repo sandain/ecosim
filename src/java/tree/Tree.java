@@ -208,16 +208,6 @@ public class Tree {
     }
 
     /**
-     *  Reroot the tree so that the outgroup descendant is next to the root.
-     *
-     *  @param name The name of the outgroup descendant.
-     */
-    public void reroot (String name) {
-        Node descendant = getDescendant (name);
-        reroot (descendant);
-    }
-
-    /**
      *  Remove a leaf node descendant from the tree.
      *
      *  @param name The name of the descendant to remove.
@@ -251,7 +241,7 @@ public class Tree {
         otherChild.setDistance (distance);
         // Setup the relationships of the other child node.
         if (parent.isRootNode ()) {
-            // The parent is the root node, the other child becomes the new 
+            // The parent is the root node, the other child becomes the new
             // root node.
             otherChild.setParent (null);
             root = otherChild;
@@ -262,6 +252,16 @@ public class Tree {
             grandparent.removeChild (parent);
             grandparent.addChild (otherChild);
         }
+    }
+
+    /**
+     *  Reroot the tree so that the outgroup descendant is next to the root.
+     *
+     *  @param name The name of the outgroup descendant.
+     */
+    public void reroot (String name) {
+        Node descendant = getDescendant (name);
+        reroot (descendant);
     }
 
     /**
