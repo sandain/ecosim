@@ -206,8 +206,8 @@ public class SummaryPane extends JPanel {
                             binData.addSeries ("sigma", sigma);
                         }
                     }
-                    // Repaint the summary pain.
-                    pain.repaint ();
+                    // Repaint the summary pane.
+                    pane.repaint ();
                 }
             }
         });
