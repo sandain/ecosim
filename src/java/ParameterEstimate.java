@@ -67,7 +67,7 @@ public class ParameterEstimate implements Runnable {
     public void run () {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
-        List<Point> points = getPoints (length, binning);
+        List<Point> points = getPoints (length);
         // Estimate the bounds of the sigma line.
         Integer[] sigmaBounds = fitLinePoints (points, 1);
         // Estimate the bounds of the omega line.
@@ -256,10 +256,9 @@ public class ParameterEstimate implements Runnable {
      *  Calculate the list of points from the binning results.
      *
      *  @param length The length of the sequences.
-     *  @param binning The binning results to transform.
      *  @return The transformed binning results as a list of XY points.
      */
-    private List<Point> getPoints (Integer length, Binning binning) {
+    private List<Point> getPoints (Integer length) {
         List<Point> points = new ArrayList<Point> ();
         for (BinLevel bin: binning.getBins ()) {
             Double crit = bin.getCrit ();
