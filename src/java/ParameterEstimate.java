@@ -68,10 +68,16 @@ public class ParameterEstimate implements Runnable {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length);
-        // Estimate the bounds of the sigma line.
-        Integer[] sigmaBounds = fitLinePoints (points, 1);
-        // Estimate the bounds of the omega line.
-        Integer[] omegaBounds = { sigmaBounds[1] + 1, points.size () - 10 };
+        // Estimate the bounds of the sigma and omega lines.
+        Integer[] bounds = getBounds (points);
+        Integer[] sigmaBounds = {
+            bounds[0],
+            (int)Math.floor ((bounds[1] - bounds[0]) / 2 + bounds[0])
+        };
+        Integer[] omegaBounds = {
+            (int)Math.ceil ((bounds[1] - bounds[0]) / 2 + bounds[0]),
+            bounds[1]
+        };
         // Optimize the sigma and omega lines using a custom variant of
         // Lloyd's Algorithm.
         Double error = 0.0D;
@@ -211,28 +217,31 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
-     *  Find all of the points that can fit a line.
+     *  Find the first non-repeating point value on either end of the list
+     *  and return the index values for the two bounds.
      *
-     *  @param points All of the points.
-     *  @param start The index of points to start the line calculation.
-     *  @return The bounds of the points array that fit a line.
+     *  @param points The list of points.
+     *  @return The bounds of the point list.
      */
-    private Integer [] fitLinePoints (List<Point> points, Integer start) {
-        Integer [] bounds = { start, start + 2 };
-        // Catch errors before they happen.
-        if (bounds[0] > points.size () || bounds[1] > points.size ()) {
-            throw new ArrayIndexOutOfBoundsException (
-                "Error fitting line to points, bounds exceeded." +
-                " (" + bounds[0] + "," + bounds[1] + ") " + points.size ()
-            );
+    private Integer [] getBounds (List<Point> points) {
+        Integer [] bounds = new Integer[2];
+        // Look for the lower bound.
+        Double previous = points.get (0).y;
+        for (int i = 1; i < points.size (); i ++) {
+            if (previous - points.get (i).y > MasterVariables.EPSILON) {
+                bounds[0] = i - 1;
+                break;
+            }
+            previous = points.get (i).y;
         }
-        // Calculate the line using the current set of points.
-        Line line = new Line (points.subList (bounds[0], bounds[1]));
-        // Slurp up any points that are close to the line.
-        for (int i = bounds[1] + 1; i < points.size (); i ++) {
-            Double error = squaredError (points.get (i), line);
-            if (error > threshold) break;
-            bounds[1] = i;
+        // Look for the upper bound.
+        previous = points.get (points.size () - 1).y;
+        for (int i = points.size () - 1; i > 0; i --) {
+            if (points.get (i).y - previous > MasterVariables.EPSILON) {
+                bounds[1] = i + 1;
+                break;
+            }
+            previous = points.get (i).y;
         }
         return bounds;
     }
@@ -245,11 +254,17 @@ public class ParameterEstimate implements Runnable {
      *  @return The squared error of the point compared to the line.
      */
     private Double squaredError (Point point, Line line) {
-        // Calculate the distance of the point from the line as the error.
-        Double error = Math.abs (-1 * line.m * point.x + point.y - line.b) /
-            Math.sqrt (line.m * line.m + 1);
-        // Square the error.
-        return error * error;
+        Double error = Double.MAX_VALUE;
+        // If the line has a non-zero slope, calculate the squared distance of
+        // the point from the line as the error.
+        if (Math.abs (line.m) < MasterVariables.EPSILON) {
+            Double a = Math.abs (-1 * line.m * point.x + point.y - line.b);
+            Double b = Math.sqrt (line.m * line.m + 1);
+            Double dist = a / b;
+            // The error is the square of the distance.
+            error = dist * dist;
+        }
+        return error;
     }
 
     /**
