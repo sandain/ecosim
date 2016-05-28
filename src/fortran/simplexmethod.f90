@@ -231,29 +231,27 @@ module simplexmethod
       g(1, i) = p(i)
     end do
     irow = 2
-    do 60 i = 1, nop
-    ! check to see if step(i) is equal to zero.
-    if (step(i) .gt. neta .and. step(i) .lt. eta) then
-      goto 60
-    end if
-    do j = 1, nop
-      g(irow, j) = p(j)
+    do i = 1, nop
+      ! check to see if step(i) is equal to zero.
+      if (step(i) .gt. neta .and. step(i) .lt. eta) cycle
+      do j = 1, nop
+        g(irow, j) = p(j)
+      end do
+      g(irow, i) = p(i) + step(i)
+      irow = irow + 1
     end do
-    g(irow, i) = p(i) + step(i)
-    irow = irow + 1
-60  CONTINUE
     !
     np1 = nap + 1
-    do 90 i = 1, np1
-    do j = 1, nop
-      p(j) = g(i, j)
+    do i = 1, np1
+      do j = 1, nop
+        p(j) = g(i, j)
+      end do
+      call functn (nop, p, h(i))
+      neval = neval + 1
+      if (iprint .le. 0) cycle
+      write (unit = lout, fmt = 1010) neval, h(i), (p(j), j = 1, nop)
+1010  format (/1X, I4, 2X, G12.5, 2X, 5G11.4, 3(/21X, 5G11.4))
     end do
-    call functn (nop, p, h(i))
-    neval = neval + 1
-    if (iprint .le. 0) goto 90
-    write (unit = lout, fmt = 1010) neval, h(i), (p(j), j = 1, nop)
-1010 format (/1X, I4, 2X, G12.5, 2X, 5G11.4, 3(/21X, 5G11.4))
-90  CONTINUE
     !
     ! start of main cycle.
     !
@@ -279,12 +277,12 @@ module simplexmethod
     do i = 1, nop
       pbar(i) = 0.0d0
     end do
-    do 150 i = 1, np1
-    if (i .eq. imax) goto 150
-    do J = 1, nop
-      pbar(j) = pbar(j) + g(i, j)
+    do i = 1, np1
+      if (i .eq. imax) cycle
+      do J = 1, nop
+        pbar(j) = pbar(j) + g(i, j)
+      end do
     end do
-150 CONTINUE
     do J = 1, nop
       pbar(j) = pbar(j) / float (nap)
     end do
@@ -331,10 +329,10 @@ module simplexmethod
     ! test whether it is < function value at some point other than
     ! p(imax). if it is replace p(imax) by pstar & hmax by hstar.
     !
-220 do 230 i = 1, np1
-    if (i .eq. imax) goto 230
-    if (hstar .lt. h(i)) goto 320
-230 CONTINUE
+220 do i = 1, np1
+      if (i .eq. imax) cycle
+      if (hstar .lt. h(i)) goto 320
+    end do
     !
     ! hstar > ALL function values except possibly hmax.
     ! if hstar < = hmax, replace p(imax) by pstar & hmax by hstar.
@@ -378,21 +376,21 @@ module simplexmethod
     ! minimum, by a point mid-way between its current position and the
     ! minimum.
     !
-300 do 315 i = 1, np1
-    if (i .eq. imin) goto 315
-    do j = 1, nop
-      ! check to see if step(j) is not equal to zero.
-      if (step(j) .lt. neta .or. step(j) .gt. eta) then
-        g(i, j) = (g(i, j) + g(imin, j)) * 0.5
-      end if
-      p(j) = g(i, j)
+300 do i = 1, np1
+      if (i .eq. imin) cycle
+      do j = 1, nop
+        ! check to see if step(j) is not equal to zero.
+        if (step(j) .lt. neta .or. step(j) .gt. eta) then
+          g(i, j) = (g(i, j) + g(imin, j)) * 0.5
+        end if
+        p(j) = g(i, j)
+      end do
+      call functn (nop, p, h(i))
+      neval = neval + 1
+      if (iprint .le. 0) cycle
+      if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
+        neval, h(i), (p(j), j = 1, nop)
     end do
-    call functn (nop, p, h(i))
-    neval = neval + 1
-    if (iprint .le. 0) goto 315
-    if (mod (neval, iprint) .eq. 0) write (unit = lout, fmt = 1010) &
-      neval, h(i), (p(j), j = 1, nop)
-315 CONTINUE
     goto 340
     !
     ! replace maximum point by pstar & h(imax) by hstar.
@@ -433,17 +431,15 @@ module simplexmethod
     !
     ! find the centroid of the current simplex and the function value there.
     !
-410 do 380 i = 1, nop
-    ! check to see if step(i) is equal to zero.
-    if (step(i) .gt. neta .and. step(i) .lt. eta) then
-      goto 380
-    end if
-    p(i) = 0.0d0
-    do j = 1, np1
-      p(i) = p(i) + g(j, i)
+410 do i = 1, nop
+      ! check to see if step(i) is equal to zero.
+      if (step(i) .gt. neta .and. step(i) .lt. eta) cycle
+      p(i) = 0.0d0
+      do j = 1, np1
+        p(i) = p(i) + g(j, i)
+      end do
+      p(i) = p(i) / float (np1)
     end do
-    p(i) = p(i) / float (np1)
-380 CONTINUE
     call functn (nop, p, func)
     neval = neval + 1
     if (iprint .le. 0) goto 390
@@ -502,25 +498,25 @@ module simplexmethod
     !
     hmin = func
     nmore = 0
-    do 490 i = 1, np1
-470 test = abs (h(i) - func)
-    if (test .ge. simp) goto 490
-    do j = 1, nop
-      ! check to see if step(j) is not equal to zero.
-      if (step(j) .lt. neta .or. step(j) .gt. eta) then
-        g(i, j) = (g(i, j) - p(j)) + g(i, j)
-      end if
-      pstst(j) = g(i, j)
+    do i = 1, np1
+470   test = abs (h(i) - func)
+      if (test .ge. simp) cycle
+      do j = 1, nop
+        ! check to see if step(j) is not equal to zero.
+        if (step(j) .lt. neta .or. step(j) .gt. eta) then
+          g(i, j) = (g(i, j) - p(j)) + g(i, j)
+        end if
+        pstst(j) = g(i, j)
+      end do
+      call functn (nop, pstst, h(i))
+      nmore = nmore + 1
+      neval = neval + 1
+      if (h(i) .ge. hmin) goto 470
+      hmin = h(i)
+      if (iprint .ge. 0) write (unit = lout, fmt = 1010) &
+        neval, hmin, (pstst(j), j = 1, nop)
+      goto 470
     end do
-    call functn (nop, pstst, h(i))
-    nmore = nmore + 1
-    neval = neval + 1
-    if (h(i) .ge. hmin) goto 470
-    hmin = h(i)
-    if (iprint .ge. 0) write (unit = lout, fmt = 1010) &
-      neval, hmin, (pstst(j), j = 1, nop)
-    goto 470
-490 CONTINUE
     !
     ! function values are calculated at an additional nap points.
     !
@@ -538,22 +534,22 @@ module simplexmethod
     ! lower triangle is stored in bmat.
     !
     a0 = h(1)
-    do 540 i = 1, nap
-    i1 = i - 1
-    i2 = i + 1
-    if (i1 .lt. 1) goto 540
-    do j = 1, i1
-      j1 = j + 1
-      do k = 1, nop
-        pstst(k) = (g(i2, k) + g(j1, k)) * 0.5
+    do i = 1, nap
+      i1 = i - 1
+      i2 = i + 1
+      if (i1 .lt. 1) cycle
+      do j = 1, i1
+        j1 = j + 1
+        do k = 1, nop
+          pstst(k) = (g(i2, k) + g(j1, k)) * 0.5
+        end do
+        call functn (nop, pstst, hstst)
+        nmore = nmore + 1
+        neval = neval + 1
+        l = i * (i - 1) / 2 + j
+        bmat(l) = 2.0 * (hstst + a0 - aval(i) - aval(j))
       end do
-      call functn (nop, pstst, hstst)
-      nmore = nmore + 1
-      neval = neval + 1
-      l = i * (i - 1) / 2 + j
-      bmat(l) = 2.0 * (hstst + a0 - aval(i) - aval(j))
     end do
-540 CONTINUE
     l = 0
     do i = 1, nap
       i1 = i + 1
@@ -574,16 +570,18 @@ module simplexmethod
     do i = 1, nop
       pmin(i) = g(1, i)
     end do
-    do 580 i = 1, nap
-    i1 = i + 1
-    do 580 j = 1, nop
-    g(i1, j) = g(i1, j) - g(1, j)
-580 CONTINUE
-    do 590 i = 1, nap
-    i1 = i + 1
-    do 590 j = 1, nop
-    g(i, j) = g(i1, j)
-590 CONTINUE
+    do i = 1, nap
+      i1 = i + 1
+      do j = 1, nop
+        g(i1, j) = g(i1, j) - g(1, j)
+      end do
+    end do
+    do i = 1, nap
+      i1 = i + 1
+      do j = 1, nop
+        g(i, j) = g(i1, j)
+      end do
+    end do
     !
     ! invert bmat.
     !
@@ -604,16 +602,16 @@ module simplexmethod
     !
     ! bmat * a / 2 is calculated and stored in h.
     !
-610 do 650 i = 1, nap
-    h(i) = 0.0d0
-    do 640 j = 1, nap
-    if (j .gt. i) goto 620
-    l = i * (i - 1) / 2 + j
-    goto 630
-620 l = j * (j - 1) / 2 + i
-630 h(i) = h(i) + bmat(l) * aval(j)
-640 CONTINUE
-650 CONTINUE
+610 do i = 1, nap
+      h(i) = 0.0d0
+      do j = 1, nap
+        if (j .gt. i) goto 620
+        l = i * (i - 1) / 2 + j
+        goto 630
+620     l = j * (j - 1) / 2 + i
+630     h(i) = h(i) + bmat(l) * aval(j)
+      end do
+    end do
     !
     ! find the position, pmin, & value, ymin, of the minimum of the
     ! quadratic.
@@ -641,25 +639,25 @@ module simplexmethod
     !
     ! q * bmat * q' / 2 is calculated & its lower triangle stored in vc.
     !
-690 do 760 i = 1, nop
-    do 730 j = 1, nap
-    h(j) = 0.0d0
-    do 720 k = 1, nap
-    if (k .gt. j) goto 700
-    l = j * (j - 1) / 2 + k
-    goto 710
-700 l = k * (k - 1) / 2 + j
-710 h(j) = h(j) + bmat(l) * g(k, i) * 0.5
-720 CONTINUE
-730 CONTINUE
-    do 750 j = i, nop
-    l = j * (j - 1) / 2 + i
-    vc(l) = 0.0d0
-    do k = 1, nap
-      vc(l) = vc(l) + h(k) * g(k, j)
+690 do i = 1, nop
+      do j = 1, nap
+        h(j) = 0.0d0
+        do k = 1, nap
+          if (k .gt. j) goto 700
+          l = j * (j - 1) / 2 + k
+          goto 710
+700       l = k * (k - 1) / 2 + j
+710       h(j) = h(j) + bmat(l) * g(k, i) * 0.5
+        end do
+      end do
+      do j = i, nop
+        l = j * (j - 1) / 2 + i
+        vc(l) = 0.0d0
+        do k = 1, nap
+          vc(l) = vc(l) + h(k) * g(k, j)
+        end do
+      end do
     end do
-750 CONTINUE
-760 CONTINUE
     !
     ! the diagonal elelments of vc are copied into var.
     !
@@ -731,15 +729,15 @@ module simplexmethod
 880 l = 1
 890 if (l .gt. nop) goto (790, 860, 800), ijk
     ii = l * (l - 1) / 2
-    do 910 i = l, nop
-    i1 = ii + l
-    ii = ii + i
-    i2 = min0 (ii, i1 + 5)
-    if (ijk .eq. 3) goto 900
-    write (unit = lout, fmt = 1230) (vc(j), j = i1, i2)
-    goto 910
-900 write (unit = lout, fmt = 1230) (bmat(j), j = i1, i2)
-910 CONTINUE
+    do i = l, nop
+      i1 = ii + l
+      ii = ii + i
+      i2 = min0 (ii, i1 + 5)
+      if (ijk .eq. 3) goto 900
+      write (unit = lout, fmt = 1230) (vc(j), j = i1, i2)
+      cycle
+900   write (unit = lout, fmt = 1230) (bmat(j), j = i1, i2)
+    end do
 1230 format (1X, 6G13.5)
     write (unit = lout, fmt = 1240)
 1240 format (/)
