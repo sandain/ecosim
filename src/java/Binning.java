@@ -42,10 +42,6 @@ public class Binning implements Runnable {
      */
     public Binning () {
         bins = new ArrayList<BinLevel> ();
-        // Fill the bins array with zeros.
-        for (Double crit: binLevels) {
-            bins.add (new BinLevel (crit, 0));
-        }
     }
 
     /**
