@@ -477,7 +477,10 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within binning.
-                if (activeElement.equals ("binning") && binning != null) {
+                if (activeElement.equals ("binning")) {
+                    // Initialize the Binning object if need be.
+                    if (binning == null) binning = new Binning ();
+                    // Look for a bin to add to the Binning.
                     if (localName.equals ("bin")) {
                         binning.addBinLevel (new BinLevel (
                             new Double (attrs.getValue (uri, "crit")),
@@ -486,7 +489,23 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within estimate.
-                if (activeElement.equals ("estimate") && estimate != null) {
+                if (activeElement.equals ("estimate")) {
+                    // Initialize the ParameterEstimate object if need be.
+                    if (estimate == null) {
+                        if (binning != null) {
+                            estimate = new ParameterEstimate (
+                                nu, length, binning
+                            );
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "estimated value without Binning."
+                            );
+                            System.exit (1);
+                        }
+                    }
+                    // Look for a result to add to the the ParameterEstimate.
                     if (localName.equals ("result")) {
                         estimate.setResult (new ParameterSet (
                             new Long (attrs.getValue (uri, "npop")),
@@ -497,7 +516,35 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within hillclimb.
-                if (activeElement.equals ("hillclimb") && hillclimb != null) {
+                if (activeElement.equals ("hillclimb")) {
+                    // Initialize the Hillclimb object if need be.
+                    if (hillclimb == null) {
+                        if (binning != null && estimate != null) {
+                            hillclimb = new Hillclimb (
+                                masterVariables,
+                                execs,
+                                nu,
+                                length,
+                                binning,
+                                estimate.getResult ()
+                            );
+                        }
+                        else if (binning != null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "hillclimb value without Binning."
+                            );
+                            System.exit (1);
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "hillclimb value without ParameterEstimate."
+                            );
+                            System.exit (1);
+                        }
+                    }
+                    // Look for a result to add to the Hillclimb object.
                     if (localName.equals ("result")) {
                         hillclimb.setResult (new ParameterSet (
                             new Long (attrs.getValue (uri, "npop")),
@@ -508,7 +555,35 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within npopCI.
-                if (activeElement.equals ("npopCI") && npopCI != null) {
+                if (activeElement.equals ("npopCI")) {
+                    // Initialize NpopConfidenceInterval if need be.
+                    if (npopCI == null) {
+                        if (binning != null && hillclimb != null) {
+                            npopCI = new NpopConfidenceInterval (
+                                masterVariables,
+                                execs,
+                                nu,
+                                length,
+                                binning,
+                                hillclimb.getResult ()
+                            );
+                        }
+                        else if (binning != null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "npopCI value without Binning."
+                            );
+                            System.exit (1);
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "npopCI value without Hillclimb."
+                            );
+                            System.exit (1);
+                        }
+                    }
+                    // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
                         Long value = new Long (
                             attrs.getValue (uri, "value")
@@ -518,6 +593,7 @@ public class ProjectFileIO {
                         );
                         npopCI.setLowerResult (value, likelihood);
                     }
+                    // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
                         Long value = new Long (
                             attrs.getValue (uri, "value")
@@ -530,6 +606,34 @@ public class ProjectFileIO {
                 }
                 // Look for elements within omegaCI.
                 if (activeElement.equals ("omegaCI") && omegaCI != null) {
+                    // Initialize OmegaConfidenceInterval if need be.
+                    if (omegaCI == null) {
+                        if (binning != null && hillclimb != null) {
+                            omegaCI = new OmegaConfidenceInterval (
+                                masterVariables,
+                                execs,
+                                nu,
+                                length,
+                                binning,
+                                hillclimb.getResult ()
+                            );
+                        }
+                        else if (binning != null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "omegaCI value without Binning."
+                            );
+                            System.exit (1);
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "omegaCI value without Hillclimb."
+                            );
+                            System.exit (1);
+                        }
+                    }
+                    // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
@@ -539,6 +643,7 @@ public class ProjectFileIO {
                         );
                         omegaCI.setLowerResult (value, likelihood);
                     }
+                    // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
@@ -551,6 +656,34 @@ public class ProjectFileIO {
                 }
                 // Look for elements within sigmaCI.
                 if (activeElement.equals ("sigmaCI") && sigmaCI != null) {
+                    // Initialize SigmaConfidenceInterval if need be.
+                    if (sigmaCI == null) {
+                        if (binning != null && hillclimb != null) {
+                            sigmaCI = new SigmaConfidenceInterval (
+                                masterVariables,
+                                execs,
+                                nu,
+                                length,
+                                binning,
+                                hillclimb.getResult ()
+                            );
+                        }
+                        else if (binning != null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "sigmaCI value without Binning."
+                            );
+                            System.exit (1);
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "sigmaCI value without Hillclimb."
+                            );
+                            System.exit (1);
+                        }
+                    }
+                    // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
@@ -560,6 +693,7 @@ public class ProjectFileIO {
                         );
                         sigmaCI.setLowerResult (value, likelihood);
                     }
+                    // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
                         Double value = new Double (
                             attrs.getValue (uri, "value")
