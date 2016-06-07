@@ -169,6 +169,15 @@ public class SVGPainter implements Painter {
     }
 
     /**
+     *  Return the width of the string as drawn.
+     *
+     *  @return The width of the string as drawn.
+     */
+    public int stringWidth (String str) {
+        return (str.length () + 1 ) * fontWidth;
+    }
+
+    /**
      *  Private method to write a string of text with a line separator.
      *
      *  @param line The line of text.
