@@ -71,4 +71,11 @@ public interface Painter {
      */
     public int fontHeight ();
 
+    /**
+     *  Return the width of the string as drawn by the Painter.
+     *
+     *  @return The width of the string as drawn by the Painter.
+     */
+    public int stringWidth (String str);
+
 }
