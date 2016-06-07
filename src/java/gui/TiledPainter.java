@@ -314,6 +314,15 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
     }
 
     /**
+     *  Return the width of the string as drawn.
+     *
+     *  @return The width of the string as drawn.
+     */
+    public int stringWidth (String str) {
+        return metrics.stringWidth (str);
+    }
+
+    /**
      *  Private recursive method to draw a String.
      *
      *  @param str The String to draw.
