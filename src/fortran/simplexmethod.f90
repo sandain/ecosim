@@ -262,15 +262,15 @@ module simplexmethod
     imin = 1
     hmax = h(1)
     hmin = h(1)
-    do 120 i = 2, np1
-    if (h(i) .le. hmax) goto 110
-    imax = i
-    hmax = h(i)
-    goto 120
-110 if (h(i) .ge. hmin) goto 120
-    imin = i
-    hmin = h(i)
-120 CONTINUE
+    do i = 2, np1
+      if (h(i) .le. hmax) goto 110
+      imax = i
+      hmax = h(i)
+      cycle
+110   if (h(i) .ge. hmin) cycle
+      imin = i
+      hmin = h(i)
+    end do
     !
     ! find the centroid of the vertices other than p(imax).
     !
