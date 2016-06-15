@@ -136,6 +136,8 @@ public class Simulation {
                 nu, outgroup
             ));
             summary.setNu (nu);
+            summary.setLength (length);
+            summary.setOutgroup (outgroup);
         }
         if (binning != null) {
             log.append ("Binning result:\n");
