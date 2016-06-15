@@ -156,27 +156,33 @@ public class EcotypeSimulation implements Runnable {
         ));
         // Startup the CLI or the GUI.
         setupInterface ();
-        // Don't procede any further if the fasta file doesn't exist.
-        if (fastaFile == null || !fastaFile.exists ()) return;
-        // Load the sequence file.
-        simulation.loadSequenceFile (fastaFile);
-        // Generate a tree if one wasn't provided.
-        if (newickFile == null || ! newickFile.exists ()) {
-            newickFile = simulation.generateTree (fastaFile);
+        // Load the input file, or the sequence and phylogeny files.
+        if (inputFile != null && inputFile.exists ()) {
+            // Load the input file.
+            simulation.loadProjectFile (inputFile);
         }
-        // Load the tree file.
-        simulation.loadTreeFile (newickFile);
-        // Run the binning and parameter estimate programs.
-        simulation.runBinning ();
-        simulation.runParameterEstimate ();
-        // If the runAll flag has been set, run the simulation.
-        if (runAll) {
+        else if (fastaFile != null && fastaFile.exists ()) {
+            // Load the sequence file.
+            simulation.loadSequenceFile (fastaFile);
+            // Generate the phylogeny file if not provided.
+            if (newickFile == null || ! newickFile.exists ()) {
+                newickFile = simulation.generateTree (fastaFile);
+            }
+            // Load the phylogeny file.
+            simulation.loadTreeFile (newickFile);
+            // Run the binning and parameter estimate programs.
+            simulation.runBinning ();
+            simulation.runParameterEstimate ();
+        }
+        // Run the simulation if requested.
+        if (runAll && simulation.treeLoaded ()) {
             simulation.runHillclimbing ();
             simulation.runConfidenceIntervals ();
             simulation.runDemarcation ();
-            if (outputFile != null) {
-                simulation.saveProjectFile (outputFile);
-            }
+        }
+        // Save any results to the output file if provided.
+        if (outputFile != null) {
+            simulation.saveProjectFile (outputFile);
         }
         // Exit the simulation if the GUI wasn't started.
         if (noGUI) simulation.exit ();
@@ -238,14 +244,39 @@ public class EcotypeSimulation implements Runnable {
                     ));
                     noGUI = true;
                     break;
+                case "-i":
+                case "--input":
+                    if (value.length () > 0) {
+                        inputFile = new File (value);
+                    }
+                    break;
                 case "-n":
                 case "--nogui":
                     noGUI = true;
                     runAll = true;
                     break;
+                case "-o":
+                case "--output":
+                    if (value.length () > 0) {
+                        outputFile = new File (value);
+                    }
+                    break;
+                case "-p":
+                case "--phylogeny":
+                    if (value.length () > 0) {
+                        newickFile = new File (value);
+                    }
+                    break;
+
                 case "-r":
                 case "--runall":
                     runAll = true;
+                    break;
+                case "-s":
+                case "--sequences":
+                    if (value.length () > 0) {
+                        fastaFile = new File (value);
+                    }
                     break;
                 case "-t":
                 case "--threads":
@@ -294,47 +325,6 @@ public class EcotypeSimulation implements Runnable {
                     break;
                 default:
                     // Look for unrecognized options.
-                    if (key.startsWith ("-")) {
-                        System.out.println (String.format (
-                            "Syntax error: Option %s not recognized.\n%s",
-                            key, usage
-                        ));
-                        System.exit (1);
-                    }
-                    // Look for file name arguments.
-                    File arg = new File (key);
-                    // Expect the fasta file first.
-                    if (fastaFile == null && arg.isFile ()) {
-                        fastaFile = arg;
-                        break;
-                    }
-                    else if (fastaFile == null) {
-                        // File not found, print an error.
-                        System.out.println (String.format (
-                            "Syntax error: File %s not found.\n%s",
-                            key, usage
-                        ));
-                        System.exit (1);
-                    }
-                    // Expect the newick file second.
-                    if (newickFile == null && arg.isFile ()) {
-                        newickFile = arg;
-                        break;
-                    }
-                    else if (newickFile == null) {
-                        // File not found, print an error.
-                        System.out.println (String.format (
-                            "Syntax error: File %s not found.\n%s",
-                            key, usage
-                        ));
-                        System.exit (1);
-                    }
-                    // Expect the save file last.
-                    if (fastaFile != null && newickFile != null &&
-                        outputFile == null) {
-                        outputFile = arg;
-                        break;
-                    }
                     if (key.length () > 0) {
                         // Argument unknown, print an error.
                         System.out.println (String.format (
@@ -377,22 +367,26 @@ public class EcotypeSimulation implements Runnable {
     private Simulation simulation;
     private File fastaFile;
     private File newickFile;
+    private File inputFile;
     private File outputFile;
 
     private String usage =
         "Usage:\n" +
-        "  java -jar EcoSim.jar [OPTIONS] /path/to/sequence_fasta " +
-        "/path/to/sequence_tree output_xml\n" +
+        "  java -jar EcoSim.jar [OPTIONS]\n" +
         "\n" +
-        "  Sequences should be aligned and in a fasta formated file, with\n" +
+        "  Sequences should be aligned and in a Fasta formated file, with\n" +
         "  the outgroup listed first.\n" +
         "\n" +
-        "  The newick formated tree file must include the same leaf node\n" +
-        "  names and number as the sequences in the fasta file.\n" +
+        "  The Newick formated tree file must include the same leaf node\n" +
+        "  names and number as the sequences in the Fasta file.\n" +
         "\n" +
         "  Output is saved in XML format.\n" +
         "\n" +
         "  Options:\n" +
+        "    -i, --input        : A XML formated save file for input.\n" +
+        "    -o, --output       : A XML formated save for for output.\n" +
+        "    -s, --sequences    : A Fasta formated file for input.\n" +
+        "    -p, --phylogeny    : A Newick formatted file for input.\n" +
         "    -d, --debug        : Display debugging output.\n" +
         "    -h, --help         : Display helpful information.\n" +
         "    -n, --nogui        : Hide the default GUI.  Implies" +
