@@ -163,15 +163,19 @@ public class ProjectFileIO {
             if (estimate != null && estimate.hasRun ()) {
                 ParameterSet result = estimate.getResult ();
                 out.write ("  <estimate>\n");
-                out.write (String.format ("    <result " +
-                    "npop=\"%d\" " +
-                    "omega=\"%.5f\" " +
-                    "sigma=\"%.5f\" " +
-                    "likelihood=\"%.5g\"/>\n",
-                    result.getNpop (),
-                    result.getOmega (),
-                    result.getSigma (),
-                    result.getLikelihood ()
+                out.write (String.format ("    " +
+                    "<result npop=\"%d\" omega=\"%.5f\" sigma=\"%.5f\"/>\n",
+                    result.getNpop (), result.getOmega (), result.getSigma ()
+                ));
+                double omega[] = estimate.getOmega ();
+                out.write (String.format ("    " +
+                    "<omega slope=\"%.5f\" intercept=\"%.5f\"/>\n",
+                    omega[0], omega[1]
+                ));
+                double sigma[] = estimate.getSigma ();
+                out.write (String.format ("    " +
+                    "<sigma slope=\"%.5f\" intercept=\"%.5f\"/>\n",
+                    sigma[0], sigma[1]
                 ));
                 out.write ("  </estimate>\n");
             }
@@ -179,14 +183,10 @@ public class ProjectFileIO {
             if (hillclimb != null && hillclimb.hasRun ()) {
                 ParameterSet result = hillclimb.getResult ();
                 out.write ("  <hillclimb>\n");
-                out.write (String.format ("    <result " +
-                    "npop=\"%d\" " +
-                    "omega=\"%.5f\" " +
-                    "sigma=\"%.5f\" " +
+                out.write (String.format ("    " +
+                    "<result npop=\"%d\" omega=\"%.5f\" sigma=\"%.5f\" " +
                     "likelihood=\"%.5g\"/>\n",
-                    result.getNpop (),
-                    result.getOmega (),
-                    result.getSigma (),
+                    result.getNpop (), result.getOmega (), result.getSigma (),
                     result.getLikelihood ()
                 ));
                 out.write ("  </hillclimb>\n");
@@ -511,8 +511,22 @@ public class ProjectFileIO {
                             new Long (attrs.getValue (uri, "npop")),
                             new Double (attrs.getValue (uri, "omega")),
                             new Double (attrs.getValue (uri, "sigma")),
-                            new Double (attrs.getValue (uri, "likelihood"))
+                            0.0d
                         ));
+                    }
+                    // Look for the slope and intercept of the omega line.
+                    if (localName.equals ("omega")) {
+                        estimate.setOmega (
+                            new Double (attrs.getValue (uri, "slope")),
+                            new Double (attrs.getValue (uri, "intercept"))
+                        );
+                    }
+                    // Look for the slope and intercept of the sigma line.
+                    if (localName.equals ("sigma")) {
+                        estimate.setSigma (
+                            new Double (attrs.getValue (uri, "slope")),
+                            new Double (attrs.getValue (uri, "intercept"))
+                        );
                     }
                 }
                 // Look for elements within hillclimb.
