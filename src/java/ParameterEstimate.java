@@ -190,6 +190,28 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
+     *  Set the slope and intercept of the omega line.
+     *
+     *  @param slope The slope of the omega line.
+     *  @param intercept The Y intercept of the omega line.
+     */
+    public void setOmega (double slope, double intercept) {
+        omega.m = slope;
+        omega.b = intercept;
+    }
+
+    /**
+     *  Set the slope and intercept of the sigma line.
+     *
+     *  @param slope The slope of the sigma line.
+     *  @param intercept The Y intercept of the sigma line.
+     */
+    public void setSigma (double slope, double intercept) {
+        sigma.m = slope;
+        sigma.b = intercept;
+    }
+
+    /**
      *  Return the parameter estimate as a String.
      *
      *  @return The parameter estimate as a String.
