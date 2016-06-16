@@ -157,11 +157,19 @@ public class EcotypeSimulation implements Runnable {
         // Startup the CLI or the GUI.
         setupInterface ();
         // Load the input file, or the sequence and phylogeny files.
-        if (inputFile != null && inputFile.exists ()) {
+        if (inputFile != null) {
+            if (! inputFile.exists ()) {
+                System.err.println ("Error, input file does not exist.");
+                System.exit (1);
+            }
             // Load the input file.
             simulation.loadProjectFile (inputFile);
         }
-        else if (fastaFile != null && fastaFile.exists ()) {
+        else if (fastaFile != null) {
+            if (! fastaFile.exists ()) {
+                System.err.println ("Error, sequence file does not exist.");
+                System.exit (1);
+            }
             // Load the sequence file.
             simulation.loadSequenceFile (fastaFile);
             // Generate the phylogeny file if not provided.
