@@ -131,7 +131,7 @@ public class Simulation {
         if (nu > 0) {
             log.append ("Phylogeny results:\n");
             log.append (String.format (
-                "  %s environmental sequences.\n" +
+                "  %,d environmental sequences.\n" +
                 "  %s is the outgroup.\n\n",
                 nu, outgroup
             ));
@@ -222,7 +222,7 @@ public class Simulation {
             summary.setOutgroup (outgroup);
             // Output the sequence data.
             log.appendln (String.format (
-                "  sequence length: %d.", length
+                "  sequence length: %,d.", length
             ));
             log.appendln (String.format (
                 "  %s is the outgroup.", outgroup
@@ -262,7 +262,7 @@ public class Simulation {
             summary.setNu (nu);
             // Output the number of sequences loaded.
             log.appendln (String.format (
-                "  %d environmental sequences.", nu
+                "  %,d environmental sequences.", nu
             ));
         }
         catch (InvalidTreeException e) {
