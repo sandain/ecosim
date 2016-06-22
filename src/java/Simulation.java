@@ -536,14 +536,14 @@ public class Simulation {
             log.appendln ("  Error running the demarcation program!");
             return;
         }
-        // Update the summary data.
-        summary.setDemarcation (demarcation);
         // Output the demarcation is SVG format if debugging is turned on.
         if (masterVariables.getDebug ()) {
             String dir = masterVariables.getWorkingDirectory ();
             File svg = new File (dir + "demarcation.svg");
             demarcation.paintTree (new SVGPainter (svg));
         }
+        // Update the summary data.
+        summary.setDemarcation (demarcation);
         // Output the demarcation result.
         log.appendln ("The result from demarcation:");
         log.appendln (demarcation.toString ());
