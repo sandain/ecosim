@@ -132,8 +132,9 @@ public class Simulation {
             log.append ("Phylogeny results:\n");
             log.append (String.format (
                 "  %,d environmental sequences.\n" +
+                "  %,d sequence length.\n" +
                 "  %s is the outgroup.\n\n",
-                nu, outgroup
+                nu, length, outgroup
             ));
             summary.setNu (nu);
             summary.setLength (length);
