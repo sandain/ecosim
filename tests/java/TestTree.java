@@ -121,6 +121,22 @@ public class TestTree {
         );
     }
 
+    @Test
+    public void testRemoveInternalNode () throws InvalidTreeException {
+        Tree a = new Tree (testTree);
+        Tree b = new Tree (
+            "((C:0.10000,D:0.10000):0.50000,E:0.50000):0.00000;"
+        );
+        Node x = a.getDescendant ("A").getParent ();
+        Node y = x.getParent ();
+        y.removeChild (x);
+        assertEquals (
+            "Remove internal node failed:\n" +
+            a.toString () + "\n" + b.toString () + "\n",
+            0,
+            a.compareTo (b)
+        );
+    }
 
     private Tree tree;
 
