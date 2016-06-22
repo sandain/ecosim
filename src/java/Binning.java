@@ -62,20 +62,9 @@ public class Binning implements Runnable {
         if (tree == null) return;
         // Run complete-linkage binning on the provided tree for each
         // sequence criterion level.
-        Double lastOne = 0.0d;
         for (Double crit: binLevels) {
             Integer level = getNumberBins (crit, tree.getRoot ());
-            // Skip all but the last crit with a level of one.
-            if (level == 1) {
-                lastOne = crit;
-            }
-            else if (level > 1) {
-                if (lastOne > MasterVariables.EPSILON) {
-                    bins.add (new BinLevel (lastOne, 1));
-                    lastOne = 0.0d;
-                }
-                bins.add (new BinLevel (crit, level));
-            }
+            bins.add (new BinLevel (crit, level));
         }
     }
 
@@ -159,12 +148,12 @@ public class Binning implements Runnable {
      *  The default bin levels.
      */
     public static Double[] binLevels = {
-        0.8500d, 0.8600d, 0.8700d, 0.8800d, 0.8900d, 0.9000d, 0.9100d,
-        0.9200d, 0.9300d, 0.9400d, 0.9500d, 0.9550d, 0.9600d, 0.9650d,
-        0.9700d, 0.9750d, 0.9800d, 0.9810d, 0.9820d, 0.9830d, 0.9840d,
-        0.9850d, 0.9860d, 0.9870d, 0.9880d, 0.9890d, 0.9900d, 0.9910d,
-        0.9920d, 0.9930d, 0.9940d, 0.9950d, 0.9955d, 0.9960d, 0.9965d,
-        0.9970d, 0.9975d, 0.9980d, 0.9985d, 0.9990d, 0.9995d, 1.0000d
+        0.800d, 0.810d, 0.820d, 0.830d, 0.840d, 0.850d, 0.860d,
+        0.870d, 0.880d, 0.890d, 0.900d, 0.910d, 0.920d, 0.930d,
+        0.940d, 0.950d, 0.955d, 0.960d, 0.965d, 0.970d, 0.975d,
+        0.980d, 0.981d, 0.982d, 0.983d, 0.984d, 0.985d, 0.986d,
+        0.987d, 0.988d, 0.989d, 0.990d, 0.991d, 0.992d, 0.993d,
+        0.994d, 0.995d, 0.996d, 0.997d, 0.998d, 0.999d, 1.000d
     };
 
 }
