@@ -246,7 +246,17 @@ public class ProjectFileIO {
             if (demarcation != null && demarcation.hasRun ()) {
                 ArrayList<ArrayList<String>> ecotypes =
                     demarcation.getEcotypes ();
+                String precision = "";
+                switch (demarcation.getPrecision ()) {
+                    case Demarcation.DEMARCATION_PRECISION_FINE_SCALE:
+                        precision = "fine-scale";
+                        break;
+                    case Demarcation.DEMARCATION_PRECISION_COARSE_SCALE:
+                        precision = "coarse-scale";
+                        break;
+                }
                 out.write ("  <demarcation>\n");
+                out.write ("    <precision value=\"" + precision + "\"/>\n");
                 out.write (String.format (
                     "    <ecotypes size=\"%d\">\n",
                     ecotypes.size ()
@@ -425,6 +435,7 @@ public class ProjectFileIO {
             elements.add ("omegaCI");
             elements.add ("sigmaCI");
             elements.add ("demarcation");
+            precision = null;
             activeElement = "none";
             isProjectFile = false;
         }
@@ -720,6 +731,16 @@ public class ProjectFileIO {
                 }
                 // Look for elements within demarcation.
                 if (activeElement.equals ("demarcation")) {
+                    if (localName.equals ("precision")) {
+                        switch (attrs.getValue (uri, "value")) {
+                            case "fine-scale":
+                                precision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
+                                break;
+                            case "coarse-scale":
+                                precision = Demarcation.DEMARCATION_PRECISION_COARSE_SCALE;
+                                break;
+                        }
+                    }
                     if (localName.equals ("ecotypes")) {
                         Integer size = new Integer (
                             attrs.getValue (uri, "size")
@@ -776,6 +797,49 @@ public class ProjectFileIO {
                 }
                 // Look for the end of the demarcation element.
                 if (localName.equals ("demarcation") && demarcation != null) {
+                    if (demarcation == null) {
+                        if (outgroup != null && tree != null && hillclimb != null && precision != null) {
+                            try {
+                                demarcation = new Demarcation (
+                                    masterVariables,
+                                    execs,
+                                    nu,
+                                    length,
+                                    outgroup,
+                                    tree,
+                                    hillclimb.getResult (),
+                                    precision
+                                );
+                            }
+                            catch (InvalidTreeException e) {
+                                System.err.println (
+                                    "Error in project file: invalid tree."
+                                );
+                            }
+                        }
+                        else if (outgroup == null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "demarcation value without an outgroup."
+                            );
+                            System.exit (1);
+
+                        }
+                        else if (tree == null) {
+                            System.err.println (
+                                "Error in project file: " +
+                                "demarcation value without a phylogeny."
+                            );
+                            System.exit (1);
+                        }
+                        else {
+                            System.err.println (
+                                "Error in project file: " +
+                                "demarcation value without Hillclimb."
+                            );
+                            System.exit (1);
+                        }
+                    }
                     demarcation.setEcotypes (ecotypes);
                     demarcation.setHasRun (true);
                 }
@@ -785,6 +849,8 @@ public class ProjectFileIO {
                 }
             }
         }
+
+        private Integer precision;
 
         private String activeElement;
 
