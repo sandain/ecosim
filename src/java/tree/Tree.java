@@ -316,6 +316,7 @@ public class Tree {
      *  @return Newick formatted String containing the tree.
      */
     public String toString () {
+        validateTree (root);
         return root.toString ();
     }
 
@@ -542,6 +543,30 @@ public class Tree {
                 if (childY > maxY) maxY = childY;
             }
             node.setY ((minY + maxY) / 2);
+        }
+    }
+
+    /**
+     *  A private recursive method to validate all nodes descended from the
+     *  node requested. Valid internal nodes will have two child nodes, valid
+     *  leaf nodes will have no children.
+     *
+     *  @param node The current node being validated.
+     */
+    private void validateTree (Node node) {
+        ArrayList<Node> children = new ArrayList<Node> (node.getChildren ());
+        Node parent = node.getParent ();
+        if (children.size () == 1) {
+            Node child = children.get (0);
+            child.setDistance (child.getDistance () + node.getDistance ());
+            parent.addChild (child);
+            parent.removeChild (node);
+            validateTree (child);
+        }
+        else {
+            for (Node child: children) {
+                validateTree (child);
+            }
         }
     }
 
