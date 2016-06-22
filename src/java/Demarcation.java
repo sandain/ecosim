@@ -117,6 +117,15 @@ public class Demarcation extends Tree {
     }
 
     /**
+     *  Get the demarcation precision.
+     *
+     *  @return The demarcation precision.
+     */
+    public int getPrecision () {
+        return precision;
+    }
+
+    /**
      *  Set the ecotypes.
      *
      *  @param ecotypes The ecotypes.
