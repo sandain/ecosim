@@ -59,7 +59,7 @@ public class ProjectFileIO {
         // Create new objects for each item in the project file.
         nu = 0;
         length = 0;
-        outgroup = "";
+        outgroup = null;
         tree = null;
         binning = null;
         estimate = null;
