@@ -543,7 +543,7 @@ public class ProjectFileIO {
                                 estimate.getResult ()
                             );
                         }
-                        else if (binning != null) {
+                        else if (binning == null) {
                             System.err.println (
                                 "Error in project file: " +
                                 "hillclimb value without Binning."
@@ -632,7 +632,7 @@ public class ProjectFileIO {
                                 hillclimb.getResult ()
                             );
                         }
-                        else if (binning != null) {
+                        else if (binning == null) {
                             System.err.println (
                                 "Error in project file: " +
                                 "omegaCI value without Binning."
@@ -682,7 +682,7 @@ public class ProjectFileIO {
                                 hillclimb.getResult ()
                             );
                         }
-                        else if (binning != null) {
+                        else if (binning == null) {
                             System.err.println (
                                 "Error in project file: " +
                                 "sigmaCI value without Binning."
