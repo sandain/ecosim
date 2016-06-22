@@ -135,6 +135,15 @@ public class Demarcation extends Tree {
     }
 
     /**
+     *  Add an ecotype.
+     *
+     *  @param ecotype The ecotype to add.
+     */
+    public void addEcotype (ArrayList<String> ecotype) {
+        ecotypes.add (ecotype);
+    }
+
+    /**
      *  Returns true if demarcation has been run, false otherwise.
      *
      *  @return True if demarcation has been run, false otherwise.
