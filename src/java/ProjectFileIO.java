@@ -582,7 +582,7 @@ public class ProjectFileIO {
                                 hillclimb.getResult ()
                             );
                         }
-                        else if (binning != null) {
+                        else if (binning == null) {
                             System.err.println (
                                 "Error in project file: " +
                                 "npopCI value without Binning."
