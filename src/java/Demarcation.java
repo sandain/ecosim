@@ -74,7 +74,7 @@ public class Demarcation extends Tree {
         this.outgroup = outgroup;
         this.hclimbResult = hclimbResult;
         this.precision = precision;
-        method = PAINT_METHOD_DEMARCATED;
+        paintMethod = PAINT_METHOD_DEMARCATED;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();

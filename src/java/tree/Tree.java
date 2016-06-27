@@ -47,7 +47,7 @@ public class Tree {
     public static final int PAINT_METHOD_COLLAPSED  = 1020;
     public static final int PAINT_METHOD_DEMARCATED = 1030;
 
-    public static int method = PAINT_METHOD_NORMAL;
+    public static int paintMethod = PAINT_METHOD_NORMAL;
 
     /**
      *  The default constructor for objects of class Tree.
@@ -158,7 +158,7 @@ public class Tree {
      */
     public int numberOfDescendants (Node node) {
         int descendants = 0;
-        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        boolean paintCollapsed = (paintMethod == PAINT_METHOD_COLLAPSED);
         for (Node child: node.getChildren ()) {
             if (child.isLeafNode () ||
                 (child.isCollapsed () && paintCollapsed)) {
@@ -374,7 +374,7 @@ public class Tree {
         int height = fontHeight * (size () + 1);
         int width = max;
         // Make room for the demarcation line if needed.
-        if (method == PAINT_METHOD_DEMARCATED) {
+        if (paintMethod == PAINT_METHOD_DEMARCATED) {
             // Add room for the demarcation line.
             width += 20;
             // Add room for the label.
@@ -426,7 +426,7 @@ public class Tree {
         int nodeY = fontHeight + Math.round (
             node.getY ().floatValue () * yModifier
         );
-        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        boolean paintCollapsed = (paintMethod == PAINT_METHOD_COLLAPSED);
         if (node.isLeafNode () || (node.isCollapsed () && paintCollapsed)) {
             // Paint the name of the node.
             painter.drawString (
@@ -458,7 +458,10 @@ public class Tree {
                     // Paint a horizontal line.
                     painter.drawLine (nodeX, childY, childX, childY, stroke);
                 }
-                if (child.isCollapsed () && method == PAINT_METHOD_DEMARCATED) {
+                if (
+                    child.isCollapsed () &&
+                    paintMethod == PAINT_METHOD_DEMARCATED
+                ) {
                     int minY = Integer.MAX_VALUE;
                     int maxY = 0;
                     for (Node descendant: child.getDescendants ()) {
@@ -513,7 +516,7 @@ public class Tree {
         // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
-        boolean paintCollapsed = (method == PAINT_METHOD_COLLAPSED);
+        boolean paintCollapsed = (paintMethod == PAINT_METHOD_COLLAPSED);
         int num = numberOfDescendants (node);
         if (node.isCollapsed () && paintCollapsed && num > 1) {
             double max = node.maximumDistanceFromLeafNode ();
