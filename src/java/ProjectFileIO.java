@@ -731,6 +731,16 @@ public class ProjectFileIO {
                 }
                 // Look for elements within demarcation.
                 if (activeElement.equals ("demarcation")) {
+                    if (localName.equals ("method")) {
+                        switch (attrs.getValue (uri, "value")) {
+                            case "monophyly":
+                                method = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
+                                break;
+                            case "paraphyly":
+                                method = Demarcation.DEMARCATION_METHOD_PARAPHYLY;
+                                break;
+                        }
+                    }
                     if (localName.equals ("precision")) {
                         switch (attrs.getValue (uri, "value")) {
                             case "fine-scale":
@@ -808,6 +818,7 @@ public class ProjectFileIO {
                                     outgroup,
                                     tree,
                                     hillclimb.getResult (),
+                                    method,
                                     precision
                                 );
                             }
@@ -850,6 +861,7 @@ public class ProjectFileIO {
             }
         }
 
+        private Integer method;
         private Integer precision;
 
         private String activeElement;

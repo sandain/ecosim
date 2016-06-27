@@ -47,6 +47,9 @@ import java.util.StringTokenizer;
  */
 public class Demarcation extends Tree {
 
+    public static final int DEMARCATION_METHOD_MONOPHYLY = 1501;
+    public static final int DEMARCATION_METHOD_PARAPHYLY = 1502;
+
     public static final int DEMARCATION_PRECISION_COARSE_SCALE = 2501;
     public static final int DEMARCATION_PRECISION_FINE_SCALE = 2502;
 
@@ -60,11 +63,12 @@ public class Demarcation extends Tree {
      *  @param outgroup The name of the outgroup.
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
+     *  @param method The method to use for demarcation.
      *  @param precision The precision to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
-        ParameterSet hclimbResult, int precision)
+        ParameterSet hclimbResult, int method, int precision)
         throws InvalidTreeException {
         super (tree);
         this.masterVariables = masterVariables;
@@ -73,6 +77,7 @@ public class Demarcation extends Tree {
         this.length = length;
         this.outgroup = outgroup;
         this.hclimbResult = hclimbResult;
+        this.method = method;
         this.precision = precision;
         paintMethod = PAINT_METHOD_DEMARCATED;
         hasRun = false;
@@ -86,7 +91,7 @@ public class Demarcation extends Tree {
     public void run () throws InvalidTreeException {
         iteration = 0;
         // Find the ecotypes.
-        findEcotypes (root);
+        findEcotypes (this);
         // Set the flag stating that the demarcation program has run.
         hasRun = true;
     }
@@ -162,13 +167,113 @@ public class Demarcation extends Tree {
     }
 
     /**
-     *  Find the ecotypes using a recursive algorithm.  If the subclade of
-     *  the tree represented by node has an optimal npop value of 1, demarcate
-     *  the subclade as an ecotype. Otherwise, recurse on the node's children.
+     *  Find ecotypes using the provided phylogeny data.
+     *
+     *  @param tree The phylogeny data.
+     */
+    private void findEcotypes (Tree tree) throws InvalidTreeException {
+        switch (method) {
+            case DEMARCATION_METHOD_MONOPHYLY:
+                findMonophylyEcotypes (tree.getRoot ());
+                break;
+            case DEMARCATION_METHOD_PARAPHYLY:
+                findParaphylyEcotypes (tree);
+                break;
+            default:
+                System.err.println ("Demarcation: Invalid method.");
+                System.exit (1);
+        }
+    }
+
+    /**
+     *  Find paraphyletic ecotypes using the provided phylogeny data. Starting
+     *  with the most divergent leaf node, work backwards in time through the
+     *  tree until the subclade no longer has an optimal npop value of 1. Once
+     *  the last common ancestor node of the subclade is known (where npop
+     *  still equals 1), demarcate the subclade and remove the entire clade
+     *  from the tree. Repeat until there are no leaf node descendants left.
+     *
+     *  @param tree The phylogeny data.
+     */
+    private void findParaphylyEcotypes (Tree tree) throws InvalidTreeException {
+        // Make a copy of the tree to avoid destroying it.
+        Tree sampleTree;
+        try {
+            sampleTree = new Tree (tree);
+        }
+        catch (InvalidTreeException e) {
+            System.err.println ("Error creating subtree.");
+            return;
+        }
+        // Make a list of leaf node descendants.
+        ArrayList<Node> leaves = sampleTree.getDescendants ();
+        // Sort the leaves by their distance using a custom Comparator.
+        Comparator<Node> comparator = new Comparator<Node> () {
+            public int compare (Node nodeA, Node nodeB) {
+                Double a = nodeA.getDistance ();
+                Double b = nodeB.getDistance ();
+                return a.compareTo (b);
+            }
+        };
+        Heapsorter<Node> sorter = new Heapsorter<Node> (comparator);
+        sorter.sort (leaves);
+        // Find the ecotypes.
+        while (leaves.size () > 0) {
+            // Get the first leaf on the list.
+            Node leaf = leaves.get (0);
+            // Skip the outgroup.
+            if (outgroup.equals (leaf.getName ())) {
+                leaves.remove (0);
+                continue;
+            }
+            // Find the ancestor node of the leaf node whose descendants make
+            // up a single ecotype.
+            Node node = leaf;
+            while (true) {
+                Node parent = node.getParent ();
+                // Exit the loop if the parent node is the root node.
+                if (parent.isRootNode ()) break;
+                // Predict the number of ecotypes using the parent node and
+                // exit the loop if the result is greater than one.
+                NpopValue result = runSample (parent);
+                if (result.npop > 1L) break;
+                // Move the node pointer to the parent node.
+                node = parent;
+            }
+            // Demarcate the ecotype.
+            ArrayList<String> ecotype = new ArrayList<String> ();
+            if (node.isLeafNode ()) {
+                // Demarcate a singleton ecotype.
+                ecotype.add (node.getName ());
+                // Remove the node from the tree.
+                leaves.remove (node);
+                sampleTree.removeDescendant (node);
+            }
+            else {
+                // Demarcate an ecotype with multiple representatives.
+                for (Node descendant: node.getDescendants ()) {
+                    // Add the descendant to the ecotype.
+                    ecotype.add (descendant.getName ());
+                    // Remove the descendant from the tree.
+                    leaves.remove (descendant);
+                }
+                // Remove the node from the tree.
+                Node parent = node.getParent ();
+                parent.removeChild (node);
+            }
+            ecotypes.add (ecotype);
+        }
+    }
+
+    /**
+     *  Find monophyletic ecotypes using the provided phylogeny data.  If the
+     *  subclade of the tree represented by node has an optimal npop value of
+     *  1, demarcate the subclade as an ecotype. Otherwise, recurse on the
+     *  node's children.
      *
      *  @param node The current node representing the subclade.
      */
-    private void findEcotypes (Node node) throws InvalidTreeException {
+    private void findMonophylyEcotypes (Node node) throws InvalidTreeException {
         ArrayList<String> sample = new ArrayList<String> ();
         String ecotype = String.format ("Ecotype%03d", ecotypes.size () + 1);
         if (node.isLeafNode ()) {
@@ -204,7 +309,7 @@ public class Demarcation extends Tree {
                 // Npop > 1, recurse on children nodes.
                 ArrayList<Node> children = node.getChildren ();
                 for (int i = 0; i < children.size (); i ++) {
-                    findEcotypes (children.get (i));
+                    findMonophylyEcotypes (children.get (i));
                 }
             }
         }
@@ -427,6 +532,7 @@ public class Demarcation extends Tree {
     private ParameterSet hclimbResult;
 
     private Integer precision;
+    private Integer method;
 
     private Integer nrep = 1000;
     private Integer step = 1;
