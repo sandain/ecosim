@@ -227,6 +227,8 @@ program demarcation
     integer(kind = int32), intent(in)    :: nparams
     real(kind = real64), intent(inout)   :: params(nparams)
     real(kind = real64), intent(out)     :: yvalue
+    ! Local constants
+    real(kind = real32), parameter :: maximum = huge (0.0)
     ! Local variables
     real(kind = real64)   :: avgsuccess(6)
     real(kind = real64)   :: omega
@@ -244,8 +246,18 @@ program demarcation
     ! parameters common block
     integer(kind = int32) :: npopfornelmead
     common/parameters/npopfornelmead
-    omega = exp (params(1))
-    sigma = exp (params(2))
+    ! Make sure omega does not exceed the maximum value
+    if (params(1) .lt. maximum) then
+      omega = exp (params(1))
+    else
+      omega = maximum
+    end if
+    ! Make sure sigma does not exceed the maximum value
+    if (params(2) .lt. maximum) then
+      sigma = exp (params(2))
+    else
+      sigma = maximum
+    end if
     ! npop is defined through the "parameters" common block
     npop = npopfornelmead
     if (debug) then
