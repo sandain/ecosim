@@ -143,6 +143,13 @@ public class ParameterSet implements Comparable<ParameterSet> {
      *  the likelihood of those values.
      */
     public String toString () {
+        if (likelihood == null) {
+            return String.format (
+                "  npop:        %d\n" +
+                "  omega:       %.4f\n" +
+                "  sigma:       %.4f", npop, omega, sigma
+            );
+        }
         return String.format (
             "  npop:        %d\n" +
             "  omega:       %.4f\n" +
