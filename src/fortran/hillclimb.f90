@@ -166,6 +166,8 @@ program hillclimb
     integer(kind = int32), intent(in)    :: nparams
     real(kind = real64), intent(inout)   :: params(nparams)
     real(kind = real64), intent(out)     :: yvalue
+    ! Local constants
+    real(kind = real32), parameter :: maximum = huge (0.0)
     ! Local variables
     real(kind = real64)   :: avgsuccess(6)
     real(kind = real64)   :: omega
@@ -180,10 +182,22 @@ program hillclimb
     integer(kind = int32) :: jwhichxavg
     real(kind = real32)   :: crit(1000)
     common/bldanny/numcrit,nu,nrep,lengthseq,realdata,crit,jwhichxavg
+    ! Make sure omega does not exceed the maximum value
+    if (params(1) .lt. maximum) then
+      omega = exp (params(1))
+    else
+      omega = maximum
+    end if
+    ! Make sure sigma does not exceed the maximum value
+    if (params(2) .lt. maximum) then
+      sigma = exp (params(2))
+    else
+      sigma = maximum
+    end if
+    ! Make sure npop is >2 and <= nu
     if (params(3) .lt. 2.0) params(3) = 2
     if (params(3) .gt. nu)  params(3) = nu
-    omega = exp (params(1))
-    sigma = exp (params(2))
+    ! Convert npop to an integer
     npop = nint (params(3), kind = int32)
     if (debug) then
       write (unit = *, fmt = *) 'omega= ', omega
