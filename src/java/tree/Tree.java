@@ -364,7 +364,7 @@ public class Tree {
         int max = 0;
         for (Node node: getDescendants ()) {
             String name = node.getName ();
-            int labelWidth = (name.length () + 1) * fontWidth;
+            int labelWidth = painter.stringWidth (name);
             int x = fontWidth + labelWidth + Math.round (
                 node.getX ().floatValue () * xModifier
             );
@@ -381,7 +381,7 @@ public class Tree {
             int maxLabel = 0;
             for (Node node: getCollapsed ()) {
                 String name = node.getName ();
-                int labelWidth = (name.length () + 1) * fontWidth;
+                int labelWidth = painter.stringWidth (name);
                 if (labelWidth > maxLabel) maxLabel = labelWidth;
             }
             width += xSpacer + maxLabel;
