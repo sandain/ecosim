@@ -241,6 +241,8 @@ program omegaCI
     integer(kind = int32), intent(in)    :: nparams
     real(kind = real64), intent(inout)   :: params(nparams)
     real(kind = real64), intent(out)     :: yvalue
+    ! Local constants
+    real(kind = real32), parameter :: maximum = huge (0.0)
     ! Local variables
     real(kind = real64)   :: avgsuccess(6)
     real(kind = real64)   :: omega
@@ -258,7 +260,13 @@ program omegaCI
     ! parameters common block
     real(kind = real64)   :: omegafornelmead
     common/parameters/omegafornelmead
-    sigma = exp (params(1))
+    ! Make sure sigma does not exceed the maximum value
+    if (params(1) .lt. maximum) then
+      sigma = exp (params(1))
+    else
+      sigma = maximum
+    end if
+    ! Convert npop to an integer
     npop = nint (params(2), kind = int32)
     ! omega is defined through the "parameters" common block
     omega = omegafornelmead
