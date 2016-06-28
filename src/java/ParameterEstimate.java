@@ -148,7 +148,7 @@ public class ParameterEstimate implements Runnable {
         ));
         // Store the estimated parameter values.
         result = new ParameterSet (
-            npopEstimate, omegaEstimate, sigmaEstimate, 0.0d
+            npopEstimate, omegaEstimate, sigmaEstimate, null
         );
         // Set the flag stating that the parameter estimate program has
         // been run.
