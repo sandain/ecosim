@@ -14,6 +14,9 @@ FLDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,ove
 # Apache Ant, used to compile the Java source.
 ANT := ant
 
+# The name of the zip file to build for the dist target.
+DIST_ZIP := ~/ecosim-$(shell cat VERSION).zip
+
 # Doxygen, used to compile the documentation for the Fortran and Java code.
 DOXYGEN := doxygen
 
@@ -72,7 +75,7 @@ FORTRAN_OBJECT_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%.o, $(FORTRAN_IN
 FORTRAN_MOD_FILES     := $(patsubst %.f90, %.mod, $(FORTRAN_INCLUDE_FILES))
 
 # List of phony build targets.
-.PHONY: all clean install uninstall docs check
+.PHONY: all clean install uninstall docs check dist
 
 # The main entry point for building.
 all: $(C_BINARY_FILES) $(FORTRAN_BINARY_FILES)
@@ -106,6 +109,10 @@ docs:
 # Run the unit tests.
 check:
 	$(ANT) check
+
+# Build the distribution zip file.
+dist: install docs clean
+	zip -9 -r --exclude=\*.git\* $(DIST_ZIP) .
 
 # Build the c binary files.
 $(C_BUILD_DIR)%$(BINARY_EXT): $(C_SOURCE_DIR)%.c
