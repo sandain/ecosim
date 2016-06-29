@@ -228,7 +228,7 @@ program demarcation
     real(kind = real64), intent(inout)   :: params(nparams)
     real(kind = real64), intent(out)     :: yvalue
     ! Local constants
-    real(kind = real32), parameter :: maximum = huge (0.0)
+    real(kind = real64), parameter :: maximum = log (huge (0.0d0))
     ! Local variables
     real(kind = real64)   :: avgsuccess(6)
     real(kind = real64)   :: omega
