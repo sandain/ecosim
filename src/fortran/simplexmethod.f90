@@ -523,7 +523,7 @@ module simplexmethod
     write (unit = lout, fmt = 1070) neval
 1070 format (//' Minimum found after', I5, ' function evaluations')
     write (unit = lout, fmt = 1080) (p(i), i = 1, nop)
-1080 format (' Minimum at', 4(/1X, 6G13.6))
+1080 format (' Minimum at',/4(1X, G14.6))
     write (unit = lout, fmt = 1090) func
 1090 format (' Function value at minimum =', G14.6)
 460 if (iquad .le. 0) return
