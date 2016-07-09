@@ -5,12 +5,12 @@ Ecotype Simulation README
 ## INSTALLATION
 
 Extract the contents of the archive to your hard drive:
-* Windows: C:\EcoSim\
-* POSIX (Linux, OSX, etc): ~/ecosim/
+* Windows: `C:\EcoSim\`
+* POSIX (Linux, OSX, etc): `~/ecosim/`
 
 Create a Desktop shortcut to the shell script for your platform.
-* Windows: C:\EcoSim\ecosim.bat
-* POSIX (Linux, OSX, etc): ~/ecosim/ecosim.sh
+* Windows: `C:\EcoSim\ecosim.bat`
+* POSIX (Linux, OSX, etc): `~/ecosim/ecosim.sh`
 
 
 ## REQUIREMENTS - EXECUTION
