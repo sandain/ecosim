@@ -56,8 +56,11 @@
 !> @copyright GNU General Public License
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module ziggurat
-  use ISO_FORTRAN_ENV
+  ! Load intrinsic modules.
+  use, intrinsic :: ISO_FORTRAN_ENV
+
   implicit none
+
   private
 
   ! Declare public methods.
