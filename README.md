@@ -23,7 +23,7 @@ already been compiled for you and can be found in the `bin` directory. Both
 32-bit Windows make sure you are using the 32-bit binary distribution.
 
 If you are using Linux, OSX, BSD, or you downloaded the source distribution,
-read the [REQUIREMENTS - COMPILATION](#requirements---execution) section
+read the [REQUIREMENTS - COMPILATION](#requirements---compilation) section
 below.
 
 ### Java 8 JRE
