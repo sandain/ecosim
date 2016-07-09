@@ -34,6 +34,41 @@ can download it here:
 http://java.sun.com/javase/downloads/index.jsp
 
 
+## USAGE
+
+You can use the shell script provided for your platform: `ecosim.bat` for
+Windows and `ecosim.sh` for Linux or OSX, or you can call the `EcoSim.jar`
+file directory with one of the following commands:
+
+        ecosim.bat [OPTIONS]
+        ./ecosim.sh [OPTIONS]
+        java -jar EcoSim.jar [OPTIONS]
+
+The following command line options are available:
+
+        -i, --input        : A XML formated save file for input.
+        -o, --output       : A XML formated save for for output.
+        -s, --sequences    : A Fasta formated file for input.
+        -p, --phylogeny    : A Newick formatted file for input.
+        -d, --debug        : Display debugging output.
+        -h, --help         : Display helpful information.
+        -n, --nogui        : Hide the default GUI.  Implies --runall.
+        -r, --runall       : Run everything, including demarcation.
+        -t=n, --threads=n  : Set the number of threads (n) to start, default
+                             to system maximum.
+        -v, --version      : Display the version number.
+
+Sequences should be aligned and in a Fasta formated file, with the outgroup
+listed first.
+
+The phylogeny should be in Newick format and must include the same leaf node
+names and number as the sequences in the Fasta file.
+
+Output is saved in XML format, and can be used to save results for later
+retrieval using the input option.
+
+Debugging messages will be printed to the console when the debug flag is used.
+
 ## REQUIREMENTS - COMPILATION
 
 To compile the Fortran programs, you will need to have a Fortran compiler
