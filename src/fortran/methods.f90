@@ -25,12 +25,14 @@
 !> various programs of the Ecotype Simulation application.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module methods
-  use ISO_FORTRAN_ENV
-  use darray
-  use ziggurat
+  ! Load intrinsic modules.
+  use, intrinsic :: ISO_FORTRAN_ENV
 #ifdef _OPENMP
-  use omp_lib
+  use, intrinsic :: omp_lib
 #endif
+  ! Load our modules.
+  use :: darray
+  use :: ziggurat
 
   implicit none
 
