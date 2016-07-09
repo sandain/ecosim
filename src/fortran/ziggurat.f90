@@ -29,7 +29,7 @@
 !>
 !> @code
 !>   program zigguratTest
-!>     use ziggurat
+!>     use :: ziggurat
 !>     implicit none
 !>     integer, parameter :: iii = 123456789 !< The RNG seed.
 !>     integer            :: i
