@@ -26,7 +26,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module methods
   ! Load intrinsic modules.
-  use, intrinsic :: ISO_FORTRAN_ENV
+  use, intrinsic :: iso_fortran_env
   use, intrinsic :: ieee_arithmetic
 #ifdef _OPENMP
   use, intrinsic :: omp_lib

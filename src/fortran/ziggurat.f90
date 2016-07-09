@@ -57,7 +57,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module ziggurat
   ! Load intrinsic modules.
-  use, intrinsic :: ISO_FORTRAN_ENV
+  use, intrinsic :: iso_fortran_env
 
   implicit none
 

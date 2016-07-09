@@ -37,7 +37,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module simplexmethod
   ! Load intrinsic modules.
-  use, intrinsic :: ISO_FORTRAN_ENV
+  use, intrinsic :: iso_fortran_env
 
   implicit none
 
@@ -60,7 +60,7 @@ module simplexmethod
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   interface
     subroutine nelmeadFunction (nop, p, func)
-      use ISO_FORTRAN_ENV
+      use, intrinsic :: iso_fortran_env
       integer(kind = int32), intent(in)  :: nop
       real(kind = real64), intent(inout) :: p(nop)
       real(kind = real64), intent(out)   :: func
