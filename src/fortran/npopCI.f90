@@ -33,10 +33,14 @@
 !>         each bounding value.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 program npopCI
-  use ISO_FORTRAN_ENV
-  use methods
-  use simplexmethod
+  ! Load intrinsic modules.
+  use, intrinsic :: ISO_FORTRAN_ENV
+  ! Load our modules.
+  use :: methods
+  use :: simplexmethod
+
   implicit none
+
   ! Local variables
   character(len = 256)             :: inputFile
   character(len = 256)             :: outputFile
