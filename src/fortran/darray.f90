@@ -25,7 +25,7 @@
 !>
 !> @code
 !>   program darrayTest
-!>     use darray
+!>     use :: darray
 !>     implicit none
 !>     integer             :: i
 !>     type(darrayInteger) :: integerArray
