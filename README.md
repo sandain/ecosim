@@ -15,6 +15,17 @@ Create a Desktop shortcut to the shell script for your platform.
 
 ## REQUIREMENTS - EXECUTION
 
+### Binary Files
+
+If you downloaded the Windows distribution, the necessary binary files have
+already been compiled for you and can be found in the `bin` directory. Both
+32-bit and 64-bit binary distributions are available, if you are running
+32-bit Windows make sure you are using the 32-bit binary distribution.
+
+If you are using Linux, OSX, BSD, or you downloaded the source distribution,
+read the [REQUIREMENTS - COMPILATION](#requirements---execution) section
+below.
+
 ### Java 8 JRE
 
 A Java 8 Runtime Environment (JRE) is required to execute this program.  You
