@@ -38,7 +38,7 @@ http://java.sun.com/javase/downloads/index.jsp
 
 You can use the shell script provided for your platform: `ecosim.bat` for
 Windows and `ecosim.sh` for Linux or OSX, or you can call the `EcoSim.jar`
-file directory with one of the following commands:
+file directly with one of the following commands:
 
         ecosim.bat [OPTIONS]
         ./ecosim.sh [OPTIONS]
