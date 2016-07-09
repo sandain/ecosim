@@ -36,7 +36,8 @@
 !> @author Jason M Wood
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 module simplexmethod
-  use ISO_FORTRAN_ENV
+  ! Load intrinsic modules.
+  use, intrinsic :: ISO_FORTRAN_ENV
 
   implicit none
 
