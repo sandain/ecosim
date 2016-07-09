@@ -27,6 +27,7 @@
 module methods
   ! Load intrinsic modules.
   use, intrinsic :: ISO_FORTRAN_ENV
+  use, intrinsic :: ieee_arithmetic
 #ifdef _OPENMP
   use, intrinsic :: omp_lib
 #endif
@@ -591,11 +592,11 @@ module methods
     ! Initialize the avgsuccess array with values of 0.
     avgsuccess = (/ (0.0d0, i = 1, 6) /)
     ! Make sure that omega has valid values.
-    if (isnan (omega)) return ! XXX Should use ieee_is_nan when supported.
+    if (ieee_is_nan (omega)) return
     if (omega .lt. epsilon (0.0d0)) return
     if (omega .gt. huge (0.0)) return
     ! Make sure that sigma has valid values.
-    if (isnan (sigma)) return ! XXX Should use ieee_is_nan when supported.
+    if (ieee_is_nan (sigma)) return
     if (sigma .lt. epsilon (0.0d0)) return
     if (sigma .gt. huge (0.0)) return
     ! Make sure that npop does not exceed the number of homologous gene
