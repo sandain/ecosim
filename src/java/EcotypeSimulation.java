@@ -323,11 +323,8 @@ public class EcotypeSimulation implements Runnable {
                     break;
                 case "-v":
                 case "--version":
-                    log.append (String.format (
-                        "Ecotype Simulation %s\n",
-                        masterVariables.getVersion ()
-                    ));
-                    noGUI = true;
+                    // The version has already been printed, just exit.
+                    System.exit (0);
                     break;
                 default:
                     // Look for unrecognized options.
