@@ -96,7 +96,7 @@ GNU Fortran compiler here:
 
 http://gcc.gnu.org/install/
 
-To compile the Java portion of the program, you will need to have the Java 6
+To compile the Java portion of the program, you will need to have the Java 8
 Development Kit (JDK) installed.  You can download the JDK here:
 
 http://java.sun.com/javase/downloads/index.jsp
