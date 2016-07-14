@@ -247,11 +247,8 @@ public class EcotypeSimulation implements Runnable {
                     break;
                 case "-h":
                 case "--help":
-                    System.out.println (String.format (
-                        "Ecotype Simulation %s\n\n%s",
-                        masterVariables.getVersion (), usage
-                    ));
-                    noGUI = true;
+                    System.out.println (usage);
+                    System.exit (0);
                     break;
                 case "-i":
                 case "--input":
