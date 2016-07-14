@@ -181,7 +181,6 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      */
     private JEditorPane makeIndexPane (String type) {
         JEditorPane pane = new JEditorPane ();
-        File indexFile = null;
         String index =
             "<!DOCTYPE html>\n" +
             "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
@@ -196,28 +195,16 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             "\" name=\"menu\" />\n";
         switch (type) {
             case ABOUT:
-                indexFile = new File (
-                    masterVariables.getWorkingDirectory () +
-                    "aboutIndex.html"
-                );
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
                     "about.html\" name=\"body\" />\n";
                 break;
             case USER_GUIDE:
-                indexFile = new File (
-                    masterVariables.getWorkingDirectory () +
-                    "userGuideIndex.html"
-                );
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
                     "userguide.html" + "\" name=\"body\" />\n";
                 break;
             case LICENSE:
-                indexFile = new File (
-                    masterVariables.getWorkingDirectory () +
-                    "licenseIndex.html"
-                );
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
                     "license.html" + "\" name=\"body\" />\n";
@@ -227,20 +214,13 @@ public class HelpAboutWindow extends JFrame implements Runnable {
         }
         index += "  </frameset>\n";
         index += "</html>\n";
-        try {
-            BufferedWriter out = new BufferedWriter (
-                new FileWriter (indexFile)
-            );
-            out.write (index);
-            out.close ();
-            pane.setPage (indexFile.toURI ().toURL ());
-        }
-        catch (Exception e) {
-            e.printStackTrace ();
-        }
+        // Add the HTML to the pane.
         pane.setContentType ("text/html;charset=UTF-8");
-        pane.setEditable (false);
+        pane.setText (index);
+        // Add our hyperlink listener.
         pane.addHyperlinkListener (new Hyperactive ());
+        // Don't allow the pane to be edited.
+        pane.setEditable (false);
         return pane;
     }
 
