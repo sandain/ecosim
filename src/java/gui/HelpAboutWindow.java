@@ -180,7 +180,9 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *  @return The index pane.
      */
     private JEditorPane makeIndexPane (String type) {
+        // Setup a pane to display the HTML.
         JEditorPane pane = new JEditorPane ();
+        // Create the HTML document.
         String index =
             "<!DOCTYPE html>\n" +
             "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
