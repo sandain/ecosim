@@ -2,6 +2,18 @@ Ecotype Simulation README
 =========================
 
 
+## DOWNLOAD
+
+Download the latest stable release:
+
+https://github.com/sandain/es2/releases
+
+
+Download the the development version as a zip file:
+
+https://github.com/sandain/es2/archive/master.zip
+
+
 ## INSTALLATION
 
 Extract the contents of the archive to your hard drive:
