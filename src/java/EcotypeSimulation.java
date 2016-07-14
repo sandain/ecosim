@@ -136,14 +136,13 @@ public class EcotypeSimulation implements Runnable {
      *  @param args The command line arguments.
      */
     public EcotypeSimulation (String[] args) {
+        this.args = args;
         // Initialize the variables.
         log = new Logger ();
         masterVariables = new MasterVariables ();
         simulation = new Simulation (log, masterVariables);
         noGUI = false;
         runAll = false;
-        // Check for command line arguments.
-        checkArguments (args);
     }
 
     /**
@@ -154,6 +153,8 @@ public class EcotypeSimulation implements Runnable {
         System.out.print (String.format (
             "Ecotype Simulation %s\n\n", masterVariables.getVersion ()
         ));
+        // Check for command line arguments.
+        checkArguments (args);
         // Startup the CLI or the GUI.
         setupInterface ();
         // Load the input file, or the sequence and phylogeny files.
@@ -368,6 +369,7 @@ public class EcotypeSimulation implements Runnable {
         }
     }
 
+    private String[] args;
     private boolean noGUI;
     private boolean runAll;
     private Logger log;
