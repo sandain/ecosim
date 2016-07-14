@@ -8,6 +8,13 @@ Download the latest stable release:
 
 https://github.com/sandain/es2/releases
 
+Windows users: you can download 32- or 64-bit versions of Ecotype Simulation.
+Make sure that you download the version appropriate for your computer.
+
+Linux and OSX users: you must compile your own copy of Ecotype Simulation. You
+will need to download one of the source distributions. See the section on
+[REQUIREMENTS - COMPILATION](#requirements---compilation) for more
+information.
 
 Download the development version as a zip file:
 
