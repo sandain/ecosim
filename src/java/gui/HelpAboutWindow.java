@@ -180,7 +180,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      *  @return The index pane.
      */
     private JEditorPane makeIndexPane (String type) {
-        JEditorPane editorPane = new JEditorPane ();
+        JEditorPane pane = new JEditorPane ();
         File indexFile = null;
         String index =
             "<!DOCTYPE html>\n" +
@@ -233,15 +233,15 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             );
             out.write (index);
             out.close ();
-            editorPane.setPage (indexFile.toURI ().toURL ());
+            pane.setPage (indexFile.toURI ().toURL ());
         }
         catch (Exception e) {
             e.printStackTrace ();
         }
-        editorPane.setContentType ("text/html;charset=UTF-8");
-        editorPane.setEditable (false);
-        editorPane.addHyperlinkListener (new Hyperactive ());
-        return editorPane;
+        pane.setContentType ("text/html;charset=UTF-8");
+        pane.setEditable (false);
+        pane.addHyperlinkListener (new Hyperactive ());
+        return pane;
     }
 
     /**
