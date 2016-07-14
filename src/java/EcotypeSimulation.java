@@ -47,7 +47,7 @@ import java.util.Observer;
  *
  * @section usage Usage
  *
- *     java -jar EcoSim.jar [OPTIONS] sequence_fasta sequence_tree output_xml
+ *     java -jar ecosim.jar [OPTIONS] sequence_fasta sequence_tree output_xml
  *
  * Sequences should be aligned and in a fasta formated file, with the outgroup
  * listed first.
@@ -376,7 +376,7 @@ public class EcotypeSimulation implements Runnable {
 
     private String usage =
         "Usage:\n" +
-        "  java -jar EcoSim.jar [OPTIONS]\n" +
+        "  java -jar ecosim.jar [OPTIONS]\n" +
         "\n" +
         "  Sequences should be aligned and in a Fasta formated file, with\n" +
         "  the outgroup listed first.\n" +
