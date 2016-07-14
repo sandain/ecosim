@@ -9,7 +9,7 @@ Download the latest stable release:
 https://github.com/sandain/es2/releases
 
 
-Download the the development version as a zip file:
+Download the development version as a zip file:
 
 https://github.com/sandain/es2/archive/master.zip
 
