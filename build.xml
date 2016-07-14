@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EcoSim" default="dist" basedir=".">
+<project name="EcotypeSimulation" default="dist" basedir=".">
 
   <!-- The description for this build. -->
   <description>
@@ -12,7 +12,7 @@
   <property name="lib.dir" value="lib"/>
   <property name="src.dir" value="src/java"/>
   <property name="tests.dir" value="tests/java"/>
-  <property name="jarfile" value="EcoSim.jar"/>
+  <property name="jarfile" value="ecosim.jar"/>
   <property name="main-class" value="ecosim.EcotypeSimulation"/>
 
   <!-- Store path information for the check target. -->

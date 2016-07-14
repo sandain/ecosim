@@ -5,11 +5,11 @@ Ecotype Simulation README
 ## INSTALLATION
 
 Extract the contents of the archive to your hard drive:
-* Windows: `C:\EcoSim\`
+* Windows: `C:\ecosim\`
 * POSIX (Linux, OSX, etc): `~/ecosim/`
 
 Create a Desktop shortcut to the shell script for your platform.
-* Windows: `C:\EcoSim\ecosim.bat`
+* Windows: `C:\ecosim\ecosim.bat`
 * POSIX (Linux, OSX, etc): `~/ecosim/ecosim.sh`
 
 
@@ -37,12 +37,12 @@ http://java.sun.com/javase/downloads/index.jsp
 ## USAGE
 
 You can use the shell script provided for your platform: `ecosim.bat` for
-Windows and `ecosim.sh` for Linux or OSX, or you can call the `EcoSim.jar`
+Windows and `ecosim.sh` for Linux or OSX, or you can call the `ecosim.jar`
 file directly with one of the following commands:
 
         ecosim.bat [OPTIONS]
         ./ecosim.sh [OPTIONS]
-        java -jar EcoSim.jar [OPTIONS]
+        java -jar ecosim.jar [OPTIONS]
 
 The following command line options are available:
 

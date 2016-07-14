@@ -1,5 +1,5 @@
 # Ignore the built jar file.
-EcoSim.jar
+ecosim.jar
 
 # Ignore Fortran module files.
 *.mod

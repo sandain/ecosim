@@ -15,4 +15,4 @@ if [ "$ABS_PATH" != "$SCRIPT_NAME" ]; then
 fi
 
 # Run Ecotype Simulation.
-$JAVA -jar EcoSim.jar $@
+$JAVA -jar ecosim.jar $@

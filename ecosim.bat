@@ -8,5 +8,5 @@ set ABS_PATH=%~d0%~p0
 cd /D "%ABS_PATH%"
 
 :: Run Ecotype Simulation.
-cmd /c %JAVA% -jar EcoSim.jar %*
+cmd /c %JAVA% -jar ecosim.jar %*
 
