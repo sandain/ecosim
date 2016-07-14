@@ -127,6 +127,11 @@ installation instructions, and download the binaries here:
 
 http://sourceware.org/pthreads-win32/
 
+If you wish to use a different build system, just make sure that the compiled
+Java `ecosim.jar` file is placed in the installation folder (e.g. 
+`c:\ecosim\ecosim.jar`), and the Fortran programs end up in the `bin`
+directory (e.g. `c:\ecosim\bin\`).
+
 
 ## BUILDING THE SOURCE
 
