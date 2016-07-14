@@ -143,6 +143,8 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                 nextLine = nextLine.replaceAll (
                     "%ECOSIM_VERSION%", masterVariables.getVersion ()
                 );
+                // Remove hyperlink targets for "_top".
+                nextLine = nextLine.replaceAll (" target=\"_top\"", "");
                 // Write the contents to the new file.
                 writer.write (nextLine + "\n");
                 nextLine = reader.readLine ();
