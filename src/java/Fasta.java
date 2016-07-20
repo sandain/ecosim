@@ -115,12 +115,17 @@ public class Fasta {
     private Sequence parseSequence () throws InvalidFastaException {
         Sequence seq = null;
         try {
-            // Don't try to read past the end of the file.
-            if (file.getFilePointer () == file.length ()) {
-                return seq;
-            }
             // Read the line at the current location into a buffer.
-            String buffer = file.readLine ();
+            String buffer = "";
+            // Ignore empty lines at the start of the file.
+            while (buffer.length () == 0) {
+                // Don't try to read past the end of the file.
+                if (file.getFilePointer () == file.length ()) {
+                    return seq;
+                }
+                // Read the line at the current location into a buffer.
+                buffer = file.readLine ();
+            }
             // Make sure there is a sequence at the current location.
             if (buffer.charAt (0) != '>') {
                 throw new InvalidFastaException (
@@ -140,7 +145,7 @@ public class Fasta {
             String sequence = "";
             while ((buffer = file.readLine ()) != null) {
                 // Stop when the next sequence is found.
-                if (buffer.charAt (0) == '>') {
+                if (buffer.length () > 0 && buffer.charAt (0) == '>') {
                     file.seek (offset);
                     break;
                 }
