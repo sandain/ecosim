@@ -60,6 +60,11 @@ public class Simulation {
      *  Exit the simulation.
      */
     public void exit () {
+        // Save any results to the output file if provided.
+        File outputFile = masterVariables.getOutputFile ();
+        if (outputFile != null) {
+            saveProjectFile (outputFile);
+        }
         masterVariables.exit ();
         System.exit (0);
     }
