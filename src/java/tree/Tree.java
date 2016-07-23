@@ -49,6 +49,8 @@ public class Tree {
 
     public static int paintMethod = PAINT_METHOD_NORMAL;
 
+    public int xModifier = 5000;
+
     /**
      *  The default constructor for objects of class Tree.
      */
@@ -356,7 +358,6 @@ public class Tree {
     public void paintTree (Painter painter) {
         int fontHeight = painter.fontHeight ();
         int fontWidth = painter.fontWidth ();
-        int xModifier = 1000;
         int xSpacer = fontWidth / 2;
         // Calculate the XY location of all nodes.
         calculateNodeXY (root, 0.0d);
@@ -389,6 +390,7 @@ public class Tree {
         // Paint the tree.
         painter.start (width, height);
         paintNode (painter, root, max + 10);
+        paintScaleBar (painter, 50, height - 50);
         painter.end ();
     }
 
@@ -416,7 +418,6 @@ public class Tree {
         int fontWidth = painter.fontWidth ();
         int stroke = 1;
         int demarcationStroke = 10;
-        int xModifier = 1000;
         int yModifier = fontHeight;
         int xSpacer = (int)Math.floor (0.5d * fontWidth);
         int ySpacer = (int)Math.floor (0.5d * fontHeight);
@@ -483,6 +484,27 @@ public class Tree {
                 paintNode (painter, child, maxX);
             }
         }
+    }
+
+    /**
+     *  Paint a scale bar for the tree.
+     *
+     *  @param x The X location to start the scale bar.
+     *  @param y The Y location to start the scale bar.
+     */
+    private void paintScaleBar (Painter painter, int x, int y) {
+        Float size = 0.01f;
+        int stroke = 1;
+        int fontHeight = painter.fontHeight ();
+        int height = fontHeight / 2;
+        int x2 = x + Math.round (size * xModifier);
+        int y1 = y - height;
+        int y2 = y + height;
+        int x3 = (x + x2 - painter.stringWidth (size.toString ())) / 2;
+        painter.drawLine (x, y, x2, y, stroke);
+        painter.drawLine (x, y1, x, y2, stroke);
+        painter.drawLine (x2, y1, x2, y2, stroke);
+        painter.drawString (size.toString (), x3, y + fontHeight);
     }
 
     /**
