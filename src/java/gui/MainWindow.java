@@ -74,7 +74,7 @@ public class MainWindow extends JFrame implements Runnable {
     public void run () {
         // Start a thread for the Help/About window.
         HelpAboutWindow helpAbout = new HelpAboutWindow (masterVariables);
-        new Thread (helpAbout).start ();
+        helpAbout.run ();
         // Setup the main window.
         setTitle ("Ecotype Simulation");
         setJMenuBar (new MenuBar (log, simulation, helpAbout));
