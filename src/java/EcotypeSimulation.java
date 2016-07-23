@@ -106,6 +106,7 @@ import javax.swing.SwingUtilities;
  * @li @b Simulation - The shared methods of the simulation.
  * @li @b StreamGobbler - Captures output from the Fortran programs.
  * @li @b Summary - An object to hold summary data.
+ * @li @b api.Painter - Defines a custom method to paint on a surface.
  * @li @b gui.ButtonPane - Defines the main button panel for the GUI.
  * @li @b gui.FileChooser - Defines a custom file chooser for the GUI.
  * @li @b gui.HelpAboutWindow - Displays a Help/About GUI window.
@@ -114,12 +115,12 @@ import javax.swing.SwingUtilities;
  * @li @b gui.MenuBar - Defines a custom menu bar for the GUI.
  * @li @b gui.OptionsPane - Defines a custom panel to display the options.
  * @li @b gui.SummaryPane - Defines a custom panel to display the summary.
- * @li @b gui.TreePane - Defines a custom panel to display the tree.
+ * @li @b gui.TiledPainter - Defines a custom tile-based painter for the GUI.
  * @li @b tree.InvalidTreeException - Report a malformed tree.
  * @li @b tree.NewickReader - Read a Newick formatted tree.
  * @li @b tree.NewickWriter - Write the tree in Newick format.
  * @li @b tree.Node - A node of a phylogenetic tree.
- * @li @b tree.SVGWriter - Write the tree in SVG format.
+ * @li @b tree.SVGPainter - A text-based painter to save a tree in SVG format.
  * @li @b tree.Tree - Interact with phylogenetic trees.
  */
 
