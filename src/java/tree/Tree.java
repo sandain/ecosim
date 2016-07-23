@@ -489,6 +489,7 @@ public class Tree {
     /**
      *  Paint a scale bar for the tree.
      *
+     *  @param painter The Painter to use.
      *  @param x The X location to start the scale bar.
      *  @param y The Y location to start the scale bar.
      */
