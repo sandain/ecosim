@@ -48,7 +48,7 @@ import javax.swing.SwingUtilities;
  *
  * @section usage Usage
  *
- *     java -jar ecosim.jar [OPTIONS] sequence_fasta sequence_tree output_xml
+ *     java -jar ecosim.jar [OPTIONS]
  *
  * Sequences should be aligned and in a fasta formated file, with the outgroup
  * listed first.
@@ -60,6 +60,10 @@ import javax.swing.SwingUtilities;
  *
  * Options:
  *
+ *     -i, --input        : A XML formated save file for input.
+ *     -o, --output       : A XML formated save for for output.
+ *     -s, --sequences    : A Fasta formated file for input.
+ *     -p, --phylogeny    : A Newick formatted file for input.
  *     -d, --debug        : Display debugging output.
  *     -h, --help         : Display helpful information.
  *     -n, --nogui        : Hide the default GUI.  Implies --runall.
