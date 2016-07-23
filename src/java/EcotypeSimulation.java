@@ -27,6 +27,7 @@ import ecosim.gui.MainWindow;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.SwingUtilities;
 
 /**
  * @mainpage Ecotype %Simulation
@@ -359,7 +360,7 @@ public class EcotypeSimulation implements Runnable {
             MainWindow gui = new MainWindow (
                 log, masterVariables, simulation
             );
-            gui.run ();
+            SwingUtilities.invokeLater (gui);
         }
     }
 
