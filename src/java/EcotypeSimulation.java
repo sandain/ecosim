@@ -195,10 +195,6 @@ public class EcotypeSimulation implements Runnable {
             simulation.runConfidenceIntervals ();
             simulation.runDemarcation ();
         }
-        // Save any results to the output file if provided.
-        if (outputFile != null) {
-            simulation.saveProjectFile (outputFile);
-        }
         // Exit the simulation if the GUI wasn't started.
         if (noGUI) simulation.exit ();
     }
@@ -270,7 +266,7 @@ public class EcotypeSimulation implements Runnable {
                 case "-o":
                 case "--output":
                     if (value.length () > 0) {
-                        outputFile = new File (value);
+                        masterVariables.setOutputFile (new File (value));
                     }
                     break;
                 case "-p":
@@ -378,7 +374,6 @@ public class EcotypeSimulation implements Runnable {
     private File fastaFile;
     private File newickFile;
     private File inputFile;
-    private File outputFile;
 
     private String usage =
         "Usage:\n" +
