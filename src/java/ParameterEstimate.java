@@ -258,7 +258,7 @@ public class ParameterEstimate implements Runnable {
         }
         // Look for the upper bound.
         previous = points.get (points.size () - 1).y;
-        for (int i = points.size () - 1; i > 0; i --) {
+        for (int i = points.size () - 1; i > bounds[0]; i --) {
             if (points.get (i).y - previous > MasterVariables.EPSILON) {
                 bounds[1] = i + 1;
                 break;
@@ -300,8 +300,6 @@ public class ParameterEstimate implements Runnable {
         for (BinLevel bin: binning.getBins ()) {
             Double crit = bin.getCrit ();
             Integer level = bin.getLevel ();
-            // Don't include binning results == 1.
-            if (level == 1) continue;
             // Transform the sequence criterion value into the number of SNPs.
             Double x = (1.0d - crit) * length;
             // Transform the number of sequence clusters (bins) into
