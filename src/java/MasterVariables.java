@@ -23,6 +23,7 @@
 
 package ecosim;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -168,6 +169,15 @@ public class MasterVariables {
     }
 
     /**
+     *  Get the output file.
+     *
+     *  @return The output file.
+     */
+    public File getOutputFile () {
+        return outputFile;
+    }
+
+    /**
      *  Set the number of threads to use.
      *
      *  @param numThreads The new number of threads to use.
@@ -183,6 +193,15 @@ public class MasterVariables {
      */
     public void setDebug (Boolean debug) {
         this.debug = debug;
+    }
+
+    /**
+     *  Set the output file.
+     *
+     *  @param outputFile The output file.
+     */
+    public void setOutputFile (File outputFile) {
+        this.outputFile = outputFile;
     }
 
     /**
@@ -263,4 +282,8 @@ public class MasterVariables {
      */
     private Boolean debug;
 
+    /**
+     *  The output file (defaults to null if not provided).
+     */
+    private File outputFile = null;
 }
