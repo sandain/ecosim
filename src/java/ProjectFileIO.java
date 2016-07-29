@@ -246,6 +246,15 @@ public class ProjectFileIO {
             if (demarcation != null && demarcation.hasRun ()) {
                 ArrayList<ArrayList<String>> ecotypes =
                     demarcation.getEcotypes ();
+                String method = "";
+                switch (demarcation.getMethod ()) {
+                    case Demarcation.DEMARCATION_METHOD_MONOPHYLY:
+                        method = "monophyly";
+                        break;
+                    case Demarcation.DEMARCATION_METHOD_PARAPHYLY:
+                        method = "paraphyly";
+                        break;
+                }
                 String precision = "";
                 switch (demarcation.getPrecision ()) {
                     case Demarcation.DEMARCATION_PRECISION_FINE_SCALE:
@@ -256,6 +265,7 @@ public class ProjectFileIO {
                         break;
                 }
                 out.write ("  <demarcation>\n");
+                out.write ("    <method value=\"" + method + "\"/>\n");
                 out.write ("    <precision value=\"" + precision + "\"/>\n");
                 out.write (String.format (
                     "    <ecotypes size=\"%d\">\n",
@@ -435,6 +445,7 @@ public class ProjectFileIO {
             elements.add ("omegaCI");
             elements.add ("sigmaCI");
             elements.add ("demarcation");
+            method = null;
             precision = null;
             activeElement = "none";
             isProjectFile = false;
@@ -806,9 +817,13 @@ public class ProjectFileIO {
                     sigmaCI.setHasRun (true);
                 }
                 // Look for the end of the demarcation element.
-                if (localName.equals ("demarcation") && demarcation != null) {
+                if (localName.equals ("demarcation")) {
                     if (demarcation == null) {
-                        if (outgroup != null && tree != null && hillclimb != null && precision != null) {
+                        if (
+                            outgroup != null && tree != null &&
+                            hillclimb != null && method != null &&
+                            precision != null
+                        ) {
                             try {
                                 demarcation = new Demarcation (
                                     masterVariables,
