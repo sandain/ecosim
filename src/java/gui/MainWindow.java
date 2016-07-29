@@ -195,6 +195,7 @@ public class MainWindow extends JFrame implements Runnable {
                 pane.repaint ();
             }
         });
+        summary.refreshObservers ();
         return pane;
     }
 
