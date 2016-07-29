@@ -137,6 +137,7 @@ public class Demarcation extends Tree {
      */
     public void setEcotypes (ArrayList<ArrayList<String>> ecotypes) {
         this.ecotypes = ecotypes;
+        hasRun = true;
     }
 
     /**
@@ -275,7 +276,7 @@ public class Demarcation extends Tree {
      */
     private void findMonophylyEcotypes (Node node) throws InvalidTreeException {
         ArrayList<String> sample = new ArrayList<String> ();
-        String ecotype = String.format ("Ecotype%03d", ecotypes.size () + 1);
+        String ecotype = String.format ("Ecotype%04d", ecotypes.size () + 1);
         if (node.isLeafNode ()) {
             String name = node.getName ();
             if (! name.equals (outgroup)) {
