@@ -145,6 +145,7 @@ public class Simulation {
             summary.setNu (nu);
             summary.setLength (length);
             summary.setOutgroup (outgroup);
+            summary.setTree (tree);
         }
         if (binning != null) {
             log.append ("Binning result:\n");
@@ -186,6 +187,7 @@ public class Simulation {
             confidenceInterval[0].setSigma (sigma[0]);
             confidenceInterval[1].setSigma (sigma[1]);
         }
+        summary.setConfidenceInterval (confidenceInterval);
         if (demarcation != null && demarcation.hasRun ()) {
             log.append ("Demarcation result:\n");
             log.append (demarcation.toString () + "\n\n");
