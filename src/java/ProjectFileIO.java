@@ -630,7 +630,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within omegaCI.
-                if (activeElement.equals ("omegaCI") && omegaCI != null) {
+                if (activeElement.equals ("omegaCI")) {
                     // Initialize OmegaConfidenceInterval if need be.
                     if (omegaCI == null) {
                         if (binning != null && hillclimb != null) {
@@ -680,7 +680,7 @@ public class ProjectFileIO {
                     }
                 }
                 // Look for elements within sigmaCI.
-                if (activeElement.equals ("sigmaCI") && sigmaCI != null) {
+                if (activeElement.equals ("sigmaCI")) {
                     // Initialize SigmaConfidenceInterval if need be.
                     if (sigmaCI == null) {
                         if (binning != null && hillclimb != null) {
