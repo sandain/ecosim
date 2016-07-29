@@ -109,6 +109,7 @@ public class SummaryPane extends JPanel {
         add (makeBinningChart (), northWest);
         add (makeTextPane (), northEast);
         add (makeTablePane (), south);
+        summary.refreshObservers ();
     }
 
     /**
