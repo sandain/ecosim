@@ -139,9 +139,7 @@ public class Summary extends Observable {
      */
     public void setTree (Tree tree) {
         this.tree = tree;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -151,9 +149,7 @@ public class Summary extends Observable {
      */
     public void setBins (ArrayList<BinLevel> bins) {
         this.bins = bins;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -163,9 +159,7 @@ public class Summary extends Observable {
      */
     public void setNu (Integer nu) {
         this.nu = nu;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -175,9 +169,7 @@ public class Summary extends Observable {
      */
     public void setLength (Integer length) {
         this.length = length;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -187,9 +179,7 @@ public class Summary extends Observable {
      */
     public void setOutgroup (String outgroup) {
         this.outgroup = outgroup;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -199,9 +189,7 @@ public class Summary extends Observable {
      */
     public void setEstimate (ParameterEstimate estimate) {
         this.estimate = estimate;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -211,9 +199,7 @@ public class Summary extends Observable {
      */
     public void setHillclimbing (ParameterSet hillclimbing) {
         this.hillclimbing = hillclimbing;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -223,9 +209,7 @@ public class Summary extends Observable {
      */
     public void setConfidenceInterval (ParameterSet[] confidenceInterval) {
         this.confidenceInterval = confidenceInterval;
-        // Notify observers of the change.
-        setChanged ();
-        notifyObservers (this);
+        refreshObservers ();
     }
 
     /**
@@ -235,7 +219,13 @@ public class Summary extends Observable {
      */
     public void setDemarcation (Demarcation demarcation) {
         this.demarcation = demarcation;
-        // Notify observers of the change.
+        refreshObservers ();
+    }
+
+    /**
+     *  Refresh all observers.
+     */
+    public void refreshObservers () {
         setChanged ();
         notifyObservers (this);
     }
