@@ -121,6 +121,16 @@ public class Demarcation extends Tree {
         return ecotypes;
     }
 
+
+    /**
+     *  Get the demarcation method.
+     *
+     *  @return The demarcation method.
+     */
+    public int getMethod () {
+        return method;
+    }
+
     /**
      *  Get the demarcation precision.
      *
@@ -532,8 +542,8 @@ public class Demarcation extends Tree {
     private Integer nu;
     private ParameterSet hclimbResult;
 
-    private Integer precision;
     private Integer method;
+    private Integer precision;
 
     private Integer nrep = 1000;
     private Integer step = 1;
