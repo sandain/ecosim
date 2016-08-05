@@ -129,7 +129,7 @@ public class SVGPainter implements Painter {
         else {
             writeln (String.format (
                 "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" " +
-                "style=\"stroke-width:%d\"/>",
+                "stroke-width=\"%d\"/>",
                 x1, y1, x2, y2, stroke
             ));
         }
@@ -143,10 +143,8 @@ public class SVGPainter implements Painter {
      *  @param y The Y location to paint the String.
      */
     public void drawString (String str, int x, int y) {
-        int textLength = str.length () * fontWidth;
         writeln (String.format (
-            "<text x=\"%d\" y=\"%d\" textLength=\"%d\">%s</text>",
-            x, y, textLength, str
+            "<text x=\"%d\" y=\"%d\">%s</text>", x, y, str
         ));
     }
 
