@@ -402,6 +402,25 @@ public class Node implements Comparable<Node> {
     }
 
     /**
+     *  Returns whether or not this Node has a certain descendant.
+     *
+     *  @return The collapsed descendants of this Node.
+     */
+    public boolean hasDescendant (Node node) {
+        boolean has = false;
+        for (Node child: children) {
+            if (child == node) {
+                has = true;
+            }
+            else {
+                has = child.hasDescendant (node);
+            }
+            if (has) break;
+        }
+        return has;
+    }
+
+    /**
      *  Returns this Node as a Newick formatted String.
      *
      *  @return A Newick formatted String representing this Node.
