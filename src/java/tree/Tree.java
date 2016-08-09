@@ -408,6 +408,42 @@ public class Tree {
     }
 
     /**
+     *  Find the last common ancestor node for the named descendants.
+     *
+     *  @param names The names of the descendants.
+     *  @return The last common ancestor node of the descendants.
+     */
+    public Node lastCommonAncestor (ArrayList<String> names) {
+        ArrayList<Node> descendants = new ArrayList<Node> ();
+        for (String name: names) {
+            descendants.add (getDescendant (name));
+        }
+        if (descendants.isEmpty ()) return null;
+        return lastCommonAncestor (descendants, descendants.get (0));
+    }
+
+    /**
+     *  A private recursive method to find the last common ancestor node for
+     *  the given descendants.
+     *
+     *  @param descendants The list of descendants.
+     *  @param node The current node being checked.
+     *  @return The last common ancestor node of the descendants.
+     */
+    private Node lastCommonAncestor (ArrayList<Node> descendants, Node node) {
+        boolean has = true;
+        for (Node descendant: descendants) {
+            has &= node == descendant || node.hasDescendant (descendant);
+        }
+        if (has) {
+            return node;
+        }
+        else {
+           return lastCommonAncestor (descendants, node.getParent ());
+        }
+    }
+
+    /**
      *  Recursive method to paint a node and all of its descendants.
      *
      *  @param painter The Painter to use.
