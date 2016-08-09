@@ -146,7 +146,12 @@ public class Demarcation extends Tree {
      *  @param ecotypes The ecotypes.
      */
     public void setEcotypes (ArrayList<ArrayList<String>> ecotypes) {
-        this.ecotypes = ecotypes;
+        int i = 0;
+        for (ArrayList<String> ecotype: ecotypes) {
+            i ++;
+            String name = String.format ("Ecotype%04d", i);
+            addEcotype (name, ecotype);
+        }
         hasRun = true;
     }
 
