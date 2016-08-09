@@ -155,8 +155,14 @@ public class Demarcation extends Tree {
      *
      *  @param ecotype The ecotype to add.
      */
-    public void addEcotype (ArrayList<String> ecotype) {
+    public void addEcotype (String name, ArrayList<String> ecotype) {
+        Node node = lastCommonAncestor (ecotype);
         ecotypes.add (ecotype);
+        if (node.isLeafNode ()) {
+            node.addChild (new Node (node.getName (), 0.0d));
+        }
+        node.setName (name);
+        node.collapse ();
     }
 
     /**
