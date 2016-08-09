@@ -2,6 +2,8 @@
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.After;
@@ -135,6 +137,18 @@ public class TestTree {
             a.toString () + "\n" + b.toString () + "\n",
             0,
             a.compareTo (b)
+        );
+    }
+
+    @Test
+    public void testLastCommonAncestor () {
+        ArrayList<String> clade = new ArrayList<String> (
+            Arrays.asList ("A","B","C","D","E")
+        );
+        assertEquals (
+            "Last common ancestor failed, root not found.",
+            tree.getRoot (),
+            tree.lastCommonAncestor (clade)
         );
     }
 
