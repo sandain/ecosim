@@ -158,6 +158,7 @@ public class Demarcation extends Tree {
     /**
      *  Add an ecotype.
      *
+     *  @param name The name of the ecotype to add.
      *  @param ecotype The ecotype to add.
      */
     public void addEcotype (String name, ArrayList<String> ecotype) {
