@@ -132,6 +132,9 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             writer = new BufferedWriter (new FileWriter (outputFile));
             String nextLine = reader.readLine ();
             while (nextLine != null) {
+                // Work around Swing only working with the name attribute,
+                // instead of id.
+                nextLine = nextLine.replaceAll ("<a id=", "<a name=");
                 // Point the images to the right directory.
                 nextLine = nextLine.replaceAll ("<img src=\"images",
                     String.format (
