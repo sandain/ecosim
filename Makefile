@@ -14,8 +14,11 @@ FLDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,ove
 # Apache Ant, used to compile the Java source.
 ANT := ant
 
+# Grab the current version.
+VERSION :=$(shell cat VERSION)
+
 # The name of the zip file to build for the dist target.
-DIST_ZIP := ~/ecosim-$(shell cat VERSION).zip
+DIST_ZIP := ~/ecosim-$(VERSION).zip
 
 # Doxygen, used to compile the documentation for the Fortran and Java code.
 DOXYGEN := doxygen
@@ -112,7 +115,11 @@ check:
 
 # Build the distribution zip file.
 dist: install docs clean
-	zip -9 -r --exclude=\*.git\* $(DIST_ZIP) .
+	rm -rRf dist
+	$(MKDIR_P) dist
+	rsync -a --exclude='*.git*' --exclude dist . dist
+	perl -i -ne 's/\%ECOSIM_VERSION\%/'$(VERSION)'/g; print;' dist/help/about.xhtml
+	cd dist && zip -9 -r $(DIST_ZIP) .
 
 # Build the c binary files.
 $(C_BUILD_DIR)%$(BINARY_EXT): $(C_SOURCE_DIR)%.c
