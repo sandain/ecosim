@@ -146,11 +146,8 @@ public class Demarcation extends Tree {
      *  @param ecotypes The ecotypes.
      */
     public void setEcotypes (ArrayList<ArrayList<String>> ecotypes) {
-        int i = 0;
         for (ArrayList<String> ecotype: ecotypes) {
-            i ++;
-            String name = String.format ("Ecotype%04d", i);
-            addEcotype (name, ecotype);
+            addEcotype (ecotype);
         }
         hasRun = true;
     }
@@ -161,9 +158,14 @@ public class Demarcation extends Tree {
      *  @param name The name of the ecotype to add.
      *  @param ecotype The ecotype to add.
      */
-    public void addEcotype (String name, ArrayList<String> ecotype) {
+    public void addEcotype (ArrayList<String> ecotype) {
         Node node = lastCommonAncestor (ecotype);
         ecotypes.add (ecotype);
+        String name = String.format (
+            "Ecotype%04d-%.4f",
+            ecotypes.size (),
+            node.maximumDistanceBetweenLeafNodes ()
+        );
         if (node.isLeafNode ()) {
             node.addChild (new Node (node.getName (), 0.0d));
         }
@@ -298,7 +300,11 @@ public class Demarcation extends Tree {
      */
     private void findMonophylyEcotypes (Node node) throws InvalidTreeException {
         ArrayList<String> sample = new ArrayList<String> ();
-        String ecotype = String.format ("Ecotype%04d", ecotypes.size () + 1);
+        String ecotype = String.format (
+            "Ecotype%04d-%.4f",
+            ecotypes.size () + 1,
+            node.maximumDistanceBetweenLeafNodes ()
+        );
         if (node.isLeafNode ()) {
             String name = node.getName ();
             if (! name.equals (outgroup)) {
