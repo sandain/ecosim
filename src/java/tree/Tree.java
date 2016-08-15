@@ -377,7 +377,7 @@ public class Tree {
         // Make room for the demarcation line if needed.
         if (paintMethod == PAINT_METHOD_DEMARCATED) {
             // Add room for the demarcation line.
-            width += 20;
+            width += 100;
             // Add room for the label.
             int maxLabel = 0;
             for (Node node: getCollapsed ()) {
