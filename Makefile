@@ -115,7 +115,7 @@ check:
 
 # Build the distribution zip file.
 dist: install docs clean
-	rm -rRf dist
+	rm -Rf dist
 	$(MKDIR_P) dist
 	rsync -a --exclude='*.git*' --exclude dist . dist
 	perl -i -ne 's/\%ECOSIM_VERSION\%/'$(VERSION)'/g; print;' dist/help/about.xhtml
