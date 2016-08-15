@@ -66,10 +66,10 @@ public class HelpAboutWindow extends JFrame implements Runnable {
     public void run () {
         // Preprocess the help files.
         preprocess ("style.css");
-        preprocess ("menu.html");
-        preprocess ("about.html");
-        preprocess ("userguide.html");
-        preprocess ("license.html");
+        preprocess ("menu.xhtml");
+        preprocess ("about.xhtml");
+        preprocess ("userguide.xhtml");
+        preprocess ("license.xhtml");
         // Make an index pane for each possible entry point.
         aboutPane = makeIndexPane (ABOUT);
         userGuidePane = makeIndexPane (USER_GUIDE);
@@ -198,23 +198,23 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             "  </head>\n" +
             "  <frameset cols=\"20%,80%\">\n" +
             "    <frame src=\"file:///" +
-            masterVariables.getWorkingDirectory () + "menu.html" +
+            masterVariables.getWorkingDirectory () + "menu.xhtml" +
             "\" name=\"menu\" />\n";
         switch (type) {
             case ABOUT:
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
-                    "about.html\" name=\"body\" />\n";
+                    "about.xhtml\" name=\"body\" />\n";
                 break;
             case USER_GUIDE:
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
-                    "userguide.html" + "\" name=\"body\" />\n";
+                    "userguide.xhtml" + "\" name=\"body\" />\n";
                 break;
             case LICENSE:
                 index += "    <frame src=\"file:///" +
                     masterVariables.getWorkingDirectory () +
-                    "license.html" + "\" name=\"body\" />\n";
+                    "license.xhtml" + "\" name=\"body\" />\n";
                 break;
             default:
                 break;
