@@ -909,7 +909,7 @@ module methods
     call poisson (timeWait, nsubs)
     ! time is the total time (in substitutions) before the present for a
     ! coalescence event
-    time = time + nsubs
+    time = time + int (nsubs, kind = int32)
     ! now, what kind of key event
     call randomNumber (x)
     if (x .lt. effectiveOmega / rateKey) then
