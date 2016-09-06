@@ -244,34 +244,36 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     ! Local variables.
-    real(kind = real32) :: x
-    real(kind = real32) :: y
+    real(kind = real64) :: x
+    real(kind = real64) :: y
     state%jz = ziggurat_shr3(state)
     state%iz = iand (state%jz, 255)
     if (abs (state%jz) .lt. state%ke(state%iz)) then
-      return_value = state%jz * state%we(state%iz)
+      x = state%jz * real (state%we(state%iz), kind = real64)
+      return_value = real (x, kind = real32)
     else
       ! REXP rejection occurred, generate variates from the residue.
       do
         ! Handles the base strip.
         if (state%iz .eq. 0) then
           return_value = 7.69711 - log (ziggurat_uni(state))
-          return
+          exit
         end if
         ! Handle the wedges of other strips.
-        x = state%jz * state%we(state%iz)
+        x = state%jz * real (state%we(state%iz), kind = real64)
         y = state%fe(state%iz) + ziggurat_uni(state) * &
           (state%fe(state%iz - 1) - state%fe(state%iz))
         if (y .lt. exp (-x)) then
-          return_value = x
-          return
+          return_value = real (x, kind = real32)
+          exit
         end if
         ! Try to exit do loop.
         state%jz = ziggurat_shr3(state)
         state%iz = iand (state%jz, 255)
         if (state%jz .lt. state%ke(state%iz)) then
-          return_value = state%jz * state%we(state%iz)
-          return
+          x = state%jz * real (state%we(state%iz), kind = real64)
+          return_value = real (x, kind = real32)
+          exit
         end if
       end do
     end if
