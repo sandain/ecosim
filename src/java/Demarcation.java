@@ -474,10 +474,6 @@ public class Demarcation extends Tree {
             // Write the whichavg value.
             int whichavg = masterVariables.getCriterion ();
             writer.write (String.format ("%-20d whichavg\n", whichavg));
-            // Write the likelihoodsolution value.
-            writer.write (String.format (
-                "%-20.5f likelihoodsolution\n", likelihood
-            ));
         }
         catch (IOException e) {
             System.out.println ("Error writing the input file.");
