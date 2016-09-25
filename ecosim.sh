@@ -14,5 +14,11 @@ if [ "$ABS_PATH" != "$SCRIPT_NAME" ]; then
   cd "$ABS_PATH"
 fi
 
+# Use shell expansion to translate special characters (e.g. ~ --> /home/USER).
+ARGS=""
+for VAR in "$@"; do
+  ARGS=$(printf "$ARGS $VAR")
+done
+
 # Run Ecotype Simulation.
-$JAVA -jar ecosim.jar $@
+$JAVA -jar ecosim.jar $ARGS
