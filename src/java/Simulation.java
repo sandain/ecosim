@@ -393,7 +393,7 @@ public class Simulation {
             if (likelihood > masterVariables.EPSILON) break;
             log.appendln ("Hillclimbing result has zero likelihood.");
             // Check to see if the precision can be reduced.
-            if (crit == 0) {
+            if (crit == 1) {
                 log.appendln ("  Error, the precision can not be reduced.");
                 break;
             }
