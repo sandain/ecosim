@@ -146,6 +146,8 @@ public class ParameterEstimate implements Runnable {
         Long npopEstimate = Math.round (Math.pow (
             2, omega.m * (sigma.b - omega.b) / (omega.m - sigma.m) + omega.b
         ));
+        // Don't let the npop estimate fall below 1.
+        if (npopEstimate < 1L) npopEstimate = 1L;
         // Store the estimated parameter values.
         result = new ParameterSet (
             npopEstimate, omegaEstimate, sigmaEstimate, null
