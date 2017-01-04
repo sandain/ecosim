@@ -179,6 +179,15 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
         // Get the tile containing the first point.
         int tileX = x1 / TILE_SIZE;
         int tileY = y1 / TILE_SIZE;
+        if (tileX > numTilesWidth - 1 || tileY > numTilesHeight - 1) {
+            System.err.println (String.format (
+                "Line drawn outside tiled surface: (%d,%d), (%d,%d)\t" +
+                "Maximum: (%d, %d)",
+                x1, y1, x2, y2,
+                numTilesWidth * TILE_SIZE, numTilesHeight * TILE_SIZE
+            ));
+            return;
+        }
         BufferedImage tile = getTile (tileX, tileY);
         // Calculate the bounding box.
         int startX = tileX * TILE_SIZE - 1;
@@ -272,7 +281,9 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
         int y2pr = pointY - tileY * TILE_SIZE;
         Graphics2D g2 = (Graphics2D)tile.getGraphics ();
         g2.setColor (Color.BLACK);
-        g2.setStroke (new BasicStroke (stroke, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+        g2.setStroke (new BasicStroke (
+            stroke, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER
+        ));
         // Draw each line twice, from x1pr,1ypr -> x2pr,y2pr and
         // x2pr,y2pr -> x1pr,1ypr to work around a bug in Java.
         g2.drawLine (x1pr, y1pr, x2pr, y2pr);
@@ -332,6 +343,14 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
      *  @param y The Y location to draw the String.
      */
     private void drawString (String str, int tileX, int tileY, int x, int y) {
+        if (tileX > numTilesWidth - 1 || tileY > numTilesHeight - 1) {
+            System.err.println (String.format (
+                "String drawn outside tiled surface: (%d,%d)\t" +
+                "Maximum: (%d, %d)",
+                x, y, numTilesWidth * TILE_SIZE, numTilesHeight * TILE_SIZE
+            ));
+            return;
+        }
         BufferedImage tile = getTile (tileX, tileY);
         Graphics2D g2 = (Graphics2D)tile.getGraphics ();
         g2.setColor (Color.BLACK);
