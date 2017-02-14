@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>
+      Ecotype Simulation
+    </title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+  </head>
+  <body>
+    <h1>Ecotype Simulation</h1>
+    <h2>A User Guide</h2>
+    <h3>
+      <a id="introduction"></a>
+      Introduction
+    </h3>
+    <p>
+      <b>
+        The motivation and theory for Ecotype Simulation may be found in our
+        recent paper in PNAS by
+        <a href="http://www.pnas.org/cgi/content/abstract/0712205105v1">
+        Koeppel et al.</a>
+      </b>
+    </p>
+    <p>
+      Ecotype Simulation models the sequence diversity within a
+      bacterial clade as the evolutionary result of net ecotype
+      formation (here termed omega) and periodic selection (termed
+      sigma), yielding a certain number of ecotypes (termed npop).
+    </p>
+    <p>
+      Ecotype Simulation determines the rates omega and sigma,
+      and most importantly, the number of putative ecotypes (npop)
+      represented in an investigated set of sequences. Ecotype
+      Simulation also allows demarcation of the sequences belonging
+      to each ecotype. Here is an overview.
+    </p>
+    <p>
+      In the first step, the <a href="#simulation">Ecotype Simulation</a>, the
+      observed sequence diversity for the clade of interest is quantified as
+      the &quot;clade sequence diversity curve.&quot; Then, the parameters
+      omega, sigma, and npop are estimated by fitting lines to the observed
+      clade sequence diversity pattern. Next, the downhill simplex method
+      (termed here &quot;hillclimbing&quot;) is used to more precisely
+      identify the solution. In this first step, Ecotype Simulation also
+      determines the 95% confidence interval of the parameter solutions.
+    </p>
+    <p>
+      In the second step, <a href="#demarcation">Ecotype Demarcation</a>,
+      Ecotype Simulation demarcates the individual sequences belonging to each
+      ecotype.
+    </p>
+    <h3>
+      <a id="requirements"></a>
+      Requirements
+    </h3>
+    <p>
+      Before you can run this program, you must have the latest version of the
+      Java Runtime Environment (JRE) installed. You can do so by navigating to
+      the <a href= "http://java.sun.com/javase/downloads/index.jsp">Java
+      download page</a> and downloading the latest update (you will need at
+      least Java 8 to get the program to run properly).
+    </p>
+    <div class="figure">
+      <img src="images/figure_01.png" alt="Ecotype Simulation folder" width="464" height="487"/>
+    </div>
+    <div class="legend">
+      Figure 1. The extracted <strong>Ecotype Simulation</strong> folder.
+    </div>
+    <div class="figure">
+      <img src="images/figure_02.png" alt="Ecotype Simulation window" width="640" height="698"/>
+    </div>
+    <div class="legend">
+      Figure 2. The <strong>Ecotype Simulation</strong> window.
+    </div>
+    <h3>
+      <a id="usage"></a>
+      How to use Ecotype Simulation
+    </h3>
+    <ul class="disc">
+      <li>
+        To run the Ecotype Simulation, first open up a properly formatted
+        Fasta file in the Java Window by going to File-&gt;Open Sequence File.
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        Note that the fasta input file must contain an outgroup, and
+        that <strong>the outgroup must be the first sequence in the
+        file</strong>.
+      </li>
+    </ul>
+    <ul class="disc">
+      <li>
+        Once a Fasta file has been loaded, the program will ask you to either
+        provide a properly formatted Newick tree or generate one using
+        <a href="http://www.microbesonline.org/fasttree/">FastTree</a>.
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        If you choose to provide your own Newick tree, it must contain the
+        same sequence identifiers as the Fasta file and provide distance data.
+        The Newick tree may also contain boostrap data, but this information
+        is not used.
+      </li>
+    </ul>
+    <ul class="disc">
+      <li>
+        With the Fasta and Newick files loaded, the program will automatically
+        estimate the parameter values for omega, sigma, and npop.
+      </li>
+      <li>
+        To optimize the estimated parameter values for omega, sigma, and npop,
+        and prepare for later stages, click &quot;Run Hillclimbing&quot;.
+      </li>
+      <li>
+        Many combinations of parameter values are evaluated for the fraction
+        of replicate runs that yield a close fit to the observed clade
+        sequence diversity curve (e.g., as seen in Figure 1 of Koeppel et al.;
+        this curve represents, for each of a series of sequence identity
+        criteria, the number of sequence identity bins required to encompass
+        all the sequences from the clade; also see description below &quot;How 
+        the Ecotype Simulation works&quot;). For a given replicate run, a
+        successfully close fit to the observed diversity curve is defined as
+        being within a chosen &quot;precision factor.&quot; For example, in
+        our analyses of <i>Bacillus simplex</i>, a replicate run was deemed
+        successful if the simulation's number of bins for each sequence
+        identity criterion was within a factor of 1.5 of the observed value.
+      </li>
+    </ul>
+    <ul class="disc">
+      <li>
+        Once you have parameter values for a set of sequences, you can save a
+        progress file by going to File-&gt;Save Project File. The results will
+        be saved in a *.xml file.
+      </li>
+      <li>
+        Next, you can click &quot;Run Confidence Intervals&quot; to find the
+        95% confidence interval for the parameter estimate.
+      </li>
+    </ul>
+    <ul class="disc">
+      <li>
+        Alternatively, if you click on &quot;Run Everything&quot; the program
+        will calculate both parameter values and confidence intervals for all
+        parameters, and automatically demarcate ecotypes without any further
+        input.
+      </li>
+    </ul>
+    <h3>
+      <a id="simulation"></a>
+      How the Ecotype Simulation works.
+    </h3>
+    <p>
+      We strongly recommend that you read this section, as it will
+      help you to use Ecotype Simulation with understanding and not
+      as a black-box method.
+    </p>
+    <ul class="disc">
+      <li>
+        The quantification of the observed sequence diversity by the clade
+        sequence diversity curve.
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        Once you have opened properly formatted Fasta and Newick files, the
+        program automatically quantifies the sequence diversity in the
+        observed sequence set by running a complete-linkage binning algorithm
+        on the clade structure (see Figure 3 below). The sequence diversity
+        is clustered into bins at different sequence identity criteria. For
+        example, a bin at a given sequence identity criterion, e.g., 95%
+        sequence identity, is characterized by encompassing only those
+        sequences which have at least a sequence identity of 95%.
+        <br/>
+        We exemplify this with the subclade of the Putative Ecotypes
+        2, 3, and 4 from the <em>Bacillus subtilis-B. licheniformis</em>
+        clade (Figure 3a from the PNAS paper Koeppel et al) (see below).
+        <br/>
+        At a sequence identity criterion of 0.995 three different
+        bins are present, represented by Putative Ecotypes 2, 3, and 4. At a
+        sequence identity criterion of 0.99, two different bins are
+        present, represented by Putative Ecotype 4 and the pool of Putative 
+        Ecotypes 2 and 3. At a sequence identity criterion of 0.98 only one
+        bin is present, encompassing Putative Ecotypes 2-4. In that way, for a
+        series of different sequence identity criteria, the numbers of bins is
+        determined and graphically represented.
+        <br/>
+        <strong>As a result, the clade sequence diversity curve is created
+        (Figure 4)</strong>
+      </li>
+    </ul>
+    <div class="figure">
+      <img src="images/figure_03.png" alt="Binning" width="831" height="593"/>
+    </div>
+    <div class="legend">
+      Figure 3. The quantification of sequence diversity by binning with a
+      complete linkage clustering algorithm.
+    </div>
+    <div class="figure">
+      <img src="images/figure_04.png" alt="Binning Graph" width="585" height="313"/>
+    </div>
+    <div class="legend">
+      Figure 4. The number of bins at a given sequence identity criterion
+      (left), and their graphical representation as clade sequence identity
+      curve.
+    </div>
+    <ul class="disc">
+      <li>
+        The Parameter Estimate.
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        After the observed clade sequence diversity curve is calculated, the
+        values for omega, sigma, and npop are estimated using an algorithm
+        inspired by the k-means clustering algorithm. However, instead of
+        slurping up points into a cluster around a k points, the pivots,
+        this algorithm slurps up points along the sequence diversity curve
+        that are closest to one of two lines who's slope will define sigma
+        and omega. The algorithm starts by seeding the &quot;sigma line&quot;
+        with the first two points along the sequence diversity curve (ignoring
+        1.00). Any points along the curve that are close to the &quot;sigma
+        line&quot; (with a squared distance from the line &lt;0.1) are slurped
+        up into a prototype &quot;sigma cluster&quot;. The same process is
+        repeated to seed the &quot;omega line&quot;, but starting with the
+        next two points along the sequence diversity curve not already in the
+        &quot;sigma cluster&quot;. Once the two prototype clusters are defined
+        the algorithm proceeds in k-means fashion, alternating between
+        calculating best fit lines (as the pivots) for the two clusters then
+        calculating the closest line for each point along the sequence
+        diversity curve. The algorithm proceeds until the best fit for both
+        lines has been achieved, based on the sum of squared distances of each
+        point from its line.
+        <br/>
+        Once the optimal solution has been found, sigma is estimated from the
+        slope of the &quot;sigma line&quot;, omega is estimated from the slope
+        of the &quot;omega line&quot;, and npop is estimated by calculating
+        the number of bins at the intersection of the two lines (see Figure
+        XX).
+      </li>
+    </ul>
+    <ul class="disc">
+      <li>
+        The Hillclimbing Step (downhill simplex method).
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        The estimated parameters are then tested more fully (i.e., with 10000
+        replicates), so as to get a good estimate of the approximate
+        likelihood of this solution producing a successful match to the
+        observed data. The likelihood is calculated for each of the six
+        precision values (i.e., 5x, 2x, etc.).
+      </li>
+    </ul>
+    <div class="figure">
+      <img src="images/figure_06.png" alt="Preparing for hillclimbing" width="705" height="101"/>
+    </div>
+    <div class="legend">
+      Figure 6. Preparing for hillclimbing.
+    </div>
+    <div class="figure">
+      <img src="images/figure_07.png" alt="Input for hillclimbing" width="606" height="436"/>
+    </div>
+    <div class="legend">
+      Figure 7. The final input informations for the hillclimbing.
+    </div>
+    <ul class="circle">
+      <li>
+        Hillclimbing is then run on the given value with enough
+        replicates such that in the first iteration of hillclimbing,
+        approximately 50 successful matches to the observed data are
+        obtained. This value of nrep is obtained as 50 divided by the
+        likelihood for the Ecotype Simulation.
+      </li>
+    </ul>
+    <div class="figure">
+      <img src="images/figure_08.png" alt= "Results of hillclimbing" width="279" height="75"/>
+    </div>
+    <div class="legend">
+      Figure 8. The result of the hillclimbing.
+    </div>
+    <ul class="disc">
+      <li>
+        Estimation of the 95% confidence intervalls
+      </li>
+    </ul>
+    <ul class="circle">
+      <li>
+        Next are the confidence intervals. Omega and sigma
+        confidence intervals are run to a lower bound of 1e-7 and an
+        upper bound of 100, with 6 increments per order of magnitude.
+        If sigma runs up to 100 without getting out of confidence we
+        just say that sigma exceeds 100. Drift is run from infinity
+        down to 1e-7 with 3 increments per order of magnitude, and
+        then the final value is inverted to get the actual drift
+        value. The npop confidence interval is run down to 1 for the
+        lower bound and up to the number of sequences for the upper
+        bound. The last value still in confidence is reported in all
+        cases. Additionally, the program aims for 20 successes at the
+        threshold likelihood, ie for all two tailed tests (npop,
+        sigma, omega) it is the likelihood from our hillclimbing
+        parameters divided by 6.83, and for one tailed tests we
+        divide by 3.87.
+      </li>
+      <li>
+        All the appropriate inputs and outputs are stored in
+        <strong>narrative.txt</strong> as well as the final values
+        from the confidence intervals and hillclimbing.
+        <strong>
+          During the run of Ecotype Simulation, all major
+          intermediate steps and results are logged in the Java window.
+          A typical log may look as follows:
+        </strong>
+      </li>
+    </ul>
+    <div class="figure">
+      <img src="images/figure_09.png" alt="Typical log" width="924" height="787"/>
+    </div>
+    <div class="legend">
+      Figure 9. A typical log.
+    </div>
+    <h3>
+      <a id="demarcation"></a>
+      How the Ecotype Demarcation works.
+    </h3>
+    <ul class="disc">
+      <li>
+        To demarcate observed sequence diversity into ecotypes, click on
+        &quot;Run Demarcation&quot; after hillclimbing has completed.
+      </li>
+    </ul>
+    <div class="figure">
+      <img src="images/figure_15.png" alt="Demarcation Output" width="872" height="583"/>
+    </div>
+    <div class="legend">
+      Figure 15. Demarcation Output.
+    </div>
+  </body>
+</html>

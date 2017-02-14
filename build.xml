@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EcotypeSimulation" default="dist" basedir=".">
+
+  <!-- The description for this build. -->
+  <description>
+    Build file for the Java portion of Ecotype Simulation.
+  </description>
+
+  <!-- Set global properties for this build. -->
+  <property name="bin.dir" value="."/>
+  <property name="build.dir" value="build"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="src.dir" value="src/java"/>
+  <property name="tests.dir" value="tests/java"/>
+  <property name="jarfile" value="ecosim.jar"/>
+  <property name="main-class" value="ecosim.EcotypeSimulation"/>
+
+  <!-- Store path information for the check target. -->
+  <path id="check.classpath">
+    <pathelement location="${lib.dir}/junit4.jar"/>
+    <pathelement location="${lib.dir}/hamcrest-core-1.3.jar"/>
+    <pathelement location="${build.dir}/${jarfile}"/>
+    <pathelement path="${build.dir}/tests/java"/>
+  </path>
+
+  <!-- Store path information for the dist target. -->
+  <path id="dist.classpath">
+    <pathelement location="${lib.dir}/jcommon-1.0.23.jar"/>
+    <pathelement location="${lib.dir}/jfreechart-1.0.19.jar"/>
+  </path>
+  <manifestclasspath property="dist.manifest.classpath" jarfile="${lib.dir}">
+    <classpath refid="dist.classpath" />
+  </manifestclasspath>
+
+  <!-- Load the version information. -->
+  <loadfile property="version" srcFile="VERSION">
+    <filterchain>
+      <striplinebreaks/>
+    </filterchain>
+  </loadfile>
+
+  <!-- The main target for this build. -->
+  <target name="dist">
+    <!-- Create the necessary directory structure. -->
+    <mkdir dir="${build.dir}/java"/>
+    <!-- Create the time stamp. -->
+    <tstamp/>
+    <!-- Compile the java code. -->
+    <javac destdir="${build.dir}/java" includeantruntime="false" debug="true">
+      <src path="${src.dir}"/>
+      <compilerarg value="-Xlint:unchecked,deprecation"/>
+      <classpath refid="dist.classpath"/>
+    </javac>
+    <!-- Create the jar file. -->
+    <jar jarfile="${build.dir}/${jarfile}" basedir="${build.dir}/java">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Class-Path" value="${dist.manifest.classpath}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- The target for cleaning up from a previous build. -->
+  <target name="clean">
+    <!-- Delete the ${build.dir} directory tree. -->
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- The install target. -->
+  <target name="install" depends="dist">
+    <!-- Copy the jar file to the installation directory. -->
+    <copy file="${build.dir}/${jarfile}" todir="${bin.dir}"/>
+  </target>
+
+  <!-- The uninstall target. -->
+  <target name="uninstall">
+    <delete file="${bin.dir}/${jarfile}"/>
+  </target>
+
+  <!-- The check target. -->
+  <target name="check" depends="dist">
+    <mkdir dir="${build.dir}/tests/java"/>
+    <!-- Copy the assets to the test build directory. -->
+    <copy todir="${build.dir}/tests/java/assets">
+      <fileset dir="${tests.dir}/assets"/>
+    </copy>
+    <!-- Compile the tests in the test build directory. -->
+    <javac destdir="${build.dir}/tests/java" includeantruntime="false">
+      <src path="${tests.dir}"/>
+      <compilerarg value="-Xlint:unchecked,deprecation"/>
+      <classpath refid="check.classpath"/>
+    </javac>
+    <!-- Run the tests. -->
+    <junit printsummary="on" fork="true" haltonfailure="yes">
+      <formatter type="plain"/>
+      <classpath refid="check.classpath"/>
+      <batchtest fork="yes" todir="${build.dir}/tests">
+        <fileset dir="${tests.dir}">
+          <include name="Test*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+</project>
