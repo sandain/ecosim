@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EcoSim" default="dist" basedir=".">
+
+  <!-- The description for this build. -->
+  <description>
+    Build file for the Java portion of Ecotype Simulation.
+  </description>
+
+  <!-- Set global properties for this build. -->
+  <property name="bin.dir" value="bin"/>
+  <property name="build.dir" value="build"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="src.dir" value="src/java"/>
+  <property name="tests.dir" value="tests/java"/>
+  <property name="jarfile" value="EcoSim.jar"/>
+  <property name="main-class" value="ecosim.EcotypeSimulation"/>
+
+  <!-- Load the version information. -->
+  <loadfile property="version" srcFile="VERSION"/>
+
+  <!-- The main target for this build. -->
+  <target name="dist" description="Build the Java source files, and generate the jar file." >
+    <!-- Create the necessary directory structure. -->
+    <mkdir dir="${build.dir}/java"/>
+    <!-- Create the time stamp. -->
+    <tstamp/>
+    <!-- Compile the java code. -->
+    <javac srcdir="${src.dir}" destdir="${build.dir}/java" includeantruntime="false" debug="true">
+      <compilerarg value="-Xlint:unchecked,deprecation"/>
+    </javac>
+    <!-- Create the jar file. -->
+    <jar jarfile="${build.dir}/${jarfile}" basedir="${build.dir}/java">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- The target for cleaning up from a previous build. -->
+  <target name="clean" description="Clean up." >
+    <!-- Delete the ${build.dir} directory tree. -->
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- The install target. -->
+  <target name="install" depends="dist" description="Copy the jar file to the installation folder.">
+    <mkdir dir="${bin.dir}"/>
+    <!-- Copy the jar file to the installation directory. -->
+    <copy file="${build.dir}/${jarfile}" todir="${bin.dir}"/>
+  </target>
+
+  <!-- The uninstall target. -->
+  <target name="uninstall" description="Remove the jar file from the installation folder.">
+    <delete file="${bin.dir}/${jarfile}"/>
+  </target>
+
+</project>
