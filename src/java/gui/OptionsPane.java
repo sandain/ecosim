@@ -54,57 +54,10 @@ public class OptionsPane extends JPanel {
     public OptionsPane (Logger log, Simulation simulation) {
         this.log = log;
         this.simulation = simulation;
-        setBorder (BorderFactory.createTitledBorder (
-            "Demarcation Options"
-        ));
+//        setBorder (BorderFactory.createTitledBorder (
+//            "Demarcation Options"
+//        ));
         setLayout (new GridLayout (2,1,15,15));
-        // Create the demarcation precision buttons.
-        JRadioButton coarseScale = new JRadioButton ("Coarse-scale", false);
-        coarseScale.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                setCoarseScaleDemarcationActionPerformed ();
-            }
-        });
-        JRadioButton fineScale = new JRadioButton ("Fine-scale", true);
-        fineScale.addActionListener (new ActionListener () {
-            public void actionPerformed (ActionEvent evt) {
-                setFineScaleDemarcationActionPerformed ();
-            }
-        });
-        ButtonGroup demarcationPrecision = new ButtonGroup ();
-        demarcationPrecision.add (coarseScale);
-        demarcationPrecision.add (fineScale);
-        // Create the demarcation precision pane.
-        JLayeredPane precisionSelector = new JLayeredPane ();
-        precisionSelector.setLayout (new GridLayout (2,1,0,0));
-        precisionSelector.add (fineScale);
-        precisionSelector.add (coarseScale);
-        JLayeredPane precision = new JLayeredPane ();
-        precision.setLayout (new BorderLayout ());
-        precision.add (new JLabel ("Precision:"), BorderLayout.NORTH);
-        precision.add (precisionSelector, BorderLayout.WEST);
-        // Add the precision and method panes to the top right pane.
-        add (precision);
-    }
-
-    /**
-     *  The user has asked to change the precision to coarse-scale.
-     */
-    private void setCoarseScaleDemarcationActionPerformed () {
-        int precision = Demarcation.DEMARCATION_PRECISION_COARSE_SCALE;
-        if (simulation.getDemarcationPrecision () == precision) return;
-        simulation.setDemarcationPrecision (precision);
-        log.appendln ("Demarcation precision changed to: coarse-scale.");
-    }
-
-    /**
-     *  The user has asked to change the precision to fine-scale.
-     */
-    private void setFineScaleDemarcationActionPerformed () {
-        int precision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
-        if (simulation.getDemarcationPrecision () == precision) return;
-        simulation.setDemarcationPrecision (precision);
-        log.appendln ("Demarcation precision changed to: fine-scale.");
     }
 
     private Logger log;

@@ -255,18 +255,8 @@ public class ProjectFileIO {
                         method = "paraphyly";
                         break;
                 }
-                String precision = "";
-                switch (demarcation.getPrecision ()) {
-                    case Demarcation.DEMARCATION_PRECISION_FINE_SCALE:
-                        precision = "fine-scale";
-                        break;
-                    case Demarcation.DEMARCATION_PRECISION_COARSE_SCALE:
-                        precision = "coarse-scale";
-                        break;
-                }
                 out.write ("  <demarcation>\n");
                 out.write ("    <method value=\"" + method + "\"/>\n");
-                out.write ("    <precision value=\"" + precision + "\"/>\n");
                 out.write (String.format (
                     "    <ecotypes size=\"%d\">\n",
                     ecotypes.size ()
@@ -446,7 +436,6 @@ public class ProjectFileIO {
             elements.add ("sigmaCI");
             elements.add ("demarcation");
             method = null;
-            precision = null;
             activeElement = "none";
             isProjectFile = false;
         }
@@ -752,16 +741,6 @@ public class ProjectFileIO {
                                 break;
                         }
                     }
-                    if (localName.equals ("precision")) {
-                        switch (attrs.getValue (uri, "value")) {
-                            case "fine-scale":
-                                precision = Demarcation.DEMARCATION_PRECISION_FINE_SCALE;
-                                break;
-                            case "coarse-scale":
-                                precision = Demarcation.DEMARCATION_PRECISION_COARSE_SCALE;
-                                break;
-                        }
-                    }
                     if (localName.equals ("ecotypes")) {
                         Integer size = new Integer (
                             attrs.getValue (uri, "size")
@@ -821,8 +800,7 @@ public class ProjectFileIO {
                     if (demarcation == null) {
                         if (
                             outgroup != null && tree != null &&
-                            hillclimb != null && method != null &&
-                            precision != null
+                            hillclimb != null && method != null
                         ) {
                             try {
                                 demarcation = new Demarcation (
@@ -833,8 +811,7 @@ public class ProjectFileIO {
                                     outgroup,
                                     tree,
                                     hillclimb.getResult (),
-                                    method,
-                                    precision
+                                    method
                                 );
                             }
                             catch (InvalidTreeException e) {
@@ -877,7 +854,6 @@ public class ProjectFileIO {
         }
 
         private Integer method;
-        private Integer precision;
 
         private String activeElement;
 

@@ -50,9 +50,6 @@ public class Demarcation extends Tree {
     public static final int DEMARCATION_METHOD_MONOPHYLY = 1501;
     public static final int DEMARCATION_METHOD_PARAPHYLY = 1502;
 
-    public static final int DEMARCATION_PRECISION_COARSE_SCALE = 2501;
-    public static final int DEMARCATION_PRECISION_FINE_SCALE = 2502;
-
     /**
      *  Creates new form Demarcations
      *
@@ -64,11 +61,10 @@ public class Demarcation extends Tree {
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
      *  @param method The method to use for demarcation.
-     *  @param precision The precision to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
-        ParameterSet hclimbResult, int method, int precision)
+        ParameterSet hclimbResult, int method)
         throws InvalidTreeException {
         super (tree);
         this.masterVariables = masterVariables;
@@ -78,8 +74,6 @@ public class Demarcation extends Tree {
         this.outgroup = outgroup;
         this.hclimbResult = hclimbResult;
         this.method = method;
-        this.precision = precision;
-        paintMethod = PAINT_METHOD_DEMARCATED;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
@@ -129,15 +123,6 @@ public class Demarcation extends Tree {
      */
     public int getMethod () {
         return method;
-    }
-
-    /**
-     *  Get the demarcation precision.
-     *
-     *  @return The demarcation precision.
-     */
-    public int getPrecision () {
-        return precision;
     }
 
     /**
@@ -392,27 +377,7 @@ public class Demarcation extends Tree {
         // [0] npop=1
         // [1] most likely npop
         NpopValue[] results = readOutputFile (outputFile);
-        NpopValue result = new NpopValue (0L, 0.0D);
-        // Determine which result to return.
-        switch (precision) {
-            case DEMARCATION_PRECISION_FINE_SCALE:
-                // Fine scale uses the most likely result.
-                result = results[1];
-                break;
-            case DEMARCATION_PRECISION_COARSE_SCALE:
-                // Coarse scale uses the result of npop=1 if likelihood > 0.
-                Double likelihood = results[0].likelihood;
-                if (likelihood.compareTo (MasterVariables.EPSILON) > 0) {
-                    result = results[0];
-                }
-                else {
-                    result = results[1];
-                }
-                break;
-            default:
-                System.err.println ("Error, unknown precision level.");
-        }
-        return result;
+        return results[1];
     }
 
     /**
@@ -557,7 +522,6 @@ public class Demarcation extends Tree {
     private ParameterSet hclimbResult;
 
     private Integer method;
-    private Integer precision;
 
     private Integer nrep = 1000;
     private Integer step = 1;
