@@ -6,7 +6,7 @@ Ecotype Simulation README
 
 Download the latest stable release:
 
-https://github.com/sandain/es2/releases
+https://github.com/sandain/ecosim/releases
 
 Windows users: you can download 32- or 64-bit versions of Ecotype Simulation.
 Make sure that you download the version appropriate for your computer.
@@ -18,7 +18,7 @@ information.
 
 Download the development version as a zip file:
 
-https://github.com/sandain/es2/archive/master.zip
+https://github.com/sandain/ecosim/archive/master.zip
 
 
 ## INSTALLATION
