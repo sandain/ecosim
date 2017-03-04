@@ -16,7 +16,7 @@
 ! CSIRO Division of Mathematics & Statistics
 ! Private Bag 10, Clayton, VIC. 3168
 !
-! Further amended by Fred Cohan and Jason M Wood
+! Further amended by Fred Cohan and Jason M. Wood
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
