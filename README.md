@@ -1,4 +1,3 @@
-<meta name="google-site-verification" content="J3cwsKHPNxwLBjKkfCBVoB6RCtVAYD7cEFXT9w-qNj4" />
 Ecotype Simulation README
 =========================
 
