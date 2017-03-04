@@ -1,6 +1,7 @@
 # Fortran compiler options.
 CC := gfortran
-#CC := i686-w64-mingw32-gfortran
+#CC := i686-w64-mingw32-gfortran-win32
+#CC := x86_64-w64-mingw32-gfortran-win32
 
 CFLAGS := -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,zero,overflow -ffpe-summary=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall -Wextra
 LDFLAGS := -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,zero,overflow -ffpe-summary=invalid,zero,overflow -g -O0 -Wall -Wextra
