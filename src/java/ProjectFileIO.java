@@ -255,8 +255,18 @@ public class ProjectFileIO {
                         method = "paraphyly";
                         break;
                 }
+                String paintMethod = "";
+                switch (demarcation.getPaintMethod ()) {
+                    case Demarcation.PAINT_METHOD_COLLAPSED:
+                        paintMethod = "triangles";
+                        break;
+                    case Demarcation.PAINT_METHOD_DEMARCATED:
+                        paintMethod = "bars";
+                        break;
+                }
                 out.write ("  <demarcation>\n");
                 out.write ("    <method value=\"" + method + "\"/>\n");
+                out.write ("    <paintmethod value=\"" + paintMethod + "\"/>\n");
                 out.write (String.format (
                     "    <ecotypes size=\"%d\">\n",
                     ecotypes.size ()
@@ -436,6 +446,7 @@ public class ProjectFileIO {
             elements.add ("sigmaCI");
             elements.add ("demarcation");
             method = null;
+            paintMethod = null;
             activeElement = "none";
             isProjectFile = false;
         }
@@ -741,6 +752,16 @@ public class ProjectFileIO {
                                 break;
                         }
                     }
+                    if (localName.equals ("paintmethod")) {
+                        switch (attrs.getValue (uri, "value")) {
+                            case "bars":
+                                paintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
+                                break;
+                            case "triangles":
+                                paintMethod = Demarcation.PAINT_METHOD_COLLAPSED;
+                                break;
+                        }
+                    }
                     if (localName.equals ("ecotypes")) {
                         Integer size = new Integer (
                             attrs.getValue (uri, "size")
@@ -802,6 +823,9 @@ public class ProjectFileIO {
                             outgroup != null && tree != null &&
                             hillclimb != null && method != null
                         ) {
+                            if (paintMethod == null) {
+                                paintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
+                            }
                             try {
                                 demarcation = new Demarcation (
                                     masterVariables,
@@ -811,7 +835,8 @@ public class ProjectFileIO {
                                     outgroup,
                                     tree,
                                     hillclimb.getResult (),
-                                    method
+                                    method,
+                                    paintMethod
                                 );
                             }
                             catch (InvalidTreeException e) {
@@ -854,6 +879,7 @@ public class ProjectFileIO {
         }
 
         private Integer method;
+        private Integer paintMethod;
 
         private String activeElement;
 

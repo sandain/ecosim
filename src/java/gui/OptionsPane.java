@@ -54,10 +54,57 @@ public class OptionsPane extends JPanel {
     public OptionsPane (Logger log, Simulation simulation) {
         this.log = log;
         this.simulation = simulation;
-//        setBorder (BorderFactory.createTitledBorder (
-//            "Demarcation Options"
-//        ));
+        setBorder (BorderFactory.createTitledBorder (
+            "Demarcation Options"
+        ));
         setLayout (new GridLayout (2,1,15,15));
+        // Create the demarcation display option buttions.
+        JRadioButton bars = new JRadioButton ("Bars", true);
+        bars.addActionListener (new ActionListener () {
+            public void actionPerformed (ActionEvent evt) {
+                setBarsDemarcationPaintMethodActionPerformed ();
+            }
+        });
+        JRadioButton triangles = new JRadioButton ("Triangles", false);
+        triangles.addActionListener (new ActionListener () {
+            public void actionPerformed (ActionEvent evt) {
+                setTrianglesDemarcationPaintMethodActionPerformed ();
+            }
+        });
+        ButtonGroup demarcationPaintMethod = new ButtonGroup ();
+        demarcationPaintMethod.add (bars);
+        demarcationPaintMethod.add (triangles);
+        // Create the demarcation paint method options pane.
+        JLayeredPane painMethodSelector = new JLayeredPane ();
+        painMethodSelector.setLayout (new GridLayout (2,1,0,0));
+        painMethodSelector.add (bars);
+        painMethodSelector.add (triangles);
+        JLayeredPane painMethodOption = new JLayeredPane ();
+        painMethodOption.setLayout (new BorderLayout ());
+        painMethodOption.add (new JLabel ("Display Option:"), BorderLayout.NORTH);
+        painMethodOption.add (painMethodSelector, BorderLayout.WEST);
+        // Add the paint method option pane to the top right pane.
+        add (painMethodOption);
+    }
+
+    /**
+     *  The user has asked to change the paint method to bars.
+     */
+    private void setBarsDemarcationPaintMethodActionPerformed () {
+        int bars = Demarcation.PAINT_METHOD_DEMARCATED;
+        if (simulation.getDemarcationPaintMethod () == bars) return;
+        simulation.setDemarcationPaintMethod (bars);
+        log.appendln ("Demarcation paint method changed to: bars.");
+    }
+
+    /**
+     *  The user has asked to change the paint method to triangles.
+     */
+    private void setTrianglesDemarcationPaintMethodActionPerformed () {
+        int triangles = Demarcation.PAINT_METHOD_COLLAPSED;
+        if (simulation.getDemarcationPaintMethod () == triangles) return;
+        simulation.setDemarcationPaintMethod (triangles);
+        log.appendln ("Demarcation paint method changed to: triangles.");
     }
 
     private Logger log;

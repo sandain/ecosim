@@ -48,6 +48,7 @@ public class Simulation {
         this.log = log;
         this.masterVariables = masterVariables;
         // Set default demarcation method.
+        demarcationPaintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         execs = new Execs (log, masterVariables);
         summary = new Summary ();
@@ -84,6 +85,24 @@ public class Simulation {
      */
     public Tree getTree () {
         return tree;
+    }
+
+    /**
+     *  Get the paint method used for demarcation.
+     *
+     *  @return The demarcation paint method.
+     */
+    public int getDemarcationPaintMethod () {
+        return demarcationPaintMethod;
+    }
+
+    /**
+     *  Set the paint method used for demarcation.
+     *
+     *  @param demarcationPaintMethod The demarcation paint method.
+     */
+    public void setDemarcationPaintMethod (int demarcationPaintMethod) {
+        this.demarcationPaintMethod = demarcationPaintMethod;
     }
 
     /**
@@ -512,7 +531,8 @@ public class Simulation {
         try {
             demarcation = new Demarcation (
                 masterVariables, execs, nu, length, outgroup, tree,
-                hillclimb.getResult (), demarcationMethod
+                hillclimb.getResult (), demarcationMethod,
+                demarcationPaintMethod
             );
             demarcation.run ();
             // Verify that demarcation ran correctly.
@@ -558,6 +578,7 @@ public class Simulation {
     protected OmegaConfidenceInterval omegaCI;
     protected SigmaConfidenceInterval sigmaCI;
     protected Demarcation demarcation;
+    protected Integer demarcationPaintMethod;
     protected Integer demarcationMethod;
     protected boolean running;
 

@@ -61,10 +61,11 @@ public class Demarcation extends Tree {
      *  @param tree The phylogeny data.
      *  @param hclimbResult The result from hillclimbing.
      *  @param method The method to use for demarcation.
+     *  @param paintMethod The paint method to use for demarcation.
      */
     public Demarcation (MasterVariables masterVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
-        ParameterSet hclimbResult, int method)
+        ParameterSet hclimbResult, int method, int paintMethod)
         throws InvalidTreeException {
         super (tree);
         this.masterVariables = masterVariables;
@@ -74,6 +75,7 @@ public class Demarcation extends Tree {
         this.outgroup = outgroup;
         this.hclimbResult = hclimbResult;
         this.method = method;
+        this.paintMethod = paintMethod;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
         workingDirectory = masterVariables.getWorkingDirectory ();
@@ -123,6 +125,15 @@ public class Demarcation extends Tree {
      */
     public int getMethod () {
         return method;
+    }
+
+    /**
+     *  Get the paint method.
+     *
+     *  @return The paint method.
+     */
+    public int getPaintMethod () {
+        return paintMethod;
     }
 
     /**
