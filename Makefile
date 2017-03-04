@@ -12,6 +12,12 @@ LDFLAGS := -cpp -fbounds-check -fbacktrace -ffpe-trap=invalid,zero,overflow -ffp
 # Apache Ant, used to compile the Java source.
 ANT := ant
 
+# Grab the current version.
+VERSION :=$(shell cat VERSION)
+
+# The name of the zip file to build for the dist target.
+DIST_ZIP := ~/ecosim-$(VERSION).zip
+
 # Doxygen, used to compile the documentation for the Fortran and Java code.
 DOXYGEN := doxygen
 
@@ -102,6 +108,13 @@ uninstall:
 docs:
 	@$(MKDIR_P) $(DOCS_DIR)
 	$(DOXYGEN) ecosim.doxy
+
+# Build the distribution zip file.
+dist: uninstall install docs clean
+	rm -Rf dist $(DIST_ZIP)
+	@$(MKDIR_P) dist
+	rsync -a --exclude='*.git*' --exclude dist . dist
+	cd dist && zip -9 -r $(DIST_ZIP) .
 
 # Build the binary files.
 $(BUILD_DIR)%$(BINARY_EXT): $(SOURCE_DIR)%.f90 $(OBJECT_FILES)
