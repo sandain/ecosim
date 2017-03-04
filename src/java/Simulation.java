@@ -47,7 +47,7 @@ public class Simulation {
     public Simulation (Logger log, MasterVariables masterVariables) {
         this.log = log;
         this.masterVariables = masterVariables;
-        // Set default demarcation method and precision.
+        // Set default demarcation method.
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
         execs = new Execs (log, masterVariables);
         summary = new Summary ();
