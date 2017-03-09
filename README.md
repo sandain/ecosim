@@ -65,17 +65,17 @@ file directly with one of the following commands:
 
 The following command line options are available:
 
-        -i, --input        : A XML formated save file for input.
-        -o, --output       : A XML formated save for for output.
-        -s, --sequences    : A Fasta formated file for input.
-        -p, --phylogeny    : A Newick formatted file for input.
-        -d, --debug        : Display debugging output.
-        -h, --help         : Display helpful information.
-        -n, --nogui        : Hide the default GUI.  Implies --runall.
-        -r, --runall       : Run everything, including demarcation.
-        -t=n, --threads=n  : Set the number of threads (n) to start, default
-                             to system maximum.
-        -v, --version      : Display the version number.
+        -i, --input=[file]     : A XML formated save file for input.
+        -o, --output=[file]    : A XML formated save for for output.
+        -s, --sequences=[file] : A Fasta formated file for input.
+        -p, --phylogeny=[file] : A Newick formatted file for input.
+        -d, --debug            : Display debugging output.
+        -h, --help             : Display helpful information.
+        -n, --nogui            : Hide the default GUI.  Implies --runall.
+        -r, --runall           : Run everything, including demarcation.
+        -t, --threads=[n]      : Set the number of threads (n) to start,
+                                 default to system maximum.
+        -v, --version          : Display the version number.
 
 Sequences should be aligned and in a Fasta formated file, with the outgroup
 listed first.
