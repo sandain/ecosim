@@ -34,6 +34,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -41,6 +43,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
@@ -75,6 +78,9 @@ public class MainWindow extends JFrame implements Runnable {
         // Start a thread for the Help/About window.
         HelpAboutWindow helpAbout = new HelpAboutWindow (masterVariables);
         helpAbout.run ();
+        // Create a list of icon images.
+        String workingDirectory = masterVariables.getWorkingDirectory ();
+        setIconImages (Arrays.asList (images));
         // Setup the main window.
         setTitle ("Ecotype Simulation");
         setJMenuBar (new MenuBar (log, simulation, helpAbout));
@@ -217,5 +223,11 @@ public class MainWindow extends JFrame implements Runnable {
     private Logger log;
     private MasterVariables masterVariables;
     private Simulation simulation;
+
+    private Image[] images = new Image[] {
+        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/ES.128x128.png")),
+        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/ES.64x64.png")),
+        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/ES.32x32.png"))
+    };
 
 }

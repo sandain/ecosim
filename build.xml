@@ -8,6 +8,7 @@
 
   <!-- Set global properties for this build. -->
   <property name="bin.dir" value="."/>
+  <property name="icons.dir" value="icons"/>
   <property name="build.dir" value="build"/>
   <property name="lib.dir" value="lib"/>
   <property name="src.dir" value="src/java"/>
@@ -58,6 +59,7 @@
         <attribute name="Implementation-Version" value="${version}"/>
         <attribute name="Class-Path" value="${dist.manifest.classpath}"/>
       </manifest>
+      <zipfileset dir="${icons.dir}" prefix="${icons.dir}"/>
     </jar>
   </target>
 
