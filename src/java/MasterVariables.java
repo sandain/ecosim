@@ -61,11 +61,11 @@ public class MasterVariables {
         binaryDirectory = System.getProperty ("user.dir") +
             System.getProperty ("file.separator") + "bin" +
             System.getProperty ("file.separator");
-
         helpDirectory = System.getProperty ("user.dir") +
             System.getProperty ("file.separator") +"help" +
             System.getProperty ("file.separator");
-
+        // Start with the current directory pointing to the user's home.
+        currentDirectory = System.getProperty ("user.home");
     }
 
     /**
@@ -133,6 +133,15 @@ public class MasterVariables {
     }
 
     /**
+     *  Returns the current directory.
+     *
+     *  @return String containing the current directory.
+     */
+    public String getCurrentDirectory () {
+        return currentDirectory;
+    }
+
+    /**
      *  Returns the help directory.
      *
      *  @return String containing the binary directory.
@@ -175,6 +184,14 @@ public class MasterVariables {
      */
     public File getOutputFile () {
         return outputFile;
+    }
+
+    /** Set the current directory.
+     *
+     *  @param currentDirectory The current directory.
+     */
+    public void setCurrentDirectory (String currentDirectory) {
+        this.currentDirectory = currentDirectory;
     }
 
     /**
@@ -266,6 +283,11 @@ public class MasterVariables {
      *  The location of the binary directory.
      */
     private String binaryDirectory;
+
+    /**
+     *  The location of the current directory.
+     */
+    private String currentDirectory;
 
     /**
      *  The location of the help directory.
