@@ -40,7 +40,7 @@ public class FileChooser extends JFileChooser {
      *  Create a default FileChooser.
      */
     public FileChooser () {
-        makeFileChooser ("default");
+        this (System.getProperty ("user.home"), "default");
     }
 
     /**
@@ -48,7 +48,8 @@ public class FileChooser extends JFileChooser {
      *
      *  @param type The type of FileChooser to create.
      */
-    public FileChooser (String type) {
+    public FileChooser (String currentDirectory, String type) {
+        setCurrentDirectory (new File (currentDirectory));
         makeFileChooser (type);
     }
 

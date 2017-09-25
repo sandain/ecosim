@@ -79,11 +79,12 @@ public class MainWindow extends JFrame implements Runnable {
         HelpAboutWindow helpAbout = new HelpAboutWindow (masterVariables);
         helpAbout.run ();
         // Create a list of icon images.
-        String workingDirectory = masterVariables.getWorkingDirectory ();
         setIconImages (Arrays.asList (images));
         // Setup the main window.
         setTitle ("Ecotype Simulation");
-        setJMenuBar (new MenuBar (log, simulation, helpAbout));
+        setJMenuBar (
+            new MenuBar (log, masterVariables, simulation, helpAbout)
+        );
         setLayout (new BorderLayout (15, 15));
         setMinimumSize (new Dimension (525, 475));
         setPreferredSize (new Dimension (600, 600));
@@ -211,10 +212,13 @@ public class MainWindow extends JFrame implements Runnable {
      *  @param tree The tree to save as an SVG file.
      */
     private void saveSVGActionPerformed (Tree tree) {
-        FileChooser fc = new FileChooser ("svg");
+        FileChooser fc = new FileChooser (
+            masterVariables.getCurrentDirectory (), "svg"
+        );
         int returnVal = fc.showSaveDialog (this);
         File file = fc.getSelectedFile ();
         if (returnVal != FileChooser.APPROVE_OPTION) return;
+        masterVariables.setCurrentDirectory (file.getParent ());
         String fname = file.getAbsolutePath ();
         if (! fname.endsWith (".svg")) file = new File (fname + ".svg");
         tree.paintTree (new SVGPainter (file));
