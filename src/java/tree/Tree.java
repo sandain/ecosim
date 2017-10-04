@@ -462,6 +462,7 @@ public class Tree {
      *
      *  @param painter The Painter to use.
      *  @param node The Node to paint.
+     *  @param maxX The maximum X value.
      */
     private void paintNode (Painter painter, Node node, int maxX) {
         int fontHeight = painter.fontHeight ();
