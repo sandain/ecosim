@@ -103,6 +103,7 @@ public class Simulation {
      */
     public void setDemarcationPaintMethod (int demarcationPaintMethod) {
         this.demarcationPaintMethod = demarcationPaintMethod;
+        summary.refreshObservers ();
     }
 
     /**
@@ -545,7 +546,7 @@ public class Simulation {
             log.appendln ("  Error running the demarcation program!");
             return;
         }
-        // Output the demarcation is SVG format if debugging is turned on.
+        // Output the demarcation in SVG format if debugging is turned on.
         if (masterVariables.getDebug ()) {
             String dir = masterVariables.getWorkingDirectory ();
             File svg = new File (dir + "demarcation.svg");
