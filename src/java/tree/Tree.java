@@ -47,10 +47,6 @@ public class Tree {
     public static final int PAINT_METHOD_COLLAPSED  = 1020;
     public static final int PAINT_METHOD_DEMARCATED = 1030;
 
-    public int paintMethod = PAINT_METHOD_NORMAL;
-
-    public int xModifier = 5000;
-
     /**
      *  The default constructor for objects of class Tree.
      */
@@ -650,6 +646,8 @@ public class Tree {
         }
     }
 
-    protected Node root;
+    private Node root;
+    private int paintMethod = PAINT_METHOD_NORMAL;
+    private int xModifier = 5000;
 
 }
