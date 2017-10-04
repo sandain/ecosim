@@ -74,7 +74,6 @@ import javax.swing.SwingUtilities;
  *
  * @section fortran Fortran
  * @subsection fortran-programs Programs
- * @li @b ::fredmethod - Test the omega/sigma/npop space.
  * @li @b ::hillclimb - Performs a hillclimbing on the bruteforce result.
  * @li @b ::omegaci - Calculates the confidence interval of the omega value.
  * @li @b ::sigmaci - Calculates the confidence interval of the sigma value.
@@ -95,7 +94,6 @@ import javax.swing.SwingUtilities;
  *        and the phylogeny of the sequences using the ::demarcation program.
  * @li @b Execs - Holds the executable methods for the various programs.
  * @li @b Fasta - Handles the input and output of fasta formatted text files.
- * @li @b FredMethod - Object to interact with the ::fredmethod program.
  * @li @b Heapsorter - Runs the heapsort on a given set of data.
  * @li @b Hillclimb - Object to interact with the ::hillclimb program.
  * @li @b InvalidFastaException - Report a malformed Fasta file.
