@@ -103,6 +103,7 @@ public class Simulation {
      */
     public void setDemarcationPaintMethod (int demarcationPaintMethod) {
         this.demarcationPaintMethod = demarcationPaintMethod;
+        demarcation.setPaintMethod (demarcationPaintMethod);
         summary.refreshObservers ();
     }
 
@@ -532,9 +533,9 @@ public class Simulation {
         try {
             demarcation = new Demarcation (
                 masterVariables, execs, nu, length, outgroup, tree,
-                hillclimb.getResult (), demarcationMethod,
-                demarcationPaintMethod
+                hillclimb.getResult (), demarcationMethod
             );
+            demarcation.setPaintMethod (demarcationPaintMethod);
             demarcation.run ();
             // Verify that demarcation ran correctly.
             if (! demarcation.hasRun ()) {

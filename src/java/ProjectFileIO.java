@@ -835,9 +835,9 @@ public class ProjectFileIO {
                                     outgroup,
                                     tree,
                                     hillclimb.getResult (),
-                                    method,
-                                    paintMethod
+                                    method
                                 );
+                                demarcation.setPaintMethod (paintMethod);
                             }
                             catch (InvalidTreeException e) {
                                 System.err.println (
