@@ -47,7 +47,7 @@ public class Tree {
     public static final int PAINT_METHOD_COLLAPSED  = 1020;
     public static final int PAINT_METHOD_DEMARCATED = 1030;
 
-    public static int paintMethod = PAINT_METHOD_NORMAL;
+    public int paintMethod = PAINT_METHOD_NORMAL;
 
     public int xModifier = 5000;
 
@@ -117,6 +117,24 @@ public class Tree {
      */
     public Node getRoot () {
         return root;
+    }
+
+    /**
+     *  Get the paint method.
+     *
+     *  @return The paint method.
+     */
+    public int getPaintMethod () {
+        return paintMethod;
+    }
+
+    /**
+     *  Set the paint method.
+     *
+     *  @param paintMethod The paint method.
+     */
+    public void setPaintMethod (int paintMethod) {
+        this.paintMethod = paintMethod;
     }
 
     /**
