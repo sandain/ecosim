@@ -75,16 +75,16 @@ public class OptionsPane extends JPanel {
         demarcationPaintMethod.add (bars);
         demarcationPaintMethod.add (triangles);
         // Create the demarcation paint method options pane.
-        JLayeredPane painMethodSelector = new JLayeredPane ();
-        painMethodSelector.setLayout (new GridLayout (2,1,0,0));
-        painMethodSelector.add (bars);
-        painMethodSelector.add (triangles);
-        JLayeredPane painMethodOption = new JLayeredPane ();
-        painMethodOption.setLayout (new BorderLayout ());
-        painMethodOption.add (new JLabel ("Display Option:"), BorderLayout.NORTH);
-        painMethodOption.add (painMethodSelector, BorderLayout.WEST);
+        JLayeredPane paintMethodSelector = new JLayeredPane ();
+        paintMethodSelector.setLayout (new GridLayout (2,1,0,0));
+        paintMethodSelector.add (bars);
+        paintMethodSelector.add (triangles);
+        JLayeredPane paintMethodOption = new JLayeredPane ();
+        paintMethodOption.setLayout (new BorderLayout ());
+        paintMethodOption.add (new JLabel ("Display Option:"), BorderLayout.NORTH);
+        paintMethodOption.add (paintMethodSelector, BorderLayout.WEST);
         // Add the paint method option pane to the top right pane.
-        add (painMethodOption);
+        add (paintMethodOption);
     }
 
     /**
