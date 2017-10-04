@@ -46,6 +46,7 @@ public class FileChooser extends JFileChooser {
     /**
      *  Create a FileChooser for the given type.
      *
+     *  @param currentDirectory The current directory.
      *  @param type The type of FileChooser to create.
      */
     public FileChooser (String currentDirectory, String type) {
