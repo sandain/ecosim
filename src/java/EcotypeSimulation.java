@@ -60,17 +60,17 @@ import javax.swing.SwingUtilities;
  *
  * Options:
  *
- *     -i, --input        : A XML formated save file for input.
- *     -o, --output       : A XML formated save for for output.
- *     -s, --sequences    : A Fasta formated file for input.
- *     -p, --phylogeny    : A Newick formatted file for input.
- *     -d, --debug        : Display debugging output.
- *     -h, --help         : Display helpful information.
- *     -n, --nogui        : Hide the default GUI.  Implies --runall.
- *     -r, --runall       : Run everything, including demarcation.
- *     -t=n, --threads=n  : Set the number of threads (n) to start, default
- *                          to system maximum.
- *     -v, --version      : Display the version number.
+ *     -i, --input=[file]     : A XML formated save file for input.
+ *     -o, --output=[file]    : A XML formated save for for output.
+ *     -s, --sequences=[file] : A Fasta formated file for input.
+ *     -p, --phylogeny=[file] : A Newick formatted file for input.
+ *     -d, --debug            : Display debugging output.
+ *     -h, --help             : Display helpful information.
+ *     -n, --nogui            : Hide the default GUI.  Implies --runall.
+ *     -r, --runall           : Run everything, including demarcation.
+ *     -t, --threads=[n]      : Set the number of threads (n) to start,
+ *                              default to system maximum.
+ *     -v, --version          : Display the version number.
  *
  * @section fortran Fortran
  * @subsection fortran-programs Programs
@@ -388,17 +388,18 @@ public class EcotypeSimulation implements Runnable {
         "  Output is saved in XML format.\n" +
         "\n" +
         "  Options:\n" +
-        "    -i, --input        : A XML formated save file for input.\n" +
-        "    -o, --output       : A XML formated save for for output.\n" +
-        "    -s, --sequences    : A Fasta formated file for input.\n" +
-        "    -p, --phylogeny    : A Newick formatted file for input.\n" +
-        "    -d, --debug        : Display debugging output.\n" +
-        "    -h, --help         : Display helpful information.\n" +
-        "    -n, --nogui        : Hide the default GUI.  Implies" +
-                                " --runall.\n" +
-        "    -r, --runall       : Run everything, including demarcation.\n" +
-        "    -t=n, --threads=n  : Set the number of threads (n) to start," +
-                                " default to system maximum.\n" +
-        "    -v, --version      : Display the version number.\n";
+        "    -i, --input=[file]     : A XML formated save file for input.\n" +
+        "    -o, --output=[file]    : A XML formated save for for output.\n" +
+        "    -s, --sequences=[file] : A Fasta formated file for input.\n" +
+        "    -p, --phylogeny=[file] : A Newick formatted file for input.\n" +
+        "    -d, --debug            : Display debugging output.\n" +
+        "    -h, --help             : Display helpful information.\n" +
+        "    -n, --nogui            : Hide the default GUI.  Implies" +
+                                    " --runall.\n" +
+        "    -r, --runall           : Run everything, including" +
+                                    " demarcation.\n" +
+        "    -t, --threads=[n]      : Set the number of threads (n) to" +
+                                    " start, default to system maximum.\n" +
+        "    -v, --version          : Display the version number.\n";
 
 }
