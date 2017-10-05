@@ -404,7 +404,7 @@ public class Tree {
         // Paint the tree.
         painter.start (width, height);
         paintNode (painter, root, max + 10);
-        paintScaleBar (painter, 50, height - 50);
+        paintScaleBar (painter, 25, height - 25);
         painter.end ();
     }
 
