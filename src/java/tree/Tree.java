@@ -93,7 +93,7 @@ public class Tree {
      *  @param tree Tree to use.
      */
     public Tree (Tree tree) throws InvalidTreeException {
-        readTree (new StringReader (tree.toString ()));
+        root = new Node (tree.getRoot ());
     }
 
     /**
