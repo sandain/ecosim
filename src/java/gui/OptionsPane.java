@@ -95,7 +95,6 @@ public class OptionsPane extends JPanel {
         int bars = Demarcation.PAINT_METHOD_DEMARCATED;
         if (simulation.getDemarcationPaintMethod () == bars) return;
         simulation.setDemarcationPaintMethod (bars);
-        log.appendln ("Demarcation paint method changed to: bars.");
     }
 
     /**
@@ -105,7 +104,6 @@ public class OptionsPane extends JPanel {
         int triangles = Demarcation.PAINT_METHOD_COLLAPSED;
         if (simulation.getDemarcationPaintMethod () == triangles) return;
         simulation.setDemarcationPaintMethod (triangles);
-        log.appendln ("Demarcation paint method changed to: triangles.");
     }
 
     private Logger log;
