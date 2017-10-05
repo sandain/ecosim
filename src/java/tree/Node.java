@@ -59,14 +59,20 @@ public class Node implements Comparable<Node> {
         y = 0.0d;
     }
 
+    /**
+     *  Constructor for objects of class Node.  This Node will have no parent
+     *  or children unless defined later.
+     *
+     *  @param name The name of this Node.
+     *  @param distance The distance from the parent node.
+     */
     public Node (String name, Double distance) {
         this (name, distance, null, new ArrayList<Node> ());
     }
 
     /**
-     *  Default constructor for object of class Node.  This Node
-     *  will have no name, distance, parent, or children unless defined
-     *  later.
+     *  Default constructor for object of class Node.  This Node will have no
+     *  name, distance, parent, or children unless defined later.
      */
     public Node () {
         this ("", 0.0d);
