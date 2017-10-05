@@ -79,6 +79,27 @@ public class Node implements Comparable<Node> {
     }
 
     /**
+     *  Constructor for objects of class Node. This Node will be a copy of the
+     *  provided Node.
+     *
+     *  @param node Node to make a copy of.
+     */
+    public Node (Node node) {
+        name = node.getName ();
+        distance = node.getDistance ();
+        children = new ArrayList<Node> ();
+        for (Node child: node.getChildren ()) {
+            Node clone = new Node (child);
+            clone.setParent (this);
+            children.add (clone);
+        }
+        outgroup = node.isOutgroup ();
+        collapsed = node.isCollapsed ();
+        x = 0.0d;
+        y = 0.0d;
+    }
+
+    /**
      *  Compare nodes.
      */
     public int compareTo (Node other) {
