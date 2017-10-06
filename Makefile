@@ -70,9 +70,7 @@ FORTRAN_BUILD_DIR := $(BUILD_DIR)fortran$(DIRECTORY_SEPARATOR)
 FORTRAN_SOURCE_DIR := $(SOURCE_DIR)fortran$(DIRECTORY_SEPARATOR)
 
 # Files to be created.
-C_INSTALL_FILES := $(patsubst %.c, $(BIN_DIR)%$(BINARY_EXT), $(C_SOURCE_FILES))
 C_BINARY_FILES  := $(patsubst %.c, $(C_BUILD_DIR)%$(BINARY_EXT), $(C_SOURCE_FILES))
-FORTRAN_INSTALL_FILES := $(patsubst %.f90, $(BIN_DIR)%$(BINARY_EXT), $(FORTRAN_SOURCE_FILES))
 FORTRAN_BINARY_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%$(BINARY_EXT), $(FORTRAN_SOURCE_FILES))
 FORTRAN_OBJECT_FILES  := $(patsubst %.f90, $(FORTRAN_BUILD_DIR)%.o, $(FORTRAN_INCLUDE_FILES))
 FORTRAN_MOD_FILES     := $(patsubst %.f90, %.mod, $(FORTRAN_INCLUDE_FILES))
@@ -100,8 +98,7 @@ install: $(C_BINARY_FILES) $(FORTRAN_BINARY_FILES)
 
 # Remove the binary files from their installed location.
 uninstall:
-	rm -f $(C_INSTALL_FILES)
-	rm -f $(FORTRAN_INSTALL_FILES)
+	rm -Rf $(BIN_DIR)
 	$(ANT) uninstall
 
 # Build the documentation.
