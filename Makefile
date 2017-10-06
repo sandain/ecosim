@@ -2,14 +2,14 @@
 CC := gcc
 #CC := i686-w64-mingw32-gcc-win32
 #CC := x86_64-w64-mingw32-gcc-win32
-CCFLAGS := -DUSE_DOUBLE -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops -Wall
+CCFLAGS := -DUSE_DOUBLE -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops
 
 # Fortran compiler options.
 FC := gfortran
 #FC := i686-w64-mingw32-gfortran-win32
 #FC := x86_64-w64-mingw32-gfortran-win32
-FCFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -lgfortran -lm -O0 -Wall
-FLDFLAGS := -cpp -fbounds-check -fopenmp -fbacktrace -ffpe-trap=invalid,zero,overflow -g -O0 -Wall
+FCFLAGS := -cpp -fopenmp -lgfortran -lm -O3 -finline-functions -funroll-loops
+FLDFLAGS := -cpp -fopenmp -O3 -finline-functions -funroll-loops
 
 # Apache Ant, used to compile the Java source.
 ANT := ant
