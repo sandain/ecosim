@@ -111,7 +111,7 @@ check:
 	$(ANT) check
 
 # Build the distribution zip file.
-dist: install docs clean
+dist: uninstall install docs clean
 	rm -Rf dist $(DIST_ZIP)
 	@$(MKDIR_P) dist
 	rsync -a --exclude='*.git*' --exclude dist . dist
