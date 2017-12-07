@@ -258,6 +258,7 @@ public class Simulation {
         log.appendln ("Opening tree file...");
         try {
             tree = new Tree (file);
+            tree.makeBinary ();
             tree.reroot (tree.getDescendant (outgroup));
             // Output the tree in Newick and SVG formats if debug is enabled.
             if (masterVariables.getDebug ()) {
