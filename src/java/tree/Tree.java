@@ -271,6 +271,39 @@ public class Tree {
     }
 
     /**
+     *  Make this tree binary.
+     */
+    public void makeBinary () {
+        makeBinary (root);
+    }
+
+    /**
+     *  Private recursive method to make this tree binary.
+     *
+     *  @param node The current node being analyzed.
+     */
+    private void makeBinary (Node node) {
+        ArrayList<Node> children = new ArrayList<Node> (node.getChildren ());
+        // If this node has more than 2 children, split the node in two.
+        if (children.size () > 2) {
+            // Skip the first child.
+            children.remove (0);
+            // Move all remaining children to a new parent.
+            Node parent = new Node ();
+            for (Node child: children) {
+                node.removeChild (child);
+                parent.addChild (child);
+            }
+            // Add the new parent as a child to this node.
+            node.addChild (parent);
+        }
+        // Make sure each child is binary as well.
+        for (Node child: node.getChildren ()) {
+            makeBinary (child);
+        }
+    }
+
+    /**
      *  Reroot the tree so that the outgroup descendant is next to the root.
      *
      *  @param name The name of the outgroup descendant.
