@@ -419,7 +419,7 @@ public class Tree {
             if (x > max) max = x;
         }
         // Calculate the height and width needed for the tree.
-        int height = fontHeight * (size () + 1);
+        int height = fontHeight * (size () + 3);
         int width = max;
         // Make room for the demarcation line if needed.
         if (paintMethod == PAINT_METHOD_DEMARCATED) {
@@ -437,7 +437,7 @@ public class Tree {
         // Paint the tree.
         painter.start (width, height);
         paintNode (painter, root, max + 10);
-        paintScaleBar (painter, 25, height - 25);
+        paintScaleBar (painter, 25, height - fontHeight);
         painter.end ();
     }
 
