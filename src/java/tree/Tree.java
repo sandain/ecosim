@@ -107,6 +107,20 @@ public class Tree {
     }
 
     /**
+     *  Returns the maximum diversity of this tree.
+     *
+     *  @return The maximum diversity of this tree.
+     */
+    public Double getDiversity () {
+        Double diversity = 0.0d;
+        for (Node child: root.getChildren ()) {
+            if (child.isOutgroup ()) continue;
+            diversity = 1.0d - child.maximumDistanceBetweenLeafNodes ();
+        }
+        return diversity;
+    }
+
+    /**
      *  Returns the root node of this tree.
      *
      *  @return Node containing the root node.
