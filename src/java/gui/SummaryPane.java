@@ -224,12 +224,16 @@ public class SummaryPane extends JPanel {
         final String fmt =
             "Outgroup: %s" + ls +
             "Number: %,d" + ls +
-            "Length: %,d" + ls;
+            "Length: %,d" + ls +
+            "Diversity: %.2f" + ls;
 
         final JLayeredPane pane = new JLayeredPane ();
         final JTextArea summaryTextArea = new JTextArea (String.format (
             fmt,
-            summary.getOutgroup (), summary.getNu (), summary.getLength ()
+            summary.getOutgroup (),
+            summary.getNu (),
+            summary.getLength (),
+            summary.getDiversity ()
         ));
         summaryTextArea.setBackground (getBackground ());
         pane.setBorder (BorderFactory.createTitledBorder ("Sequences"));
@@ -242,7 +246,10 @@ public class SummaryPane extends JPanel {
                 ParameterEstimate estimate = s.getEstimate ();
                 summaryTextArea.setText (String.format (
                     fmt,
-                    s.getOutgroup (), s.getNu (), s.getLength ()
+                    s.getOutgroup (),
+                    s.getNu (),
+                    s.getLength (),
+                    s.getDiversity ()
                 ));
                 pane.repaint ();
             }
