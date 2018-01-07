@@ -44,6 +44,7 @@ public class Summary extends Observable {
         bins = new ArrayList<BinLevel> ();
         nu = 0;
         length = 0;
+        diversity = 0.0d;
         outgroup = "";
         estimate = null;
         hillclimbing = null;
@@ -87,6 +88,15 @@ public class Summary extends Observable {
      */
     public Integer getLength () {
         return length;
+    }
+
+    /**
+     *  Get the maximum diversity of the environmental sequences.
+     *
+     *  @return The maximum diversity of the environmental sequences.
+     */
+    public Double getDiversity () {
+        return diversity;
     }
 
     /**
@@ -139,6 +149,7 @@ public class Summary extends Observable {
      */
     public void setTree (Tree tree) {
         this.tree = tree;
+        this.diversity = tree.getDiversity ();
         refreshObservers ();
     }
 
@@ -231,6 +242,7 @@ public class Summary extends Observable {
     }
 
     private Tree tree;
+    private Double diversity;
     private Integer nu;
     private Integer length;
     private String outgroup;
