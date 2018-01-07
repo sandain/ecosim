@@ -276,6 +276,10 @@ public class Simulation {
             log.appendln (String.format (
                 "  %,d environmental sequences.", nu
             ));
+            // Output the diversity sampled by the sequences.
+            log.appendln (String.format (
+                "  %.2f diversity sampled.", tree.getDiversity ()
+            ));
         }
         catch (InvalidTreeException e) {
             System.out.println ("Error loading tree file.");
