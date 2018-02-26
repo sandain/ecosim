@@ -27,6 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 /**
  *  This class holds the master variables that may need to be changed later
@@ -66,6 +69,8 @@ public class MasterVariables {
             System.getProperty ("file.separator");
         // Start with the current directory pointing to the user's home.
         currentDirectory = System.getProperty ("user.home");
+        // Get the version number.
+        version = readVersion ();
     }
 
     /**
@@ -243,6 +248,26 @@ public class MasterVariables {
     }
 
     /**
+     *  Private method to read the version from the MANIFEST.
+     */
+    private String readVersion () {
+        String v = Package.getPackage ("ecosim").getImplementationVersion ();
+        // If version not found, read the MANIFEST directly.
+        if (v == null) {
+            ClassLoader cl = EcotypeSimulation.class.getClassLoader ();
+            try {
+                URL u = cl.getResource ("META-INF/MANIFEST.MF");
+                Manifest m = new Manifest (u.openStream ());
+                Attributes a = m.getMainAttributes ();
+                v = a.getValue ("Implementation-Version");
+            }
+            catch (IOException e) {
+            }
+        }
+        return v;
+    }
+
+    /**
      *  Used for equality tests for floating point values.
      *
      *  ie: "a == 100.0" --> "a >= 100.0 - EPSILON"
@@ -271,8 +296,7 @@ public class MasterVariables {
     /**
      *  The Ecotype Simulation version number.
      */
-    private String version =
-        Package.getPackage ("ecosim").getImplementationVersion ();
+    private String version;
 
     /**
      *  The location of the temporary directory.
