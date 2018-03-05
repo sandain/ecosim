@@ -24,6 +24,8 @@ package ecosim.os;
 
 import ecosim.api.OperatingSystem;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -42,6 +44,69 @@ public class Windows implements OperatingSystem {
 
     @Override
     public boolean verifyExecutable (Path path) {
+        String osArch = System.getProperty ("os.arch").toLowerCase ();
+        int[] dosMagicBytes = new int[] { 77, 90 };
+        int[] prMagicBytes = new int[] { 80, 69, 0, 0 };
+        int[] x86 = new int[] { 76, 1 };
+        int[] amd64 = new int[] { 100, 134 };
+        try {
+            byte[] array = Files.readAllBytes (path);
+            // Verify the magic bytes of the DOS header.
+            if (array.length < dosMagicBytes.length) {
+                return false;
+            }
+            for (int i = 0; i < dosMagicBytes.length; i ++) {
+                if (dosMagicBytes[i] != (array[i] & 0xff)) {
+                    return false;
+                }
+            }
+            // Verify the magic bytes of the PR header.
+            if (array.length < 60) {
+                return false;
+            }
+            int prPointer = ((array[60] & 0xff));
+            if (array.length < prPointer + prMagicBytes.length) {
+                return false;
+            }
+            for (int i = 0; i < prMagicBytes.length; i ++) {
+                if (prMagicBytes[i] != (array[prPointer + i] & 0xff)) {
+                    return false;
+                }
+            }
+            // Verify the architecture.
+            int archPointer = prPointer + prMagicBytes.length;
+            if (array.length < archPointer + 2) {
+                return false;
+            }
+            if (osArch.contains ("amd64") || osArch.contains ("x86_64")) {
+                boolean x86Bool = true;
+                boolean amd64Bool = true;
+                // Run either 64-bit or 32-bit applications on 64-bit Windows.
+                for (int i = 0; i < amd64.length; i ++) {
+                    if (amd64[i] != (array[archPointer + i] & 0xff)) {
+                        amd64Bool = false;
+                    }
+                }
+                for (int i = 0; i < x86.length; i ++) {
+                    if (x86[i] != (array[archPointer + i] & 0xff)) {
+                        x86Bool = false;
+                    }
+                }
+                if (amd64Bool == false && x86Bool == false) return false;
+            }
+            else {
+                // Run only 32-bit applications on 32-bit Windows.
+                for (int i = 0; i < x86.length; i ++) {
+                    if (x86[i] != (array[archPointer + i] & 0xff)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        catch (IOException e) {
+            System.err.println ("Unable to verify executable!");
+            e.printStackTrace ();
+        }
         return true;
     }
 
