@@ -23,13 +23,17 @@
 
 package ecosim;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import ecosim.api.OperatingSystem;
+import ecosim.os.Windows;
+import ecosim.os.Linux;
+import ecosim.os.Mac;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *  Holds the executable methods for Ecotype Simulation.
@@ -57,13 +61,13 @@ public class Execs {
         binaryDirectory = masterVariables.getBinaryDirectory ();
         // Check which OS we are running on.
         if (osName.contains ("windows")) {
-            binaryExtension = ".exe";
+            os = new Windows ();
         }
         else if (osName.contains ("linux")) {
-            binaryExtension = "";
+            os = new Linux ();
         }
         else if (osName.contains ("mac")) {
-            binaryExtension = "";
+            os = new Mac ();
         }
         else {
             log.append ("Unsupported OS, contact the developers.\n");
@@ -81,7 +85,7 @@ public class Execs {
      */
     public int runHillclimb (File input, File output) {
         String[] command = {
-            binaryDirectory + "hillclimb" + binaryExtension,
+            binaryDirectory + "hillclimb" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -113,7 +117,7 @@ public class Execs {
      */
     public int runNpopCI (File input, File output) {
         String[] command = {
-            binaryDirectory + "npopCI" + binaryExtension,
+            binaryDirectory + "npopCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -145,7 +149,7 @@ public class Execs {
      */
     public int runDemarcation (File input, File output) {
         String[] command = {
-            binaryDirectory + "demarcation" + binaryExtension,
+            binaryDirectory + "demarcation" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -177,7 +181,7 @@ public class Execs {
      */
     public int runOmegaCI (File input, File output) {
         String[] command = {
-            binaryDirectory + "omegaCI" + binaryExtension,
+            binaryDirectory + "omegaCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -209,7 +213,7 @@ public class Execs {
      */
     public int runSigmaCI (File input, File output) {
         String[] command = {
-            binaryDirectory + "sigmaCI" + binaryExtension,
+            binaryDirectory + "sigmaCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
             Integer.toString (masterVariables.getNumberThreads ()),
@@ -242,7 +246,7 @@ public class Execs {
      */
     public int runFastTree (File input, File output) {
         String[] command = {
-            binaryDirectory + "fasttree" + binaryExtension,
+            binaryDirectory + "fasttree" + os.getBinaryExtension (),
             "-nt",
             input.getAbsolutePath (),
         };
@@ -297,6 +301,15 @@ public class Execs {
                 );
                 return exitVal;
             }
+            // Verify the application is compatible with the current
+            // architecture.
+            if (! os.verifyExecutable (path)) {
+                log.append (
+                    "Program " + path.getFileName () +
+                    " is not built for your current architecture!\n"
+                );
+                return exitVal;
+            }
             // Run the application.
             ProcessBuilder pb = new ProcessBuilder (command);
             Process p = pb.start ();
@@ -348,9 +361,9 @@ public class Execs {
         return exitVal;
     }
 
+    private OperatingSystem os;
     private MasterVariables masterVariables;
     private Logger log;
-    private String binaryExtension;
     private String binaryDirectory;
 
 }
