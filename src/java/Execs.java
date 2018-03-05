@@ -53,7 +53,6 @@ public class Execs {
         // Grab the running environment.
         String osName = System.getProperty ("os.name").toLowerCase ();
         String osArch = System.getProperty ("os.arch").toLowerCase ();
-        String osVersion = System.getProperty ("os.version");
         // Setup the rest of the variables.
         binaryDirectory = masterVariables.getBinaryDirectory ();
         // Check which OS we are running on.
