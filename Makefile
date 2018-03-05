@@ -49,7 +49,7 @@ else ifneq (,$(filter Linux, $(OS)))
 else ifneq (,$(filter Darwin, $(OS)))
   # OS X and Darwin.
   MKDIR_P := mkdir -p
-  BINARY_EXT := .app
+  BINARY_EXT :=
   DIRECTORY_SEPARATOR := /
 endif
 

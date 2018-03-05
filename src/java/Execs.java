@@ -64,7 +64,7 @@ public class Execs {
             binaryExtension = "";
         }
         else if (osName.contains ("mac")) {
-            binaryExtension = ".app";
+            binaryExtension = "";
         }
         else {
             log.append ("Unsupported OS, contact the developers.\n");
