@@ -24,6 +24,8 @@ package ecosim.os;
 
 import ecosim.api.OperatingSystem;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -42,6 +44,50 @@ public class Linux implements OperatingSystem {
 
     @Override
     public boolean verifyExecutable (Path path) {
+        String osArch = System.getProperty ("os.arch").toLowerCase ();
+        int[] magicBytes = new int[] { 127, 69, 76, 70 };
+        int[] x86 = new int[] { 1 };
+        int[] amd64 = new int[] { 2 };
+        try {
+            byte[] array = Files.readAllBytes (path);
+            // Verify the magic bytes of the ELF header.
+            if (array.length < magicBytes.length) {
+                return false;
+            }
+            for (int i = 0; i < magicBytes.length; i ++) {
+                if (magicBytes[i] != (array[i] & 0xff)) {
+                    return false;
+                }
+            }
+            // Verify the architecture.
+            int archPointer = magicBytes.length;
+            if (osArch.contains ("amd64") || osArch.contains ("x86_64")) {
+                // Run only 64-bit applications on 64-bit Linux.
+                if (array.length < archPointer + amd64.length) {
+                    return false;
+                }
+                for (int i = 0; i < amd64.length; i ++) {
+                    if (amd64[i] != (array[archPointer + i] & 0xff)) {
+                        return false;
+                    }
+                }
+            }
+            else {
+                // Run only 32-bit applications on 32-bit Linux.
+                if (array.length < archPointer + x86.length) {
+                    return false;
+                }
+                for (int i = 0; i < x86.length; i ++) {
+                    if (x86[i] != (array[archPointer + i] & 0xff)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        catch (IOException e) {
+            System.err.println ("Unable to verify executable!");
+            e.printStackTrace ();
+        }
         return true;
     }
 
