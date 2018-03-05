@@ -288,6 +288,7 @@ public class Execs {
     ) {
         int exitVal = -1;
         try {
+            // Run the application.
             ProcessBuilder pb = new ProcessBuilder (command);
             Process p = pb.start ();
             StreamGobbler errorGobbler = null;
