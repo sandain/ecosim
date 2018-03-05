@@ -462,7 +462,7 @@ public class Tree {
      */
     public boolean isValid () {
         boolean valid = false;
-        if (root.getDescendants ().size () > 0) {
+        if (root != null && root.getDescendants ().size () > 0) {
             valid = true;
         }
         return valid;
@@ -641,7 +641,7 @@ public class Tree {
         NewickReader newick = new NewickReader (reader);
         root = newick.readTree ();
         // Make sure that we actually have a tree.
-        if (root.getChildren ().size () <= 1) {
+        if (root == null || root.getChildren ().size () <= 1) {
             throw new InvalidTreeException (
                 "Malformed Newick tree, not enough leaves found."
             );
