@@ -32,7 +32,7 @@ import java.io.PrintStream;
 import java.io.IOException;
 
 /**
- *  Holds the executable methods for the cohan program.
+ *  Holds the executable methods for Ecotype Simulation.
  *
  *  @author Andrew Warner
  *  @author Jason M. Wood
