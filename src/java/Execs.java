@@ -288,6 +288,15 @@ public class Execs {
     ) {
         int exitVal = -1;
         try {
+            Path path = Paths.get (command[0]);
+            // Verify the application exists.
+            if (! Files.isExecutable (path)) {
+                log.append (
+                    "Program " + path.getFileName () +
+                    " is not executable or was not found!\n"
+                );
+                return exitVal;
+            }
             // Run the application.
             ProcessBuilder pb = new ProcessBuilder (command);
             Process p = pb.start ();
