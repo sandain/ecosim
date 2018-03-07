@@ -145,25 +145,12 @@ public class MainWindow extends JFrame implements Runnable {
                 // Paint the tree.
                 t.paintTree (treePainter);
                 treeScroll.setViewportView (treePainter);
+                // Create a pop up menu to offer a Save as SVG prompt.
+                JPopupMenu treePopup = createSaveAsSVGPopupMenu (t);
+                treePainter.setComponentPopupMenu (treePopup);
                 // Add a mouse listener to the treePainter.
-                treePainter.addMouseListener (new MouseAdapter () {
-                    @Override
-                    public void mousePressed (MouseEvent e) {
-                      if (e.isPopupTrigger ()) {
-                            JPopupMenu popup = new JPopupMenu ();
-                            JMenuItem menu = new JMenuItem ("Save as SVG");
-                            menu.addActionListener (new ActionListener () {
-                                public void actionPerformed (ActionEvent evt) {
-                                    saveSVGActionPerformed (t);
-                                }
-                            });
-                            popup.add (menu);
-                            popup.show (
-                                e.getComponent (), e.getX (), e.getY ()
-                            );
-                        }
-                    }
-                });
+                MouseAdapter tma = createPopupMouseAdapter (treePopup);
+                treePainter.addMouseListener (tma);
                 // Update the demarcation scroll pane.
                 Demarcation d = s.getDemarcation ();
                 if (d == null || ! d.isValid ()) return;
@@ -179,31 +166,53 @@ public class MainWindow extends JFrame implements Runnable {
                 // Paint the tree.
                 d.paintTree (demarcationPainter);
                 demarcationScroll.setViewportView (demarcationPainter);
+                // Create a pop up menu to offer a Save as SVG prompt.
+                JPopupMenu demarcationPopup = createSaveAsSVGPopupMenu (d);
+                demarcationPainter.setComponentPopupMenu (demarcationPopup);
                 // Add a mouse listener to the demarcationPainter.
-                demarcationPainter.addMouseListener (new MouseAdapter () {
-                    @Override
-                    public void mousePressed (MouseEvent e) {
-                      if (e.isPopupTrigger ()) {
-                            JPopupMenu popup = new JPopupMenu ();
-                            JMenuItem menu = new JMenuItem ("Save as SVG");
-                            menu.addActionListener (new ActionListener () {
-                                public void actionPerformed (ActionEvent evt) {
-                                    saveSVGActionPerformed (d);
-                                }
-                            });
-                            popup.add (menu);
-                            popup.show (
-                                e.getComponent (), e.getX (), e.getY ()
-                            );
-                        }
-                    }
-                });
+                MouseAdapter dma = createPopupMouseAdapter (demarcationPopup);
+                demarcationPainter.addMouseListener (dma);
                 // Repaint the pane.
                 pane.repaint ();
             }
         });
         summary.refreshObservers ();
         return pane;
+    }
+
+    /**
+     *  Create a JPopupMenu to offer a Save as SVG prompt for Tree objects.
+     *
+     *  @param tree The Tree to offer to save as SVG.
+     */
+    private JPopupMenu createSaveAsSVGPopupMenu (Tree tree) {
+        JPopupMenu popup = new JPopupMenu ();
+        JMenuItem menu = new JMenuItem ("Save as SVG");
+        menu.addActionListener (new ActionListener () {
+            @Override
+            public void actionPerformed (ActionEvent evt) {
+                saveSVGActionPerformed (tree);
+            }
+        });
+        popup.add (menu);
+        return popup;
+    }
+
+    /**
+     *  Create a MouseAdapter for a popup menu.
+     *
+     *  @param popup The popup menu.
+     */
+    private MouseAdapter createPopupMouseAdapter (JPopupMenu popup) {
+        MouseAdapter adapter = new MouseAdapter () {
+            @Override
+            public void mousePressed (MouseEvent e) {
+                if (e.isPopupTrigger ()) {
+                    popup.show (e.getComponent (), e.getX (), e.getY ());
+                }
+            }
+        };
+        return adapter;
     }
 
     /**
