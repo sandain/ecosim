@@ -60,33 +60,19 @@ public class SVGPainter implements Painter {
     public void start (int width, int height) {
         // Add the XML information.
         writeln (
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-        );
-        // Add the SVG doctype.
-        writeln (
-            "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" " +
-            "\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         );
         // Start the SVG document.
         writeln (
-            "<svg width=\"" + width + "\" height=\"" + height + "\" " +
-            "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">"
+            "<svg " +
+                "xmlns=\"http://www.w3.org/2000/svg\" " +
+                "version=\"1.2\" baseProfile=\"tiny\" " +
+                "width=\"" + width + "\" " +
+                "height=\"" + height + "\" " +
+                "font-family=\"monospace\" " +
+                "font-size=\"" + fontHeight + "px\" " +
+            ">"
         );
-        // Add some CSS style to the SVG document.
-        writeln ("<defs>");
-        writeln ("<style type=\"text/css\"><![CDATA[");
-        writeln ("  line {");
-        writeln ("    stroke: " + strokeColor + ";");
-        writeln ("    stroke-width: " + strokeWidth + ";");
-        writeln ("  }");
-        writeln ("  text {");
-        writeln ("    font-family: monospace;");
-        writeln ("    font-size: " + fontHeight + "px;");
-        writeln ("    stroke-width: 0;");
-        writeln ("    fill: " + fontColor + ";");
-        writeln ("  }");
-        writeln ("]]></style>");
-        writeln ("</defs>");
     }
 
     /**
@@ -120,19 +106,11 @@ public class SVGPainter implements Painter {
      *  @param stroke The stroke width of the line.
      */
     public void drawLine (int x1, int y1, int x2, int y2, int stroke) {
-        if (stroke == strokeWidth) {
-            writeln (String.format (
-                "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>",
-                x1, y1, x2, y2
-            ));
-        }
-        else {
-            writeln (String.format (
-                "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" " +
-                "stroke-width=\"%d\"/>",
-                x1, y1, x2, y2, stroke
-            ));
-        }
+        writeln (String.format (
+            "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" " +
+            "stroke=\"%s\" stroke-width=\"%d\"/>",
+            x1, y1, x2, y2, strokeColor, stroke
+        ));
     }
 
     /**
@@ -144,7 +122,8 @@ public class SVGPainter implements Painter {
      */
     public void drawString (String str, int x, int y) {
         writeln (String.format (
-            "<text x=\"%d\" y=\"%d\">%s</text>", x, y, str
+            "<text x=\"%d\" y=\"%d\" fill=\"%s\">%s</text>",
+            x, y, fontColor, str
         ));
     }
 
@@ -194,8 +173,8 @@ public class SVGPainter implements Painter {
 
     private int fontHeight = 12;
     private int fontWidth = 7;
-    private String fontColor = "blue";
+    private String fontColor = "#0000ff";
 
     private int strokeWidth = 1;
-    private String strokeColor = "black";
+    private String strokeColor = "#000000";
 }
