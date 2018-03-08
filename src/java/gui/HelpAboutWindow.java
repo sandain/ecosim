@@ -136,11 +136,11 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                 // instead of id.
                 nextLine = nextLine.replaceAll ("<a id=", "<a name=");
                 // Point the images to the right directory.
-                nextLine = nextLine.replaceAll ("<img src=\"images",
-                    String.format (
-                        "<img src=\"%simages",
-                        masterVariables.getHelpDirectory ()
-                    )
+                String imgDir = masterVariables.getHelpDirectory ();
+                imgDir = imgDir.replaceAll ("\\\\", "/");
+                nextLine = nextLine.replaceAll (
+                    "<img src=\"images",
+                    String.format ("<img src=\"file:///%simages", imgDir)
                 );
                 // Replace variables with their values.
                 nextLine = nextLine.replaceAll (
