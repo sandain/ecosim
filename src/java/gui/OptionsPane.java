@@ -36,6 +36,9 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *  Create a JPanel to display the options.
@@ -55,7 +58,7 @@ public class OptionsPane extends JPanel {
         this.log = log;
         this.simulation = simulation;
         setBorder (BorderFactory.createTitledBorder (
-            "Demarcation Options"
+            "Display Options"
         ));
         setLayout (new GridLayout (2,1,15,15));
         // Create the demarcation display option buttions.
@@ -75,7 +78,7 @@ public class OptionsPane extends JPanel {
         demarcationPaintMethod.add (bars);
         demarcationPaintMethod.add (triangles);
         // Create the demarcation paint method options pane.
-        JLabel displayLabel = new JLabel ("Display Option:");
+        JLabel displayLabel = new JLabel ("Demarcation Display:");
         JLayeredPane paintMethodSelector = new JLayeredPane ();
         paintMethodSelector.setLayout (new GridLayout (2,1,0,0));
         paintMethodSelector.add (bars);
@@ -84,8 +87,27 @@ public class OptionsPane extends JPanel {
         paintMethodOption.setLayout (new BorderLayout ());
         paintMethodOption.add (displayLabel, BorderLayout.NORTH);
         paintMethodOption.add (paintMethodSelector, BorderLayout.WEST);
+        // Create the scale slider bar.
+        JLabel scaleLabel = new JLabel ("Scale:");
+        JSlider scaleSlider = new JSlider (
+            JSlider.HORIZONTAL, 1000, 9000, 5000
+        );
+        scaleSlider.addChangeListener (new ChangeListener () {
+            public void stateChanged (ChangeEvent evt) {
+                JSlider scale = (JSlider)evt.getSource ();
+                setScaleActionPerformed ((int)scale.getValue ());
+            }
+        });
+        scaleSlider.setMajorTickSpacing (1000);
+        scaleSlider.setMinorTickSpacing (500);
+        scaleSlider.setPaintTicks (true);
+        JLayeredPane scaleOption = new JLayeredPane ();
+        scaleOption.setLayout (new BorderLayout ());
+        scaleOption.add (scaleLabel, BorderLayout.NORTH);
+        scaleOption.add (scaleSlider, BorderLayout.CENTER);
         // Add the paint method option pane to the top right pane.
         add (paintMethodOption);
+        add (scaleOption);
     }
 
     /**
@@ -104,6 +126,13 @@ public class OptionsPane extends JPanel {
         int triangles = Demarcation.PAINT_METHOD_COLLAPSED;
         if (simulation.getDemarcationPaintMethod () == triangles) return;
         simulation.setDemarcationPaintMethod (triangles);
+    }
+
+    /**
+     *  The user has asked to change the scale.
+     */
+    private void setScaleActionPerformed (int scale) {
+        simulation.setScale (scale);
     }
 
     private Logger log;
