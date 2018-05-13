@@ -148,6 +148,15 @@ public class Tree {
     }
 
     /**
+     *  Set the scale used for tree display.
+     *
+     *  @param scale The scale to use.
+     */
+    public void setScale (int scale) {
+        xModifier = scale;
+    }
+
+    /**
      *  Returns the maximum width of the tree from root node to the most
      *  divergent leaf node.
      *
@@ -618,6 +627,7 @@ public class Tree {
      */
     private void paintScaleBar (Painter painter, int x, int y) {
         Float size = 0.01f;
+        if (xModifier < 3000) size = 0.05f;
         int stroke = 1;
         int fontHeight = painter.fontHeight ();
         int height = fontHeight / 2;
