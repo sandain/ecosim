@@ -108,6 +108,21 @@ public class Simulation {
     }
 
     /**
+     *  Set the scale used for tree display.
+     *
+     *  @param scale The scale to use.
+     */
+    public void setScale (int scale) {
+        if (tree != null && tree.isValid ()) {
+            tree.setScale (scale);
+        }
+        if (demarcation != null && demarcation.isValid ()) {
+            demarcation.setScale (scale);
+        }
+        summary.refreshObservers ();
+    }
+
+    /**
      *  Load the project from a XML formated file.
      *
      *  @param file The file to load the project from.
