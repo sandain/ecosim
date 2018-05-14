@@ -459,8 +459,11 @@ public class Tree {
         }
         // Paint the tree.
         painter.start (width, height);
-        paintNode (painter, root, max + 10);
+        paintNode (painter, root);
         paintScaleBar (painter, 25, height - fontHeight);
+        if (paintMethod == PAINT_METHOD_DEMARCATED) {
+            paintDemarcation (painter, root, max + 10);
+        }
         painter.end ();
     }
 
@@ -518,9 +521,8 @@ public class Tree {
      *
      *  @param painter The Painter to use.
      *  @param node The Node to paint.
-     *  @param maxX The maximum X value.
      */
-    private void paintNode (Painter painter, Node node, int maxX) {
+    private void paintNode (Painter painter, Node node) {
         int fontHeight = painter.fontHeight ();
         int fontWidth = painter.fontWidth ();
         int stroke = 1;
@@ -579,31 +581,6 @@ public class Tree {
                             nodeX, childY, childX, childY, stroke
                         );
                     }
-                    if (
-                        child.isCollapsed () &&
-                        paintMethod == PAINT_METHOD_DEMARCATED
-                    ) {
-                        int minY = Integer.MAX_VALUE;
-                        int maxY = 0;
-                        for (Node descendant: child.getDescendants ()) {
-                            int y = fontHeight + Math.round (
-                                descendant.getY ().floatValue () * yModifier
-                            );
-                            if (y < minY) minY = y;
-                            if (y > maxY) maxY = y;
-                        }
-                        int a = minY - ySpacer + 2;
-                        int b = maxY + ySpacer - 2;
-                        int c = Math.round (
-                            (float)(minY + maxY) / 2
-                        ) + ySpacer - 2;
-                        painter.drawLine (
-                            maxX, a, maxX, b, demarcationStroke
-                        );
-                        painter.drawString (
-                            child.getName (), maxX + fontWidth, c
-                        );
-                    }
                 }
                 // Don't paint the child if it is the outgroup and the if
                 // paint method is collapsed or demarcated.
@@ -613,7 +590,42 @@ public class Tree {
                     continue;
                 }
                 // Paint the child node.
-                paintNode (painter, child, maxX);
+                paintNode (painter, child);
+            }
+        }
+    }
+
+    /**
+     *  Recursive method to paint demarcation bars for the tree.
+     *
+     *  @param painter The Painter to use.
+     *  @param node The current Node to paint.
+     *  @param x The X location to start the demarcation bars.
+     */
+    private void paintDemarcation (Painter painter, Node node, int x) {
+        if (node.isCollapsed ()) {
+            int fontHeight = painter.fontHeight ();
+            int fontWidth = painter.fontWidth ();
+            int demarcationStroke = 10;
+            int ySpacer = (int)Math.floor (0.5d * fontHeight);
+            int minY = Integer.MAX_VALUE;
+            int maxY = 0;
+            for (Node descendant: node.getDescendants ()) {
+                int y = fontHeight + Math.round (
+                    descendant.getY ().floatValue () * fontHeight
+                );
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+            int a = minY - ySpacer + 2;
+            int b = maxY + ySpacer - 2;
+            int c = Math.round (0.5f * (minY + maxY)) + ySpacer - 2;
+            painter.drawLine (x, a, x, b, demarcationStroke);
+            painter.drawString (node.getName (), x + fontWidth, c);
+        }
+        else {
+            for (Node child: node.getChildren ()) {
+                paintDemarcation (painter, child, x);
             }
         }
     }
