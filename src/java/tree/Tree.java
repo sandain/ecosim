@@ -547,47 +547,31 @@ public class Tree {
         }
         else {
             for (Node child: node.getChildren ()) {
-                // Don't paint the root node if paint method is collapsed or
-                // demarcated.
-                if (
-                    ! (
-                        node.isRootNode () &&
-                        (paintCollapsed || paintDemarcated)
-                    )
-                ) {
-                    int childX = fontWidth + Math.round (
-                        child.getX ().floatValue () * xModifier
-                    );
-                    int childY = fontHeight + Math.round (
-                        child.getY ().floatValue () * yModifier
-                    );
-                    // Paint a vertical line connecting the node to its
-                    // parent.
-                    painter.drawLine (nodeX, nodeY, nodeX, childY, stroke);
-                    // Paint a triangle if the child node is collapsed,
-                    // otherwise draw a horizontal line.
-                    int num = numberOfDescendants (child);
-                    if (child.isCollapsed () && paintCollapsed && num > 1) {
-                        int a = childY - ySpacer + 1;
-                        int b = childY + ySpacer - 1;
-                        // Paint a triangle.
-                        painter.drawLine (nodeX, childY, childX, a, stroke);
-                        painter.drawLine (nodeX, childY, childX, b, stroke);
-                        painter.drawLine (childX, a, childX, b, stroke);
-                    }
-                    else {
-                        // Paint a horizontal line.
-                        painter.drawLine (
-                            nodeX, childY, childX, childY, stroke
-                        );
-                    }
+                int childX = fontWidth + Math.round (
+                    child.getX ().floatValue () * xModifier
+                );
+                int childY = fontHeight + Math.round (
+                    child.getY ().floatValue () * yModifier
+                );
+                // Paint a vertical line connecting the node to its
+                // parent.
+                painter.drawLine (nodeX, nodeY, nodeX, childY, stroke);
+                // Paint a triangle if the child node is collapsed,
+                // otherwise draw a horizontal line.
+                int num = numberOfDescendants (child);
+                if (child.isCollapsed () && paintCollapsed && num > 1) {
+                    int a = childY - ySpacer + 1;
+                    int b = childY + ySpacer - 1;
+                    // Paint a triangle.
+                    painter.drawLine (nodeX, childY, childX, a, stroke);
+                    painter.drawLine (nodeX, childY, childX, b, stroke);
+                    painter.drawLine (childX, a, childX, b, stroke);
                 }
-                // Don't paint the child if it is the outgroup and the if
-                // paint method is collapsed or demarcated.
-                if (
-                    child.isOutgroup () && (paintCollapsed || paintDemarcated)
-                ) {
-                    continue;
+                else {
+                    // Paint a horizontal line.
+                    painter.drawLine (
+                        nodeX, childY, childX, childY, stroke
+                    );
                 }
                 // Paint the child node.
                 paintNode (painter, child);
@@ -682,12 +666,8 @@ public class Tree {
         boolean paintDemarcated = (paintMethod == PAINT_METHOD_DEMARCATED);
         Node parent = node.getParent ();
         double x = 0.0d;
-        // The root node is not displayed in collapsed or demarcated mode.
-        if (! ((paintCollapsed || paintDemarcated) && parent == root)) {
-            // The X coordinate is based on the node's distance from its
-            // parent.
+        // The X coordinate is based on the node's distance from its parent.
             x += node.getDistance ();
-        }
         // Add the parent's X coordinate.
         if (parent != null) x += parent.getX ();
         // If the node is collapsed, add the descendants distance as well.
