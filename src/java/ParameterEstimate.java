@@ -250,7 +250,7 @@ public class ParameterEstimate implements Runnable {
     private Integer [] getBounds (List<Point> points) {
         // Initialize the bounds with that of the points array.
         Integer [] bounds = new Integer[] {
-          new Integer (0), new Integer (points.size () - 1)
+          Integer.valueOf (0), Integer.valueOf (points.size () - 1)
         };
         // Look for the lower bound.
         Double previous = points.get (0).y;
