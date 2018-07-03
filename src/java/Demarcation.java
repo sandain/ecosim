@@ -474,9 +474,9 @@ public class Demarcation extends Tree {
             while (nextLine != null) {
                 StringTokenizer st = new StringTokenizer (nextLine);
                 st.nextToken (); // "npop".
-                result[i].npop = new Long (st.nextToken ());
+                result[i].npop = Long.parseLong (st.nextToken ());
                 st.nextToken (); // "likelihood".
-                result[i].likelihood = new Double (st.nextToken ());
+                result[i].likelihood = Double.parseDouble (st.nextToken ());
                 nextLine = reader.readLine ();
                 i ++;
             }
