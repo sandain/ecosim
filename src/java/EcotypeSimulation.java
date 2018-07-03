@@ -291,7 +291,7 @@ public class EcotypeSimulation implements Runnable {
                         int procs = r.availableProcessors ();
                         int num = 0;
                         try {
-                            num = new Integer (value).intValue ();
+                            num = Integer.parseInt (value);
                         }
                         catch (NumberFormatException e) {
                             System.out.println (String.format (
