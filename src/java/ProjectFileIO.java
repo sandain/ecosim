@@ -469,14 +469,16 @@ public class ProjectFileIO {
                 }
                 // Look for the criterion element.
                 if (localName.equals ("criterion")) {
-                    masterVariables.setCriterion (new Integer (
+                    masterVariables.setCriterion (Integer.parseInt (
                         attrs.getValue (uri, "value")
-                    ).intValue ());
+                    ));
                 }
                 // Look for the phylogeny element.
                 if (localName.equals ("phylogeny")) {
-                    nu = new Integer (attrs.getValue (uri, "size"));
-                    length = new Integer (attrs.getValue (uri, "length"));
+                    nu = Integer.parseInt (attrs.getValue (uri, "size"));
+                    length = Integer.parseInt (
+                        attrs.getValue (uri, "length")
+                    );
                 }
                 // Look for the elements within phylogeny.
                 if (activeElement.equals ("phylogeny")) {
@@ -505,8 +507,8 @@ public class ProjectFileIO {
                     // Look for a bin to add to the Binning.
                     if (localName.equals ("bin")) {
                         binning.addBinLevel (new BinLevel (
-                            new Double (attrs.getValue (uri, "crit")),
-                            new Integer (attrs.getValue (uri, "value"))
+                            Double.parseDouble (attrs.getValue (uri, "crit")),
+                            Integer.parseInt (attrs.getValue (uri, "value"))
                         ));
                     }
                 }
@@ -530,24 +532,36 @@ public class ProjectFileIO {
                     // Look for a result to add to the the ParameterEstimate.
                     if (localName.equals ("result")) {
                         estimate.setResult (new ParameterSet (
-                            new Long (attrs.getValue (uri, "npop")),
-                            new Double (attrs.getValue (uri, "omega")),
-                            new Double (attrs.getValue (uri, "sigma")),
+                            Long.parseLong (attrs.getValue (uri, "npop")),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "omega")
+                            ),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "sigma")
+                            ),
                             0.0d
                         ));
                     }
                     // Look for the slope and intercept of the omega line.
                     if (localName.equals ("omega")) {
                         estimate.setOmega (
-                            new Double (attrs.getValue (uri, "slope")),
-                            new Double (attrs.getValue (uri, "intercept"))
+                            Double.parseDouble (
+                                attrs.getValue (uri, "slope")
+                            ),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "intercept")
+                            )
                         );
                     }
                     // Look for the slope and intercept of the sigma line.
                     if (localName.equals ("sigma")) {
                         estimate.setSigma (
-                            new Double (attrs.getValue (uri, "slope")),
-                            new Double (attrs.getValue (uri, "intercept"))
+                            Double.parseDouble (
+                                attrs.getValue (uri, "slope")
+                            ),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "intercept")
+                            )
                         );
                     }
                 }
@@ -583,10 +597,16 @@ public class ProjectFileIO {
                     // Look for a result to add to the Hillclimb object.
                     if (localName.equals ("result")) {
                         hillclimb.setResult (new ParameterSet (
-                            new Long (attrs.getValue (uri, "npop")),
-                            new Double (attrs.getValue (uri, "omega")),
-                            new Double (attrs.getValue (uri, "sigma")),
-                            new Double (attrs.getValue (uri, "likelihood"))
+                            Long.parseLong (attrs.getValue (uri, "npop")),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "omega")
+                            ),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "sigma")
+                            ),
+                            Double.parseDouble (
+                                attrs.getValue (uri, "likelihood")
+                            )
                         ));
                     }
                 }
@@ -621,20 +641,20 @@ public class ProjectFileIO {
                     }
                     // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
-                        Long value = new Long (
+                        Long value = Long.parseLong (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         npopCI.setLowerResult (value, likelihood);
                     }
                     // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
-                        Long value = new Long (
+                        Long value = Long.parseLong (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         npopCI.setUpperResult (value, likelihood);
@@ -671,20 +691,20 @@ public class ProjectFileIO {
                     }
                     // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
-                        Double value = new Double (
+                        Double value = Double.parseDouble (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         omegaCI.setLowerResult (value, likelihood);
                     }
                     // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
-                        Double value = new Double (
+                        Double value = Double.parseDouble (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         omegaCI.setUpperResult (value, likelihood);
@@ -721,20 +741,20 @@ public class ProjectFileIO {
                     }
                     // Look for the lower bound of the confidence interval.
                     if (localName.equals ("lower")) {
-                        Double value = new Double (
+                        Double value = Double.parseDouble (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         sigmaCI.setLowerResult (value, likelihood);
                     }
                     // Look for the upper bound of the confidence interval.
                     if (localName.equals ("upper")) {
-                        Double value = new Double (
+                        Double value = Double.parseDouble (
                             attrs.getValue (uri, "value")
                         );
-                        Double likelihood = new Double (
+                        Double likelihood = Double.parseDouble (
                             attrs.getValue (uri, "likelihood")
                         );
                         sigmaCI.setUpperResult (value, likelihood);
@@ -763,17 +783,17 @@ public class ProjectFileIO {
                         }
                     }
                     if (localName.equals ("ecotypes")) {
-                        Integer size = new Integer (
+                        Integer size = Integer.parseInt (
                             attrs.getValue (uri, "size")
                         );
                         ecotypes = new ArrayList<ArrayList<String>> (size);
                     }
                     if (localName.equals ("ecotype")) {
-                        Integer size = new Integer (
+                        Integer size = Integer.parseInt (
                             attrs.getValue (uri, "size")
                         );
                         ecotypes.add (new ArrayList<String> (size));
-                        ecotypeNumber = new Integer (
+                        ecotypeNumber = Integer.parseInt (
                             attrs.getValue (uri, "number")
                         );
                     }
