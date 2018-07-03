@@ -214,10 +214,10 @@ public class Hillclimb implements Runnable {
                 StringTokenizer st = new StringTokenizer (nextLine);
                 // There should only be one line containing omega, sigma,
                 // npop, and the likelihood of that result.
-                Double omega = new Double (st.nextToken ());
-                Double sigma = new Double (st.nextToken ());
-                Long npop = new Long (st.nextToken ());
-                Double likelihood = new Double (st.nextToken ());
+                Double omega = Double.parseDouble (st.nextToken ());
+                Double sigma = Double.parseDouble (st.nextToken ());
+                Long npop = Long.parseLong (st.nextToken ());
+                Double likelihood = Double.parseDouble (st.nextToken ());
                 result = new ParameterSet (npop, omega, sigma, likelihood);
                 nextLine = reader.readLine ();
             }
