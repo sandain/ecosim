@@ -267,11 +267,9 @@ public class OmegaConfidenceInterval implements Runnable {
                                   );
                                   return;
                 }
-                result[index] = new Double (st.nextToken ()).doubleValue ();
+                result[index] = Double.parseDouble (st.nextToken ());
                 st.nextToken (); // "likelihood".
-                likelihood[index] = new Double (
-                    st.nextToken ()
-                ).doubleValue ();
+                likelihood[index] = Double.parseDouble (st.nextToken ());
                 nextLine = reader.readLine ();
             }
         }
