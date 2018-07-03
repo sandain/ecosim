@@ -270,9 +270,9 @@ public class NpopConfidenceInterval implements Runnable {
                                   );
                                   return;
                 }
-                result[index] = new Long (st.nextToken ());
+                result[index] = Long.parseLong (st.nextToken ());
                 st.nextToken (); // "likelihood".
-                likelihood[index] = new Double (st.nextToken ());
+                likelihood[index] = Double.parseDouble (st.nextToken ());
                 nextLine = reader.readLine ();
             }
         }
