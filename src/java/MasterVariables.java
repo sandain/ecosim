@@ -251,18 +251,18 @@ public class MasterVariables {
      *  Private method to read the version from the MANIFEST.
      */
     private String readVersion () {
-        String v = Package.getPackage ("ecosim").getImplementationVersion ();
-        // If version not found, read the MANIFEST directly.
-        if (v == null) {
-            ClassLoader cl = EcotypeSimulation.class.getClassLoader ();
-            try {
-                URL u = cl.getResource ("META-INF/MANIFEST.MF");
-                Manifest m = new Manifest (u.openStream ());
-                Attributes a = m.getMainAttributes ();
-                v = a.getValue ("Implementation-Version");
-            }
-            catch (IOException e) {
-            }
+        String v = "";
+        ClassLoader cl = EcotypeSimulation.class.getClassLoader ();
+        try {
+            URL u = cl.getResource ("META-INF/MANIFEST.MF");
+            Manifest m = new Manifest (u.openStream ());
+            Attributes a = m.getMainAttributes ();
+            v = a.getValue ("Implementation-Version");
+        }
+        catch (IOException e) {
+            System.err.println (
+                "Error reading version information: " + e
+            );
         }
         return v;
     }
