@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -252,18 +253,25 @@ public class MasterVariables {
      */
     private String readVersion () {
         String v = "";
-        ClassLoader cl = EcotypeSimulation.class.getClassLoader ();
         try {
-            URL u = cl.getResource ("META-INF/MANIFEST.MF");
+            Class es = Class.forName ("ecosim.EcotypeSimulation");
+            URLClassLoader cl = (URLClassLoader)es.getClassLoader ();
+            URL u = cl.findResource ("META-INF/MANIFEST.MF");
             Manifest m = new Manifest (u.openStream ());
             Attributes a = m.getMainAttributes ();
             v = a.getValue ("Implementation-Version");
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println (
+                "Error retrieving class information: " + e
+            );
         }
         catch (IOException e) {
             System.err.println (
                 "Error reading version information: " + e
             );
         }
+
         return v;
     }
 
