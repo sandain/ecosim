@@ -4,7 +4,7 @@
 !    and drift, yielding a certain number of ecotypes.
 !
 !    Copyright (C) 2000  George Marsaglia and Wai Wan Tsang
-!    Copyright (C) 2013-2018  Jason M. Wood, Montana State University
+!    Copyright (C) 2013-2019  Jason M. Wood, Montana State University
 !
 !    This program is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
