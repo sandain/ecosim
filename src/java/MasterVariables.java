@@ -192,6 +192,24 @@ public class MasterVariables {
         return outputFile;
     }
 
+    /**
+     *  Get the sequence file.
+     *
+     *  @return The sequence file.
+     */
+    public File getSequenceFile () {
+        return sequenceFile;
+    }
+
+    /**
+     *  Get the phylogeny file.
+     *
+     *  @return The phylogeny file.
+     */
+    public File getPhylogenyFile () {
+        return phylogenyFile;
+    }
+
     /** Set the current directory.
      *
      *  @param currentDirectory The current directory.
@@ -225,6 +243,24 @@ public class MasterVariables {
      */
     public void setOutputFile (File outputFile) {
         this.outputFile = outputFile;
+    }
+
+    /**
+     *  Set the sequence file.
+     *
+     *  @param sequenceFile The sequence file.
+     */
+    public void setSequenceFile (File sequenceFile) {
+        this.sequenceFile = sequenceFile;
+    }
+
+    /**
+     *  Set the phylogeny file.
+     *
+     *  @param phylogenyFile The phylogeny file.
+     */
+    public void setPhylogenyFile (File phylogenyFile) {
+        this.phylogenyFile = phylogenyFile;
     }
 
     /**
@@ -340,4 +376,15 @@ public class MasterVariables {
      *  The output file (defaults to null if not provided).
      */
     private File outputFile = null;
+
+    /**
+     *  The sequence file (defaults to null if not provided).
+     */
+    private File sequenceFile = null;
+
+    /**
+     *  The phylogeny file (defaults to null if not provided).
+     */
+    private File phylogenyFile = null;
+
 }
