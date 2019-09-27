@@ -27,7 +27,11 @@ import ecosim.tree.SVGPainter;
 import ecosim.tree.Tree;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
 
 /**
  *  The shared methods of the simulation used by SimulationCLI and
@@ -237,6 +241,35 @@ public class Simulation {
             return;
         }
         log.appendln ("Opening sequence file...");
+        // Check the file extension for compressed files.
+        String name = file.getName ();
+        int lastIndexOf = name.lastIndexOf (".");
+        if (lastIndexOf > -1) {
+            String newFile = masterVariables.getWorkingDirectory () + "sequences.fa";
+            switch (name.substring (lastIndexOf + 1)) {
+                case "gz":
+                case "gzip":
+                    log.appendln ("Sequence file compressed with gzip, uncompressing...");
+                    try {
+                        GZIPInputStream gis = new GZIPInputStream (new FileInputStream (file));
+                        FileOutputStream fos = new FileOutputStream (newFile);
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = gis.read (buffer)) != -1) {
+                            fos.write (buffer, 0, len);
+                        }
+                        fos.close ();
+                        gis.close ();
+                    } catch (IOException e) {
+                        System.out.println ("Error unziping the sequence file.");
+                        e.printStackTrace ();
+                    }
+                    masterVariables.setSequenceFile (new File (newFile));
+                    break;
+                default:
+                    break;
+            }
+        }
         try {
             fasta = new Fasta (masterVariables.getSequenceFile ());
             Sequence outgroupSequence = fasta.getOutgroup ();

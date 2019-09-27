@@ -147,7 +147,8 @@ public class FileChooser extends JFileChooser {
     };
 
     private static final String[] fastaExtensions = {
-        "fa", "faa", "fas", "fasta", "fna", "fsa", "fst", "fta", "mpfa", "txt"
+        "fa", "faa", "fas", "fasta", "fna", "fsa", "fst", "fta", "mpfa",
+        "txt", "gz", "gzip"
     };
 
     private static final String[] newickExtensions = {
