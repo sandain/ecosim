@@ -175,14 +175,16 @@ public class EcotypeSimulation implements Runnable {
                 System.err.println ("Error, sequence file does not exist.");
                 System.exit (1);
             }
+            masterVariables.setSequenceFile (fastaFile);
             // Load the sequence file.
-            simulation.loadSequenceFile (fastaFile);
+            simulation.loadSequenceFile ();
             // Generate the phylogeny file if not provided.
             if (newickFile == null || ! newickFile.exists ()) {
-                newickFile = simulation.generateTree (fastaFile);
+                newickFile = simulation.generateTree ();
+                masterVariables.setPhylogenyFile (newickFile);
             }
             // Load the phylogeny file.
-            simulation.loadTreeFile (newickFile);
+            simulation.loadTreeFile ();
             // Run the binning and parameter estimate programs.
             simulation.runBinning ();
             simulation.runParameterEstimate ();

@@ -145,6 +145,7 @@ public class MenuBar extends JMenuBar {
         File file = fc.getSelectedFile ();
         if (returnVal != FileChooser.APPROVE_OPTION) return;
         masterVariables.setCurrentDirectory (file.getParent ());
+        masterVariables.setSequenceFile (file);
         // Ask the user if they want to provide or generate a tree.
         String[] options = { "Generate", "Newick" };
         int type = 0; // Default to using the Parsimony method.
@@ -158,12 +159,7 @@ public class MenuBar extends JMenuBar {
             options,
             options[type]
         );
-        final File treeFile;
         switch (options[type]) {
-            case "Generate":
-                // Generate a tree with FastTree.
-                treeFile = simulation.generateTree (file);
-                break;
             case "Newick":
                 // Open the newick file chooser dialog.
                 fc = new FileChooser (
@@ -171,20 +167,27 @@ public class MenuBar extends JMenuBar {
                 );
                 returnVal = fc.showOpenDialog (this);
                 if (returnVal != FileChooser.APPROVE_OPTION) return;
-                treeFile = fc.getSelectedFile ();
+                File treeFile = fc.getSelectedFile ();
+                masterVariables.setPhylogenyFile (treeFile);
                 masterVariables.setCurrentDirectory (treeFile.getParent ());
                 break;
+            case "Generate":
             default:
-                treeFile = null;
                 break;
         }
         Thread t = new Thread (
             new Runnable () {
                 public void run () {
-                    if (treeFile == null) return;
-                    // Load the sequence and tree files.
-                    simulation.loadSequenceFile (file);
-                    simulation.loadTreeFile (treeFile);
+                    // Load the sequence file.
+                    simulation.loadSequenceFile ();
+                    // Generate a tree with FastTree if needed.
+                    File treeFile = masterVariables.getPhylogenyFile ();
+                    if (treeFile == null) {
+                        treeFile = simulation.generateTree ();
+                        masterVariables.setPhylogenyFile (treeFile);
+                    }
+                    // Load the tree file.
+                    simulation.loadTreeFile ();
                     // Run binning and estimate the parameters.
                     simulation.runBinning ();
                     simulation.runParameterEstimate ();
