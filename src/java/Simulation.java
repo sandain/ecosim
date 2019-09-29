@@ -107,8 +107,10 @@ public class Simulation {
      */
     public void setDemarcationPaintMethod (int demarcationPaintMethod) {
         this.demarcationPaintMethod = demarcationPaintMethod;
-        demarcation.setPaintMethod (demarcationPaintMethod);
-        summary.refreshObservers ();
+        if (demarcation != null) {
+            demarcation.setPaintMethod (demarcationPaintMethod);
+            summary.refreshObservers ();
+        }
     }
 
     /**
