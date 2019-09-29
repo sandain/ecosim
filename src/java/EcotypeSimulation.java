@@ -181,8 +181,8 @@ public class EcotypeSimulation implements Runnable {
             // Generate the phylogeny file if not provided.
             if (newickFile == null || ! newickFile.exists ()) {
                 newickFile = simulation.generateTree ();
-                masterVariables.setPhylogenyFile (newickFile);
             }
+            masterVariables.setPhylogenyFile (newickFile);
             // Load the phylogeny file.
             simulation.loadTreeFile ();
             // Run the binning and parameter estimate programs.
