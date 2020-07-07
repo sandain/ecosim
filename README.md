@@ -1,8 +1,21 @@
 Ecotype Simulation README
 =========================
-Ecotype Simulation models the evolution of a lineage of microbes in an effort to demarcate species from sequence datasets. Details are provided in:
+Ecotype Simulation models the evolution of a lineage of microbes in an effort
+to demarcate species from sequence datasets. Details are provided in:
 
-Wood, Jason M.; Becraft, Eric D.; Krizanc, Daniel; Cohan, Frederick M.; and Ward, David M.  _Ecotype Simulation 2: An improved algorithm for efficiently demarcating microbial species from large sequence datasets._ [DOI: 10.1101/2020.02.10.940734](https://doi.org/10.1101/2020.02.10.940734)
+Wood, Jason M.; Becraft, Eric D.; Krizanc, Daniel; Cohan, Frederick M.; and
+  Ward, David M.  _Ecotype Simulation 2: An improved algorithm for efficiently
+  demarcating microbial species from large sequence datasets._
+  [DOI: 10.1101/2020.02.10.940734](https://doi.org/10.1101/2020.02.10.940734)
+
+The motivation and theory may be found in our PNAS paper:
+
+Koeppel, Alexander; Perry, Elizabeth B.; Sikorski, Johannes; Krizanc, Danny;
+  Warner, Andrew; Ward, David M.;, Rooney, Alejandro P.; Brambilla, Evelyne;
+  Connor, Nora; Ratcliff, Rodney M.; Nevo, Eviatar; and Cohan, Frederick M.
+  _Identifying the fundamental units of bacterial diversity: A paradigm shift
+  to incorporate ecology into bacterial systematics._
+  [DOI: 10.1073/pnas.0712205105](https://doi.org/10.1073/pnas.0712205105)
 
 ## DOWNLOAD
 
