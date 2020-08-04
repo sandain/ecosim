@@ -74,8 +74,8 @@ module ziggurat
   ! The state variables for the ziggurat algorithm.
   type :: ziggurat_t
     integer(kind = int32) :: hz
-    integer(kind = int64) :: iz
-    integer(kind = int64) :: jz
+    integer(kind = int32) :: iz
+    integer(kind = int32) :: jz
     integer(kind = int64) :: jsr
     integer(kind = int64) :: ke(0:255)
     integer(kind = int64) :: kn(0:127)
