@@ -33,7 +33,7 @@ information.
 
 Download the development version as a zip file:
 
-https://github.com/sandain/ecosim/archive/master.zip
+https://github.com/sandain/ecosim/archive/main.zip
 
 
 ## INSTALLATION
