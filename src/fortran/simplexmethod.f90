@@ -597,8 +597,9 @@ module simplexmethod
     if (neval .gt. max) return
     write (unit = lout, fmt = 1130)
 1130 format (/10X, 'Search restarting'/)
-    do 605 i = 1, nop
-605 step(i) = 0.5 * step(i)
+    do i = 1, nop
+      step(i) = 0.5 * step(i)
+    end do
     goto 30
     !
     ! bmat * a / 2 is calculated and stored in h.
@@ -622,12 +623,15 @@ module simplexmethod
       ymin = ymin + h(i) * aval(i)
     end do
     ymin = a0 - ymin
-    do 670 i = 1, nop
-    pstst(i) = 0.0d0
-    do 670 j = 1, nap
-670 pstst(i) = pstst(i) + h(j) * g(j, i)
-    do 680 i = 1, nop
-680 pmin(i) = pmin(i) - pstst(i)
+    do i = 1, nop
+      pstst(i) = 0.0d0
+      do j = 1, nap
+        pstst(i) = pstst(i) + h(j) * g(j, i)
+      end do
+    end do
+    do i = 1, nop
+      pmin(i) = pmin(i) - pstst(i)
+    end do
     if (iprint .lt. 0) goto 690
     write (unit = lout, fmt = 1140) ymin, (pmin(i), i = 1, nop)
 1140 format (' Minimum of quadratic surface =', G14.6, ' at', &
