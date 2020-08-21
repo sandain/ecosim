@@ -76,9 +76,9 @@ module ziggurat
     integer(kind = int32) :: hz
     integer(kind = int32) :: iz
     integer(kind = int32) :: jz
-    integer(kind = int64) :: jsr
-    integer(kind = int64) :: ke(0:255)
-    integer(kind = int64) :: kn(0:127)
+    integer(kind = int32) :: jsr
+    integer(kind = int32) :: ke(0:255)
+    integer(kind = int32) :: kn(0:127)
     real(kind = real32)   :: fe(0:255)
     real(kind = real32)   :: fn(0:127)
     real(kind = real32)   :: we(0:255)
@@ -98,10 +98,10 @@ module ziggurat
     type(ziggurat_t), intent(inout)   :: state
     integer(kind = int32), intent(in) :: iii
     ! Local parameters.
-    integer(kind = int64), parameter :: m1 = 2147483648_int64
-    integer(kind = int64), parameter :: m2 = 4294967296_int64
-    real(kind = real64), parameter   :: ve = 3.949659822581572d-3
-    real(kind = real64), parameter   :: vn = 9.91256303526217d-3
+    real(kind = real64), parameter :: m1 = 2147483648.0d0
+    real(kind = real64), parameter :: m2 = 4294967296.0d0
+    real(kind = real64), parameter :: ve = 3.949659822581572d-3
+    real(kind = real64), parameter :: vn = 9.91256303526217d-3
     ! Local variables.
     integer(kind = int32) :: i
     real(kind = real64)   :: de
@@ -113,10 +113,10 @@ module ziggurat
     de = 7.697117470131487
     tn = dn
     te = de
-    state%jsr = ieor (state%jsr, int (iii, kind = int64))
+    state%jsr = ieor (state%jsr, int (iii, kind = int32))
     ! Tables for RNOR:
     q = vn / exp (-0.5 * dn * dn)
-    state%kn(0) = int (dn / q * m1, kind = int64)
+    state%kn(0) = int (dn / q * m1, kind = int32)
     state%kn(1) = 0
     state%wn(0) = real (q / m1, kind = real32)
     state%wn(127) = real (dn / m1, kind = real32)
@@ -124,14 +124,14 @@ module ziggurat
     state%fn(127) = real (exp (-0.5 * dn * dn), kind = real32)
     do i = 126, 1, -1
       dn = sqrt (-2.0 * log (vn / dn + exp (-0.5 * dn * dn)))
-      state%kn(i + 1) = int (dn / tn * m1, kind = int64)
+      state%kn(i + 1) = int (dn / tn * m1, kind = int32)
       tn = dn
       state%fn(i) = real (exp (-0.5 * dn * dn), kind = real32)
       state%wn(i) = real (dn / m1, kind = real32)
     end do
     ! Tables for REXP:
     q = ve / exp (-de)
-    state%ke(0) = int (de / q * m2, kind = int64)
+    state%ke(0) = int (de / q * m2, kind = int32)
     state%ke(1) = 0
     state%we(0) = real (q / m2, kind = real32)
     state%we(255) = real (de / m2, kind = real32)
@@ -139,7 +139,7 @@ module ziggurat
     state%fe(255) = real (exp (-de), kind = real32)
     do i = 254, 1, -1
       de = -log (ve / de + exp (-de))
-      state%ke(i + 1) = int (de / te * m2, kind = int64)
+      state%ke(i + 1) = int (de / te * m2, kind = int32)
       te = de
       state%fe(i) = real (exp (-de), kind = real32)
       state%we(i) = real (de / m2, kind = real32)
@@ -194,7 +194,7 @@ module ziggurat
     real(kind = real32) :: y
     real(kind = real32) :: z
     state%hz = ziggurat_shr3(state)
-    state%iz = iand (state%hz, 127)
+    state%iz = iand (state%hz, 127_int32)
     if (abs (state%hz) .lt. state%kn(state%iz)) then
       return_value = state%hz * state%wn(state%iz)
     else
@@ -224,7 +224,7 @@ module ziggurat
         end if
         ! Try to exit do loop.
         state%hz = ziggurat_shr3(state)
-        state%iz = iand (state%hz, 127)
+        state%iz = iand (state%hz, 127_int32)
         if (abs (state%hz) .lt. state%kn(state%iz)) then
           return_value = state%hz * state%wn(state%iz)
           return
@@ -244,12 +244,12 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     ! Local variables.
-    real(kind = real64) :: x
-    real(kind = real64) :: y
+    real(kind = real32) :: x
+    real(kind = real32) :: y
     state%jz = ziggurat_shr3(state)
     state%iz = iand (state%jz, 255)
     if (abs (state%jz) .lt. state%ke(state%iz)) then
-      x = state%jz * real (state%we(state%iz), kind = real64)
+      x = state%jz * real (state%we(state%iz), kind = real32)
       return_value = real (x, kind = real32)
     else
       ! REXP rejection occurred, generate variates from the residue.
@@ -260,7 +260,7 @@ module ziggurat
           exit
         end if
         ! Handle the wedges of other strips.
-        x = state%jz * real (state%we(state%iz), kind = real64)
+        x = state%jz * real (state%we(state%iz), kind = real32)
         y = state%fe(state%iz) + ziggurat_uni(state) * &
           (state%fe(state%iz - 1) - state%fe(state%iz))
         if (y .lt. exp (-x)) then
@@ -271,7 +271,7 @@ module ziggurat
         state%jz = ziggurat_shr3(state)
         state%iz = iand (state%jz, 255)
         if (state%jz .lt. state%ke(state%iz)) then
-          x = state%jz * real (state%we(state%iz), kind = real64)
+          x = state%jz * real (state%we(state%iz), kind = real32)
           return_value = real (x, kind = real32)
           exit
         end if
