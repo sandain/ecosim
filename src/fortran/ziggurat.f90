@@ -194,7 +194,7 @@ module ziggurat
     real(kind = real32) :: y
     real(kind = real32) :: z
     state%hz = ziggurat_shr3(state)
-    state%iz = iand (state%hz, 127_int32)
+    state%iz = iand (state%hz, 127)
     if (abs (state%hz) .lt. state%kn(state%iz)) then
       return_value = state%hz * state%wn(state%iz)
     else
@@ -224,7 +224,7 @@ module ziggurat
         end if
         ! Try to exit do loop.
         state%hz = ziggurat_shr3(state)
-        state%iz = iand (state%hz, 127_int32)
+        state%iz = iand (state%hz, 127)
         if (abs (state%hz) .lt. state%kn(state%iz)) then
           return_value = state%hz * state%wn(state%iz)
           return
