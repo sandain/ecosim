@@ -24,7 +24,7 @@
 package ecosim.tree;
 
 import ecosim.Heapsorter;
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 
 import java.util.ArrayList;
 
@@ -127,8 +127,8 @@ public class Node implements Comparable<Node> {
                     b += child.getDistance ();
                 }
                 c = 0;
-                if (b > a + MasterVariables.EPSILON) c = -1;
-                if (a > b + MasterVariables.EPSILON) c = 1;
+                if (b > a + MainVariables.EPSILON) c = -1;
+                if (a > b + MainVariables.EPSILON) c = 1;
                 if (c != 0) return c;
             }
             else {
@@ -136,8 +136,8 @@ public class Node implements Comparable<Node> {
                 // distances.
                 Double otherDist = other.getDistance ();
                 c = 0;
-                if (distance > otherDist + MasterVariables.EPSILON) c = -1;
-                if (otherDist > distance + MasterVariables.EPSILON) c = 1;
+                if (distance > otherDist + MainVariables.EPSILON) c = -1;
+                if (otherDist > distance + MainVariables.EPSILON) c = 1;
                 if (c != 0) return c;
             }
         }

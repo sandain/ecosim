@@ -49,16 +49,16 @@ public class Execs {
      *  and executes the native fortran applications.
      *
      *  @param log The Logger object.
-     *  @param masterVariables The MasterVariables.
+     *  @param mainVariables The MainVariables.
      */
-    public Execs (Logger log, MasterVariables masterVariables) {
+    public Execs (Logger log, MainVariables mainVariables) {
         this.log = log;
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         // Grab the running environment.
         String osName = System.getProperty ("os.name").toLowerCase ();
         String osArch = System.getProperty ("os.arch").toLowerCase ();
         // Setup the rest of the variables.
-        binaryDirectory = masterVariables.getBinaryDirectory ();
+        binaryDirectory = mainVariables.getBinaryDirectory ();
         // Check which OS we are running on.
         if (osName.contains ("windows")) {
             os = new Windows ();
@@ -88,13 +88,13 @@ public class Execs {
             binaryDirectory + "hillclimb" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
+            Integer.toString (mainVariables.getNumberThreads ()),
+            Boolean.toString (mainVariables.getDebug ())
         };
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
             outputStream = System.out;
         }
@@ -120,13 +120,13 @@ public class Execs {
             binaryDirectory + "npopCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
+            Integer.toString (mainVariables.getNumberThreads ()),
+            Boolean.toString (mainVariables.getDebug ())
         };
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
             outputStream = System.out;
         }
@@ -152,13 +152,13 @@ public class Execs {
             binaryDirectory + "demarcation" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
+            Integer.toString (mainVariables.getNumberThreads ()),
+            Boolean.toString (mainVariables.getDebug ())
         };
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
             outputStream = System.out;
         }
@@ -184,13 +184,13 @@ public class Execs {
             binaryDirectory + "omegaCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
+            Integer.toString (mainVariables.getNumberThreads ()),
+            Boolean.toString (mainVariables.getDebug ())
         };
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
             outputStream = System.out;
         }
@@ -216,13 +216,13 @@ public class Execs {
             binaryDirectory + "sigmaCI" + os.getBinaryExtension (),
             input.getAbsolutePath (),
             output.getAbsolutePath (),
-            Integer.toString (masterVariables.getNumberThreads ()),
-            Boolean.toString (masterVariables.getDebug ())
+            Integer.toString (mainVariables.getNumberThreads ()),
+            Boolean.toString (mainVariables.getDebug ())
         };
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
             outputStream = System.out;
         }
@@ -253,7 +253,7 @@ public class Execs {
         PrintStream errorStream = null;
         PrintStream outputStream = null;
         // Catch program error output if debugging is enabled.
-        if (masterVariables.getDebug ()) {
+        if (mainVariables.getDebug ()) {
             errorStream = System.err;
         }
         // Catch program output in the output file.
@@ -316,7 +316,7 @@ public class Execs {
             StreamGobbler errorGobbler = null;
             StreamGobbler outputGobbler = null;
             // Display debugging output if needed.
-            if (masterVariables.getDebug ()) {
+            if (mainVariables.getDebug ()) {
                 System.out.print ("Execute:");
                 for (int i = 0; i < command.length; i ++) {
                     System.out.print (" " + command[i]);
@@ -362,7 +362,7 @@ public class Execs {
     }
 
     private OperatingSystem os;
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Logger log;
     private String binaryDirectory;
 

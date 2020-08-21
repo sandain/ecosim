@@ -53,7 +53,7 @@ public class Demarcation extends Tree {
     /**
      *  Creates new form Demarcations
      *
-     *  @param masterVariables The MasterVariables.
+     *  @param mainVariables The MainVariables.
      *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length The length of the environmental sequences.
@@ -62,12 +62,12 @@ public class Demarcation extends Tree {
      *  @param hclimbResult The result from hillclimbing.
      *  @param method The method to use for demarcation.
      */
-    public Demarcation (MasterVariables masterVariables, Execs execs,
+    public Demarcation (MainVariables mainVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
         ParameterSet hclimbResult, int method)
         throws InvalidTreeException {
         super (tree);
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.execs = execs;
         this.nu = nu;
         this.length = length;
@@ -76,7 +76,7 @@ public class Demarcation extends Tree {
         this.method = method;
         hasRun = false;
         ecotypes = new ArrayList<ArrayList<String>> ();
-        workingDirectory = masterVariables.getWorkingDirectory ();
+        workingDirectory = mainVariables.getWorkingDirectory ();
     }
 
     /**
@@ -435,7 +435,7 @@ public class Demarcation extends Tree {
                 )
             );
             // Write the whichavg value.
-            int whichavg = masterVariables.getCriterion ();
+            int whichavg = mainVariables.getCriterion ();
             writer.write (String.format ("%-20d whichavg\n", whichavg));
         }
         catch (IOException e) {
@@ -512,7 +512,7 @@ public class Demarcation extends Tree {
     private boolean hasRun;
     private String workingDirectory;
     private ArrayList<ArrayList<String>> ecotypes;
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Execs execs;
     private String outgroup;
     private Integer length;

@@ -24,7 +24,7 @@ package ecosim.gui;
 
 import ecosim.Binning;
 import ecosim.BinLevel;
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 import ecosim.ParameterEstimate;
 import ecosim.ParameterSet;
 import ecosim.Summary;
@@ -173,13 +173,13 @@ public class SummaryPane extends JPanel {
                     }
                     binData.addSeries ("sequences", values);
                     xAxis.setLowerBound (low);
-                    if (low > 0.95d - MasterVariables.EPSILON) {
+                    if (low > 0.95d - MainVariables.EPSILON) {
                         xAxis.setTickUnit (new NumberTickUnit (0.005D, nf));
                     }
-                    else if (low > 0.90d - MasterVariables.EPSILON) {
+                    else if (low > 0.90d - MainVariables.EPSILON) {
                         xAxis.setTickUnit (new NumberTickUnit (0.010D, nf));
                     }
-                    else if (low > 0.80d - MasterVariables.EPSILON) {
+                    else if (low > 0.80d - MainVariables.EPSILON) {
                         xAxis.setTickUnit (new NumberTickUnit (0.025D, nf));
                     }
                     if (estimate != null) {
@@ -199,10 +199,10 @@ public class SummaryPane extends JPanel {
                                 2.0D, snp * sigmaLine[0] + sigmaLine[1]
                             );
                         }
-                        if (-1.0D * omegaLine[0] > MasterVariables.EPSILON) {
+                        if (-1.0D * omegaLine[0] > MainVariables.EPSILON) {
                             binData.addSeries ("omega", omega);
                         }
-                        if (-1.0D * sigmaLine[0] > MasterVariables.EPSILON) {
+                        if (-1.0D * sigmaLine[0] > MainVariables.EPSILON) {
                             binData.addSeries ("sigma", sigma);
                         }
                     }
@@ -355,7 +355,7 @@ public class SummaryPane extends JPanel {
                     table.setValueAt (
                         String.format ("%.4f", ci[0].getSigma ()), 2, 3
                     );
-                    if (ci[1].getSigma () > 100.0D - MasterVariables.EPSILON) {
+                    if (ci[1].getSigma () > 100.0D - MainVariables.EPSILON) {
                         table.setValueAt ("≥100", 2, 4);
                     }
                     else {

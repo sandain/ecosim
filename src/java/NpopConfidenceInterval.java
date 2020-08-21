@@ -43,23 +43,23 @@ public class NpopConfidenceInterval implements Runnable {
     /**
      *  Run the npop confidence interval program.
      *
-     *  @param masterVariables The MasterVariables object.
+     *  @param mainVariables The MainVariables object.
      *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      *  @param hillclimbResult The result from hillclimbing.
      */
-    public NpopConfidenceInterval (MasterVariables masterVariables,
+    public NpopConfidenceInterval (MainVariables mainVariables,
         Execs execs, Integer nu, Integer length, Binning binning,
         ParameterSet hillclimbResult) {
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.execs = execs;
         this.nu = nu;
         this.length = length;
         this.binning = binning;
         this.hillclimbResult = hillclimbResult;
-        String workingDirectory = masterVariables.getWorkingDirectory ();
+        String workingDirectory = mainVariables.getWorkingDirectory ();
         inputFileName = workingDirectory + "npopIn.dat";
         outputFileName = workingDirectory + "npopOut.dat";
         hasRun = false;
@@ -214,7 +214,7 @@ public class NpopConfidenceInterval implements Runnable {
                 )
             );
             // Write the whichavg value.
-            int whichavg = masterVariables.getCriterion ();
+            int whichavg = mainVariables.getCriterion ();
             writer.write (String.format ("%-20d whichavg\n", whichavg));
             // Write the likelihoodsolution value.
             writer.write (
@@ -294,7 +294,7 @@ public class NpopConfidenceInterval implements Runnable {
     private String inputFileName;
     private String outputFileName;
 
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Execs execs;
     private Integer nu;
     private Integer length;

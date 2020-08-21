@@ -35,7 +35,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 /**
- *  This class holds the master variables that may need to be changed later
+ *  This class holds the main variables that may need to be changed later
  *  into the project, so that the programmer will not have to go through each
  *  class and change them manually.
  *
@@ -43,12 +43,12 @@ import java.util.jar.Manifest;
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class MasterVariables {
+public class MainVariables {
 
     /**
-     *  The MasterVariables constructor.
+     *  The MainVariables constructor.
      */
-    public MasterVariables () {
+    public MainVariables () {
         debug = false;
         // Create a temporary directory to serve as the working directory.
         try {

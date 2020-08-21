@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 
 import ecosim.Binning;
 import ecosim.BinLevel;
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 import ecosim.tree.Tree;
 import ecosim.tree.InvalidTreeException;
 
@@ -40,7 +40,7 @@ public class TestBinning {
         for (int i = 0; i < bins.size (); i ++) {
             assertEquals (
                 "Unexpected sequence criterion level.",
-                bins.get (i).getCrit (), expected[i], MasterVariables.EPSILON
+                bins.get (i).getCrit (), expected[i], MainVariables.EPSILON
             );
         }
     }

@@ -46,15 +46,15 @@ public class Simulation {
      *  Simulation constructor.
      *
      *  @param log The Logger object.
-     *  @param masterVariables The MasterVariables object.
+     *  @param mainVariables The MainVariables object.
      */
-    public Simulation (Logger log, MasterVariables masterVariables) {
+    public Simulation (Logger log, MainVariables mainVariables) {
         this.log = log;
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         // Set default demarcation method.
         demarcationPaintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
         demarcationMethod = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
-        execs = new Execs (log, masterVariables);
+        execs = new Execs (log, mainVariables);
         summary = new Summary ();
         // None of the programs are currently running.
         running = false;
@@ -65,11 +65,11 @@ public class Simulation {
      */
     public void exit () {
         // Save any results to the output file if provided.
-        File outputFile = masterVariables.getOutputFile ();
+        File outputFile = mainVariables.getOutputFile ();
         if (outputFile != null) {
             saveProjectFile (outputFile);
         }
-        masterVariables.exit ();
+        mainVariables.exit ();
         System.exit (0);
     }
 
@@ -135,7 +135,7 @@ public class Simulation {
      */
     public void loadProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, execs
+            mainVariables, execs
         );
         ParameterSet[] confidenceInterval = new ParameterSet[] {
             new ParameterSet (), new ParameterSet ()
@@ -225,7 +225,7 @@ public class Simulation {
      */
     public void saveProjectFile (File file) {
         ProjectFileIO projectFileIO = new ProjectFileIO (
-            masterVariables, execs, nu, length, outgroup, tree, binning,
+            mainVariables, execs, nu, length, outgroup, tree, binning,
             estimate, hillclimb, npopCI, omegaCI, sigmaCI, demarcation
         );
         log.append ("Saving to: " + file.getName () + "\n");
@@ -236,7 +236,7 @@ public class Simulation {
      *  Load the fasta formated sequence file.
      */
     public void loadSequenceFile () {
-        File file = masterVariables.getSequenceFile ();
+        File file = mainVariables.getSequenceFile ();
         // Verify that the sequence file exists.
         if (file == null || ! file.exists ()) {
             log.appendln ("Error, sequence file not found!");
@@ -247,7 +247,7 @@ public class Simulation {
         String name = file.getName ();
         int lastIndexOf = name.lastIndexOf (".");
         if (lastIndexOf > -1) {
-            String newFile = masterVariables.getWorkingDirectory () + "sequences.fa";
+            String newFile = mainVariables.getWorkingDirectory () + "sequences.fa";
             switch (name.substring (lastIndexOf + 1)) {
                 case "gz":
                 case "gzip":
@@ -266,14 +266,14 @@ public class Simulation {
                         System.out.println ("Error unziping the sequence file.");
                         e.printStackTrace ();
                     }
-                    masterVariables.setSequenceFile (new File (newFile));
+                    mainVariables.setSequenceFile (new File (newFile));
                     break;
                 default:
                     break;
             }
         }
         try {
-            fasta = new Fasta (masterVariables.getSequenceFile ());
+            fasta = new Fasta (mainVariables.getSequenceFile ());
             Sequence outgroupSequence = fasta.getOutgroup ();
             length = outgroupSequence.length ();
             outgroup = outgroupSequence.getIdentifier ();
@@ -297,7 +297,7 @@ public class Simulation {
      *  Load the newick formated tree file.
      */
     public void loadTreeFile () {
-        File file = masterVariables.getPhylogenyFile ();
+        File file = mainVariables.getPhylogenyFile ();
         // Verify that the tree file exists.
         if (file == null || ! file.exists ()) {
             log.appendln ("Error loading the Newick tree!");
@@ -309,8 +309,8 @@ public class Simulation {
             tree.makeBinary ();
             tree.reroot (tree.getDescendant (outgroup));
             // Output the tree in Newick and SVG formats if debug is enabled.
-            if (masterVariables.getDebug ()) {
-                String dir = masterVariables.getWorkingDirectory ();
+            if (mainVariables.getDebug ()) {
+                String dir = mainVariables.getWorkingDirectory ();
                 tree.toNewick (new File (dir + "outtree.nwk"));
                 File svg = new File (dir + "outtree.svg");
                 tree.paintTree (new SVGPainter (svg));
@@ -344,10 +344,10 @@ public class Simulation {
         log.appendln ("Generating a tree using FastTree...");
         // Store the tree in file called 'fasttree'.
         File newickFile = new File (
-            masterVariables.getWorkingDirectory () + "fasttree.nwk"
+            mainVariables.getWorkingDirectory () + "fasttree.nwk"
         );
         // Generate a tree using FastTree.
-        execs.runFastTree (masterVariables.getSequenceFile (), newickFile);
+        execs.runFastTree (mainVariables.getSequenceFile (), newickFile);
         return newickFile;
     }
 
@@ -425,17 +425,17 @@ public class Simulation {
     public void runHillclimbing () {
         // Start running hillclimbing.
         running = true;
-        Integer crit = masterVariables.getCriterion ();
+        Integer crit = mainVariables.getCriterion ();
         Double likelihood = 0.0d;
         log.appendln ("Running hillclimbing...");
         log.appendln (
             "Starting with precision: " +
-            masterVariables.getCriterionLabel (crit)
+            mainVariables.getCriterionLabel (crit)
         );
         hillclimb = new Hillclimb (
-            masterVariables, execs, nu, length, binning, estimate.getResult ()
+            mainVariables, execs, nu, length, binning, estimate.getResult ()
         );
-        while (likelihood < masterVariables.EPSILON)  {
+        while (likelihood < mainVariables.EPSILON)  {
             // Run hillclimbing using the current criterion.
             hillclimb.run ();
             // Verify that hillclimbing ran correctly.
@@ -445,7 +445,7 @@ public class Simulation {
             }
             likelihood = hillclimb.getResult ().getLikelihood ();
             // Break out of the loop if likelihood > zero.
-            if (likelihood > masterVariables.EPSILON) break;
+            if (likelihood > mainVariables.EPSILON) break;
             log.appendln ("Hillclimbing result has zero likelihood.");
             // Check to see if the precision can be reduced.
             if (crit == 1) {
@@ -453,9 +453,9 @@ public class Simulation {
                 break;
             }
             crit --;
-            String critLabel = masterVariables.getCriterionLabel (crit);
+            String critLabel = mainVariables.getCriterionLabel (crit);
             log.appendln ("Reducing the precision to " + critLabel + ".");
-            masterVariables.setCriterion (crit);
+            mainVariables.setCriterion (crit);
         }
         // Update the summary data.
         summary.setHillclimbing (hillclimb.getResult ());
@@ -475,7 +475,7 @@ public class Simulation {
         running = true;
         log.appendln ("Running npop confidence interval...");
         npopCI = new NpopConfidenceInterval (
-            masterVariables, execs, nu, length, binning,
+            mainVariables, execs, nu, length, binning,
             hillclimb.getResult ()
         );
         npopCI.run ();
@@ -502,7 +502,7 @@ public class Simulation {
         running = true;
         log.appendln ("Running omega confidence interval...");
         omegaCI = new OmegaConfidenceInterval (
-            masterVariables, execs, nu, length, binning,
+            mainVariables, execs, nu, length, binning,
             hillclimb.getResult ()
         );
         omegaCI.run ();
@@ -529,7 +529,7 @@ public class Simulation {
         running = true;
         log.appendln ("Running sigma confidence interval...");
         sigmaCI = new SigmaConfidenceInterval (
-            masterVariables, execs, nu, length, binning,
+            mainVariables, execs, nu, length, binning,
             hillclimb.getResult ()
         );
         sigmaCI.run ();
@@ -585,7 +585,7 @@ public class Simulation {
         log.appendln ("Running demarcation...");
         try {
             demarcation = new Demarcation (
-                masterVariables, execs, nu, length, outgroup, tree,
+                mainVariables, execs, nu, length, outgroup, tree,
                 hillclimb.getResult (), demarcationMethod
             );
             demarcation.setPaintMethod (demarcationPaintMethod);
@@ -601,8 +601,8 @@ public class Simulation {
             return;
         }
         // Output the demarcation in SVG format if debugging is turned on.
-        if (masterVariables.getDebug ()) {
-            String dir = masterVariables.getWorkingDirectory ();
+        if (mainVariables.getDebug ()) {
+            String dir = mainVariables.getWorkingDirectory ();
             File svg = new File (dir + "demarcation.svg");
             demarcation.paintTree (new SVGPainter (svg));
         }
@@ -617,7 +617,7 @@ public class Simulation {
     }
 
     protected Logger log;
-    protected MasterVariables masterVariables;
+    protected MainVariables mainVariables;
     protected Execs execs;
     protected Summary summary;
     protected Fasta fasta;

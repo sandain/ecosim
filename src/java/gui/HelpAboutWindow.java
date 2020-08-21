@@ -22,7 +22,7 @@
 
 package ecosim.gui;
 
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
@@ -54,10 +54,10 @@ public class HelpAboutWindow extends JFrame implements Runnable {
     /**
      *  Displays a Help/About GUI window.
      *
-     *  @param masterVariables The master variables.
+     *  @param mainVariables The main variables.
      */
-    public HelpAboutWindow (MasterVariables masterVariables) {
-        this.masterVariables = masterVariables;
+    public HelpAboutWindow (MainVariables mainVariables) {
+        this.mainVariables = mainVariables;
     }
 
     /**
@@ -120,10 +120,10 @@ public class HelpAboutWindow extends JFrame implements Runnable {
      */
     private void preprocess (String page) {
         File inputFile = new File (
-            masterVariables.getHelpDirectory () + page
+            mainVariables.getHelpDirectory () + page
         );
         File outputFile = new File (
-            masterVariables.getWorkingDirectory () + page
+            mainVariables.getWorkingDirectory () + page
         );
         BufferedReader reader = null;
         BufferedWriter writer = null;
@@ -136,7 +136,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                 // instead of id.
                 nextLine = nextLine.replaceAll ("<a id=", "<a name=");
                 // Point the images to the right directory.
-                String imgDir = masterVariables.getHelpDirectory ();
+                String imgDir = mainVariables.getHelpDirectory ();
                 imgDir = imgDir.replaceAll ("\\\\", "/");
                 nextLine = nextLine.replaceAll (
                     "<img src=\"images",
@@ -144,7 +144,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
                 );
                 // Replace variables with their values.
                 nextLine = nextLine.replaceAll (
-                    "%ECOSIM_VERSION%", masterVariables.getVersion ()
+                    "%ECOSIM_VERSION%", mainVariables.getVersion ()
                 );
                 // Remove hyperlink targets for "_top".
                 nextLine = nextLine.replaceAll (" target=\"_top\"", "");
@@ -198,22 +198,22 @@ public class HelpAboutWindow extends JFrame implements Runnable {
             "  </head>\n" +
             "  <frameset cols=\"20%,80%\">\n" +
             "    <frame src=\"file:///" +
-            masterVariables.getWorkingDirectory () + "menu.xhtml" +
+            mainVariables.getWorkingDirectory () + "menu.xhtml" +
             "\" name=\"menu\" />\n";
         switch (type) {
             case ABOUT:
                 index += "    <frame src=\"file:///" +
-                    masterVariables.getWorkingDirectory () +
+                    mainVariables.getWorkingDirectory () +
                     "about.xhtml\" name=\"body\" />\n";
                 break;
             case USER_GUIDE:
                 index += "    <frame src=\"file:///" +
-                    masterVariables.getWorkingDirectory () +
+                    mainVariables.getWorkingDirectory () +
                     "userguide.xhtml" + "\" name=\"body\" />\n";
                 break;
             case LICENSE:
                 index += "    <frame src=\"file:///" +
-                    masterVariables.getWorkingDirectory () +
+                    mainVariables.getWorkingDirectory () +
                     "license.xhtml" + "\" name=\"body\" />\n";
                 break;
             default:
@@ -248,7 +248,7 @@ public class HelpAboutWindow extends JFrame implements Runnable {
     /**
      *  Private variables.
      */
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private JEditorPane aboutPane;
     private JEditorPane userGuidePane;
     private JEditorPane licensePane;

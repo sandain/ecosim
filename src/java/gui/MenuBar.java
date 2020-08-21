@@ -23,7 +23,7 @@
 package ecosim.gui;
 
 import ecosim.Logger;
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 import ecosim.Simulation;
 
 import java.awt.event.ActionEvent;
@@ -47,16 +47,16 @@ public class MenuBar extends JMenuBar {
      *  Create a JMenuBar to display the menu.
      *
      *  @param log The logger.
-     *  @param masterVariables The MasterVariables.
+     *  @param mainVariables The MainVariables.
      *  @param simulation The simulation.
      *  @param helpAbout The Help/About window.
      */
     public MenuBar (
-        Logger log, MasterVariables masterVariables, Simulation simulation,
+        Logger log, MainVariables mainVariables, Simulation simulation,
         HelpAboutWindow helpAbout
     ) {
         this.log = log;
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.simulation = simulation;
         JMenuItem openSequenceFile = new JMenuItem ();
         openSequenceFile.setText ("Load Sequence File");
@@ -139,13 +139,13 @@ public class MenuBar extends JMenuBar {
         }
         // Open the fasta file chooser dialog.
         FileChooser fc = new FileChooser (
-            masterVariables.getCurrentDirectory (), "fasta"
+            mainVariables.getCurrentDirectory (), "fasta"
         );
         int returnVal = fc.showOpenDialog (this);
         File file = fc.getSelectedFile ();
         if (returnVal != FileChooser.APPROVE_OPTION) return;
-        masterVariables.setCurrentDirectory (file.getParent ());
-        masterVariables.setSequenceFile (file);
+        mainVariables.setCurrentDirectory (file.getParent ());
+        mainVariables.setSequenceFile (file);
         // Ask the user if they want to provide or generate a tree.
         String[] options = { "Generate", "Newick" };
         int type = 0; // Default to using the Parsimony method.
@@ -163,13 +163,13 @@ public class MenuBar extends JMenuBar {
             case "Newick":
                 // Open the newick file chooser dialog.
                 fc = new FileChooser (
-                    masterVariables.getCurrentDirectory (), "newick"
+                    mainVariables.getCurrentDirectory (), "newick"
                 );
                 returnVal = fc.showOpenDialog (this);
                 if (returnVal != FileChooser.APPROVE_OPTION) return;
                 File treeFile = fc.getSelectedFile ();
-                masterVariables.setPhylogenyFile (treeFile);
-                masterVariables.setCurrentDirectory (treeFile.getParent ());
+                mainVariables.setPhylogenyFile (treeFile);
+                mainVariables.setCurrentDirectory (treeFile.getParent ());
                 break;
             case "Generate":
             default:
@@ -181,10 +181,10 @@ public class MenuBar extends JMenuBar {
                     // Load the sequence file.
                     simulation.loadSequenceFile ();
                     // Generate a tree with FastTree if needed.
-                    File treeFile = masterVariables.getPhylogenyFile ();
+                    File treeFile = mainVariables.getPhylogenyFile ();
                     if (treeFile == null) {
                         treeFile = simulation.generateTree ();
-                        masterVariables.setPhylogenyFile (treeFile);
+                        mainVariables.setPhylogenyFile (treeFile);
                     }
                     // Load the tree file.
                     simulation.loadTreeFile ();
@@ -202,12 +202,12 @@ public class MenuBar extends JMenuBar {
      */
     private void loadProjectFileActionPerformed () {
         FileChooser fc = new FileChooser (
-            masterVariables.getCurrentDirectory (), "xml"
+            mainVariables.getCurrentDirectory (), "xml"
         );
         int returnVal = fc.showOpenDialog (this);
         if (returnVal == FileChooser.APPROVE_OPTION) {
             File userFile = fc.getSelectedFile ();
-            masterVariables.setCurrentDirectory (userFile.getParent ());
+            mainVariables.setCurrentDirectory (userFile.getParent ());
             // Test that the file can be read.
             if (! userFile.canRead ()) {
                 log.append ("Unable to read from file!\n");
@@ -223,12 +223,12 @@ public class MenuBar extends JMenuBar {
      */
     private void saveProjectFileActionPerformed () {
         FileChooser fc = new FileChooser (
-            masterVariables.getCurrentDirectory (), "xml"
+            mainVariables.getCurrentDirectory (), "xml"
         );
         int returnVal = fc.showSaveDialog (this);
         if (returnVal == FileChooser.APPROVE_OPTION) {
             File userFile = fc.getSelectedFile ();
-            masterVariables.setCurrentDirectory (userFile.getParent ());
+            mainVariables.setCurrentDirectory (userFile.getParent ());
             String path = userFile.getPath ();
             // if it doesn't already have the xml extension, add it.
             String ext = path.substring (path.length () - 4, path.length ());
@@ -240,7 +240,7 @@ public class MenuBar extends JMenuBar {
     }
 
     private Logger log;
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Simulation simulation;
 
 }

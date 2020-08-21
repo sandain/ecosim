@@ -24,7 +24,7 @@ package ecosim.gui;
 
 import ecosim.Demarcation;
 import ecosim.Logger;
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 import ecosim.Simulation;
 import ecosim.Summary;
 import ecosim.tree.Tree;
@@ -64,10 +64,10 @@ import javax.swing.JViewport;
 public class MainWindow extends JFrame implements Runnable {
 
     public MainWindow (
-        Logger log, MasterVariables masterVariables, Simulation simulation
+        Logger log, MainVariables mainVariables, Simulation simulation
     ) {
         this.log = log;
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.simulation = simulation;
     }
 
@@ -76,14 +76,14 @@ public class MainWindow extends JFrame implements Runnable {
      */
     public void run () {
         // Start a thread for the Help/About window.
-        HelpAboutWindow helpAbout = new HelpAboutWindow (masterVariables);
+        HelpAboutWindow helpAbout = new HelpAboutWindow (mainVariables);
         helpAbout.run ();
         // Create a list of icon images.
         setIconImages (Arrays.asList (images));
         // Setup the main window.
         setTitle ("Ecotype Simulation");
         setJMenuBar (
-            new MenuBar (log, masterVariables, simulation, helpAbout)
+            new MenuBar (log, mainVariables, simulation, helpAbout)
         );
         setLayout (new BorderLayout (15, 15));
         setMinimumSize (new Dimension (525, 475));
@@ -222,19 +222,19 @@ public class MainWindow extends JFrame implements Runnable {
      */
     private void saveSVGActionPerformed (Tree tree) {
         FileChooser fc = new FileChooser (
-            masterVariables.getCurrentDirectory (), "svg"
+            mainVariables.getCurrentDirectory (), "svg"
         );
         int returnVal = fc.showSaveDialog (this);
         File file = fc.getSelectedFile ();
         if (returnVal != FileChooser.APPROVE_OPTION) return;
-        masterVariables.setCurrentDirectory (file.getParent ());
+        mainVariables.setCurrentDirectory (file.getParent ());
         String fname = file.getAbsolutePath ();
         if (! fname.endsWith (".svg")) file = new File (fname + ".svg");
         tree.paintTree (new SVGPainter (file));
     }
 
     private Logger log;
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Simulation simulation;
 
     private Image[] images = new Image[] {

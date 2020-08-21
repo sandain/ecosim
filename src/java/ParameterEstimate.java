@@ -87,7 +87,7 @@ public class ParameterEstimate implements Runnable {
         Integer[] minSigmaBounds = sigmaBounds;
         Integer[] minOmegaBounds = omegaBounds;
         int num = 0;
-        while (deltaError > MasterVariables.EPSILON) {
+        while (deltaError > MainVariables.EPSILON) {
             // Calculate the sigma and omega lines for the current guess.
             sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
             omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
@@ -255,7 +255,7 @@ public class ParameterEstimate implements Runnable {
         // Look for the lower bound.
         Double previous = points.get (0).y;
         for (int i = 1; i < points.size (); i ++) {
-            if (previous - points.get (i).y > MasterVariables.EPSILON) {
+            if (previous - points.get (i).y > MainVariables.EPSILON) {
                 bounds[0] = i - 1;
                 break;
             }
@@ -264,7 +264,7 @@ public class ParameterEstimate implements Runnable {
         // Look for the upper bound.
         previous = points.get (points.size () - 1).y;
         for (int i = points.size () - 1; i > bounds[0]; i --) {
-            if (points.get (i).y - previous > MasterVariables.EPSILON) {
+            if (points.get (i).y - previous > MainVariables.EPSILON) {
                 bounds[1] = i + 1;
                 break;
             }
@@ -284,7 +284,7 @@ public class ParameterEstimate implements Runnable {
         Double error = Double.MAX_VALUE;
         // If the line has a non-zero slope, calculate the squared distance of
         // the point from the line as the error.
-        if (Math.abs (line.m) < MasterVariables.EPSILON) {
+        if (Math.abs (line.m) < MainVariables.EPSILON) {
             Double a = Math.abs (-1 * line.m * point.x + point.y - line.b);
             Double b = Math.sqrt (line.m * line.m + 1);
             Double dist = a / b;

@@ -22,7 +22,7 @@
 
 package ecosim.gui;
 
-import ecosim.MasterVariables;
+import ecosim.MainVariables;
 import ecosim.api.Painter;
 
 import java.awt.BasicStroke;
@@ -213,7 +213,7 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
             southX = x1;
             southY = endY;
         }
-        else if (Math.abs (m) < MasterVariables.EPSILON) {
+        else if (Math.abs (m) < MainVariables.EPSILON) {
             // Line is horizontal.
             westX = startX;
             westY = y1;

@@ -48,12 +48,12 @@ public class ProjectFileIO {
     /**
      *  Load and save the current project.
      *
-     *  @param masterVariables The master variables.
+     *  @param mainVariables The main variables.
      *  @param execs The Execs object.
      */
-    public ProjectFileIO (MasterVariables masterVariables,
+    public ProjectFileIO (MainVariables mainVariables,
         Execs execs) {
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.execs = execs;
         Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
@@ -73,7 +73,7 @@ public class ProjectFileIO {
     /**
      *  Load and save the current project.
      *
-     *  @param masterVariables The master variables.
+     *  @param mainVariables The main variables.
      *  @param execs The Execs object.
      *  @param nu The number of environmental sequences.
      *  @param length the length of the environmental sequences.
@@ -87,12 +87,12 @@ public class ProjectFileIO {
      *  @param sigmaCI The SigmaConfidenceInterval object.
      *  @param demarcation The Demarcation object.
      */
-    public ProjectFileIO (MasterVariables masterVariables, Execs execs,
+    public ProjectFileIO (MainVariables mainVariables, Execs execs,
         Integer nu, Integer length, String outgroup, Tree tree,
         Binning binning, ParameterEstimate estimate, Hillclimb hillclimb,
         NpopConfidenceInterval npopCI, OmegaConfidenceInterval omegaCI,
         SigmaConfidenceInterval sigmaCI, Demarcation demarcation) {
-        this.masterVariables = masterVariables;
+        this.mainVariables = mainVariables;
         this.execs = execs;
         this.nu = nu;
         this.length = length;
@@ -121,12 +121,12 @@ public class ProjectFileIO {
             out.write ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             out.write (String.format (
                 "<ecosim type=\"savefile\" version=\"%s\">\n",
-                masterVariables.getVersion ()
+                mainVariables.getVersion ()
             ));
             // Output the current criterion.
             out.write (
                 "  <criterion value=\"" +
-                masterVariables.getCriterion () + "\"/>\n"
+                mainVariables.getCriterion () + "\"/>\n"
             );
             // Output the phylogeny data.
             if (tree != null && tree.isValid ()) {
@@ -413,7 +413,7 @@ public class ProjectFileIO {
         return demarcation;
     }
 
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Execs execs;
     private Integer nu;
     private Integer length;
@@ -469,7 +469,7 @@ public class ProjectFileIO {
                 }
                 // Look for the criterion element.
                 if (localName.equals ("criterion")) {
-                    masterVariables.setCriterion (Integer.parseInt (
+                    mainVariables.setCriterion (Integer.parseInt (
                         attrs.getValue (uri, "value")
                     ));
                 }
@@ -571,7 +571,7 @@ public class ProjectFileIO {
                     if (hillclimb == null) {
                         if (binning != null && estimate != null) {
                             hillclimb = new Hillclimb (
-                                masterVariables,
+                                mainVariables,
                                 execs,
                                 nu,
                                 length,
@@ -616,7 +616,7 @@ public class ProjectFileIO {
                     if (npopCI == null) {
                         if (binning != null && hillclimb != null) {
                             npopCI = new NpopConfidenceInterval (
-                                masterVariables,
+                                mainVariables,
                                 execs,
                                 nu,
                                 length,
@@ -666,7 +666,7 @@ public class ProjectFileIO {
                     if (omegaCI == null) {
                         if (binning != null && hillclimb != null) {
                             omegaCI = new OmegaConfidenceInterval (
-                                masterVariables,
+                                mainVariables,
                                 execs,
                                 nu,
                                 length,
@@ -716,7 +716,7 @@ public class ProjectFileIO {
                     if (sigmaCI == null) {
                         if (binning != null && hillclimb != null) {
                             sigmaCI = new SigmaConfidenceInterval (
-                                masterVariables,
+                                mainVariables,
                                 execs,
                                 nu,
                                 length,
@@ -848,7 +848,7 @@ public class ProjectFileIO {
                             }
                             try {
                                 demarcation = new Demarcation (
-                                    masterVariables,
+                                    mainVariables,
                                     execs,
                                     nu,
                                     length,

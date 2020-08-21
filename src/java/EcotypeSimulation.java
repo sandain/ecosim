@@ -98,7 +98,7 @@ import javax.swing.SwingUtilities;
  * @li @b Hillclimb - Object to interact with the ::hillclimb program.
  * @li @b InvalidFastaException - Report a malformed Fasta file.
  * @li @b Logger - Display text to the user.
- * @li @b MasterVariables - Common variables used through the program.
+ * @li @b MainVariables - Common variables used through the program.
  * @li @b NpopConfidenceInterval - Run the ::npopci program.
  * @li @b OmegaConfidenceInterval - Run the ::omegaci program.
  * @li @b ParameterEstimate - An object to estimate the parameter values.
@@ -143,8 +143,8 @@ public class EcotypeSimulation implements Runnable {
         this.args = args;
         // Initialize the variables.
         log = new Logger ();
-        masterVariables = new MasterVariables ();
-        simulation = new Simulation (log, masterVariables);
+        mainVariables = new MainVariables ();
+        simulation = new Simulation (log, mainVariables);
         noGUI = false;
         runAll = false;
     }
@@ -155,7 +155,7 @@ public class EcotypeSimulation implements Runnable {
     public void run () {
         // Display the program name and version.
         System.out.print (String.format (
-            "Ecotype Simulation %s\n\n", masterVariables.getVersion ()
+            "Ecotype Simulation %s\n\n", mainVariables.getVersion ()
         ));
         // Check for command line arguments.
         checkArguments (args);
@@ -175,14 +175,14 @@ public class EcotypeSimulation implements Runnable {
                 System.err.println ("Error, sequence file does not exist.");
                 System.exit (1);
             }
-            masterVariables.setSequenceFile (fastaFile);
+            mainVariables.setSequenceFile (fastaFile);
             // Load the sequence file.
             simulation.loadSequenceFile ();
             // Generate the phylogeny file if not provided.
             if (newickFile == null || ! newickFile.exists ()) {
                 newickFile = simulation.generateTree ();
             }
-            masterVariables.setPhylogenyFile (newickFile);
+            mainVariables.setPhylogenyFile (newickFile);
             // Load the phylogeny file.
             simulation.loadTreeFile ();
             // Run the binning and parameter estimate programs.
@@ -245,7 +245,7 @@ public class EcotypeSimulation implements Runnable {
             switch (key) {
                 case "-d":
                 case "--debug":
-                    masterVariables.setDebug (true);
+                    mainVariables.setDebug (true);
                     break;
                 case "-h":
                 case "--help":
@@ -266,7 +266,7 @@ public class EcotypeSimulation implements Runnable {
                 case "-o":
                 case "--output":
                     if (value.length () > 0) {
-                        masterVariables.setOutputFile (new File (value));
+                        mainVariables.setOutputFile (new File (value));
                     }
                     break;
                 case "-p":
@@ -303,7 +303,7 @@ public class EcotypeSimulation implements Runnable {
                             System.exit (1);
                         }
                         if (num >= 1 && num <= procs) {
-                            masterVariables.setNumberThreads (num);
+                            mainVariables.setNumberThreads (num);
                         }
                         else {
                             System.out.println (String.format (
@@ -359,7 +359,7 @@ public class EcotypeSimulation implements Runnable {
         else {
             // Start the main window of the GUI.
             MainWindow gui = new MainWindow (
-                log, masterVariables, simulation
+                log, mainVariables, simulation
             );
             SwingUtilities.invokeLater (gui);
         }
@@ -369,7 +369,7 @@ public class EcotypeSimulation implements Runnable {
     private boolean noGUI;
     private boolean runAll;
     private Logger log;
-    private MasterVariables masterVariables;
+    private MainVariables mainVariables;
     private Simulation simulation;
     private File fastaFile;
     private File newickFile;
