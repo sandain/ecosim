@@ -24,12 +24,14 @@
 package ecosim;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 /**
@@ -291,11 +293,18 @@ public class MasterVariables {
         String v = "";
         try {
             Class es = Class.forName ("ecosim.EcotypeSimulation");
-            URLClassLoader cl = (URLClassLoader)es.getClassLoader ();
-            URL u = cl.findResource ("META-INF/MANIFEST.MF");
-            Manifest m = new Manifest (u.openStream ());
+            URL u = es.getProtectionDomain ().getCodeSource ().getLocation ();
+            File jarFile = new File (u.toURI ());
+            FileInputStream is = new FileInputStream (jarFile.getPath ());
+            JarInputStream js = new JarInputStream (is);
+            Manifest m = js.getManifest();
             Attributes a = m.getMainAttributes ();
             v = a.getValue ("Implementation-Version");
+        }
+        catch (URISyntaxException e) {
+            System.err.println (
+                "Error retrieving class information: " + e
+            );
         }
         catch (ClassNotFoundException e) {
             System.err.println (
@@ -307,7 +316,6 @@ public class MasterVariables {
                 "Error reading version information: " + e
             );
         }
-
         return v;
     }
 
