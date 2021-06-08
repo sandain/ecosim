@@ -304,9 +304,12 @@ public class Execs {
             // Verify the application is compatible with the current
             // architecture.
             if (! os.verifyExecutable (path)) {
+                String osName = System.getProperty ("os.name").toLowerCase ();
+                String osArch = System.getProperty ("os.arch").toLowerCase ();
                 log.append (
                     "Program " + path.getFileName () +
-                    " is not built for your current architecture!\n"
+                    " is not built for your current architecture (" +
+                    osName + " " + osArch + ")!\n"
                 );
                 return exitVal;
             }
