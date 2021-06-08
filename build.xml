@@ -15,6 +15,8 @@
   <property name="tests.dir" value="tests/java"/>
   <property name="jarfile" value="ecosim.jar"/>
   <property name="main-class" value="ecosim.EcotypeSimulation"/>
+  <property name="ant.build.javac.source" value="1.8"/>
+  <property name="ant.build.javac.target" value="1.8"/>
 
   <!-- Store path information for the check target. -->
   <path id="check.classpath">
