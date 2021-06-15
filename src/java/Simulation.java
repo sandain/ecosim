@@ -401,6 +401,21 @@ public class Simulation {
     }
 
     /**
+     *  Set the initial parameter values.
+     *
+     *  @param initialValues The initial parameter values.
+     */
+    public void setInitialParameters (ParameterSet initialValues) {
+        log.appendln ("Setting initial parameter values to:");
+        log.appendln (initialValues.toString ());
+        log.appendln ();
+        estimate = new ParameterEstimate (nu, length, binning);
+        estimate.setResult (initialValues);
+        estimate.setHasRun (true);
+        summary.setEstimate (estimate);
+    }
+
+    /**
      *  Run the parameter estimate program.
      */
     public void runParameterEstimate () {
