@@ -64,6 +64,9 @@ import javax.swing.SwingUtilities;
  *     -o, --output=[file]    : A XML formated save for for output.
  *     -s, --sequences=[file] : A Fasta formated file for input.
  *     -p, --phylogeny=[file] : A Newick formatted file for input.
+ *     -O, --omega=[float]    : Initial value for Omega. Requires Sigma and Npop.
+ *     -S, --sigma=[float]    : Initial value for Sigma. Requires Omega and Npop.
+ *     -N, --npop=[int]       : Inital value for Npop. Requires Sigma and Omega.
  *     -d, --debug            : Display debugging output.
  *     -h, --help             : Display helpful information.
  *     -n, --nogui            : Hide the default GUI.  Implies --runall.
@@ -145,6 +148,7 @@ public class EcotypeSimulation implements Runnable {
         log = new Logger ();
         mainVariables = new MainVariables ();
         simulation = new Simulation (log, mainVariables);
+        initialValues = new ParameterSet ();
         noGUI = false;
         runAll = false;
     }
@@ -185,9 +189,29 @@ public class EcotypeSimulation implements Runnable {
             mainVariables.setPhylogenyFile (newickFile);
             // Load the phylogeny file.
             simulation.loadTreeFile ();
-            // Run the binning and parameter estimate programs.
+            // Run the binning program.
             simulation.runBinning ();
-            simulation.runParameterEstimate ();
+            // Run the parameter estimate program if initial values not provided.
+            if (initialValues.getOmega () != null &&
+                initialValues.getSigma () != null &&
+                initialValues.getNpop () != null
+            ) {
+                simulation.setInitialParameters (initialValues);
+            }
+            else if (initialValues.getOmega () != null ||
+                initialValues.getSigma () != null ||
+                initialValues.getNpop () != null
+            ) {
+                System.out.println (String.format (
+                    "Syntax error: Omega, Sigma, and Npop values must be " +
+                    "provided together.\n%s",
+                    usage
+                ));
+                System.exit (1);
+            }
+            else {
+                simulation.runParameterEstimate ();
+            }
         }
         // Run the simulation if requested.
         if (runAll && simulation.treeLoaded ()) {
@@ -275,7 +299,57 @@ public class EcotypeSimulation implements Runnable {
                         newickFile = new File (value);
                     }
                     break;
-
+                case "-O":
+                case "--omega":
+                    if (value.length () > 0) {
+                        double initialOmega = 0.0d;
+                        try {
+                            initialOmega = Double.parseDouble (value);
+                        }
+                        catch (NumberFormatException e) {
+                            System.out.println (String.format (
+                                "Syntax error: Expected a number.\n%s\n%s",
+                                e, usage
+                            ));
+                            System.exit (1);
+                        }
+                        initialValues.setOmega (initialOmega);
+                    }
+                    break;
+                case "-S":
+                case "--sigma":
+                    if (value.length () > 0) {
+                        double initialSigma = 0.0d;
+                        try {
+                            initialSigma = Double.parseDouble (value);
+                        }
+                        catch (NumberFormatException e) {
+                            System.out.println (String.format (
+                                "Syntax error: Expected a number.\n%s\n%s",
+                                e, usage
+                            ));
+                            System.exit (1);
+                        }
+                        initialValues.setSigma (initialSigma);
+                    }
+                    break;
+                case "-N":
+                case "--npop":
+                    if (value.length () > 0) {
+                        long initialNpop = 0L;
+                        try {
+                            initialNpop = Long.parseLong (value);
+                        }
+                        catch (NumberFormatException e) {
+                            System.out.println (String.format (
+                                "Syntax error: Expected a number.\n%s\n%s",
+                                e, usage
+                            ));
+                            System.exit (1);
+                        }
+                        initialValues.setNpop (initialNpop);
+                    }
+                    break;
                 case "-r":
                 case "--runall":
                     runAll = true;
@@ -371,6 +445,7 @@ public class EcotypeSimulation implements Runnable {
     private Logger log;
     private MainVariables mainVariables;
     private Simulation simulation;
+    private ParameterSet initialValues;
     private File fastaFile;
     private File newickFile;
     private File inputFile;
@@ -392,6 +467,12 @@ public class EcotypeSimulation implements Runnable {
         "    -o, --output=[file]    : A XML formated save for for output.\n" +
         "    -s, --sequences=[file] : A Fasta formated file for input.\n" +
         "    -p, --phylogeny=[file] : A Newick formatted file for input.\n" +
+        "    -O, --omega=[float]    : Initial value for Omega.  Requires" +
+                                    " Sigma and Npop.\n" +
+        "    -S, --sigma=[float]    : Initial value for Sigma.  Requires" +
+                                    " Omega and Npop.\n" +
+        "    -N, --npop=[int]       : Inital value for Npop.  Requires" +
+                                    " Omega and Sigma.\n" +
         "    -d, --debug            : Display debugging output.\n" +
         "    -h, --help             : Display helpful information.\n" +
         "    -n, --nogui            : Hide the default GUI.  Implies" +
