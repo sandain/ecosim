@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  *  Handles the input and output of fasta formatted text files.
@@ -42,6 +42,8 @@ public class Fasta {
     public Fasta () {
         file = null;
         outgroup = null;
+        size = 0L; // does not include outgroup.
+        offsets = new Hashtable<String, Long> ();
     }
 
     /**
@@ -59,10 +61,31 @@ public class Fasta {
                     "Fasta file contains no sequences"
                 );
             }
+            // Verify Fasta file and count sequences.
+            size = 0L; // does not include outgroup.
+            Sequence seq;
+            offsets = new Hashtable<String, Long> ();
+            long offset = file.getFilePointer ();
+            while ((seq = nextSequence ()) != null) {
+              String id = seq.getIdentifier ();
+              if (offsets.containsKey (id)) {
+                  throw new InvalidFastaException (
+                      "Fasta file contains duplicate sequence identifier: " +
+                      id
+                  );
+              }
+              offsets.put (id, new Long (offset));
+              size ++;
+              offset = file.getFilePointer ();
+            }
         }
         catch (FileNotFoundException e) {
             throw new InvalidFastaException ("Fasta file not found: " + e);
         }
+        catch (IOException e) {
+            throw new InvalidFastaException ("Fasta IO Error: " + e);
+        }
+
     }
 
     /**
@@ -74,7 +97,7 @@ public class Fasta {
             file.close ();
         }
         catch (IOException e) {
-            throw new InvalidFastaException ("IO error: " + e);
+            throw new InvalidFastaException ("Fasta IO error: " + e);
         }
     }
 
@@ -160,12 +183,14 @@ public class Fasta {
             }
         }
         catch (IOException e) {
-            throw new InvalidFastaException ("IO Error: " + e);
+            throw new InvalidFastaException ("Fasta IO Error: " + e);
         }
         return seq;
     }
 
     private RandomAccessFile file;
     private Sequence outgroup;
+    private Long size;
+    private Hashtable<String,Long> offsets;
 
 }
