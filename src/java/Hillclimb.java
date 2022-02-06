@@ -28,7 +28,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
@@ -137,31 +140,50 @@ public class Hillclimb implements Runnable {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter (new FileWriter (inputFile));
-            writer.write (String.format ("%-20d numcrit\n", bins.size ()));
+            writer.write (String.format (
+                Locale.US,
+                "%-20d numcrit\n",
+                bins.size ()
+            ));
             // Output the crit levels and the number of bins.
             for (int j = 0; j < bins.size (); j ++) {
                 writer.write (String.format (
+                    Locale.US,
                     "%-20.6f %-20d\n",
                     bins.get (j).getCrit (),
                     bins.get (j).getLevel ()
                 ));
             }
             // Write the omega value.
-            writer.write (
-                String.format ("%-20.5f omega\n", parameterSet.getOmega ())
-            );
+            writer.write (String.format (
+                Locale.US,
+                "%-20.5f omega\n",
+                parameterSet.getOmega ()
+            ));
             // Write the sigma value.
-            writer.write (
-                String.format ("%-20.5f sigma\n", parameterSet.getSigma ())
-            );
+            writer.write (String.format (
+                Locale.US,
+                "%-20.5f sigma\n",
+                parameterSet.getSigma ()
+            ));
             // Write the npop value.
-            writer.write (
-                String.format ("%-20d npop\n", parameterSet.getNpop ())
-            );
+            writer.write (String.format (
+                Locale.US,
+                "%-20d npop\n",
+                parameterSet.getNpop ()
+            ));
             // Write the nu value.
-            writer.write (String.format ("%-20d nu\n", nu));
+            writer.write (String.format (
+                Locale.US,
+                "%-20d nu\n",
+                nu
+            ));
             // Write the nrep value.
-            writer.write (String.format ("%-20d nrep\n", nrep));
+            writer.write (String.format (
+                Locale.US,
+                "%-20d nrep\n",
+                nrep
+            ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
             long iii = (long)(100000000 * Math.random ());
@@ -169,20 +191,24 @@ public class Hillclimb implements Runnable {
                 iii ++;
             }
             // Write the random number seed.
-            writer.write (
-                String.format ("%-20d iii (random number seed)\n", iii)
-            );
+            writer.write (String.format (
+                Locale.US,
+                "%-20d iii (random number seed)\n",
+                iii
+            ));
             // Write the length of the sequences.
-            writer.write (
-                String.format (
-                    "%-20d lengthseq (after deleting gaps, etc.)\n",
-                    length
-                )
-            );
+            writer.write (String.format (
+                Locale.US,
+                "%-20d lengthseq (after deleting gaps, etc.)\n",
+                length
+            ));
             // Write the whichavg value.
             int whichavg = mainVariables.getCriterion ();
-            writer.write (String.format ("%-20d whichavg\n", whichavg));
-
+            writer.write (String.format (
+                Locale.US,
+                "%-20d whichavg\n",
+                whichavg
+            ));
         }
         catch (IOException e) {
             System.out.println ("Error writing the input file.");
@@ -207,6 +233,7 @@ public class Hillclimb implements Runnable {
     private ParameterSet readOutputFile (File outputFile) {
         ParameterSet result = new ParameterSet ();
         BufferedReader reader = null;
+        NumberFormat format = NumberFormat.getInstance (Locale.US);
         try {
             reader = new BufferedReader (new FileReader (outputFile));
             String nextLine = reader.readLine ();
@@ -214,16 +241,19 @@ public class Hillclimb implements Runnable {
                 StringTokenizer st = new StringTokenizer (nextLine);
                 // There should only be one line containing omega, sigma,
                 // npop, and the likelihood of that result.
-                Double omega = Double.parseDouble (st.nextToken ());
-                Double sigma = Double.parseDouble (st.nextToken ());
-                Long npop = Long.parseLong (st.nextToken ());
-                Double likelihood = Double.parseDouble (st.nextToken ());
+                Double omega = format.parse (st.nextToken ()).doubleValue ();
+                Double sigma = format.parse (st.nextToken ()).doubleValue ();
+                Long npop = format.parse (st.nextToken ()).longValue ();
+                Double likelihood = format.parse (st.nextToken ()).doubleValue ();
                 result = new ParameterSet (npop, omega, sigma, likelihood);
                 nextLine = reader.readLine ();
             }
         }
         catch (IOException e) {
             System.out.println ("Error reading the output file.");
+        }
+        catch (ParseException e) {
+            System.out.println ("Error parsing a number.");
         }
         finally {
             if (reader != null) {
