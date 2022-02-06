@@ -30,7 +30,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -120,6 +123,7 @@ public class ProjectFileIO {
             // Output the XML header.
             out.write ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             out.write (String.format (
+                Locale.US,
                 "<ecosim type=\"savefile\" version=\"%s\">\n",
                 mainVariables.getVersion ()
             ));
@@ -131,12 +135,15 @@ public class ProjectFileIO {
             // Output the phylogeny data.
             if (tree != null && tree.isValid ()) {
                 out.write (String.format (
+                    Locale.US,
                     "  <phylogeny size=\"%d\" length=\"%d\">\n", nu, length
                 ));
                 out.write (String.format (
+                    Locale.US,
                     "    <outgroup value=\"%s\"/>\n", outgroup
                 ));
                 out.write (String.format (
+                    Locale.US,
                     "    <tree value=\"%s\"/>\n", tree.toString ()
                 ));
                 out.write (
@@ -152,7 +159,10 @@ public class ProjectFileIO {
                 for (int i = 0; i < bins.size (); i ++) {
                     out.write (
                         "      <bin crit=\"" +
-                        String.format ("%.6f", bins.get (i).getCrit ()) +
+                        String.format (
+                            Locale.US,
+                            "%.6f", bins.get (i).getCrit ()
+                        ) +
                         "\" value=\"" + bins.get (i).getLevel () + "\"/>\n"
                     );
                 }
@@ -163,12 +173,16 @@ public class ProjectFileIO {
             if (estimate != null && estimate.hasRun ()) {
                 ParameterSet result = estimate.getResult ();
                 out.write ("  <estimate>\n");
-                out.write (String.format ("    " +
+                out.write (String.format (
+                    Locale.US,
+                    "    " +
                     "<result npop=\"%d\" omega=\"%.5f\" sigma=\"%.5f\"/>\n",
                     result.getNpop (), result.getOmega (), result.getSigma ()
                 ));
                 double omega[] = estimate.getOmega ();
-                out.write (String.format ("    " +
+                out.write (String.format (
+                    Locale.US,
+                    "    " +
                     "<omega slope=\"%.5f\" intercept=\"%.5f\"/>\n",
                     omega[0], omega[1]
                 ));
@@ -183,7 +197,9 @@ public class ProjectFileIO {
             if (hillclimb != null && hillclimb.hasRun ()) {
                 ParameterSet result = hillclimb.getResult ();
                 out.write ("  <hillclimb>\n");
-                out.write (String.format ("    " +
+                out.write (String.format (
+                    Locale.US,
+                    "    " +
                     "<result npop=\"%d\" omega=\"%.5f\" sigma=\"%.5f\" " +
                     "likelihood=\"%.5g\"/>\n",
                     result.getNpop (), result.getOmega (), result.getSigma (),
@@ -197,11 +213,13 @@ public class ProjectFileIO {
                 Double [] likelihood = npopCI.getLikelihood ();
                 out.write ("  <npopCI>\n");
                 out.write (String.format (
+                    Locale.US,
                     "    <lower value=\"%d\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
                 out.write (String.format (
+                    Locale.US,
                     "    <upper value=\"%d\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
@@ -214,11 +232,13 @@ public class ProjectFileIO {
                 Double[] likelihood = omegaCI.getLikelihood ();
                 out.write ("  <omegaCI>\n");
                 out.write (String.format (
+                    Locale.US,
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
                 out.write (String.format (
+                    Locale.US,
                     "    <upper value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
@@ -231,11 +251,13 @@ public class ProjectFileIO {
                 Double[] likelihood = sigmaCI.getLikelihood ();
                 out.write ("  <sigmaCI>\n");
                 out.write (String.format (
+                    Locale.US,
                     "    <lower value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[0],
                     likelihood[0]
                 ));
                 out.write (String.format (
+                    Locale.US,
                     "    <upper value=\"%.5f\" likelihood=\"%.5g\"/>\n",
                     result[1],
                     likelihood[1]
@@ -268,17 +290,20 @@ public class ProjectFileIO {
                 out.write ("    <method value=\"" + method + "\"/>\n");
                 out.write ("    <paintmethod value=\"" + paintMethod + "\"/>\n");
                 out.write (String.format (
+                    Locale.US,
                     "    <ecotypes size=\"%d\">\n",
                     ecotypes.size ()
                 ));
                 for (int i = 0; i < ecotypes.size (); i ++) {
                     ArrayList<String> ecotype = ecotypes.get (i);
                     out.write (String.format (
+                        Locale.US,
                         "      <ecotype number=\"%d\" size=\"%d\">\n",
                         (i + 1), ecotype.size ()
                     ));
                     for (int j = 0; j < ecotype.size (); j ++) {
                         out.write (String.format (
+                            Locale.US,
                             "        <member name=\"%s\"/>\n",
                             ecotype.get (j)
                         ));
@@ -457,351 +482,367 @@ public class ProjectFileIO {
          */
         public void startElement (String uri, String localName, String qName,
             Attributes attrs) {
+            NumberFormat format = NumberFormat.getInstance (Locale.US);
             // Make sure that this is a save file.
             if (localName.equals ("ecosim") &&
                 attrs.getValue (uri, "type").equals ("savefile")) {
                 isProjectFile = true;
             }
             if (isProjectFile) {
-                // Update the active element.
-                if (elements.contains (localName)) {
-                    activeElement = localName;
-                }
-                // Look for the criterion element.
-                if (localName.equals ("criterion")) {
-                    mainVariables.setCriterion (Integer.parseInt (
-                        attrs.getValue (uri, "value")
-                    ));
-                }
-                // Look for the phylogeny element.
-                if (localName.equals ("phylogeny")) {
-                    nu = Integer.parseInt (attrs.getValue (uri, "size"));
-                    length = Integer.parseInt (
-                        attrs.getValue (uri, "length")
-                    );
-                }
-                // Look for the elements within phylogeny.
-                if (activeElement.equals ("phylogeny")) {
-                    // Look for the outgroup element.
-                    if (localName.equals ("outgroup")) {
-                        outgroup = attrs.getValue (uri, "value");
+                try {
+                    // Update the active element.
+                    if (elements.contains (localName)) {
+                        activeElement = localName;
                     }
-                    // Look for the tree element.
-                    if (localName.equals ("tree")) {
-                        try {
-                            tree = new Tree (
+                    // Look for the criterion element.
+                    if (localName.equals ("criterion")) {
+                        mainVariables.setCriterion (format.parse (
+                            attrs.getValue (uri, "value")
+                        ).intValue ());
+                    }
+                    // Look for the phylogeny element.
+                    if (localName.equals ("phylogeny")) {
+                        nu = format.parse (
+                            attrs.getValue (uri, "size")
+                        ).intValue ();
+                        length = format.parse (
+                            attrs.getValue (uri, "length")
+                        ).intValue ();
+                    }
+                    // Look for the elements within phylogeny.
+                    if (activeElement.equals ("phylogeny")) {
+                        // Look for the outgroup element.
+                        if (localName.equals ("outgroup")) {
+                            outgroup = attrs.getValue (uri, "value");
+                        }
+                        // Look for the tree element.
+                        if (localName.equals ("tree")) {
+                            try {
+                                tree = new Tree (
+                                    attrs.getValue (uri, "value")
+                                );
+                            }
+                            catch (InvalidTreeException e) {
+                                System.err.println (
+                                    "Invalid Newick formatted tree found."
+                                );
+                            }
+                        }
+                    }
+                    // Look for elements within binning.
+                    if (activeElement.equals ("binning")) {
+                        // Initialize the Binning object if need be.
+                        if (binning == null) binning = new Binning ();
+                        // Look for a bin to add to the Binning.
+                        if (localName.equals ("bin")) {
+                            binning.addBinLevel (new BinLevel (
+                                format.parse (
+                                    attrs.getValue (uri, "crit")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "value")
+                                ).intValue ()
+                            ));
+                        }
+                    }
+                    // Look for elements within estimate.
+                    if (activeElement.equals ("estimate")) {
+                        // Initialize the ParameterEstimate object if need be.
+                        if (estimate == null) {
+                            if (binning != null) {
+                                estimate = new ParameterEstimate (
+                                    nu, length, binning
+                                );
+                            }
+                            else {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "estimated value without Binning."
+                                );
+                                System.exit (1);
+                            }
+                        }
+                        // Look for a result to add to the the ParameterEstimate.
+                        if (localName.equals ("result")) {
+                            estimate.setResult (new ParameterSet (
+                                format.parse (
+                                    attrs.getValue (uri, "npop")
+                                ).longValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "omega")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "sigma")
+                                ).doubleValue (),
+                                0.0d
+                            ));
+                        }
+                        // Look for the slope and intercept of the omega line.
+                        if (localName.equals ("omega")) {
+                            estimate.setOmega (
+                                format.parse (
+                                    attrs.getValue (uri, "slope")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "intercept")
+                                ).doubleValue ()
+                            );
+                        }
+                        // Look for the slope and intercept of the sigma line.
+                        if (localName.equals ("sigma")) {
+                            estimate.setSigma (
+                                format.parse (
+                                    attrs.getValue (uri, "slope")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "intercept")
+                                ).doubleValue ()
+                            );
+                        }
+                    }
+                    // Look for elements within hillclimb.
+                    if (activeElement.equals ("hillclimb")) {
+                        // Initialize the Hillclimb object if need be.
+                        if (hillclimb == null) {
+                            if (binning != null && estimate != null) {
+                                hillclimb = new Hillclimb (
+                                    mainVariables,
+                                    execs,
+                                    nu,
+                                    length,
+                                    binning,
+                                    estimate.getResult ()
+                                );
+                            }
+                            else if (binning == null) {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "hillclimb value without Binning."
+                                );
+                                System.exit (1);
+                            }
+                            else {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "hillclimb value without ParameterEstimate."
+                                );
+                                System.exit (1);
+                            }
+                        }
+                        // Look for a result to add to the Hillclimb object.
+                        if (localName.equals ("result")) {
+                            hillclimb.setResult (new ParameterSet (
+                                format.parse (
+                                    attrs.getValue (uri, "npop")
+                                ).longValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "omega")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "sigma")
+                                ).doubleValue (),
+                                format.parse (
+                                    attrs.getValue (uri, "likelihood")
+                                ).doubleValue ()
+                            ));
+                        }
+                    }
+                    // Look for elements within npopCI.
+                    if (activeElement.equals ("npopCI")) {
+                        // Initialize NpopConfidenceInterval if need be.
+                        if (npopCI == null) {
+                            if (binning != null && hillclimb != null) {
+                                npopCI = new NpopConfidenceInterval (
+                                    mainVariables,
+                                    execs,
+                                    nu,
+                                    length,
+                                    binning,
+                                    hillclimb.getResult ()
+                                );
+                            }
+                            else if (binning == null) {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "npopCI value without Binning."
+                                );
+                                System.exit (1);
+                            }
+                            else {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "npopCI value without Hillclimb."
+                                );
+                                System.exit (1);
+                            }
+                        }
+                        // Look for the lower bound of the confidence interval.
+                        if (localName.equals ("lower")) {
+                            Long value = format.parse (
                                 attrs.getValue (uri, "value")
-                            );
-                        }
-                        catch (InvalidTreeException e) {
-                            System.err.println (
-                                "Invalid Newick formatted tree found."
-                            );
-                        }
-                    }
-                }
-                // Look for elements within binning.
-                if (activeElement.equals ("binning")) {
-                    // Initialize the Binning object if need be.
-                    if (binning == null) binning = new Binning ();
-                    // Look for a bin to add to the Binning.
-                    if (localName.equals ("bin")) {
-                        binning.addBinLevel (new BinLevel (
-                            Double.parseDouble (attrs.getValue (uri, "crit")),
-                            Integer.parseInt (attrs.getValue (uri, "value"))
-                        ));
-                    }
-                }
-                // Look for elements within estimate.
-                if (activeElement.equals ("estimate")) {
-                    // Initialize the ParameterEstimate object if need be.
-                    if (estimate == null) {
-                        if (binning != null) {
-                            estimate = new ParameterEstimate (
-                                nu, length, binning
-                            );
-                        }
-                        else {
-                            System.err.println (
-                                "Error in project file: " +
-                                "estimated value without Binning."
-                            );
-                            System.exit (1);
-                        }
-                    }
-                    // Look for a result to add to the the ParameterEstimate.
-                    if (localName.equals ("result")) {
-                        estimate.setResult (new ParameterSet (
-                            Long.parseLong (attrs.getValue (uri, "npop")),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "omega")
-                            ),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "sigma")
-                            ),
-                            0.0d
-                        ));
-                    }
-                    // Look for the slope and intercept of the omega line.
-                    if (localName.equals ("omega")) {
-                        estimate.setOmega (
-                            Double.parseDouble (
-                                attrs.getValue (uri, "slope")
-                            ),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "intercept")
-                            )
-                        );
-                    }
-                    // Look for the slope and intercept of the sigma line.
-                    if (localName.equals ("sigma")) {
-                        estimate.setSigma (
-                            Double.parseDouble (
-                                attrs.getValue (uri, "slope")
-                            ),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "intercept")
-                            )
-                        );
-                    }
-                }
-                // Look for elements within hillclimb.
-                if (activeElement.equals ("hillclimb")) {
-                    // Initialize the Hillclimb object if need be.
-                    if (hillclimb == null) {
-                        if (binning != null && estimate != null) {
-                            hillclimb = new Hillclimb (
-                                mainVariables,
-                                execs,
-                                nu,
-                                length,
-                                binning,
-                                estimate.getResult ()
-                            );
-                        }
-                        else if (binning == null) {
-                            System.err.println (
-                                "Error in project file: " +
-                                "hillclimb value without Binning."
-                            );
-                            System.exit (1);
-                        }
-                        else {
-                            System.err.println (
-                                "Error in project file: " +
-                                "hillclimb value without ParameterEstimate."
-                            );
-                            System.exit (1);
-                        }
-                    }
-                    // Look for a result to add to the Hillclimb object.
-                    if (localName.equals ("result")) {
-                        hillclimb.setResult (new ParameterSet (
-                            Long.parseLong (attrs.getValue (uri, "npop")),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "omega")
-                            ),
-                            Double.parseDouble (
-                                attrs.getValue (uri, "sigma")
-                            ),
-                            Double.parseDouble (
+                            ).longValue ();
+                            Double likelihood = format.parse (
                                 attrs.getValue (uri, "likelihood")
-                            )
-                        ));
+                            ).doubleValue ();
+                            npopCI.setLowerResult (value, likelihood);
+                        }
+                        // Look for the upper bound of the confidence interval.
+                        if (localName.equals ("upper")) {
+                            Long value = format.parse (
+                                attrs.getValue (uri, "value")
+                            ).longValue ();
+                            Double likelihood = format.parse (
+                                attrs.getValue (uri, "likelihood")
+                            ).doubleValue ();
+                            npopCI.setUpperResult (value, likelihood);
+                        }
+                    }
+                    // Look for elements within omegaCI.
+                    if (activeElement.equals ("omegaCI")) {
+                        // Initialize OmegaConfidenceInterval if need be.
+                        if (omegaCI == null) {
+                            if (binning != null && hillclimb != null) {
+                                omegaCI = new OmegaConfidenceInterval (
+                                    mainVariables,
+                                    execs,
+                                    nu,
+                                    length,
+                                    binning,
+                                    hillclimb.getResult ()
+                                );
+                            }
+                            else if (binning == null) {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "omegaCI value without Binning."
+                                );
+                                System.exit (1);
+                            }
+                            else {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "omegaCI value without Hillclimb."
+                                );
+                                System.exit (1);
+                            }
+                        }
+                        // Look for the lower bound of the confidence interval.
+                        if (localName.equals ("lower")) {
+                            Double value = format.parse (
+                                attrs.getValue (uri, "value")
+                            ).doubleValue ();
+                            Double likelihood = format.parse (
+                                attrs.getValue (uri, "likelihood")
+                            ).doubleValue ();
+                            omegaCI.setLowerResult (value, likelihood);
+                        }
+                        // Look for the upper bound of the confidence interval.
+                        if (localName.equals ("upper")) {
+                            Double value = format.parse (
+                                attrs.getValue (uri, "value")
+                            ).doubleValue ();
+                            Double likelihood = format.parse (
+                                attrs.getValue (uri, "likelihood")
+                            ).doubleValue ();
+                            omegaCI.setUpperResult (value, likelihood);
+                        }
+                    }
+                    // Look for elements within sigmaCI.
+                    if (activeElement.equals ("sigmaCI")) {
+                        // Initialize SigmaConfidenceInterval if need be.
+                        if (sigmaCI == null) {
+                            if (binning != null && hillclimb != null) {
+                                sigmaCI = new SigmaConfidenceInterval (
+                                    mainVariables,
+                                    execs,
+                                    nu,
+                                    length,
+                                    binning,
+                                    hillclimb.getResult ()
+                                );
+                            }
+                            else if (binning == null) {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "sigmaCI value without Binning."
+                                );
+                                System.exit (1);
+                            }
+                            else {
+                                System.err.println (
+                                    "Error in project file: " +
+                                    "sigmaCI value without Hillclimb."
+                                );
+                                System.exit (1);
+                            }
+                        }
+                        // Look for the lower bound of the confidence interval.
+                        if (localName.equals ("lower")) {
+                            Double value = format.parse (
+                                attrs.getValue (uri, "value")
+                            ).doubleValue ();
+                            Double likelihood = format.parse (
+                                attrs.getValue (uri, "likelihood")
+                            ).doubleValue ();
+                            sigmaCI.setLowerResult (value, likelihood);
+                        }
+                        // Look for the upper bound of the confidence interval.
+                        if (localName.equals ("upper")) {
+                            Double value = format.parse (
+                                attrs.getValue (uri, "value")
+                            ).doubleValue ();
+                            Double likelihood = format.parse (
+                                attrs.getValue (uri, "likelihood")
+                            ).doubleValue ();
+                            sigmaCI.setUpperResult (value, likelihood);
+                        }
+                    }
+                    // Look for elements within demarcation.
+                    if (activeElement.equals ("demarcation")) {
+                        if (localName.equals ("method")) {
+                            switch (attrs.getValue (uri, "value")) {
+                                case "monophyly":
+                                    method = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
+                                    break;
+                                case "paraphyly":
+                                    method = Demarcation.DEMARCATION_METHOD_PARAPHYLY;
+                                    break;
+                            }
+                        }
+                        if (localName.equals ("paintmethod")) {
+                            switch (attrs.getValue (uri, "value")) {
+                                case "bars":
+                                    paintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
+                                    break;
+                                case "triangles":
+                                    paintMethod = Demarcation.PAINT_METHOD_COLLAPSED;
+                                    break;
+                            }
+                        }
+                        if (localName.equals ("ecotypes")) {
+                            Integer size = format.parse (
+                                attrs.getValue (uri, "size")
+                            ).intValue ();
+                            ecotypes = new ArrayList<ArrayList<String>> (size);
+                        }
+                        if (localName.equals ("ecotype")) {
+                            Integer size = format.parse (
+                                attrs.getValue (uri, "size")
+                            ).intValue ();
+                            ecotypes.add (new ArrayList<String> (size));
+                            ecotypeNumber = format.parse (
+                                attrs.getValue (uri, "number")
+                            ).intValue ();
+                        }
+                        if (localName.equals ("member") && ecotypes != null) {
+                            ecotypes.get (ecotypeNumber - 1).add (
+                                attrs.getValue (uri, "name")
+                            );
+                        }
                     }
                 }
-                // Look for elements within npopCI.
-                if (activeElement.equals ("npopCI")) {
-                    // Initialize NpopConfidenceInterval if need be.
-                    if (npopCI == null) {
-                        if (binning != null && hillclimb != null) {
-                            npopCI = new NpopConfidenceInterval (
-                                mainVariables,
-                                execs,
-                                nu,
-                                length,
-                                binning,
-                                hillclimb.getResult ()
-                            );
-                        }
-                        else if (binning == null) {
-                            System.err.println (
-                                "Error in project file: " +
-                                "npopCI value without Binning."
-                            );
-                            System.exit (1);
-                        }
-                        else {
-                            System.err.println (
-                                "Error in project file: " +
-                                "npopCI value without Hillclimb."
-                            );
-                            System.exit (1);
-                        }
-                    }
-                    // Look for the lower bound of the confidence interval.
-                    if (localName.equals ("lower")) {
-                        Long value = Long.parseLong (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        npopCI.setLowerResult (value, likelihood);
-                    }
-                    // Look for the upper bound of the confidence interval.
-                    if (localName.equals ("upper")) {
-                        Long value = Long.parseLong (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        npopCI.setUpperResult (value, likelihood);
-                    }
-                }
-                // Look for elements within omegaCI.
-                if (activeElement.equals ("omegaCI")) {
-                    // Initialize OmegaConfidenceInterval if need be.
-                    if (omegaCI == null) {
-                        if (binning != null && hillclimb != null) {
-                            omegaCI = new OmegaConfidenceInterval (
-                                mainVariables,
-                                execs,
-                                nu,
-                                length,
-                                binning,
-                                hillclimb.getResult ()
-                            );
-                        }
-                        else if (binning == null) {
-                            System.err.println (
-                                "Error in project file: " +
-                                "omegaCI value without Binning."
-                            );
-                            System.exit (1);
-                        }
-                        else {
-                            System.err.println (
-                                "Error in project file: " +
-                                "omegaCI value without Hillclimb."
-                            );
-                            System.exit (1);
-                        }
-                    }
-                    // Look for the lower bound of the confidence interval.
-                    if (localName.equals ("lower")) {
-                        Double value = Double.parseDouble (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        omegaCI.setLowerResult (value, likelihood);
-                    }
-                    // Look for the upper bound of the confidence interval.
-                    if (localName.equals ("upper")) {
-                        Double value = Double.parseDouble (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        omegaCI.setUpperResult (value, likelihood);
-                    }
-                }
-                // Look for elements within sigmaCI.
-                if (activeElement.equals ("sigmaCI")) {
-                    // Initialize SigmaConfidenceInterval if need be.
-                    if (sigmaCI == null) {
-                        if (binning != null && hillclimb != null) {
-                            sigmaCI = new SigmaConfidenceInterval (
-                                mainVariables,
-                                execs,
-                                nu,
-                                length,
-                                binning,
-                                hillclimb.getResult ()
-                            );
-                        }
-                        else if (binning == null) {
-                            System.err.println (
-                                "Error in project file: " +
-                                "sigmaCI value without Binning."
-                            );
-                            System.exit (1);
-                        }
-                        else {
-                            System.err.println (
-                                "Error in project file: " +
-                                "sigmaCI value without Hillclimb."
-                            );
-                            System.exit (1);
-                        }
-                    }
-                    // Look for the lower bound of the confidence interval.
-                    if (localName.equals ("lower")) {
-                        Double value = Double.parseDouble (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        sigmaCI.setLowerResult (value, likelihood);
-                    }
-                    // Look for the upper bound of the confidence interval.
-                    if (localName.equals ("upper")) {
-                        Double value = Double.parseDouble (
-                            attrs.getValue (uri, "value")
-                        );
-                        Double likelihood = Double.parseDouble (
-                            attrs.getValue (uri, "likelihood")
-                        );
-                        sigmaCI.setUpperResult (value, likelihood);
-                    }
-                }
-                // Look for elements within demarcation.
-                if (activeElement.equals ("demarcation")) {
-                    if (localName.equals ("method")) {
-                        switch (attrs.getValue (uri, "value")) {
-                            case "monophyly":
-                                method = Demarcation.DEMARCATION_METHOD_MONOPHYLY;
-                                break;
-                            case "paraphyly":
-                                method = Demarcation.DEMARCATION_METHOD_PARAPHYLY;
-                                break;
-                        }
-                    }
-                    if (localName.equals ("paintmethod")) {
-                        switch (attrs.getValue (uri, "value")) {
-                            case "bars":
-                                paintMethod = Demarcation.PAINT_METHOD_DEMARCATED;
-                                break;
-                            case "triangles":
-                                paintMethod = Demarcation.PAINT_METHOD_COLLAPSED;
-                                break;
-                        }
-                    }
-                    if (localName.equals ("ecotypes")) {
-                        Integer size = Integer.parseInt (
-                            attrs.getValue (uri, "size")
-                        );
-                        ecotypes = new ArrayList<ArrayList<String>> (size);
-                    }
-                    if (localName.equals ("ecotype")) {
-                        Integer size = Integer.parseInt (
-                            attrs.getValue (uri, "size")
-                        );
-                        ecotypes.add (new ArrayList<String> (size));
-                        ecotypeNumber = Integer.parseInt (
-                            attrs.getValue (uri, "number")
-                        );
-                    }
-                    if (localName.equals ("member") && ecotypes != null) {
-                        ecotypes.get (ecotypeNumber - 1).add (
-                            attrs.getValue (uri, "name")
-                        );
-                    }
+                catch (ParseException e) {
+                    System.out.println ("Error parsing a number.");
                 }
             }
         }
