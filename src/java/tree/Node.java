@@ -27,6 +27,7 @@ import ecosim.Heapsorter;
 import ecosim.MainVariables;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  *  A Node potentially contains a name, a parent node, a distance from the
@@ -464,10 +465,16 @@ public class Node implements Comparable<Node> {
             newick = "(" + newick + ")";
         }
         if (isLeafNode () || isCollapsed ()) {
-            newick += String.format ("%s:%.5f", name, distance);
+            newick += String.format (
+                Locale.US,
+                "%s:%.5f", name, distance
+            );
         }
         else {
-            newick += String.format (":%.5f", distance);
+            newick += String.format (
+                Locale.US,
+                ":%.5f", distance
+            );
         }
         if (parent == null) {
             newick += ";";
