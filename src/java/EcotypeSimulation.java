@@ -181,7 +181,10 @@ public class EcotypeSimulation implements Runnable {
             }
             mainVariables.setSequenceFile (fastaFile);
             // Load the sequence file.
-            simulation.loadSequenceFile ();
+            boolean sequencesLoaded = simulation.loadSequenceFile ();
+            if (! sequencesLoaded) {
+              return;
+            }
             // Generate the phylogeny file if not provided.
             if (newickFile == null || ! newickFile.exists ()) {
                 newickFile = simulation.generateTree ();
