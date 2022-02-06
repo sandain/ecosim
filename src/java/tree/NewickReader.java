@@ -26,7 +26,10 @@ package ecosim.tree;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  *  Read a Newick formated tree.
@@ -87,6 +90,7 @@ public class NewickReader extends BufferedReader {
      *  @return A Node containing the subtree.
      */
     private Node parseTree (String tree) throws InvalidTreeException {
+        NumberFormat format = NumberFormat.getInstance (Locale.US);
         Node node = new Node ();
         String metaString;
         // Check if the current node has a subTree.
@@ -134,12 +138,17 @@ public class NewickReader extends BufferedReader {
             }
             if (meta.length > 1 && meta[1].length () > 0) {
                 try {
-                    Double distance = Double.parseDouble (meta[1]);
-                    node.setDistance (distance.doubleValue ());
+                    Double distance = format.parse (meta[1]).doubleValue ();
+                    node.setDistance (distance);
                 }
                 catch (NumberFormatException e) {
                     throw new InvalidTreeException (
                         "Malformed Newick tree, expected a number." + e
+                    );
+                }
+                catch (ParseException e) {
+                    throw new InvalidTreeException (
+                        "Error parsing a number." + e
                     );
                 }
             }
