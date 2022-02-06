@@ -235,12 +235,12 @@ public class Simulation {
     /**
      *  Load the fasta formated sequence file.
      */
-    public void loadSequenceFile () {
+    public boolean loadSequenceFile () {
         File file = mainVariables.getSequenceFile ();
         // Verify that the sequence file exists.
         if (file == null || ! file.exists ()) {
             log.appendln ("Error, sequence file not found!");
-            return;
+            return false;
         }
         log.appendln ("Opening sequence file...");
         // Check the file extension for compressed files.
@@ -265,6 +265,7 @@ public class Simulation {
                     } catch (IOException e) {
                         System.out.println ("Error unziping the sequence file.");
                         e.printStackTrace ();
+                        return false;
                     }
                     mainVariables.setSequenceFile (new File (newFile));
                     break;
@@ -289,8 +290,10 @@ public class Simulation {
             ));
         }
         catch (InvalidFastaException e) {
-            System.out.println ("Error loading sequence file.");
+            log.appendln ("Error loading sequence file.\n" + e);
+            return false;
         }
+        return true;
     }
 
     /**
