@@ -36,7 +36,7 @@ public class InvalidFastaException extends Exception {
     }
 
     public String toString () {
-        return "Fasta error: " + message;
+        return message;
     }
 
     private String message;
