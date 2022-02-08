@@ -138,7 +138,9 @@ public class NewickReader extends BufferedReader {
             }
             if (meta.length > 1 && meta[1].length () > 0) {
                 try {
-                    Double distance = format.parse (meta[1]).doubleValue ();
+                    Double distance = format.parse (
+                        meta[1].toUpperCase ()
+                    ).doubleValue ();
                     node.setDistance (distance);
                 }
                 catch (NumberFormatException e) {
