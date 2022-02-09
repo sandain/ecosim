@@ -74,7 +74,7 @@ public class Fasta {
                       id
                   );
               }
-              offsets.put (id, new Long (offset));
+              offsets.put (id, Long.valueOf (offset));
               size ++;
               offset = file.getFilePointer ();
             }
