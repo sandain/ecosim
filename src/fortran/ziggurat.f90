@@ -113,7 +113,7 @@ module ziggurat
     de = 7.697117470131487
     tn = dn
     te = de
-    state%jsr = ieor (state%jsr, int (iii, kind = int32))
+    state%jsr = int (iii, kind = int32)
     ! Tables for RNOR:
     q = vn / exp (-0.5 * dn * dn)
     state%kn(0) = int (dn / q * m1, kind = int32)
