@@ -267,7 +267,7 @@ module ziggurat
         ! Handles the base strip.
         if (iz .eq. 0) then
           return_value = 7.69711 - log (ziggurat_uni (state))
-          exit
+          return
         end if
         ! Handle the wedges of other strips.
         x = real (ujz, kind = real32) * state%we(iz)
@@ -275,7 +275,7 @@ module ziggurat
           (state%fe(iz - 1) - state%fe(iz))
         if (y .lt. exp (-x)) then
           return_value = x
-          exit
+          return
         end if
         ! Try to exit do loop.
         jz = ziggurat_shr3 (state)
@@ -283,7 +283,7 @@ module ziggurat
         iz = iand (jz, 255)
         if (ujz .lt. state%ke(iz)) then
           return_value = real (ujz, kind = real32) * state%we(iz)
-          exit
+          return
         end if
       end do
     end if
