@@ -170,7 +170,7 @@ module ziggurat
   end function ziggurat_shr3
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Generates a uniformly distributed pseudo-random value in the range [0,1).
+  !> Generates a uniformly distributed pseudo-random value in the range (0,1).
   !>
   !> @param state The state variables for the ziggurat algorithm.
   !> @return A uniformly distributed pseudo-random value.
