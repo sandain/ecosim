@@ -112,8 +112,8 @@ module ziggurat
     real(kind = real64)   :: te
     real(kind = real64)   :: tn
     real(kind = real64)   :: q
-    dn = 3.442619855899
-    de = 7.697117470131487
+    dn = 3.442619855899d0
+    de = 7.697117470131487d0
     tn = dn
     te = de
     state%jsr = iii
