@@ -166,7 +166,9 @@ module ziggurat
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
     ! Add modulo 2**32 in 64-bit arithmetic to avoid signed 32-bit overflow.
     s = iand (int (jz, kind = int64) + int (state%jsr, kind = int64), mask32)
-    if (s .gt. int (huge (return_value), kind = int64)) s = s - 4294967296_int64
+    if (s .gt. int (huge (return_value), kind = int64)) then
+      s = s - 4294967296_int64
+    end if
     return_value = int (s, kind = int32)
   end function ziggurat_shr3
 
@@ -179,7 +181,10 @@ module ziggurat
   function ziggurat_uni (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
     real(kind = real64)             :: return_value
-    return_value = 0.5d0 + real (ziggurat_shr3 (state), kind = real64) * 0.2328306d-9
+    ! Local variables.
+    real(kind = real64) :: x
+    x = real (ziggurat_shr3 (state), kind = real64)
+    return_value = 0.5d0 + x * 0.2328306d-9
   end function ziggurat_uni
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -193,11 +198,12 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     ! Local parameters.
-    real(kind = real32), parameter :: r = 3.442620        ! Start of the right tail.
+    real(kind = real32), parameter :: r = 3.442620  ! Start of the right tail.
     real(kind = real64), parameter :: rinv = 0.2904764d0  ! 0.2904764 is 1/r.
     ! Local variables.
     integer(kind = int32) :: hz
     integer(kind = int32) :: iz
+    real(kind = real64) :: u
     real(kind = real32) :: x
     real(kind = real32) :: y
     real(kind = real64) :: z
@@ -224,8 +230,8 @@ module ziggurat
           return
         end if
         ! Handle the wedges of other strips.
-        z = state%fn(iz) + ziggurat_uni (state) * &
-          (state%fn(iz - 1) - state%fn(iz))
+        u = ziggurat_uni (state)
+        z = state%fn(iz) + u * (state%fn(iz - 1) - state%fn(iz))
         if (z .lt. exp (-0.5d0 * x * x)) then
           return_value = x
           return
@@ -255,6 +261,7 @@ module ziggurat
     integer(kind = int32) :: iz
     integer(kind = int32) :: jz
     integer(kind = int64) :: ujz
+    real(kind = real64)   :: u
     real(kind = real32)   :: x
     real(kind = real64)   :: y
     jz = ziggurat_shr3 (state)
@@ -267,13 +274,14 @@ module ziggurat
       do
         ! Handles the base strip.
         if (iz .eq. 0) then
-          return_value = real (7.69711d0 - log (ziggurat_uni (state)), kind = real32)
+          u = ziggurat_uni (state)
+          return_value = real (7.69711d0 - log (u), kind = real32)
           return
         end if
         ! Handle the wedges of other strips.
         x = real (ujz, kind = real32) * state%we(iz)
-        y = state%fe(iz) + ziggurat_uni (state) * &
-          (state%fe(iz - 1) - state%fe(iz))
+        u = ziggurat_uni (state)
+        y = state%fe(iz) + u * (state%fe(iz - 1) - state%fe(iz))
         if (y .lt. exp (-real (x, kind = real64))) then
           return_value = x
           return
