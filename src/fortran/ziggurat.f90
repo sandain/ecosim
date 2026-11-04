@@ -75,8 +75,9 @@ module ziggurat
   ! Mask selecting the low 32 bits of a 64-bit integer.
   integer(kind = int64), parameter :: mask32 = 4294967295_int64
 
-  ! The state variables for the ziggurat algorithm.
+  ! The private state variables for the ziggurat algorithm.
   type :: ziggurat_t
+    private
     integer(kind = int32) :: jsr
     integer(kind = int64) :: ke(0:255)
     integer(kind = int32) :: kn(0:127)
