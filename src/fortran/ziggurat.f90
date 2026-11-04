@@ -158,11 +158,16 @@ module ziggurat
   function ziggurat_shr3 (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
     integer(kind = int32)           :: return_value
+    ! Local variables.
+    integer(kind = int64) :: s
     state%jz = state%jsr
     state%jsr = ieor (state%jsr, ishft (state%jsr, 13))
     state%jsr = ieor (state%jsr, ishft (state%jsr, -17))
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
-    return_value = int (state%jz + state%jsr, kind = int32)
+    ! Add modulo 2**32 in 64-bit arithmetic to avoid signed 32-bit overflow.
+    s = iand (int (state%jz, kind = int64) + int (state%jsr, kind = int64), mask32)
+    if (s .gt. int (huge (return_value), kind = int64)) s = s - 4294967296_int64
+    return_value = int (s, kind = int32)
     return
   end function ziggurat_shr3
 
@@ -198,7 +203,7 @@ module ziggurat
     real(kind = real32) :: z
     state%hz = ziggurat_shr3(state)
     state%iz = iand (state%hz, 127)
-    if (abs (state%hz) .lt. state%kn(state%iz)) then
+    if (abs (int (state%hz, kind = int64)) .lt. state%kn(state%iz)) then
       return_value = state%hz * state%wn(state%iz)
     else
       ! RNOR rejection occurred, generate variates from the residue.
@@ -228,7 +233,7 @@ module ziggurat
         ! Try to exit do loop.
         state%hz = ziggurat_shr3(state)
         state%iz = iand (state%hz, 127)
-        if (abs (state%hz) .lt. state%kn(state%iz)) then
+        if (abs (int (state%hz, kind = int64)) .lt. state%kn(state%iz)) then
           return_value = state%hz * state%wn(state%iz)
           return
         end if
