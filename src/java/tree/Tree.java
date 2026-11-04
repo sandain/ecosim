@@ -4,7 +4,7 @@
  *    selection, yielding a certain number of ecotypes.
  *
  *    Copyright (C) 2009       Andrew Warner, Wesleyan University
- *    Copyright (C) 2009-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2009-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -431,9 +431,9 @@ public class Tree {
         int xSpacer = fontWidth / 2;
         // Calculate the XY location of all nodes.
         calculateNodeXY (root, 0.0d);
-        // Calculate the max X value.
+        // Calculate the max X value reached by the labels.
         int max = 0;
-        for (Node node: getDescendants ()) {
+        for (Node node: labelledNodes (root)) {
             String name = node.getName ();
             int labelWidth = painter.stringWidth (name);
             int x = fontWidth + labelWidth + Math.round (
@@ -514,6 +514,27 @@ public class Tree {
         else {
            return lastCommonAncestor (descendants, node.getParent ());
         }
+    }
+
+    /**
+     *  Recursive method to find the nodes whose names are painted: the leaf
+     *  nodes, or the collapsed nodes when painting collapsed nodes.
+     *
+     *  @param node The Node to search from.
+     *  @return The nodes whose names are painted.
+     */
+    private ArrayList<Node> labelledNodes (Node node) {
+        ArrayList<Node> labelled = new ArrayList<Node> ();
+        boolean paintCollapsed = (paintMethod == PAINT_METHOD_COLLAPSED);
+        if (node.isLeafNode () || (node.isCollapsed () && paintCollapsed)) {
+            labelled.add (node);
+        }
+        else {
+            for (Node child: node.getChildren ()) {
+                labelled.addAll (labelledNodes (child));
+            }
+        }
+        return labelled;
     }
 
     /**

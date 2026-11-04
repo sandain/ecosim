@@ -172,7 +172,7 @@ public class SVGPainter implements Painter {
     private FileWriter writer;
 
     private int fontHeight = 12;
-    private int fontWidth = 7;
+    private int fontWidth = 8;  // Estimate for 12px font
     private String fontColor = "#0000ff";
 
     private int strokeWidth = 1;

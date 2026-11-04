@@ -354,6 +354,7 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
         BufferedImage tile = getTile (tileX, tileY);
         Graphics2D g2 = (Graphics2D)tile.getGraphics ();
         g2.setColor (Color.BLACK);
+        g2.setFont (font);
         g2.drawString (str, x, y);
         // Get the bounds of the string.
         Rectangle2D bounds = metrics.getStringBounds (str, g2);
@@ -463,5 +464,5 @@ public class TiledPainter extends JPanel implements Scrollable, Painter {
     private final int TILE_SIZE = 1000;
 
     private final int IMAGE_TYPE = BufferedImage.TYPE_BYTE_BINARY;
-    
+
 }
