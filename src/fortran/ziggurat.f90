@@ -71,13 +71,16 @@ module ziggurat
   public :: ziggurat_shr3
   public :: ziggurat_uni
 
+  ! Mask selecting the low 32 bits of a 64-bit integer.
+  integer(kind = int64), parameter :: mask32 = 4294967295_int64
+
   ! The state variables for the ziggurat algorithm.
   type :: ziggurat_t
     integer(kind = int32) :: hz
     integer(kind = int32) :: iz
     integer(kind = int32) :: jz
     integer(kind = int32) :: jsr
-    integer(kind = int32) :: ke(0:255)
+    integer(kind = int64) :: ke(0:255)
     integer(kind = int32) :: kn(0:127)
     real(kind = real32)   :: fe(0:255)
     real(kind = real32)   :: fn(0:127)
@@ -131,7 +134,7 @@ module ziggurat
     end do
     ! Tables for REXP:
     q = ve / exp (-de)
-    state%ke(0) = int (de / q * m2, kind = int32)
+    state%ke(0) = int (de / q * m2, kind = int64)
     state%ke(1) = 0
     state%we(0) = real (q / m2, kind = real32)
     state%we(255) = real (de / m2, kind = real32)
@@ -139,7 +142,7 @@ module ziggurat
     state%fe(255) = real (exp (-de), kind = real32)
     do i = 254, 1, -1
       de = -log (ve / de + exp (-de))
-      state%ke(i + 1) = int (de / te * m2, kind = int32)
+      state%ke(i + 1) = int (de / te * m2, kind = int64)
       te = de
       state%fe(i) = real (exp (-de), kind = real32)
       state%we(i) = real (de / m2, kind = real32)
@@ -235,22 +238,24 @@ module ziggurat
   end function ziggurat_rnor
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Generates exponentially distributed pseudo-random values.
+  !> Generates exponentially distributed pseudo-random values with a rate (and
+  !> mean) of 1. The SHR3 output is interpreted as an unsigned 32-bit integer.
   !>
   !> @param state The state variables for the ziggurat algorithm.
-  !> @return A exponential pseudo-random value.
+  !> @return An exponential pseudo-random value.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function ziggurat_rexp (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     ! Local variables.
-    real(kind = real32) :: x
-    real(kind = real32) :: y
+    integer(kind = int64) :: ujz
+    real(kind = real32)   :: x
+    real(kind = real32)   :: y
     state%jz = ziggurat_shr3(state)
+    ujz = iand (int (state%jz, kind = int64), mask32)
     state%iz = iand (state%jz, 255)
-    if (abs (state%jz) .lt. state%ke(state%iz)) then
-      x = state%jz * real (state%we(state%iz), kind = real32)
-      return_value = real (x, kind = real32)
+    if (ujz .lt. state%ke(state%iz)) then
+      return_value = real (ujz, kind = real32) * state%we(state%iz)
     else
       ! REXP rejection occurred, generate variates from the residue.
       do
@@ -260,19 +265,19 @@ module ziggurat
           exit
         end if
         ! Handle the wedges of other strips.
-        x = state%jz * real (state%we(state%iz), kind = real32)
+        x = real (ujz, kind = real32) * state%we(state%iz)
         y = state%fe(state%iz) + ziggurat_uni(state) * &
           (state%fe(state%iz - 1) - state%fe(state%iz))
         if (y .lt. exp (-x)) then
-          return_value = real (x, kind = real32)
+          return_value = x
           exit
         end if
         ! Try to exit do loop.
         state%jz = ziggurat_shr3(state)
+        ujz = iand (int (state%jz, kind = int64), mask32)
         state%iz = iand (state%jz, 255)
-        if (state%jz .lt. state%ke(state%iz)) then
-          x = state%jz * real (state%we(state%iz), kind = real32)
-          return_value = real (x, kind = real32)
+        if (ujz .lt. state%ke(state%iz)) then
+          return_value = real (ujz, kind = real32) * state%we(state%iz)
           exit
         end if
       end do
