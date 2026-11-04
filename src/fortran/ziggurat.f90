@@ -266,7 +266,7 @@ module ziggurat
     real(kind = real32)   :: x
     real(kind = real64)   :: y
     jz = ziggurat_shr3 (state)
-    ujz = iand (int (jz, kind = int64), mask32)
+    ujz = to_unsigned (jz)
     iz = iand (jz, 255)
     if (ujz .lt. state%ke(iz)) then
       return_value = real (ujz, kind = real32) * state%we(iz)
@@ -289,7 +289,7 @@ module ziggurat
         end if
         ! Try to exit do loop.
         jz = ziggurat_shr3 (state)
-        ujz = iand (int (jz, kind = int64), mask32)
+        ujz = to_unsigned (jz)
         iz = iand (jz, 255)
         if (ujz .lt. state%ke(iz)) then
           return_value = real (ujz, kind = real32) * state%we(iz)
@@ -298,5 +298,17 @@ module ziggurat
       end do
     end if
   end function ziggurat_rexp
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !> Interprets the bits of a 32-bit integer as an unsigned value.
+  !>
+  !> @param x A 32-bit integer.
+  !> @return The unsigned value of x, in the range [0, 2**32).
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  pure function to_unsigned (x) result (return_value)
+    integer(kind = int32), intent(in) :: x
+    integer(kind = int64)             :: return_value
+    return_value = iand (int (x, kind = int64), mask32)
+  end function to_unsigned
 
 end module ziggurat
