@@ -167,7 +167,6 @@ module ziggurat
     s = iand (int (jz, kind = int64) + int (state%jsr, kind = int64), mask32)
     if (s .gt. int (huge (return_value), kind = int64)) s = s - 4294967296_int64
     return_value = int (s, kind = int32)
-    return
   end function ziggurat_shr3
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -180,7 +179,6 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     return_value = 0.5 + ziggurat_shr3 (state) * 0.2328306e-9
-    return
   end function ziggurat_uni
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -240,7 +238,6 @@ module ziggurat
         end if
       end do
     end if
-    return
   end function ziggurat_rnor
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -290,7 +287,6 @@ module ziggurat
         end if
       end do
     end if
-    return
   end function ziggurat_rexp
 
 end module ziggurat
