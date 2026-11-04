@@ -76,9 +76,6 @@ module ziggurat
 
   ! The state variables for the ziggurat algorithm.
   type :: ziggurat_t
-    integer(kind = int32) :: hz
-    integer(kind = int32) :: iz
-    integer(kind = int32) :: jz
     integer(kind = int32) :: jsr
     integer(kind = int64) :: ke(0:255)
     integer(kind = int32) :: kn(0:127)
@@ -160,13 +157,14 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     integer(kind = int32)           :: return_value
     ! Local variables.
+    integer(kind = int32) :: jz
     integer(kind = int64) :: s
-    state%jz = state%jsr
+    jz = state%jsr
     state%jsr = ieor (state%jsr, ishft (state%jsr, 13))
     state%jsr = ieor (state%jsr, ishft (state%jsr, -17))
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
     ! Add modulo 2**32 in 64-bit arithmetic to avoid signed 32-bit overflow.
-    s = iand (int (state%jz, kind = int64) + int (state%jsr, kind = int64), mask32)
+    s = iand (int (jz, kind = int64) + int (state%jsr, kind = int64), mask32)
     if (s .gt. int (huge (return_value), kind = int64)) s = s - 4294967296_int64
     return_value = int (s, kind = int32)
     return
@@ -199,25 +197,27 @@ module ziggurat
     real(kind = real32), parameter :: r = 3.442620      ! Start of the right tail.
     real(kind = real32), parameter :: rinv = 0.2904764  ! 0.2904764 is 1/r.
     ! Local variables.
+    integer(kind = int32) :: hz
+    integer(kind = int32) :: iz
     real(kind = real32) :: x
     real(kind = real32) :: y
     real(kind = real32) :: z
-    state%hz = ziggurat_shr3(state)
-    state%iz = iand (state%hz, 127)
-    if (abs (int (state%hz, kind = int64)) .lt. state%kn(state%iz)) then
-      return_value = state%hz * state%wn(state%iz)
+    hz = ziggurat_shr3(state)
+    iz = iand (hz, 127)
+    if (abs (int (hz, kind = int64)) .lt. state%kn(iz)) then
+      return_value = hz * state%wn(iz)
     else
       ! RNOR rejection occurred, generate variates from the residue.
       do
-        x = state%hz * state%wn(state%iz)
+        x = hz * state%wn(iz)
         ! Handle the base strip.
-        if (state%iz .eq. 0) then
+        if (iz .eq. 0) then
           do
             x = -log (ziggurat_uni(state)) * rinv
             y = -log (ziggurat_uni(state))
             if (y + y .ge. x * x) exit
           end do
-          if (state%hz .gt. 0) then
+          if (hz .gt. 0) then
             return_value = r + x
           else
             return_value = -r - x
@@ -225,17 +225,17 @@ module ziggurat
           return
         end if
         ! Handle the wedges of other strips.
-        z = state%fn(state%iz) + ziggurat_uni(state) * &
-          (state%fn(state%iz - 1) - state%fn(state%iz))
+        z = state%fn(iz) + ziggurat_uni(state) * &
+          (state%fn(iz - 1) - state%fn(iz))
         if (z .lt. exp (-0.5 * x * x)) then
           return_value = x
           return
         end if
         ! Try to exit do loop.
-        state%hz = ziggurat_shr3(state)
-        state%iz = iand (state%hz, 127)
-        if (abs (int (state%hz, kind = int64)) .lt. state%kn(state%iz)) then
-          return_value = state%hz * state%wn(state%iz)
+        hz = ziggurat_shr3(state)
+        iz = iand (hz, 127)
+        if (abs (int (hz, kind = int64)) .lt. state%kn(iz)) then
+          return_value = hz * state%wn(iz)
           return
         end if
       end do
@@ -254,36 +254,38 @@ module ziggurat
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
     ! Local variables.
+    integer(kind = int32) :: iz
+    integer(kind = int32) :: jz
     integer(kind = int64) :: ujz
     real(kind = real32)   :: x
     real(kind = real32)   :: y
-    state%jz = ziggurat_shr3(state)
-    ujz = iand (int (state%jz, kind = int64), mask32)
-    state%iz = iand (state%jz, 255)
-    if (ujz .lt. state%ke(state%iz)) then
-      return_value = real (ujz, kind = real32) * state%we(state%iz)
+    jz = ziggurat_shr3(state)
+    ujz = iand (int (jz, kind = int64), mask32)
+    iz = iand (jz, 255)
+    if (ujz .lt. state%ke(iz)) then
+      return_value = real (ujz, kind = real32) * state%we(iz)
     else
       ! REXP rejection occurred, generate variates from the residue.
       do
         ! Handles the base strip.
-        if (state%iz .eq. 0) then
+        if (iz .eq. 0) then
           return_value = 7.69711 - log (ziggurat_uni(state))
           exit
         end if
         ! Handle the wedges of other strips.
-        x = real (ujz, kind = real32) * state%we(state%iz)
-        y = state%fe(state%iz) + ziggurat_uni(state) * &
-          (state%fe(state%iz - 1) - state%fe(state%iz))
+        x = real (ujz, kind = real32) * state%we(iz)
+        y = state%fe(iz) + ziggurat_uni(state) * &
+          (state%fe(iz - 1) - state%fe(iz))
         if (y .lt. exp (-x)) then
           return_value = x
           exit
         end if
         ! Try to exit do loop.
-        state%jz = ziggurat_shr3(state)
-        ujz = iand (int (state%jz, kind = int64), mask32)
-        state%iz = iand (state%jz, 255)
-        if (ujz .lt. state%ke(state%iz)) then
-          return_value = real (ujz, kind = real32) * state%we(state%iz)
+        jz = ziggurat_shr3(state)
+        ujz = iand (int (jz, kind = int64), mask32)
+        iz = iand (jz, 255)
+        if (ujz .lt. state%ke(iz)) then
+          return_value = real (ujz, kind = real32) * state%we(iz)
           exit
         end if
       end do
