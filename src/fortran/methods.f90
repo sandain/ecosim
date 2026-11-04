@@ -535,7 +535,7 @@ module methods
 #else
     n = 1
 #endif
-    x = ziggurat_uni(rng(n))
+    x = real (ziggurat_uni (rng (n)), kind = real32)
     return
   end subroutine randomNumber
 
