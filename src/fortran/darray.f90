@@ -3,7 +3,7 @@
 !    as the evolutionary result of net ecotype formation, periodic selection,
 !    and drift, yielding a certain number of ecotypes.
 !
-!    Copyright (C) 2013-2019  Jason M. Wood, Montana State University
+!    Copyright (C) 2013-2026  Jason M. Wood
 !
 !    This program is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
@@ -99,7 +99,9 @@ module darray
   !> Initialize memory for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array.
-  !> @param[in]     capacity      The initial capacity of the dynamic array.
+  !> @param[in]     capacity      The initial capacity of the dynamic array,
+  !>                                which is also the amount by which it
+  !>                                grows. It must be at least 1.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   interface darrayInitialize
     module procedure darrayInitializeInteger
@@ -123,9 +125,10 @@ module darray
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Get an element at the provided index of the dynamic array.
   !>
-  !> @param[inout]  darray        The dynamic array.
+  !> @param[in]     darray        The dynamic array.
   !> @param[in]     index         The index of the element needed.
-  !> @return                      The element at the provided index.
+  !> @return                      The element at the provided index. Elements
+  !>                                that have not been set are zero.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   interface darrayGet
     module procedure darrayGetInteger
@@ -154,104 +157,144 @@ module darray
   !> Initialize memory for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array.
-  !> @param[in]     capacity      The initial capacity of the dynamic array.
+  !> @param[in]     capacity      The initial capacity of the dynamic array,
+  !>                                which is also the amount by which it
+  !>                                grows. It must be at least 1.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darrayInitializeInteger (darray, capacity)
     type(darrayInteger), intent(inout) :: darray
     integer, intent(in)                :: capacity
     ! Local variables
     integer :: allocate_status
+    ! Make sure that the capacity is valid.
+    if (capacity .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid capacity for the dynamic array!", capacity
+      ! Error, exit the program.
+      stop
+    end if
     ! Set the capacity of the dynamic array.
     darray%capacity = capacity
     darray%initialCapacity = capacity
     ! Allocate space for the dynamic array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    allocate (darray%array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
+    ! Set every element to zero.
+    darray%array = 0_int32
   end subroutine darrayInitializeInteger
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Initialize memory for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array.
-  !> @param[in]     capacity      The initial capacity of the dynamic array.
+  !> @param[in]     capacity      The initial capacity of the dynamic array,
+  !>                                which is also the amount by which it
+  !>                                grows. It must be at least 1.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darrayInitializeLong (darray, capacity)
     type(darrayLong), intent(inout)    :: darray
     integer, intent(in)                :: capacity
     ! Local variables
     integer :: allocate_status
+    ! Make sure that the capacity is valid.
+    if (capacity .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid capacity for the dynamic array!", capacity
+      ! Error, exit the program.
+      stop
+    end if
     ! Set the capacity of the dynamic array.
     darray%capacity = capacity
     darray%initialCapacity = capacity
     ! Allocate space for the dynamic array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    allocate (darray%array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
+    ! Set every element to zero.
+    darray%array = 0_int64
   end subroutine darrayInitializeLong
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Initialize memory for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array.
-  !> @param[in]     capacity      The initial capacity of the dynamic array.
+  !> @param[in]     capacity      The initial capacity of the dynamic array,
+  !>                                which is also the amount by which it
+  !>                                grows. It must be at least 1.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darrayInitializeReal (darray, capacity)
     type(darrayReal), intent(inout)    :: darray
     integer, intent(in)                :: capacity
     ! Local variables
     integer :: allocate_status
+    ! Make sure that the capacity is valid.
+    if (capacity .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid capacity for the dynamic array!", capacity
+      ! Error, exit the program.
+      stop
+    end if
     ! Set the capacity of the dynamic array.
     darray%capacity = capacity
     darray%initialCapacity = capacity
     ! Allocate space for the dynamic array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    allocate (darray%array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
+    ! Set every element to zero.
+    darray%array = 0.0_real32
   end subroutine darrayInitializeReal
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   !> Initialize memory for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array.
-  !> @param[in]     capacity      The initial capacity of the dynamic array.
+  !> @param[in]     capacity      The initial capacity of the dynamic array,
+  !>                                which is also the amount by which it
+  !>                                grows. It must be at least 1.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine darrayInitializeDouble (darray, capacity)
     type(darrayDouble), intent(inout)  :: darray
     integer, intent(in)                :: capacity
     ! Local variables
     integer :: allocate_status
+    ! Make sure that the capacity is valid.
+    if (capacity .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid capacity for the dynamic array!", capacity
+      ! Error, exit the program.
+      stop
+    end if
     ! Set the capacity of the dynamic array.
     darray%capacity = capacity
     darray%initialCapacity = capacity
     ! Allocate space for the dynamic array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    allocate (darray%array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
+    ! Set every element to zero.
+    darray%array = 0.0_real64
   end subroutine darrayInitializeDouble
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Deallocate memory reserved for an array.
+  !> Deallocate memory reserved for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array to deallocate.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -260,18 +303,17 @@ module darray
     ! Local variables.
     integer :: allocate_status
     ! Deallocate space for the dynamic array.
-    deallocate(darray%array, stat = allocate_status)
+    deallocate (darray%array, stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to deallocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
   end subroutine darrayCloseInteger
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Deallocate memory reserved for an array.
+  !> Deallocate memory reserved for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array to deallocate.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -280,18 +322,17 @@ module darray
     ! Local variables.
     integer :: allocate_status
     ! Deallocate space for the dynamic array.
-    deallocate(darray%array, stat = allocate_status)
+    deallocate (darray%array, stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to deallocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
   end subroutine darrayCloseLong
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !> Deallocate memory reserved for a array.
+  !> Deallocate memory reserved for the dynamic array.
   !>
   !> @param[inout]  darray        The dynamic array to deallocate.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -300,14 +341,13 @@ module darray
     ! Local variables.
     integer :: allocate_status
     ! Deallocate space for the dynamic array.
-    deallocate(darray%array, stat = allocate_status)
+    deallocate (darray%array, stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to deallocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
   end subroutine darrayCloseReal
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -320,14 +360,13 @@ module darray
     ! Local variables.
     integer :: allocate_status
     ! Deallocate space for the dynamic array.
-    deallocate(darray%array, stat = allocate_status)
+    deallocate (darray%array, stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to deallocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    return
   end subroutine darrayCloseDouble
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -335,14 +374,15 @@ module darray
   !>
   !> @param[in]     darray        The dynamic array.
   !> @param[in]     index         The index of the element needed.
-  !> @return                      The element at the provided index.
+  !> @return                      The element at the provided index. Elements
+  !>                                that have not been set are zero.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetInteger (darray, index) result (returnValue)
     type(darrayInteger), intent(in)    :: darray
     integer(kind = int32), intent(in)  :: index
     integer(kind = int32)              :: returnValue
     ! Grab the element at the provided index.
-    if (index .le. darray%capacity) then
+    if (index .ge. 1 .and. index .le. darray%capacity) then
       returnValue = darray%array(index)
     else
       write (unit = *, fmt = *) &
@@ -350,7 +390,6 @@ module darray
       ! Error, exit the program.
       stop
     end if
-    return
   end function darrayGetInteger
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -358,14 +397,15 @@ module darray
   !>
   !> @param[in]     darray        The dynamic array.
   !> @param[in]     index         The index of the element needed.
-  !> @return                      The element at the provided index.
+  !> @return                      The element at the provided index. Elements
+  !>                                that have not been set are zero.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetLong (darray, index) result (returnValue)
     type(darrayLong), intent(in)       :: darray
     integer(kind = int32), intent(in)  :: index
     integer(kind = int64)              :: returnValue
     ! Grab the element at the provided index.
-    if (index .le. darray%capacity) then
+    if (index .ge. 1 .and. index .le. darray%capacity) then
       returnValue = darray%array(index)
     else
       write (unit = *, fmt = *) &
@@ -373,7 +413,6 @@ module darray
       ! Error, exit the program.
       stop
     end if
-    return
   end function darrayGetLong
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -381,14 +420,15 @@ module darray
   !>
   !> @param[in]     darray        The dynamic array.
   !> @param[in]     index         The index of the element needed.
-  !> @return                      The element at the provided index.
+  !> @return                      The element at the provided index. Elements
+  !>                                that have not been set are zero.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetReal (darray, index) result (returnValue)
     type(darrayReal), intent(in)       :: darray
     integer(kind = int32), intent(in)  :: index
     real(kind = real32)                :: returnValue
     ! Grab the element at the provided index.
-    if (index .le. darray%capacity) then
+    if (index .ge. 1 .and. index .le. darray%capacity) then
       returnValue = darray%array(index)
     else
       write (unit = *, fmt = *) &
@@ -396,7 +436,6 @@ module darray
       ! Error, exit the program.
       stop
     end if
-    return
   end function darrayGetReal
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -404,14 +443,15 @@ module darray
   !>
   !> @param[in]     darray        The dynamic array.
   !> @param[in]     index         The index of the element needed.
-  !> @return                      The element at the provided index.
+  !> @return                      The element at the provided index. Elements
+  !>                                that have not been set are zero.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   function darrayGetDouble (darray, index) result (returnValue)
     type(darrayDouble), intent(in)     :: darray
     integer(kind = int32), intent(in)  :: index
     real(kind = real64)                :: returnValue
     ! Grab the element at the provided index.
-    if (index .le. darray%capacity) then
+    if (index .ge. 1 .and. index .le. darray%capacity) then
       returnValue = darray%array(index)
     else
       write (unit = *, fmt = *) &
@@ -419,7 +459,6 @@ module darray
       ! Error, exit the program.
       stop
     end if
-    return
   end function darrayGetDouble
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -433,12 +472,18 @@ module darray
     type(darrayInteger), intent(inout) :: darray
     integer(kind = int32), intent(in)  :: index
     integer(kind = int32), intent(in)  :: input
+    ! Make sure that the index is valid.
+    if (index .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid index to the dynamic array!", index
+      ! Error, exit the program.
+      stop
+    end if
     ! Make sure that the dynamic array capacity is large enough.
-    do while (index .ge. darray%capacity)
-      call darrayReallocateInteger(darray)
+    do while (index .gt. darray%capacity)
+      call darrayReallocateInteger (darray)
     end do
     darray%array(index) = input
-    return
   end subroutine darraySetInteger
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -452,12 +497,18 @@ module darray
     type(darrayLong), intent(inout)    :: darray
     integer(kind = int32), intent(in)  :: index
     integer(kind = int64), intent(in)  :: input
+    ! Make sure that the index is valid.
+    if (index .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid index to the dynamic array!", index
+      ! Error, exit the program.
+      stop
+    end if
     ! Make sure that the dynamic array capacity is large enough.
-    do while (index .ge. darray%capacity)
-      call darrayReallocateLong(darray)
+    do while (index .gt. darray%capacity)
+      call darrayReallocateLong (darray)
     end do
     darray%array(index) = input
-    return
   end subroutine darraySetLong
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -471,12 +522,18 @@ module darray
     type(darrayReal), intent(inout)    :: darray
     integer(kind = int32), intent(in)  :: index
     real(kind = real32), intent(in)    :: input
+    ! Make sure that the index is valid.
+    if (index .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid index to the dynamic array!", index
+      ! Error, exit the program.
+      stop
+    end if
     ! Make sure that the dynamic array capacity is large enough.
-    do while (index .ge. darray%capacity)
-      call darrayReallocateReal(darray)
+    do while (index .gt. darray%capacity)
+      call darrayReallocateReal (darray)
     end do
     darray%array(index) = input
-    return
   end subroutine darraySetReal
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -490,12 +547,18 @@ module darray
     type(darrayDouble), intent(inout)  :: darray
     integer(kind = int32), intent(in)  :: index
     real(kind = real64), intent(in)    :: input
+    ! Make sure that the index is valid.
+    if (index .lt. 1) then
+      write (unit = *, fmt = *) &
+        "Invalid index to the dynamic array!", index
+      ! Error, exit the program.
+      stop
+    end if
     ! Make sure that the dynamic array capacity is large enough.
-    do while (index .ge. darray%capacity)
-      call darrayReallocateDouble(darray)
+    do while (index .gt. darray%capacity)
+      call darrayReallocateDouble (darray)
     end do
     darray%array(index) = input
-    return
   end subroutine darraySetDouble
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -511,45 +574,21 @@ module darray
     integer(kind = int32), allocatable :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
-    ! Allocate space for the temporary array.
-    allocate(tmp_array(capacity), stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Copy the data to the temporary array.
-    tmp_array(1:darray%capacity) = darray%array
-    ! Deallocate the old array.
-    deallocate(darray%array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to deallocate memory for the dynamic array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Allocate space for the new array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    ! Allocate space for the larger array.
+    allocate (tmp_array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    ! Copy the temporary array into the newly resized array.
-    darray%array = tmp_array
-    ! Deallocate the temporary array.
-    deallocate(tmp_array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
+    ! Set every element to zero, copy the data, and make the larger array
+    ! the dynamic array.
+    tmp_array = 0_int32
+    tmp_array(1:darray%capacity) = darray%array
+    call move_alloc (tmp_array, darray%array)
     ! Update the capacity information.
     darray%capacity = capacity
-    return
   end subroutine darrayReallocateInteger
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -565,45 +604,21 @@ module darray
     integer(kind = int64), allocatable :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
-    ! Allocate space for the temporary array.
-    allocate(tmp_array(capacity), stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Copy the data to the temporary array.
-    tmp_array(1:darray%capacity) = darray%array
-    ! Deallocate the old array.
-    deallocate(darray%array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to deallocate memory for the dynamic array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Allocate space for the new array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    ! Allocate space for the larger array.
+    allocate (tmp_array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    ! Copy the temporary array into the newly resized array.
-    darray%array = tmp_array
-    ! Deallocate the temporary array.
-    deallocate(tmp_array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
+    ! Set every element to zero, copy the data, and make the larger array
+    ! the dynamic array.
+    tmp_array = 0_int64
+    tmp_array(1:darray%capacity) = darray%array
+    call move_alloc (tmp_array, darray%array)
     ! Update the capacity information.
     darray%capacity = capacity
-    return
   end subroutine darrayReallocateLong
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -619,45 +634,21 @@ module darray
     real(kind = real32), allocatable   :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
-    ! Allocate space for the temporary array.
-    allocate(tmp_array(capacity), stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Copy the data to the temporary array.
-    tmp_array(1:darray%capacity) = darray%array
-    ! Deallocate the old array.
-    deallocate(darray%array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to deallocate memory for the dynamic array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Allocate space for the new array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    ! Allocate space for the larger array.
+    allocate (tmp_array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    ! Copy the temporary array into the newly resized array.
-    darray%array = tmp_array
-    ! Deallocate the temporary array.
-    deallocate(tmp_array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
+    ! Set every element to zero, copy the data, and make the larger array
+    ! the dynamic array.
+    tmp_array = 0.0_real32
+    tmp_array(1:darray%capacity) = darray%array
+    call move_alloc (tmp_array, darray%array)
     ! Update the capacity information.
     darray%capacity = capacity
-    return
   end subroutine darrayReallocateReal
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -673,45 +664,21 @@ module darray
     real(kind = real64), allocatable   :: tmp_array(:)
     ! Increase capacity.
     capacity = darray%capacity + darray%initialCapacity
-    ! Allocate space for the temporary array.
-    allocate(tmp_array(capacity), stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Copy the data to the temporary array.
-    tmp_array(1:darray%capacity) = darray%array
-    ! Deallocate the old array.
-    deallocate(darray%array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to deallocate memory for the dynamic array!"
-      ! Error, exit the program.
-      stop
-    end if
-    ! Allocate space for the new array.
-    allocate(darray%array(capacity), stat = allocate_status)
+    ! Allocate space for the larger array.
+    allocate (tmp_array(capacity), stat = allocate_status)
     if (allocate_status .gt. 0) then
       write (unit = *, fmt = *) &
         "Failed to allocate memory for the dynamic array!"
       ! Error, exit the program.
       stop
     end if
-    ! Copy the temporary array into the newly resized array.
-    darray%array = tmp_array
-    ! Deallocate the temporary array.
-    deallocate(tmp_array, stat = allocate_status)
-    if (allocate_status .gt. 0) then
-      write (unit = *, fmt = *) &
-        "Failed to allocate memory for the temporary array!"
-      ! Error, exit the program.
-      stop
-    end if
+    ! Set every element to zero, copy the data, and make the larger array
+    ! the dynamic array.
+    tmp_array = 0.0_real64
+    tmp_array(1:darray%capacity) = darray%array
+    call move_alloc (tmp_array, darray%array)
     ! Update the capacity information.
     darray%capacity = capacity
-    return
   end subroutine darrayReallocateDouble
 
 end module darray
