@@ -39,8 +39,8 @@
 !>     call ziggurat_seed (rng, iii)
 !>     ! Generate some random numbers.
 !>     do i = 1, 10
-!>       x = ziggurat_uni(rng)
-!>       write(*,*) i, x
+!>       x = ziggurat_uni (rng)
+!>       write (*,*) i, x
 !>     end do
 !>   end program zigguratTest
 !> @endcode
@@ -179,7 +179,7 @@ module ziggurat
   function ziggurat_uni (state) result (return_value)
     type(ziggurat_t), intent(inout) :: state
     real(kind = real32)             :: return_value
-    return_value = 0.5 + ziggurat_shr3(state) * 0.2328306e-9
+    return_value = 0.5 + ziggurat_shr3 (state) * 0.2328306e-9
     return
   end function ziggurat_uni
 
@@ -202,7 +202,7 @@ module ziggurat
     real(kind = real32) :: x
     real(kind = real32) :: y
     real(kind = real32) :: z
-    hz = ziggurat_shr3(state)
+    hz = ziggurat_shr3 (state)
     iz = iand (hz, 127)
     if (abs (int (hz, kind = int64)) .lt. state%kn(iz)) then
       return_value = hz * state%wn(iz)
@@ -213,8 +213,8 @@ module ziggurat
         ! Handle the base strip.
         if (iz .eq. 0) then
           do
-            x = -log (ziggurat_uni(state)) * rinv
-            y = -log (ziggurat_uni(state))
+            x = -log (ziggurat_uni (state)) * rinv
+            y = -log (ziggurat_uni (state))
             if (y + y .ge. x * x) exit
           end do
           if (hz .gt. 0) then
@@ -225,14 +225,14 @@ module ziggurat
           return
         end if
         ! Handle the wedges of other strips.
-        z = state%fn(iz) + ziggurat_uni(state) * &
+        z = state%fn(iz) + ziggurat_uni (state) * &
           (state%fn(iz - 1) - state%fn(iz))
         if (z .lt. exp (-0.5 * x * x)) then
           return_value = x
           return
         end if
         ! Try to exit do loop.
-        hz = ziggurat_shr3(state)
+        hz = ziggurat_shr3 (state)
         iz = iand (hz, 127)
         if (abs (int (hz, kind = int64)) .lt. state%kn(iz)) then
           return_value = hz * state%wn(iz)
@@ -259,7 +259,7 @@ module ziggurat
     integer(kind = int64) :: ujz
     real(kind = real32)   :: x
     real(kind = real32)   :: y
-    jz = ziggurat_shr3(state)
+    jz = ziggurat_shr3 (state)
     ujz = iand (int (jz, kind = int64), mask32)
     iz = iand (jz, 255)
     if (ujz .lt. state%ke(iz)) then
@@ -269,19 +269,19 @@ module ziggurat
       do
         ! Handles the base strip.
         if (iz .eq. 0) then
-          return_value = 7.69711 - log (ziggurat_uni(state))
+          return_value = 7.69711 - log (ziggurat_uni (state))
           exit
         end if
         ! Handle the wedges of other strips.
         x = real (ujz, kind = real32) * state%we(iz)
-        y = state%fe(iz) + ziggurat_uni(state) * &
+        y = state%fe(iz) + ziggurat_uni (state) * &
           (state%fe(iz - 1) - state%fe(iz))
         if (y .lt. exp (-x)) then
           return_value = x
           exit
         end if
         ! Try to exit do loop.
-        jz = ziggurat_shr3(state)
+        jz = ziggurat_shr3 (state)
         ujz = iand (int (jz, kind = int64), mask32)
         iz = iand (jz, 255)
         if (ujz .lt. state%ke(iz)) then
