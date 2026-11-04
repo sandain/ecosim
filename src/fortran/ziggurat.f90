@@ -31,7 +31,7 @@
 !>   program zigguratTest
 !>     use :: ziggurat
 !>     implicit none
-!>     integer, parameter :: iii = 123456789 !< The RNG seed.
+!>     integer, parameter :: iii = 362436069 !< The RNG seed.
 !>     integer            :: i
 !>     real               :: x
 !>     type(ziggurat_t)   :: rng
@@ -95,7 +95,8 @@ module ziggurat
   !> the ziggurat algorithm.
   !>
   !> @param state The state variables for the ziggurat algorithm.
-  !> @param iii The seed for the ziggurat algorithm.
+  !> @param iii The seed for the ziggurat algorithm. A seed of 123456789 gives
+  !>            an all-zero state and must not be used.
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine ziggurat_seed (state, iii)
     type(ziggurat_t), intent(inout)   :: state
@@ -116,7 +117,7 @@ module ziggurat
     de = 7.697117470131487d0
     tn = dn
     te = de
-    state%jsr = iii
+    state%jsr = ieor (123456789_int32, iii)
     ! Tables for RNOR:
     q = vn / exp (-0.5 * dn * dn)
     state%kn(0) = int (dn / q * m1, kind = int32)
