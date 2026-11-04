@@ -160,17 +160,12 @@ module ziggurat
     integer(kind = int32)           :: return_value
     ! Local variables.
     integer(kind = int32) :: jz
-    integer(kind = int64) :: s
     jz = state%jsr
     state%jsr = ieor (state%jsr, ishft (state%jsr, 13))
     state%jsr = ieor (state%jsr, ishft (state%jsr, -17))
     state%jsr = ieor (state%jsr, ishft (state%jsr, 5))
-    ! Add modulo 2**32 in 64-bit arithmetic to avoid signed 32-bit overflow.
-    s = iand (int (jz, kind = int64) + int (state%jsr, kind = int64), mask32)
-    if (s .gt. int (huge (return_value), kind = int64)) then
-      s = s - 4294967296_int64
-    end if
-    return_value = int (s, kind = int32)
+    ! Add as unsigned values, avoiding signed 32-bit overflow.
+    return_value = to_signed (to_unsigned (jz) + to_unsigned (state%jsr))
   end function ziggurat_shr3
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -310,5 +305,24 @@ module ziggurat
     integer(kind = int64)             :: return_value
     return_value = iand (int (x, kind = int64), mask32)
   end function to_unsigned
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !> Converts the low 32 bits of a 64-bit integer to a 32-bit integer with
+  !> the same bits.
+  !>
+  !> @param x A 64-bit integer.
+  !> @return A 32-bit integer with the low 32 bits of x.
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  pure function to_signed (x) result (return_value)
+    integer(kind = int64), intent(in) :: x
+    integer(kind = int32)             :: return_value
+    ! Local variables.
+    integer(kind = int64) :: v
+    v = iand (x, mask32)
+    if (v .gt. int (huge (return_value), kind = int64)) then
+      v = v - 4294967296_int64
+    end if
+    return_value = int (v, kind = int32)
+  end function to_signed
 
 end module ziggurat
