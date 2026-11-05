@@ -44,8 +44,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -123,13 +121,12 @@ public class MainWindow extends JFrame implements Runnable {
         pane.addTab ("Summary", new SummaryPane (summary));
         pane.addTab ("Log", new LoggerPane (log));
         // Watch for changes to the Summary object.
-        summary.addObserver (new Observer () {
+        summary.addListener (new Summary.Listener () {
             private boolean treeDisplayed = false;
             private boolean demarcationDisplayed = false;
             private JScrollPane treeScroll = new JScrollPane ();
             private JScrollPane demarcationScroll = new JScrollPane ();
-            public void update (Observable o, Object obj) {
-                Summary s = (Summary)obj;
+            public void summaryChanged (Summary s) {
                 // Update the tree scroll pane.
                 Tree t = s.getTree ();
                 if (t == null || ! t.isValid ()) return;
@@ -176,7 +173,7 @@ public class MainWindow extends JFrame implements Runnable {
                 pane.repaint ();
             }
         });
-        summary.refreshObservers ();
+        summary.refreshListeners ();
         return pane;
     }
 

@@ -25,22 +25,38 @@ package ecosim;
 import ecosim.tree.Tree;
 
 import java.util.ArrayList;
-import java.util.Observable;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *  The summary class is used to display summary information to the user.
- *  This class utilizes the observer pattern to update listeners when the
- *  summary information has changed.
+ *  Listeners are passed the summary each time the summary information
+ *  changes.
  *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class Summary extends Observable {
+public class Summary {
+
+    /**
+     *  Receives a Summary each time its information changes.
+     */
+    public interface Listener {
+
+        /**
+         *  Called each time the summary information changes.
+         *
+         *  @param summary The summary that changed.
+         */
+        void summaryChanged (Summary summary);
+
+    }
 
     /**
      *  An object to store summary information about the simulation.
      */
     public Summary () {
+        listeners = new CopyOnWriteArrayList<Listener> ();
         bins = new ArrayList<BinLevel> ();
         nu = 0;
         length = 0;
@@ -150,7 +166,7 @@ public class Summary extends Observable {
     public void setTree (Tree tree) {
         this.tree = tree;
         this.diversity = tree.getDiversity ();
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -160,7 +176,7 @@ public class Summary extends Observable {
      */
     public void setBins (ArrayList<BinLevel> bins) {
         this.bins = bins;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -170,7 +186,7 @@ public class Summary extends Observable {
      */
     public void setNu (Integer nu) {
         this.nu = nu;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -180,7 +196,7 @@ public class Summary extends Observable {
      */
     public void setLength (Integer length) {
         this.length = length;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -190,7 +206,7 @@ public class Summary extends Observable {
      */
     public void setOutgroup (String outgroup) {
         this.outgroup = outgroup;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -200,7 +216,7 @@ public class Summary extends Observable {
      */
     public void setEstimate (ParameterEstimate estimate) {
         this.estimate = estimate;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -210,7 +226,7 @@ public class Summary extends Observable {
      */
     public void setHillclimbing (ParameterSet hillclimbing) {
         this.hillclimbing = hillclimbing;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -220,7 +236,7 @@ public class Summary extends Observable {
      */
     public void setConfidenceInterval (ParameterSet[] confidenceInterval) {
         this.confidenceInterval = confidenceInterval;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
@@ -230,17 +246,29 @@ public class Summary extends Observable {
      */
     public void setDemarcation (Demarcation demarcation) {
         this.demarcation = demarcation;
-        refreshObservers ();
+        refreshListeners ();
     }
 
     /**
-     *  Refresh all observers.
+     *  Add a listener, to be passed this summary each time its information
+     *  changes.  Listeners are called in the order they were added.
+     *
+     *  @param listener The listener to add.
      */
-    public void refreshObservers () {
-        setChanged ();
-        notifyObservers (this);
-    }
+    public void addListener (Listener listener) {
+        listeners.add (listener);
+     }
 
+     /**
+     *  Pass this summary to all of the listeners.
+      */
+    public void refreshListeners () {
+        for (Listener listener: listeners) {
+            listener.summaryChanged (this);
+        }
+     }
+
+    private List<Listener> listeners;
     private Tree tree;
     private Double diversity;
     private Integer nu;

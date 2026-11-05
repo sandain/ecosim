@@ -109,7 +109,7 @@ public class Simulation {
         this.demarcationPaintMethod = demarcationPaintMethod;
         if (demarcation != null) {
             demarcation.setPaintMethod (demarcationPaintMethod);
-            summary.refreshObservers ();
+            summary.refreshListeners ();
         }
     }
 
@@ -125,7 +125,7 @@ public class Simulation {
         if (demarcation != null && demarcation.isValid ()) {
             demarcation.setScale (scale);
         }
-        summary.refreshObservers ();
+        summary.refreshListeners ();
     }
 
     /**
