@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2016-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2016-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -29,6 +29,19 @@ import java.util.Collections;
 /**
  *  Object to estimate the parameter values from the binning results.
  *
+ *  The binning results are plotted as the number of sequence differences
+ *  against the log base 2 of the number of bins. The flat ends of the curve
+ *  are excluded, and the remaining points are split in two with a
+ *  breakpoint search: every split that leaves at least two points on each
+ *  side is tried, a straight line is fitted to each side, and the split with
+ *  the smallest total squared error is kept. Only splits where both lines
+ *  fall and the low divergence line is the steeper are accepted. The slope
+ *  of the steeper line gives sigma, the slope of the shallower line gives
+ *  omega, and the intersection of the two lines gives npop.
+ *
+ *  If no split is accepted, the estimate is not valid: omega and sigma are
+ *  set to NaN and npop to 1.
+ *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
@@ -38,26 +51,21 @@ public class ParameterEstimate implements Runnable {
      *  The parameter estimate program.
      */
     public ParameterEstimate () {
-        this (0, 0, new Binning ());
+        this (0, new Binning ());
     }
 
     /**
      *  The parameter estimate program.
      *
-     *  @param nu The number of environmental sequences.
      *  @param length The length of the sequences being analyzed.
      *  @param binning The Binning object.
      */
-    public ParameterEstimate (Integer nu, Integer length, Binning binning) {
-        this.nu = nu;
+    public ParameterEstimate (Integer length, Binning binning) {
         this.length = length;
         this.binning = binning;
         result = new ParameterSet ();
         sigma = new Line (new ArrayList<Point> ());
         omega = new Line (new ArrayList<Point> ());
-        // The threshold needs to be modified by the number of environmental
-        // sequences.
-        threshold *= Math.log (nu) / logTwo;
         hasRun = false;
     }
 
@@ -68,75 +76,43 @@ public class ParameterEstimate implements Runnable {
         // Calculate the list of points that the sigma and omega lines will
         // be fitted to.
         List<Point> points = getPoints (length);
-        // Estimate the bounds of the sigma and omega lines.
+        // Find the bounds of the points between the flat ends of the curve.
         Integer[] bounds = getBounds (points);
-        Integer[] sigmaBounds = {
-            bounds[0],
-            (int)Math.floor ((bounds[1] - bounds[0]) / 2 + bounds[0])
-        };
-        Integer[] omegaBounds = {
-            (int)Math.ceil ((bounds[1] - bounds[0]) / 2 + bounds[0]),
-            bounds[1]
-        };
-        // Optimize the sigma and omega lines using a custom variant of
-        // Lloyd's Algorithm.
-        Double error = 0.0D;
-        Double previousError = 0.0D;
-        Double deltaError = 1.0D;
-        // Keep track of the bounds that produce the smallest error.
-        Integer[] minSigmaBounds = sigmaBounds;
-        Integer[] minOmegaBounds = omegaBounds;
-        int num = 0;
-        while (deltaError > MainVariables.EPSILON) {
-            // Calculate the sigma and omega lines for the current guess.
-            sigma = new Line (points.subList (sigmaBounds[0], sigmaBounds[1]));
-            omega = new Line (points.subList (omegaBounds[0], omegaBounds[1]));
-            // Save the previous error.
-            previousError = error;
-            // Calculate the current error.
-            error = 0.0D;
-            for (int i = 1; i < points.size (); i ++) {
-                Double sigmaError = squaredError (points.get (i), sigma);
-                Double omegaError = squaredError (points.get (i), omega);
-                if (sigmaError < threshold && sigmaError < omegaError) {
-                    // Save the bounds of the points for the sigma line.
-                    if (i < sigmaBounds[0]) {
-                        sigmaBounds[0] = i;
-                    }
-                    if (i > sigmaBounds[1]) {
-                        sigmaBounds[1] = i;
-                        omegaBounds[0] = i + 1;
-                    }
-                    // Add to the total error.
-                    error += sigmaError;
-                }
-                else if (omegaError < threshold) {
-                    // Save the bounds of the points for the omega line.
-                    if (i < omegaBounds[0]) {
-                        omegaBounds[0] = i;
-                        sigmaBounds[1] = i - 1;
-                    }
-                    if (i > omegaBounds[1]) {
-                        omegaBounds[1] = i;
-                    }
-                    // Add to the total error.
-                    error += omegaError;
-                }
-            }
-            // Calculate the delta error.
-            deltaError = Math.abs (error - previousError);
-            // Make sure we don't get stuck in an infinite loop.
-            num ++;
-            if (error < previousError) {
-                minSigmaBounds = sigmaBounds;
-                minOmegaBounds = omegaBounds;
-            }
-            if (num > 10) {
-                sigmaBounds = minSigmaBounds;
-                omegaBounds = minOmegaBounds;
-                break;
+        // Search for the split of the points into a sigma line and an omega
+        // line with the smallest total squared error.
+        Line bestSigma = null;
+        Line bestOmega = null;
+        Double bestError = Double.MAX_VALUE;
+        int first = bounds[0] + MIN_POINTS;
+        int last = bounds[1] - MIN_POINTS;
+        for (int split = first; split <= last; split ++) {
+            List<Point> sigmaPoints = points.subList (bounds[0], split);
+            List<Point> omegaPoints = points.subList (split, bounds[1]);
+            Line sigmaLine = new Line (sigmaPoints);
+            Line omegaLine = new Line (omegaPoints);
+            // Only accept splits where both lines fall and the sigma line is
+            // the steeper of the two.
+            if (! (sigmaLine.m < omegaLine.m && omegaLine.m < 0.0d)) continue;
+            Double error = sigmaLine.squaredError (sigmaPoints) +
+                omegaLine.squaredError (omegaPoints);
+            if (error < bestError) {
+                bestError = error;
+                bestSigma = sigmaLine;
+                bestOmega = omegaLine;
             }
         }
+        // Without an accepted split, the estimate is not valid.
+        if (bestSigma == null) {
+            sigma.m = Double.NaN;
+            sigma.b = Double.NaN;
+            omega.m = Double.NaN;
+            omega.b = Double.NaN;
+            result = new ParameterSet (1L, Double.NaN, Double.NaN, null);
+            hasRun = true;
+            return;
+        }
+        sigma = bestSigma;
+        omega = bestOmega;
         // Omega is estimated from the slope of the omega line.
         Double omegaEstimate = -1.0d * omega.m;
         // Sigma is estimated from the slope of the sigma line.
@@ -274,27 +250,6 @@ public class ParameterEstimate implements Runnable {
     }
 
     /**
-     *  Calculate the squared error of the point compared to the line.
-     *
-     *  @param point The point.
-     *  @param line The line.
-     *  @return The squared error of the point compared to the line.
-     */
-    private Double squaredError (Point point, Line line) {
-        Double error = Double.MAX_VALUE;
-        // If the line has a non-zero slope, calculate the squared distance of
-        // the point from the line as the error.
-        if (Math.abs (line.m) < MainVariables.EPSILON) {
-            Double a = Math.abs (-1 * line.m * point.x + point.y - line.b);
-            Double b = Math.sqrt (line.m * line.m + 1);
-            Double dist = a / b;
-            // The error is the square of the distance.
-            error = dist * dist;
-        }
-        return error;
-    }
-
-    /**
      *  Calculate the list of points from the binning results.
      *
      *  @param length The length of the sequences.
@@ -318,16 +273,18 @@ public class ParameterEstimate implements Runnable {
         return points;
     }
 
-    private Integer nu;
     private Integer length;
     private Binning binning;
 
     private Line sigma;
     private Line omega;
 
-    private Double threshold = 0.1d;
-
     private final Double logTwo = Math.log (2);
+
+    /**
+     *  The minimum number of points each line is fitted to.
+     */
+    private static final int MIN_POINTS = 2;
 
     /**
      * The resulting estimate for the parameter values.
@@ -341,6 +298,7 @@ public class ParameterEstimate implements Runnable {
      *  of points.
      */
     private class Line {
+
         public Line (List<Point> points) {
             Double sumX = 0.0d;
             Double sumY = 0.0d;
@@ -357,20 +315,41 @@ public class ParameterEstimate implements Runnable {
             b = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX);
             m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
         }
+
+        /**
+         *  Calculate the sum of the squared vertical distances of the points
+         *  from this line.
+         *
+         *  @param points The points.
+         *  @return The sum of the squared errors.
+         */
+        public Double squaredError (List<Point> points) {
+            Double error = 0.0d;
+            for (Point point: points) {
+                Double residual = point.y - (m * point.x + b);
+                error += residual * residual;
+            }
+            return error;
+        }
+
         public Double b;
         public Double m;
+
     }
 
     /**
      *  A private class to store a simple XY point value.
      */
     private class Point {
+
         public Point (Double x, Double y) {
             this.x = x;
             this.y = y;
         }
+
         public Double x;
         public Double y;
+
     }
 
 }

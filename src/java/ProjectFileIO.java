@@ -551,7 +551,7 @@ public class ProjectFileIO {
                         if (estimate == null) {
                             if (binning != null) {
                                 estimate = new ParameterEstimate (
-                                    nu, length, binning
+                                    length, binning
                                 );
                             }
                             else {

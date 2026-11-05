@@ -412,7 +412,7 @@ public class Simulation {
         log.appendln ("Setting initial parameter values to:");
         log.appendln (initialValues.toString ());
         log.appendln ();
-        estimate = new ParameterEstimate (nu, length, binning);
+        estimate = new ParameterEstimate (length, binning);
         estimate.setResult (initialValues);
         estimate.setHasRun (true);
         summary.setEstimate (estimate);
@@ -425,7 +425,7 @@ public class Simulation {
         // Start running the parameter estimate.
         running = true;
         log.appendln ("Running parameter estimate...");
-        estimate = new ParameterEstimate (nu, length, binning);
+        estimate = new ParameterEstimate (length, binning);
         estimate.run ();
         // Update the summary data.
         summary.setEstimate (estimate);
