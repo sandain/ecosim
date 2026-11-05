@@ -327,7 +327,7 @@ public class ProjectFileIO {
      */
     public void load (File projectFile) {
         XMLHandler handler = new XMLHandler ();
-        try {
+        try (FileReader reader = new FileReader (projectFile)) {
             // The handler matches on local names, which a parser only
             // reports when it is namespace aware.
             SAXParserFactory factory = SAXParserFactory.newInstance ();
@@ -335,7 +335,7 @@ public class ProjectFileIO {
             XMLReader xr = factory.newSAXParser ().getXMLReader ();
             xr.setContentHandler (handler);
             xr.setErrorHandler (handler);
-            xr.parse (new InputSource (new FileReader (projectFile)));
+            xr.parse (new InputSource (reader));
         }
         catch (Exception e) {
             e.printStackTrace ();
