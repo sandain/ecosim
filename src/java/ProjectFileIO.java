@@ -27,9 +27,11 @@ import ecosim.tree.Tree;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -116,9 +118,10 @@ public class ProjectFileIO {
      */
     public void save (File projectFile) {
         try {
-            BufferedWriter out = new BufferedWriter (
-                new FileWriter (projectFile)
-            );
+            // The file is written in the encoding its XML header declares.
+            BufferedWriter out = new BufferedWriter (new OutputStreamWriter (
+                new FileOutputStream (projectFile), StandardCharsets.UTF_8
+            ));
             // Output the XML header.
             out.write ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             out.write (String.format (
@@ -327,7 +330,8 @@ public class ProjectFileIO {
      */
     public void load (File projectFile) {
         XMLHandler handler = new XMLHandler ();
-        try (FileReader reader = new FileReader (projectFile)) {
+        // The parser reads the file in the encoding its XML header declares.
+        try (FileInputStream in = new FileInputStream (projectFile)) {
             // The handler matches on local names, which a parser only
             // reports when it is namespace aware.
             SAXParserFactory factory = SAXParserFactory.newInstance ();
@@ -335,7 +339,7 @@ public class ProjectFileIO {
             XMLReader xr = factory.newSAXParser ().getXMLReader ();
             xr.setContentHandler (handler);
             xr.setErrorHandler (handler);
-            xr.parse (new InputSource (reader));
+            xr.parse (new InputSource (in));
         }
         catch (Exception e) {
             e.printStackTrace ();
