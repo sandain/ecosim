@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2013-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2013-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
+import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *  Perform input and output operations for the XML formatted project file.
@@ -328,7 +328,11 @@ public class ProjectFileIO {
     public void load (File projectFile) {
         XMLHandler handler = new XMLHandler ();
         try {
-            XMLReader xr = XMLReaderFactory.createXMLReader ();
+            // The handler matches on local names, which a parser only
+            // reports when it is namespace aware.
+            SAXParserFactory factory = SAXParserFactory.newInstance ();
+            factory.setNamespaceAware (true);
+            XMLReader xr = factory.newSAXParser ().getXMLReader ();
             xr.setContentHandler (handler);
             xr.setErrorHandler (handler);
             xr.parse (new InputSource (new FileReader (projectFile)));
