@@ -96,7 +96,7 @@ import javax.swing.SwingUtilities;
  * @li @b Demarcation - Demarcates ecotypes based on the hillclimbing values
  *        and the phylogeny of the sequences using the ::demarcation program.
  * @li @b Execs - Holds the executable methods for the various programs.
- * @li @b Fasta - Handles the input and output of fasta formatted text files.
+ * @li @b Fasta - Reads the outgroup and alignment length from a Fasta file.
  * @li @b Heapsorter - Runs the heapsort on a given set of data.
  * @li @b Hillclimb - Object to interact with the ::hillclimb program.
  * @li @b InvalidFastaException - Report a malformed Fasta file.

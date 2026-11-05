@@ -1,51 +1,92 @@
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import ecosim.Fasta;
-import ecosim.Sequence;
 import ecosim.InvalidFastaException;
 
 public class TestFasta {
 
-    @Before
-    public void setup () throws InvalidFastaException {
-        File fastaFile = new File ("build/tests/java/assets/TestFasta.fa");
-        fasta = new Fasta (fastaFile);
-    }
-
     @Test
     public void testOutgroup () throws InvalidFastaException {
-        Sequence outgroup = fasta.getOutgroup ();
-        assertEquals ("Identifier mismatch.", "test_sequence", outgroup.getIdentifier ());
-        assertEquals ("Description mismatch.", "Test description", outgroup.getDescription ());
-        assertEquals ("Sequence mismatch.", "acgttgca", outgroup.getSequence ());
+        Fasta fasta = new Fasta (asset ("TestFasta.fa"));
+        assertEquals (
+            "Outgroup mismatch.", "test_sequence", fasta.getOutgroup ()
+        );
     }
 
     @Test
-    public void testNextSequence () throws InvalidFastaException {
-        Sequence seq;
-        // Check the first sequence.
-        seq = fasta.nextSequence ();
-        assertEquals ("Identifier mismatch.", "gb|CP000239.1|:2536947-2539214", seq.getIdentifier ());
-        // Check the second sequence.
-        seq = fasta.nextSequence ();
-        assertEquals ("Identifier mismatch.", "gb|CP000240.1|:c28351-26084", seq.getIdentifier ());
+    public void testLength () throws InvalidFastaException {
+        Fasta fasta = new Fasta (asset ("TestFasta.fa"));
+        assertEquals ("Length mismatch.", 8, fasta.getLength ());
     }
 
-    @After
-    public void teardown () throws InvalidFastaException {
-        fasta.close ();
+    @Test
+    public void testSize () throws InvalidFastaException {
+        Fasta fasta = new Fasta (asset ("TestFasta.fa"));
+        assertEquals ("Size mismatch.", 3, fasta.size ());
+     }
+
+    @Test
+    public void testWindowsLineEndings () throws InvalidFastaException {
+        Fasta fasta = new Fasta (asset ("TestFastaCRLF.fa"));
+        assertEquals (
+            "Outgroup mismatch.", "test_sequence", fasta.getOutgroup ()
+        );
+        assertEquals ("Length mismatch.", 8, fasta.getLength ());
+        assertEquals ("Size mismatch.", 3, fasta.size ());
     }
 
-    private Fasta fasta;
+    @Test (expected = InvalidFastaException.class)
+    public void testDuplicateIdentifier () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaDuplicate.fa"));
+    }
+
+    @Test (expected = InvalidFastaException.class)
+    public void testUnaligned () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaUnaligned.fa"));
+     }
+
+    @Test (expected = InvalidFastaException.class)
+    public void testNoHeader () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaNoHeader.fa"));
+     }
+
+    @Test (expected = InvalidFastaException.class)
+    public void testNoSequences () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaEmpty.fa"));
+    }
+
+    @Test (expected = InvalidFastaException.class)
+    public void testNoSequenceData () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaNoData.fa"));
+    }
+
+    @Test (expected = InvalidFastaException.class)
+    public void testNoIdentifier () throws InvalidFastaException {
+        new Fasta (asset ("TestFastaNoIdentifier.fa"));
+    }
+
+    @Test
+    public void testMissingFile () {
+        File missing = asset ("TestFastaMissing.fa");
+        try {
+            new Fasta (missing);
+            fail ("A missing file was accepted.");
+        }
+        catch (InvalidFastaException e) {
+            // Expected.
+        }
+        assertFalse ("A missing file was created.", missing.exists ());
+    }
+
+    private File asset (String name) {
+        return new File ("build/tests/java/assets/" + name);
+    }
 
 }

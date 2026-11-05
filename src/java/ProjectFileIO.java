@@ -58,7 +58,6 @@ public class ProjectFileIO {
         Execs execs) {
         this.mainVariables = mainVariables;
         this.execs = execs;
-        Fasta fasta = new Fasta ();
         // Create new objects for each item in the project file.
         nu = 0;
         length = 0;

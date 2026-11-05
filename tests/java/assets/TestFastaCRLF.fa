@@ -1,0 +1,9 @@
+
+>test_sequence Test description
+acgttgca
+
+>seq_two Wrapped sequence
+acgt
+tgca
+>seq_three
+ACGTTGCA

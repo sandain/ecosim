@@ -274,10 +274,9 @@ public class Simulation {
             }
         }
         try {
-            fasta = new Fasta (mainVariables.getSequenceFile ());
-            Sequence outgroupSequence = fasta.getOutgroup ();
-            length = outgroupSequence.length ();
-            outgroup = outgroupSequence.getIdentifier ();
+            Fasta fasta = new Fasta (mainVariables.getSequenceFile ());
+            length = fasta.getLength ();
+            outgroup = fasta.getOutgroup ();
             // Update the summary data.
             summary.setLength (length);
             summary.setOutgroup (outgroup);
@@ -638,7 +637,6 @@ public class Simulation {
     protected MainVariables mainVariables;
     protected Execs execs;
     protected Summary summary;
-    protected Fasta fasta;
     protected Integer nu;
     protected Integer length;
     protected String outgroup;
