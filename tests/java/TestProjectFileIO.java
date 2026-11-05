@@ -84,7 +84,7 @@ public class TestProjectFileIO {
     public void testEncoding () throws IOException, InvalidTreeException {
         // The file is written in UTF-8, whatever the platform's default
         // charset, and a non-ASCII name is loaded back unchanged.
-        String name = "Ärz";
+        String name = "\u00c4rz";
         Tree nonAscii = new Tree ("((A:0.1,B:0.1):0.1," + name + ":0.2);");
         ProjectFileIO saved = new ProjectFileIO (
             mainVariables, null, 2, LENGTH, name, nonAscii, null,
