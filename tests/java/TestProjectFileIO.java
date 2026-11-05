@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +17,8 @@ import org.junit.Test;
 import ecosim.Binning;
 import ecosim.BinLevel;
 import ecosim.MainVariables;
+import ecosim.ParameterEstimate;
+import ecosim.ParameterSet;
 import ecosim.ProjectFileIO;
 import ecosim.tree.InvalidTreeException;
 import ecosim.tree.Tree;
@@ -103,9 +106,58 @@ public class TestProjectFileIO {
         assertEquals ("Outgroup mismatch.", name, reloaded.getOutgroup ());
     }
 
+    @Test
+    public void testLocale () {
+        // Numbers are written the same way whatever the default locale, so
+        // a project saved in a locale with a decimal comma loads back
+        // unchanged.
+        ParameterEstimate estimate = new ParameterEstimate (LENGTH, binning);
+        estimate.setOmega (-0.125d, 7.0d);
+        estimate.setSigma (-0.5d, 10.0d);
+        estimate.setResult (new ParameterSet (64L, 0.125d, 0.5d, 0.0d));
+        estimate.setHasRun (true);
+        Locale defaultLocale = Locale.getDefault ();
+        try {
+            Locale.setDefault (Locale.GERMANY);
+            ProjectFileIO saved = new ProjectFileIO (
+                mainVariables, null, NU, LENGTH, OUTGROUP, tree, binning,
+                estimate, null, null, null, null, null
+            );
+            saved.save (projectFile);
+        }
+        finally {
+            Locale.setDefault (defaultLocale);
+        }
+        ProjectFileIO reloaded = new ProjectFileIO (mainVariables, null);
+        reloaded.load (projectFile);
+        ParameterEstimate result = reloaded.getEstimate ();
+        assertNotNull ("Estimate not loaded.", result);
+        assertEquals (
+            "Omega slope mismatch.", -0.125d, result.getOmega ()[0], TOLERANCE
+        );
+        assertEquals (
+            "Omega intercept mismatch.", 7.0d, result.getOmega ()[1], TOLERANCE
+        );
+        assertEquals (
+            "Sigma slope mismatch.", -0.5d, result.getSigma ()[0], TOLERANCE
+        );
+        assertEquals (
+            "Sigma intercept mismatch.",
+            10.0d, result.getSigma ()[1], TOLERANCE
+        );
+        assertEquals (
+            "Omega mismatch.",
+            0.125d, result.getResult ().getOmega (), TOLERANCE
+        );
+        assertEquals (
+            "Sigma mismatch.", 0.5d, result.getResult ().getSigma (), TOLERANCE
+        );
+    }
+
     private static final Integer NU = 4;
     private static final Integer LENGTH = 1000;
     private static final String OUTGROUP = "E";
+    private static final double TOLERANCE = 1.0e-9d;
 
     private MainVariables mainVariables;
     private Tree tree;

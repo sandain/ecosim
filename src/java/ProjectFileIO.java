@@ -189,7 +189,9 @@ public class ProjectFileIO {
                     omega[0], omega[1]
                 ));
                 double sigma[] = estimate.getSigma ();
-                out.write (String.format ("    " +
+                out.write (String.format (
+                    Locale.US,
+                    "    " +
                     "<sigma slope=\"%.5f\" intercept=\"%.5f\"/>\n",
                     sigma[0], sigma[1]
                 ));
