@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2015-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2015-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -257,16 +257,16 @@ public class Summary {
      */
     public void addListener (Listener listener) {
         listeners.add (listener);
-     }
+    }
 
-     /**
+    /**
      *  Pass this summary to all of the listeners.
-      */
+     */
     public void refreshListeners () {
         for (Listener listener: listeners) {
             listener.summaryChanged (this);
         }
-     }
+    }
 
     private List<Listener> listeners;
     private Tree tree;

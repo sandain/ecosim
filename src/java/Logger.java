@@ -64,7 +64,7 @@ public class Logger {
      */
     public void addListener (Listener listener) {
         listeners.add (listener);
-     }
+    }
 
     /**
      *  Append text to the log.
