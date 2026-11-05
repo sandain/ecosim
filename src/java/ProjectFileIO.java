@@ -127,7 +127,7 @@ public class ProjectFileIO {
             out.write (String.format (
                 Locale.US,
                 "<ecosim type=\"savefile\" version=\"%s\">\n",
-                mainVariables.getVersion ()
+                escape (mainVariables.getVersion ())
             ));
             // Output the current criterion.
             out.write (
@@ -142,11 +142,11 @@ public class ProjectFileIO {
                 ));
                 out.write (String.format (
                     Locale.US,
-                    "    <outgroup value=\"%s\"/>\n", outgroup
+                    "    <outgroup value=\"%s\"/>\n", escape (outgroup)
                 ));
                 out.write (String.format (
                     Locale.US,
-                    "    <tree value=\"%s\"/>\n", tree.toString ()
+                    "    <tree value=\"%s\"/>\n", escape (tree.toString ())
                 ));
                 out.write (
                     "  </phylogeny>\n"
@@ -309,7 +309,7 @@ public class ProjectFileIO {
                         out.write (String.format (
                             Locale.US,
                             "        <member name=\"%s\"/>\n",
-                            ecotype.get (j)
+                            escape (ecotype.get (j))
                         ));
                     }
                     out.write ("      </ecotype>\n");
@@ -446,6 +446,72 @@ public class ProjectFileIO {
     public Demarcation getDemarcation () {
         return demarcation;
     }
+
+    /**
+     *  Escape a string for use as an XML attribute value.  The characters
+     *  with special meaning in an attribute are replaced by references, as
+     *  are tabs and line breaks, which the parser would otherwise read back
+     *  as spaces.  Characters that XML 1.0 does not allow are replaced by
+     *  the Unicode replacement character.  A null value is written as the
+     *  string "null".
+     *
+     *  @param value The string to escape.
+     *  @return The escaped string.
+     */
+    private static String escape (String value) {
+        String text = String.valueOf (value);
+        StringBuilder escaped = new StringBuilder ();
+        int i = 0;
+        while (i < text.length ()) {
+            int c = text.codePointAt (i);
+            i += Character.charCount (c);
+            switch (c) {
+                case '&':
+                    escaped.append ("&amp;");
+                    break;
+                case '<':
+                    escaped.append ("&lt;");
+                    break;
+                case '>':
+                    escaped.append ("&gt;");
+                    break;
+                case '"':
+                    escaped.append ("&quot;");
+                    break;
+                case '\t':
+                    escaped.append ("&#9;");
+                    break;
+                case '\n':
+                    escaped.append ("&#10;");
+                    break;
+                case '\r':
+                    escaped.append ("&#13;");
+                    break;
+                default:
+                    if (isXmlChar (c)) {
+                        escaped.appendCodePoint (c);
+                    }
+                    else {
+                        escaped.append ('\uFFFD');
+                    }
+            }
+        }
+        return escaped.toString ();
+    }
+
+    /**
+     *  Test whether a character is allowed in an XML 1.0 document.
+     *
+     *  @param c The character, as a Unicode code point.
+     *  @return True if the character is allowed.
+     */
+    private static boolean isXmlChar (int c) {
+        return c == 0x9 || c == 0xA || c == 0xD ||
+            (c >= 0x20 && c <= 0xD7FF) ||
+            (c >= 0xE000 && c <= 0xFFFD) ||
+            (c >= 0x10000 && c <= 0x10FFFF);
+    }
+
 
     private MainVariables mainVariables;
     private Execs execs;

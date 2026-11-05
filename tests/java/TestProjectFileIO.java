@@ -2,6 +2,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Locale;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import ecosim.Binning;
 import ecosim.BinLevel;
@@ -152,6 +156,63 @@ public class TestProjectFileIO {
         assertEquals (
             "Sigma mismatch.", 0.5d, result.getResult ().getSigma (), TOLERANCE
         );
+    }
+
+    @Test
+    public void testSpecialCharacters () throws Exception {
+        // Names with characters that have special meaning in XML are
+        // written as valid XML, and loaded back unchanged.
+        String name = "a&b<c>\"d\"\te";
+        Tree special = new Tree (
+            "((A:0.1,B:0.1):0.1,'x&y<z>\"w\"':0.2);"
+        );
+        ProjectFileIO saved = new ProjectFileIO (
+            mainVariables, null, 2, LENGTH, name, special, null,
+            null, null, null, null, null, null
+        );
+        saved.save (projectFile);
+        assertWellFormed (projectFile);
+        ProjectFileIO reloaded = new ProjectFileIO (mainVariables, null);
+        reloaded.load (projectFile);
+        assertEquals ("Outgroup mismatch.", name, reloaded.getOutgroup ());
+        assertNotNull ("Tree not loaded.", reloaded.getTree ());
+        assertEquals (
+            "Tree mismatch.",
+            special.toString (), reloaded.getTree ().toString ()
+        );
+    }
+
+    @Test
+    public void testInvalidCharacters () throws Exception {
+        // A character that XML does not allow is written as the Unicode
+        // replacement character.
+        ProjectFileIO saved = new ProjectFileIO (
+            mainVariables, null, NU, LENGTH, "a\u0001b", tree, binning,
+            null, null, null, null, null, null
+        );
+        saved.save (projectFile);
+        assertWellFormed (projectFile);
+        ProjectFileIO reloaded = new ProjectFileIO (mainVariables, null);
+        reloaded.load (projectFile);
+        assertEquals (
+            "Outgroup mismatch.", "a\ufffdb", reloaded.getOutgroup ()
+        );
+    }
+
+    /**
+     *  Assert that a file is well-formed XML.
+     *
+     *  @param file The file.
+     */
+    private void assertWellFormed (File file) throws Exception {
+        SAXParserFactory factory = SAXParserFactory.newInstance ();
+        factory.setNamespaceAware (true);
+        try {
+            factory.newSAXParser ().parse (file, new DefaultHandler ());
+        }
+        catch (SAXParseException e) {
+            fail ("Not well-formed XML: " + e.getMessage ());
+        }
     }
 
     private static final Integer NU = 4;
