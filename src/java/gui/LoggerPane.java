@@ -25,8 +25,6 @@ package ecosim.gui;
 import ecosim.Logger;
 
 import java.awt.Font;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -53,9 +51,9 @@ public class LoggerPane extends JScrollPane {
         textArea.setDoubleBuffered (true);
         textArea.append (log.toString ());
         // Update the log text area when the log changes.
-        log.addObserver (new Observer () {
-            public void update (Observable o, Object str) {
-                textArea.append ((String) str);
+        log.addListener (new Logger.Listener () {
+            public void textAppended (String text) {
+                textArea.append (text);
                 // Auto update the caret position.
                 textArea.setCaretPosition (log.length ());
                 // Repaint the log area.

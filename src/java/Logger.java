@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2013-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2013-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,36 +22,62 @@
 
 package ecosim;
 
-import java.util.Observable;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- *  The logger class is used to display text to the user.  This class utilizes
- *  the observer pattern to update listeners when the log has changed.
+ *  The logger class is used to display text to the user.  Listeners are
+ *  passed the text each time text is appended to the log.
  *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
  */
-public class Logger extends Observable {
+public class Logger {
+
+    /**
+     *  Receives the text appended to a Logger.
+     */
+    public interface Listener {
+
+        /**
+         *  Called each time text is appended to the log.
+         *
+         *  @param text The text appended to the log.
+         */
+        void textAppended (String text);
+
+    }
 
     /**
      *  Logger constructor.
      */
     public Logger () {
         log = "";
+        listeners = new CopyOnWriteArrayList<Listener> ();
     }
+
+    /**
+     *  Add a listener, to be passed the text each time text is appended to
+     *  the log.  Listeners are called in the order they were added.
+     *
+     *  @param listener The listener to add.
+     */
+    public void addListener (Listener listener) {
+        listeners.add (listener);
+     }
 
     /**
      *  Append text to the log.
      *
      *  @param str The text to append to the log.
      */
-   public void append (String str) {
+    public void append (String str) {
         // Append the text to the log.
         log += str;
-        // Mark this log as changed.
-        setChanged ();
-        // Notify observers of the change.
-        notifyObservers (str);
+        // Pass the text to the listeners.
+        for (Listener listener: listeners) {
+            listener.textAppended (str);
+        }
     }
 
     /**
@@ -88,5 +114,6 @@ public class Logger extends Observable {
     }
 
     private String log;
+    private List<Listener> listeners;
 
 }

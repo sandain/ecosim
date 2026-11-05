@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2009-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2009-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -25,8 +25,6 @@ package ecosim;
 import ecosim.gui.MainWindow;
 
 import java.io.File;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.SwingUtilities;
 
 /**
@@ -425,11 +423,11 @@ public class EcotypeSimulation implements Runnable {
      */
     private void setupInterface () {
         if (noGUI) {
-            // The CLI only requires adding an observer to the log.  When
+            // The CLI only requires adding a listener to the log.  When
             // the log changes, the new text is printed to the terminal.
-            log.addObserver (new Observer () {
-                public void update (Observable o, Object str) {
-                    System.out.print ((String) str);
+            log.addListener (new Logger.Listener () {
+                public void textAppended (String text) {
+                    System.out.print (text);
                 }
             });
         }
