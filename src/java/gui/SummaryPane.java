@@ -39,8 +39,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -157,9 +155,8 @@ public class SummaryPane extends JPanel {
             binChart, false, true, true, false, false
         );
         // Watch for changes to the Summary object.
-        summary.addObserver (new Observer () {
-            public void update (Observable o, Object obj) {
-                Summary s = (Summary)obj;
+        summary.addListener (new Summary.Listener () {
+            public void summaryChanged (Summary s) {
                 ParameterEstimate estimate = s.getEstimate ();
                 ArrayList<BinLevel> bins = s.getBins ();
                 if (bins.size () > 0) {
@@ -240,9 +237,8 @@ public class SummaryPane extends JPanel {
         pane.setLayout (new FlowLayout (0));
         pane.add (summaryTextArea);
         // Watch for changes to the Summary object.
-        summary.addObserver (new Observer () {
-            public void update (Observable o, Object obj) {
-                Summary s = (Summary)obj;
+        summary.addListener (new Summary.Listener () {
+            public void summaryChanged (Summary s) {
                 ParameterEstimate estimate = s.getEstimate ();
                 summaryTextArea.setText (String.format (
                     fmt,
@@ -306,9 +302,8 @@ public class SummaryPane extends JPanel {
         pane.add (table.getTableHeader (), "North");
         pane.add (table, "Center");
         // Watch for changes to the Summary object.
-        summary.addObserver (new Observer () {
-            public void update (Observable o, Object obj) {
-                Summary s = (Summary)obj;
+        summary.addListener (new Summary.Listener () {
+            public void summaryChanged (Summary s) {
                 ParameterEstimate estimate = s.getEstimate ();
                 ParameterSet hillclimbing = s.getHillclimbing ();
                 ParameterSet[] ci = s.getConfidenceInterval ();
