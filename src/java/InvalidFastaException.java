@@ -3,7 +3,7 @@
  *    clade as the evolutionary result of net ecotype formation and periodic
  *    selection, yielding a certain number of ecotypes.
  *
- *    Copyright (C) 2014-2019  Jason M. Wood, Montana State University
+ *    Copyright (C) 2014-2026  Jason M. Wood
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ package ecosim;
 
 
 /**
- *  An exception used for reporting malformed Newick trees.
+ *  An exception used for reporting malformed Fasta files.
  *
  *  @author Jason M. Wood
  *  @copyright GNU General Public License
