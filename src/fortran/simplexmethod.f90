@@ -399,7 +399,7 @@ module simplexmethod
 320 do i = 1, nop
       ! check to see if step(i) is not equal to zero.
       if (step(i) .lt. neta .or. step(i) .gt. eta) then
-        g(imax, i) = pstst(i)
+        g(imax, i) = pstar(i)
       end if
     end do
     h(imax) = hstar
