@@ -320,7 +320,7 @@ module simplexmethod
     do i = 1, nop
       ! check to see if step(i) is not equal to zero.
       if (step(i) .lt. neta .or. step(i) .gt. eta) then
-        g(imax, i) = pstar(i)
+        g(imax, i) = pstst(i)
       end if
     end do
     h(imax) = hstst
@@ -915,7 +915,7 @@ module simplexmethod
           if (irow .eq. icol) rsq = rsq + (u(l) ** 2 * r(i)) ** 2
           m = m + 1
         end do
-        if (irow .eq. icol) exit
+        if (irow .ne. icol) exit
         if (u(l) .gt. 0.0d0) then
           u(k) = w / u(l)
         else
