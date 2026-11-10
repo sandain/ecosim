@@ -1,13 +1,7 @@
 # C compiler options.
-CC ?= gcc
-#CC := i686-w64-mingw32-gcc-win32
-#CC := x86_64-w64-mingw32-gcc-win32
 CCFLAGS := -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops
 
 # Fortran compiler options.
-FC ?= gfortran
-#FC := i686-w64-mingw32-gfortran-win32
-#FC := x86_64-w64-mingw32-gfortran-win32
 FCFLAGS := -cpp -fopenmp -lgfortran -lm -O3 -finline-functions -funroll-loops
 FLDFLAGS := -cpp -fopenmp -O3 -finline-functions -funroll-loops
 
