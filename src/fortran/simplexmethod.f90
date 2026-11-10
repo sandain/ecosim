@@ -915,7 +915,7 @@ module simplexmethod
           if (irow .eq. icol) rsq = rsq + (u(l) ** 2 * r(i)) ** 2
           m = m + 1
         end do
-        if (irow .ne. icol) exit
+        if (irow .eq. icol) exit
         if (u(l) .gt. 0.0d0) then
           u(k) = w / u(l)
         else
