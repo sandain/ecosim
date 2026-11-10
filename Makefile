@@ -2,7 +2,7 @@
 CC ?= gcc
 #CC := i686-w64-mingw32-gcc-win32
 #CC := x86_64-w64-mingw32-gcc-win32
-CCFLAGS := -DUSE_DOUBLE -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops
+CCFLAGS := -DOPENMP -fopenmp -lm -O3 -finline-functions -funroll-loops
 
 # Fortran compiler options.
 FC ?= gfortran
