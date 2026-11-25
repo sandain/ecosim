@@ -182,7 +182,7 @@ program npopCI
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
-    ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
+    ratio = -2.0 * log (xlikelihood / xlikelihoodsolution)
     if (ratio .gt. 3.84) exit
     ! we're still within the CI
     iupperbound = npop
@@ -224,7 +224,7 @@ program npopCI
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
-    ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
+    ratio = -2.0 * log (xlikelihood / xlikelihoodsolution)
     if (ratio .gt. 3.84) exit
     ! we're still within the CI
     ilowerbound = npop

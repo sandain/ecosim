@@ -176,7 +176,7 @@ program sigmaCI
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
-    ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
+    ratio = -2.0 * log (xlikelihood / xlikelihoodsolution)
     if (ratio .gt. 3.84) exit
     ! we're still within the CI
     ! this is a new part that avoids an infinite loop where
@@ -226,7 +226,7 @@ program sigmaCI
     ! avoid dividing by zero
     if (xlikelihoodsolution .lt. 1.0d-6 .or. xlikelihood .lt. 1.0d-6) exit
     ! now do likelihood ratio test
-    ratio = -2.0 * log (xlikelihoodsolution / xlikelihood)
+    ratio = -2.0 * log (xlikelihood / xlikelihoodsolution)
     if (ratio .gt. 3.84) exit
     ! we're still within the CI
     xlowerbound = sigma
