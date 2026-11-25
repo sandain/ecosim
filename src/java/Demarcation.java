@@ -447,7 +447,7 @@ public class Demarcation extends Tree {
             writer.write (String.format (
                 Locale.US,
                 "%-20d nrep\n",
-                nrep
+                mainVariables.getNrep ()
             ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
@@ -562,7 +562,6 @@ public class Demarcation extends Tree {
 
     private Integer method;
 
-    private Integer nrep = 1000;
     private Integer step = 1;
 
     private int iteration;

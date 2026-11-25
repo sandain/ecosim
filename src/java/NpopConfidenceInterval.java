@@ -218,7 +218,7 @@ public class NpopConfidenceInterval implements Runnable {
             writer.write (String.format (
                 Locale.US,
                 "%-20d nrep\n",
-                nrep
+                mainVariables.getNrep ()
             ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
@@ -333,7 +333,6 @@ public class NpopConfidenceInterval implements Runnable {
     private Binning binning;
     private ParameterSet hillclimbResult;
 
-    private Integer nrep = 1000;
     private Integer step = 3;
     private Long [] result = { 0L, 0L };
     private Double [] likelihood = { 0.0d, 0.0d };

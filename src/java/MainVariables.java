@@ -131,6 +131,27 @@ public class MainVariables {
         return criterionLabels;
     }
 
+
+    /**
+     *  Get the number of replicate simulations run for each set of
+     *  parameter values.
+     *
+     *  @return The number of replicate simulations.
+     */
+    public int getNrep () {
+        return nrep;
+    }
+
+    /**
+     *  Set the number of replicate simulations run for each set of
+     *  parameter values.
+     *
+     *  @param nrep The number of replicate simulations.
+     */
+    public void setNrep (int nrep) {
+        this.nrep = nrep;
+    }
+
     /**
      *  Returns the binary directory.
      *
@@ -339,6 +360,12 @@ public class MainVariables {
     private String[] criterionLabels = new String[] {
         "5.00x", "2.00x", "1.50x", "1.25x", "1.10x", "1.05x"
     };
+
+    /**
+     *  The number of replicate simulations run for each set of parameter
+     *  values, by hillclimbing, the confidence intervals and demarcation.
+     */
+    private Integer nrep = 10000;
 
     /**
      *  The default number of threads is equal to the system maximum.

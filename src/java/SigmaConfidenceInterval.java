@@ -224,7 +224,7 @@ public class SigmaConfidenceInterval implements Runnable {
             writer.write (String.format (
                 Locale.US,
                 "%-20d nrep\n",
-                nrep
+                mainVariables.getNrep ()
             ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
@@ -339,7 +339,6 @@ public class SigmaConfidenceInterval implements Runnable {
     private Binning binning;
     private ParameterSet hillclimbResult;
 
-    private int nrep = 1000;
     private int step = 3;
     private Double [] result = { 0.0, 0.0 };
     private Double [] likelihood = { 0.0, 0.0 };

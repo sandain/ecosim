@@ -182,7 +182,7 @@ public class Hillclimb implements Runnable {
             writer.write (String.format (
                 Locale.US,
                 "%-20d nrep\n",
-                nrep
+                mainVariables.getNrep ()
             ));
             // Create the random number seed; an odd integer less than nine
             // digits long.
@@ -278,8 +278,6 @@ public class Hillclimb implements Runnable {
     private Binning binning;
     private ParameterSet parameterSet;
     private ParameterSet result;
-
-    private Integer nrep = 10000;
 
     private boolean hasRun;
 
