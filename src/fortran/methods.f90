@@ -313,7 +313,7 @@ module methods
     ! Local variables.
     character(len = 100)  :: buffer
     integer(kind = int32) :: error
-    call getarg (arg, buffer)
+    call get_command_argument (arg, buffer)
     read (unit = buffer, fmt = *, iostat = error) out
     if (error .ne. 0) then
       write (unit = *, fmt = *) &
@@ -335,7 +335,7 @@ module methods
     logical, intent(out)                 :: out
     ! Local variables.
     character(len = 100) :: buffer
-    call getarg (arg, buffer)
+    call get_command_argument (arg, buffer)
     ! Unless we receive an appropriate true string, return false.
     out = .false.
     ! Catch lower case true string.
@@ -366,7 +366,7 @@ module methods
     ! Local variables.
     character(len = 100) :: buffer
     integer(kind = int32)              :: error
-    call getarg (arg, buffer)
+    call get_command_argument (arg, buffer)
     read (unit = buffer, fmt = *, iostat = error) out
     if (error .ne. 0) then
       write (unit = *, fmt = *) &
@@ -386,7 +386,7 @@ module methods
   subroutine getStringArgument (arg, out)
     integer(kind = int32), intent(in)    :: arg
     character(len = *), intent(out)      :: out
-    call getarg (arg, out)
+    call get_command_argument (arg, out)
     return
   end subroutine getStringArgument
 
