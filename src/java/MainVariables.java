@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -62,13 +63,13 @@ public class MainVariables {
             );
             System.exit (1);
         }
-        // Assume the the bin and help directories are in the current working
-        // directory.
-        binaryDirectory = System.getProperty ("user.dir") +
+        // Find the bin and help directories.
+        String installDirectory = findInstallDirectory ();
+        binaryDirectory = installDirectory +
             System.getProperty ("file.separator") + "bin" +
             System.getProperty ("file.separator");
-        helpDirectory = System.getProperty ("user.dir") +
-            System.getProperty ("file.separator") +"help" +
+        helpDirectory = installDirectory +
+            System.getProperty ("file.separator") + "help" +
             System.getProperty ("file.separator");
         // Start with the current directory pointing to the user's home.
         currentDirectory = System.getProperty ("user.home");
@@ -284,6 +285,35 @@ public class MainVariables {
                 "Error deleting the temporary directory: " + e
             );
         }
+    }
+
+    /**
+     *  Find the directory that contains the bin and help directories: the
+     *  directory containing ecosim.jar if it has a bin directory, otherwise
+     *  the current working directory.
+     *
+     *  @return The directory.
+     */
+    private String findInstallDirectory () {
+        String directory = System.getProperty ("user.dir");
+        try {
+            CodeSource source =
+                MainVariables.class.getProtectionDomain ().getCodeSource ();
+            if (source != null) {
+                File location = new File (source.getLocation ().toURI ());
+                File parent = location.getParentFile ();
+                if (location.isFile () && parent != null &&
+                    new File (parent, "bin").isDirectory ()) {
+                    directory = parent.getPath ();
+                }
+            }
+        }
+        catch (URISyntaxException | SecurityException e) {
+            System.err.println (
+                "Error finding the directory containing ecosim.jar: " + e
+            );
+        }
+        return directory;
     }
 
     /**
