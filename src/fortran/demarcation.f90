@@ -122,8 +122,10 @@ program demarcation
     if (likelihoodone .gt. 1.0d-6) then
       bestnpop = 1
       bestlikelihood = likelihoodone
-      ! Test npop values from istep + 1 to the npop estimate.
-      do testednpop = istep + 1, npop, istep
+      ! Test npop values from istep + 1 to one step past the npop estimate,
+      ! so that every sample is tested against at least npop = istep + 1,
+      ! but no more than the number of sequences in the sample.
+      do testednpop = istep + 1, min (npop + istep, nu), istep
         if (debug) then
           write (unit = *, fmt = *) 'omega= ', omega
           write (unit = *, fmt = *) 'sigma= ', sigma
