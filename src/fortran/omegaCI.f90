@@ -93,7 +93,7 @@ program omegaCI
   inputFile = 'omegaIn.dat'
   outputFile = 'omegaOut.dat'
   ! Read command line arguments.
-  do i = 1, iargc()
+  do i = 1, command_argument_count ()
     select case (i)
       case (1)
         call getArgument (1, inputFile)
