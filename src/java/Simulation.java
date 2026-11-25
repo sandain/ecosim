@@ -317,8 +317,8 @@ public class Simulation {
                 File svg = new File (dir + "outtree.svg");
                 tree.paintTree (new SVGPainter (svg));
             }
-            // Get the number of sequences loaded.
-            nu = tree.size ();
+            // Get the number of sequences loaded, excluding the outgroup.
+            nu = tree.size () - 1;
             // Update the summary data.
             summary.setTree (tree);
             summary.setNu (nu);
