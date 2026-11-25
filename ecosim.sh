@@ -7,4 +7,4 @@ if [ -z "$JAVA" ]; then
 fi
 
 # Run Ecotype Simulation.
-exec $JAVA -jar "$(dirname "$0")/ecosim.jar" "$@"
+exec "$JAVA" -jar "$(dirname "$0")/ecosim.jar" "$@"
